@@ -16,4 +16,4 @@ Future:
 - a journal template to write research papers in typst.
 - german-legal-complaint: a formal complaint that can be submitted to court or lawyers
   - this one is already prepared but not in template form, it contains sensitive data so i dont want to have it in the template folder
-- Currently the german-letter template does not force equal widths between geschäftszeile entries. not a major issue, but annoying.
+- I want to turn the templates into a package, but for that I should make the template functions more modular to be able to customize things easier.
