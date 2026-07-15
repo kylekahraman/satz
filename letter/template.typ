@@ -18,7 +18,7 @@
 ///   - strasse (str): Street and house number
 ///   - plz_ort (str): Postal code and city
 ///   - land (str): Country (optional, for international mail)
-/// - datum (str): Date string, defaults to today
+/// - datum (str): Date string. Defaults to today in DIN 5008 format (YYYY-MM-DD).
 /// - geschaeftszeile (array): Reference line as (("Label", "Value"), ...)
 /// - betreff (str): Subject line
 /// - postvermerk (str): Postal remark (e.g. "Einschreiben", "Eilzustellung")
@@ -30,7 +30,7 @@
 #let brief(
   absender: (name: "", strasse: "", plz_ort: "", telefon: "", email: ""),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
-  datum: datetime.today().display("[day].[month].[year]"),
+  datum: datetime.today().display("[year]-[month]-[day]"),
   geschaeftszeile: (),
   betreff: "",
   anlagenverzeichnis: (),
