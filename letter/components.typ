@@ -43,7 +43,7 @@
     ]
     // Postal remark (Versendungsvermerk) — right-aligned above recipient
     #if postvermerk != "" [
-      #align(right, text(weight: "bold", size: 10pt)[#postvermerk])
+      #text(weight: "bold", size: 10pt)[#postvermerk]
       #v(0.3em)
     ]
     // Recipient address
