@@ -26,6 +26,7 @@
 /// - anlagen (array): Attachment file paths (PDFs are rendered inline)
 /// - signatur_zusatz (str): Additional text below signature name
 /// - lang (str): Language — "de" (German) or "en" (English)
+/// - font (str): Body font family. Defaults to "Inter".
 /// - body (content): Letter body content
 #let brief(
   absender: (name: "", strasse: "", plz_ort: "", telefon: "", email: ""),
@@ -38,6 +39,7 @@
   signatur_zusatz: "",
   postvermerk: "",
   lang: "de",
+  font: "Inter",
   body
 ) = {
   let zeilenabstand = 0.65em
@@ -65,7 +67,7 @@
   }
   
   // Stile konfigurieren
-  set text(font: "Inter", size: 11pt, lang: lang, hyphenate: false, weight: "regular")
+  set text(font: font, size: 11pt, lang: lang, hyphenate: false, weight: "regular")
   set par(leading: zeilenabstand, justify: true)
   set page(
     "a4",

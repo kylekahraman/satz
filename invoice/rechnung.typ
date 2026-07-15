@@ -23,6 +23,8 @@
 /// - qr (bool): Enable EPC QR code (GiroCode) for scan-to-pay
 /// - qr-betrag (none, float): Override QR amount. None = auto-calculate from posten
 /// - qr-verwendungszweck (str): Payment reference for QR code
+/// - font (str): Body font family. Defaults to "Inter".
+/// - kleinunternehmer (bool): Show German small business tax exemption notice (§ 19 UStG).
 /// - body (content): Invoice body content (letter text)
 #let rechnung(
   absender: (
@@ -43,11 +45,13 @@
   qr: true,
   qr-betrag: none,
   qr-verwendungszweck: "",
+  font: "Inter",
+  kleinunternehmer: false,
   body
 ) = {
   // --- Globale Stile & Raster ---
   let zeilenabstand = 0.65em
-  set text(font: "Inter", size: 11pt, lang: "de", hyphenate: false, weight: "regular")
+  set text(font: font, size: 11pt, lang: "de", hyphenate: false, weight: "regular")
   
   set page(
     "a4",
@@ -170,8 +174,11 @@
   let epc-string = "BCD\n002\n1\nSCT\n" + absender.bic + "\n" + absender.name + "\n" + absender.iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
 
   block(width: 100%, breakable: false)[
-    #text(size: 9pt, style: "italic")[
-      Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.
+    #if kleinunternehmer [
+      #text(size: 9pt, style: "italic")[
+        Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.
+      ]
+      #v(2 * zeilenabstand)
     ]
     
     #v(2 * zeilenabstand)
