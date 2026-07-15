@@ -1,6 +1,10 @@
 // Shared cover page — handles page setup, logos, centered body, footer.
 // Used by journal, report, thesis templates.
 
+/// Default configuration for the cover page component.
+///
+/// Separate from the main `defaults` because covers often use different
+/// styling (white background, different margins, etc.).
 #let cover-defaults = (
   page: (
     paper: "a4",
@@ -18,6 +22,11 @@
   ),
 )
 
+/// Shallow merge for cover defaults.
+///
+/// - base (dictionary): Cover defaults
+/// - overrides (dictionary): User overrides
+/// -> dictionary
 #let merge(base, overrides) = {
   let result = base
   for (k, v) in overrides {
@@ -26,6 +35,17 @@
   result
 }
 
+/// A centered cover page with optional logos and footer.
+///
+/// Renders a single standalone page (no header, no page numbering).
+/// The body is centered vertically and horizontally.
+/// Optional elements: top-left logos, bottom-center footer, bottom-left footer.
+///
+/// - config (dictionary): Overrides for cover defaults
+/// - logos (none, content): Logo(s) placed top-left
+/// - body (content): Centered body content (title, author, etc.)
+/// - footer (none, content): Footer placed bottom-center
+/// - footer-left (none, content): Footer placed bottom-left (e.g. supervisors)
 #let cover-page(
   config: (:),
   logos: none,

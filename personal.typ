@@ -1,6 +1,22 @@
 // Unified document class — kind: "journal" | "report" | "thesis" | "letter"
+
 #import "defaults.typ": defaults, merge
 
+/// The core satz document class — sets up page, typography, headings, and more.
+///
+/// All templates (report, journal-entry, etc.) delegate to this function.
+/// Direct use is possible for custom document types:
+///
+/// ```example
+/// #show: personal.with(kind: "thesis", config: (page: (paper: "a5")))
+/// = My Thesis
+/// ```
+///
+/// - kind (str): Document kind — "journal", "report", "thesis", or "letter"
+/// - config (dictionary): Partial overrides for satz defaults
+/// - header (none, content): Custom page header
+/// - footer (none, content): Custom page footer
+/// - body (content): Document body
 #let personal(
   kind: "report",
   config: (:),

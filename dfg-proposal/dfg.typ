@@ -5,22 +5,28 @@
 //   - Publikationsliste: Arial 9pt mindestens
 //
 // Basiert auf der LaTeX-Vorlage proposal.cls (scrartcl).
-//
-// Nutzung:
-//   #import "dfg.typ": dfg-proposal
-//
-//   #show: dfg-proposal.with(
-//     applicant: [Name \\ Institution],
-//     project: [Titel des Vorhabens],
-//     language: "english",
-//     max-pages: 17,        // oder 8 ab Section 4
-//   )
-//
-//   = Section
-//   Text...
-//   == *Unnumbered subsection*
-//   Text...
 
+/// DFG form 53.01 — Project Description (Sachbeihilfe).
+///
+/// Generates a DFG-compliant proposal document with the standard title block,
+/// page header showing form number and page count, and Arial 11pt formatting.
+/// Level-1 headings use "1" numbering; levels 2–4 are unnumbered.
+///
+/// - applicant (content): Applicant name(s) and institution(s)
+/// - project (content): Project title
+/// - language (str): "german" or "english" — affects header strings
+/// - max-pages (int): Maximum page count shown in header (17 or 8)
+/// - doc (content): Proposal body content
+///
+/// ```example
+/// #show: dfg-proposal.with(
+///   applicant: [Dr. Beispiel \\ Uni Musterstadt],
+///   project: [Titel des Vorhabens],
+///   language: "german",
+/// )
+/// = 1. Starting Point
+/// ...
+/// ```
 #let dfg-proposal(
   applicant: [],
   project: [],

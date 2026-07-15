@@ -1,7 +1,21 @@
-// Unified defaults for the personal document class.
+// Unified defaults for the satz document class.
 // All config keys with their default values.
 // Copy sections you want to change into your project's config.typ.
 
+/// Default configuration dictionary for the satz document class.
+///
+/// Override individual keys by passing a partial dictionary to `personal.with(config: (...))`.
+/// Keys use shallow merge — only the sections you specify are replaced.
+///
+/// Sections:
+/// - page (dictionary): paper size, margins, binding correction
+/// - typography (dictionary): font, size, leading, hyphenation, justification
+/// - headings (dictionary): numbering scheme, sizes, spacing per level
+/// - decorative (dictionary): sizes for headers, footers, dates, keywords, lists
+/// - page-footer (dictionary): page number format, size, weight
+/// - links (dictionary): link color
+/// - bibliography (dictionary): citation style
+/// - colors (dictionary): color palette (bg-paper, brand-primary, text-main, etc.)
 #let defaults = (
   page: (
     paper: "a4",
@@ -51,7 +65,14 @@
   ),
 )
 
-// Shallow merge: user overrides win
+/// Shallow merge: user overrides win.
+///
+/// Merges a partial override dictionary into the base defaults.
+/// Only top-level keys are replaced — nested objects are NOT deep-merged.
+///
+/// - base (dictionary): The full defaults dictionary
+/// - overrides (dictionary): User-provided partial overrides
+/// -> dictionary
 #let merge(base, overrides) = {
   let result = base
   for (k, v) in overrides {

@@ -1,3 +1,8 @@
+/// Renders the sender block (Absender) in the top-right corner.
+///
+/// - absender (dictionary): Sender details (name, strasse, plz_ort, telefon, email)
+/// - zeilenabstand (length): Line spacing
+/// - strings (dictionary): i18n strings (tel, email keys)
 #let absender_block(absender, zeilenabstand, strings) = {
   align(right, text(size: 9pt)[
     #absender.name \
@@ -12,6 +17,15 @@
   ])
 }
 
+/// Renders the recipient address field (Empfänger) for window envelopes.
+///
+/// DIN 5008: 85mm wide, positioned for standard window envelopes.
+/// Includes sender reference line, optional postal remark, and address.
+///
+/// - absender (dictionary): Sender details (for the reference line)
+/// - empfaenger (dictionary): Recipient (name, zusatz, strasse, plz_ort, land)
+/// - postvermerk (str): Postal remark like "Einschreiben" (optional)
+/// - strings (dictionary): i18n strings
 #let empfaenger_block(absender, empfaenger, postvermerk, strings) = {
   // DIN 5008: address field for window envelope
   // Window position: 45mm from top, 20mm from left, 85mm × 45mm
@@ -57,6 +71,15 @@
   ]
 }
 
+/// Renders the business reference line (Geschäftszeile) with multiple columns.
+///
+/// Each entry is a (label, value) pair. The date is automatically appended
+/// as the last (right-aligned) column.
+///
+/// - geschaeftszeile (array): Column entries as (("Label", "Value"), ...)
+/// - datum (str): Date string
+/// - zeilenabstand (length): Line spacing
+/// - strings (dictionary): i18n strings (datum key)
 #let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings) = {
   block(width: 100%)[
     #let alle_posten = geschaeftszeile + ((strings.datum, datum),)
@@ -74,6 +97,11 @@
   ]
 }
 
+/// Renders the signature block with a line for handwritten signature.
+///
+/// - name (str): Name below the signature line
+/// - zusatz (str): Additional text below the name (e.g. title, department)
+/// - zeilenabstand (length): Line spacing
 #let signatur_block(name, zusatz, zeilenabstand) = {
   v(5 * zeilenabstand)
   line(length: 40%, stroke: 0.5pt + black)
