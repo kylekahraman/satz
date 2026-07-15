@@ -6,7 +6,8 @@
 ///
 /// Thin wrapper around `personal(kind: "report")`. Supports full config
 /// customization via the `config` dictionary (fonts, colors, margins, etc.).
-/// Includes numbered headings, bibliography support, and link styling.
+/// Includes numbered headings, auto-generated Table of Contents,
+/// bibliography support, and link styling.
 ///
 /// For thesis/dissertation, use `personal(kind: "thesis")` directly for
 /// features like binding correction (BCOR) and chapter-based page numbering.

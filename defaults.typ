@@ -5,7 +5,7 @@
 /// Default configuration dictionary for the satz document class.
 ///
 /// Override individual keys by passing a partial dictionary to any template function.
-/// Keys use shallow merge — only the sections you specify are replaced.
+/// Keys use deep merge — nested dictionaries are merged recursively.
 ///
 /// Sections:
 /// - page (dictionary): paper size, margins, binding correction
