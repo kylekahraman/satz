@@ -29,7 +29,7 @@
     ("Abzüglich Rabatt 10%", 1, -22.55),
   ),
   qr: true,
-  qr-verwendungszweck: "2026-Q1",
+  qr-verwendungszweck: "*RECHNUNGSNUMMER*",
 )
 
 Hallo Frau Beispiel,
