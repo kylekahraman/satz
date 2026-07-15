@@ -61,10 +61,8 @@
   // --- List spacing ---
   set list(spacing: c.decorative.list-spacing)
 
-  // --- Heading numbering (not for journal) ---
-  if kind != "journal" {
-    set heading(numbering: c.headings.numbering)
-  }
+  // --- Heading numbering (journal uses none) ---
+  set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
 
   // --- Heading show rules ---
   show heading.where(level: 1): it => block(width: 100%, below: c.headings.h1-below)[
@@ -90,9 +88,7 @@
   ]
 
   // --- Links (not for journal) ---
-  if kind != "journal" {
-    show link: it => text(fill: c.links.color, it)
-  }
+  show link: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
 
   // --- Table styling (booktabs-style) ---
   set table(
@@ -100,10 +96,8 @@
     inset: (x: 8pt, y: 4pt),
   )
 
-  // --- Bibliography (not for journal) ---
-  if kind != "journal" {
-    set bibliography(style: c.bibliography.style)
-  }
+  // --- Bibliography ---
+  set bibliography(style: c.bibliography.style)
 
   body
 }
