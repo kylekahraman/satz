@@ -10,6 +10,7 @@
   anlagenverzeichnis: (),
   anlagen: (),
   signatur_zusatz: "",
+  postvermerk: "",
   lang: "de",
   body
 ) = {
@@ -51,7 +52,7 @@
   absender_block(absender, zeilenabstand, strings)
   v(3 * zeilenabstand)
   
-  empfaenger_block(absender, empfaenger, strings)
+  empfaenger_block(absender, empfaenger, postvermerk, strings)
   v(4 * zeilenabstand)
   
   geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings)

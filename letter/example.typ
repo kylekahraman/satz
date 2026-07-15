@@ -22,6 +22,7 @@
     // man kann beliebige zeichen hinzufügen in dem man ("Zeichen", "Wert") hinzufügt, z.B. ("Kundennummer", "123456")
   ),
   lang: "de",
+  postvermerk: "Einschreiben Einwurf",
 )
 
 Sehr geehrte Damen und Herren,

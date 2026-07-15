@@ -12,7 +12,7 @@
   ])
 }
 
-#let empfaenger_block(absender, empfaenger, strings) = {
+#let empfaenger_block(absender, empfaenger, postvermerk, strings) = {
   // DIN 5008: address field for window envelope
   // Window position: 45mm from top, 20mm from left, 85mm × 45mm
   // The page top margin (25mm) + preceding content positions this correctly.
@@ -26,6 +26,11 @@
       #v(-2.5mm)
       #line(length: 100%, stroke: 0.25pt + black)
       #v(1.5mm)
+    ]
+    // Postal remark (Versendungsvermerk) — right-aligned above recipient
+    #if postvermerk != "" [
+      #align(right, text(weight: "bold", size: 10pt)[#postvermerk])
+      #v(0.3em)
     ]
     // Recipient address
     #text(size: 11pt)[
