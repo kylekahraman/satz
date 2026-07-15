@@ -23,7 +23,7 @@
     page-args.insert("footer", footer)
   }
   if kind == "report" or kind == "thesis" {
-    page-args.insert("numbering", (current, total) => if current > 1 { string(current - 1) })
+    page-args.insert("numbering", (current, total) => if current > 1 { str(current - 1) })
   }
   set page(..page-args)
 
