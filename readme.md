@@ -1,19 +1,66 @@
-# readme.md
+# satz
 
-This repo contains the templates in typst that I use frequently. I decided to create templates to update them and have a commit history and always have one single source of truth in case a template changes.
+A Typst document class for everyday documents — letters, invoices, reports, journals, and grant proposals.
 
+Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `personal.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.
 
-Templates:
+## Quick Usage
 
-- german-letter: DIN-5008 conform german letter.
-- german-invoice: basically the letter template but with slight adaptations
-- research-diary: a diary for researchers to consolidate meeting notes and sessions to have a neat PDF to scroll through
-- research-protocol: a protocol for researchers to create documentation, i.e. standard operating procedures (SOPs), summary and explanation of methods, course details, etc.
+```typst
+#import "@preview/satz:0.0.1": *
 
+#show: report.with(config: (
+  page: (margin: (left: 3cm)),
+  typography: (font: "Gentium Plus"),
+))
 
-Future:
+= My Report
+...
+```
 
-- a journal template to write research papers in typst.
-- german-legal-complaint: a formal complaint that can be submitted to court or lawyers
-  - this one is already prepared but not in template form, it contains sensitive data so i dont want to have it in the template folder
-- I want to turn the templates into a package, but for that I should make the template functions more modular to be able to customize things easier.
+```typst
+#import "@preview/satz:0.0.1": *
+
+#show: journal-entry.with(
+  title: "Experiment 42",
+  date: "2025-03-15",
+  keywords: ("synthesis", "characterization"),
+)
+
+...
+```
+
+## Templates
+
+| Template | Function | Description |
+|---|---|---|
+| **german-letter** | `brief(...)` | DIN 5008 conform German letter with fold/punch marks |
+| **german-invoice** | `rechnung(...)` | German invoice adapted from the letter template |
+| **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
+| **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis (article mode, BCOR, TOC planned) |
+| **dfg-proposal** | `dfg-proposal(...)` | DFG form 53.01 (Sachbeihilfe) in German and English — **work in progress** |
+| **german-legal-complaint** | — | Formal complaint for submission to court / counsel — **planned** |
+
+## Structure
+
+satz is built around a shared document class defined in `personal.typ`. It reads its defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary. Each template in its own folder wraps `personal.typ` with the appropriate layout, page geometry, and template-specific parameters.
+
+```
+lib.typ                 ← re-exports all templates
+defaults.typ            ← unified default configuration
+personal.typ            ← shared document class
+german-letter/          ← brief wrapper
+german-invoice/         ← rechnung wrapper
+journal/                ← journal-entry / journal-index
+report/                 ← report wrapper
+dfg-proposal/           ← dfg-proposal wrapper
+cover.typ               ← cover page composable
+```
+
+## License
+
+MIT
+
+## Status
+
+Early development. The API is still evolving and may change without notice.
