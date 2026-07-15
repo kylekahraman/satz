@@ -68,27 +68,37 @@
 
   // --- Heading show rules ---
   show heading.where(level: 1): it => block(width: 100%, below: c.headings.h1-below)[
+    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
     #v(0.5em)
     #if kind == "journal" {
-      text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)[#smallcaps(it.body)]
+      smallcaps(it.body)
     } else {
-      text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)[#it.body]
+      it
     }
   ]
   show heading.where(level: 2): it => block(below: c.headings.h2-below)[
-    #text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)[#it.body]
+    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
+    #it
   ]
   show heading.where(level: 3): it => block(below: c.headings.h3-below)[
-    #text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h3-size)[#it.body]
+    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h3-size)
+    #it
   ]
   show heading.where(level: 4): it => block(below: c.headings.h4-below)[
-    #text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h4-size)[#it.body]
+    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h4-size)
+    #it
   ]
 
   // --- Links (not for journal) ---
   if kind != "journal" {
     show link: it => text(fill: c.links.color, it)
   }
+
+  // --- Table styling (booktabs-style) ---
+  set table(
+    stroke: none,
+    inset: (x: 8pt, y: 4pt),
+  )
 
   // --- Bibliography (not for journal) ---
   if kind != "journal" {

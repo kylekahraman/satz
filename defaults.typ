@@ -4,7 +4,7 @@
 
 /// Default configuration dictionary for the satz document class.
 ///
-/// Override individual keys by passing a partial dictionary to `personal.with(config: (...))`.
+/// Override individual keys by passing a partial dictionary to any template function.
 /// Keys use shallow merge — only the sections you specify are replaced.
 ///
 /// Sections:
@@ -52,6 +52,11 @@
   links: (
     color: rgb("#B4313F"),
   ),
+  tables: (
+    stroke: 0.5pt,
+    inset: (x: 8pt, y: 4pt),
+    font-size: 10pt,
+  ),
   bibliography: (
     style: "apa",
   ),
@@ -65,10 +70,11 @@
   ),
 )
 
-/// Shallow merge: user overrides win.
+/// Deep merge: user overrides win, nested dictionaries are merged recursively.
 ///
-/// Merges a partial override dictionary into the base defaults.
-/// Only top-level keys are replaced — nested objects are NOT deep-merged.
+/// Unlike shallow merge, this preserves unmentioned keys in nested dicts.
+/// Example: `config: (colors: (brand-primary: blue))` only changes that one color;
+/// all other colors (bg-paper, text-main, etc.) keep their defaults.
 ///
 /// - base (dictionary): The full defaults dictionary
 /// - overrides (dictionary): User-provided partial overrides
@@ -76,7 +82,11 @@
 #let merge(base, overrides) = {
   let result = base
   for (k, v) in overrides {
-    result.insert(k, v)
+    if type(v) == dictionary and k in result and type(result.at(k)) == dictionary {
+      result.insert(k, merge(result.at(k), v))
+    } else {
+      result.insert(k, v)
+    }
   }
   result
 }

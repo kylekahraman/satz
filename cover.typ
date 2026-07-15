@@ -22,7 +22,7 @@
   ),
 )
 
-/// Shallow merge for cover defaults.
+/// Deep merge for cover defaults.
 ///
 /// - base (dictionary): Cover defaults
 /// - overrides (dictionary): User overrides
@@ -30,7 +30,11 @@
 #let merge(base, overrides) = {
   let result = base
   for (k, v) in overrides {
-    result.insert(k, v)
+    if type(v) == dictionary and k in result and type(result.at(k)) == dictionary {
+      result.insert(k, merge(result.at(k), v))
+    } else {
+      result.insert(k, v)
+    }
   }
   result
 }

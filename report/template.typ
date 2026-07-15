@@ -1,6 +1,6 @@
 // Report template — thin wrapper around the unified satz class.
 
-#import "../personal.typ": personal
+#import "../class.typ": personal
 
 /// A general-purpose report document class (articles, protocols, thesis).
 ///

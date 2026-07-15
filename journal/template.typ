@@ -1,5 +1,5 @@
 #import "@preview/cheq:0.4.0": checklist
-#import "../personal.typ": personal
+#import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
 #import "components.typ": journal-metadata-entry, journal-date-keywords
 
