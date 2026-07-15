@@ -43,7 +43,7 @@
 
 // Shallow merge: user overrides win
 #let merge(base, overrides) = {
-  let result = base
+  let result = (: ..base)
   for (k, v) in overrides {
     result.insert(k, v)
   }

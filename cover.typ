@@ -28,7 +28,10 @@
 /// - overrides (dictionary): User overrides
 /// -> dictionary
 #let merge(base, overrides) = {
-  let result = base
+  let result = (:)
+  for (k, v) in base {
+    result.insert(k, v)
+  }
   for (k, v) in overrides {
     if type(v) == dictionary and k in result and type(result.at(k)) == dictionary {
       result.insert(k, merge(result.at(k), v))
