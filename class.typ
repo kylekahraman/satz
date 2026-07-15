@@ -27,20 +27,19 @@
   let c = merge(defaults, config)
 
   // --- Build page arguments ---
+  let numbering = if kind == "report" or kind == "thesis" {
+    (n) => { if n > 1 { str(n - 1) } else { none } }
+  } else {
+    none
+  }
   let page-args = (
     paper: c.page.paper,
     margin: c.page.margin,
     fill: c.colors.bg-paper,
+    header: if header != none { header } else { none },
+    footer: if footer != none { footer } else { none },
+    numbering: numbering,
   )
-  if header != none {
-    page-args.insert("header", header)
-  }
-  if footer != none {
-    page-args.insert("footer", footer)
-  }
-  if kind == "report" or kind == "thesis" {
-    page-args.insert("numbering", (current, total) => if current > 1 { str(current - 1) })
-  }
   set page(..page-args)
 
   // --- Text ---
@@ -98,6 +97,16 @@
 
   // --- Bibliography ---
   set bibliography(style: c.bibliography.style)
+
+  // --- Table of Contents (report/thesis) ---
+  if kind != "journal" and c.toc.depth != 0 {
+    outline(
+      title: c.toc.title,
+      depth: c.toc.depth,
+      indent: c.toc.indent,
+    )
+    v(c.toc.below)
+  }
 
   body
 }

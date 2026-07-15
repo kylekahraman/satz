@@ -14,6 +14,7 @@
 /// - decorative (dictionary): sizes for headers, footers, dates, keywords, lists
 /// - page-footer (dictionary): page number format, size, weight
 /// - links (dictionary): link color
+/// - toc (dictionary): table of contents configuration
 /// - bibliography (dictionary): citation style
 /// - colors (dictionary): color palette (bg-paper, brand-primary, text-main, etc.)
 #let defaults = (
@@ -56,6 +57,16 @@
     stroke: 0.5pt,
     inset: (x: 8pt, y: 4pt),
     font-size: 10pt,
+  ),
+  toc: (
+    // Set depth: 0 to disable. none = auto (uses heading numbering depth).
+    depth: none,
+    // Title shown above the table of contents. Set to none to omit.
+    title: [Table of Contents],
+    // Indent per heading level (e.g. 1em for sub-sections)
+    indent: 1em,
+    // Spacing below the ToC before body content begins
+    below: 2em,
   ),
   bibliography: (
     style: "apa",
