@@ -1,0 +1,118 @@
+#import "@preview/cheq:0.4.0": checklist
+#import "../personal.typ": personal
+#import "../defaults.typ": defaults, merge
+#import "components.typ": journal-metadata-entry, journal-date-keywords
+
+#let journal-entry-state = state("entry-start", true)
+
+#let journal-state = state("journal-entry-state", (
+  title: "",
+  date: "",
+  page: 0,
+))
+
+#let journal-entry(
+  title: "",
+  date: "",
+  keywords: "",
+  body,
+  config: (:)
+) = {
+  let c = merge(defaults, config)
+
+  context {
+    let current-page = counter(page).get().first()
+    journal-state.update((
+      title: title,
+      date: date,
+      page: current-page,
+    ))
+  }
+
+  show: checklist.with(extras: true)
+
+  personal(
+    kind: "journal",
+    config: config,
+    header: context {
+      let entry = journal-state.get()
+      if entry != none and counter(page).get().first() != entry.page [
+        #set text(size: c.decorative.header-size, fill: c.colors.text-muted)
+        #grid(
+          columns: (1fr, auto),
+          align(left)[#text(weight: "medium")[#entry.title]],
+          align(right)[#entry.date]
+        )
+      ]
+    },
+    footer: context {
+      let n = counter(page).get().first()
+      align(center)[#text(size: c.page-footer.size, weight: c.page-footer.weight, fill: c.colors.brand-primary)[
+        #if c.page-footer.format == "-1-" {[-#n-]} else {[#n]}
+      ]]
+    },
+    [
+      #journal-metadata-entry(title, date, keywords)
+      #heading(level: 1)[#title]
+      #journal-date-keywords(date, keywords, config: c)
+      #v(0.5em)
+      #body
+    ],
+  )
+}
+
+#let month-names = (
+  "01": "January", "02": "February", "03": "March", "04": "April",
+  "05": "May", "06": "June", "07": "July", "08": "August",
+  "09": "September", "10": "October", "11": "November", "12": "December"
+)
+
+#let journal-index(config: (:)) = context {
+  let c = merge(defaults, config)
+
+  set page(
+    paper: c.page.paper,
+    margin: c.page.margin,
+    numbering: none,
+    fill: c.colors.bg-paper
+  )
+  set text(font: c.typography.font, size: c.typography.size, fill: c.colors.text-main)
+
+  heading(level: 1, numbering: none)[Index]
+  v(1.5em)
+
+  let entries = query(<journal-item>)
+  let current-month = ""
+
+  for entry in entries {
+    let data = entry.value
+    let page-num = entry.location().page()
+
+    let date-parts = data.date.split(", ")
+    let clean-date = if date-parts.len() > 1 { date-parts.at(1) } else { data.date }
+
+    let clean-date-parts = clean-date.split("/")
+    let month-code = if clean-date-parts.len() > 1 { clean-date-parts.at(1) } else { "" }
+    let month-name = month-names.at(month-code, default: "Unknown Month")
+
+    if month-name != current-month {
+      current-month = month-name
+      text(fill: c.colors.brand-primary, weight: "bold", size: 13pt)[#month-name]
+      v(0.65em)
+    }
+
+    let entry-text = [
+      #text(fill: c.colors.text-main, weight: "bold")[#clean-date] #text(fill: c.colors.text-main, weight: "regular")[--- #data.title]
+    ]
+
+    link(entry.location())[
+      #grid(
+        columns: (1fr, auto),
+        gutter: 1em,
+        [#entry-text #box(width: 1fr, repeat([.]))],
+        [#text(weight: "bold", fill: c.colors.brand-primary)[#page-num]]
+      )
+    ]
+    v(0.65em)
+  }
+}
