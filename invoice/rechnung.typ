@@ -1,8 +1,8 @@
 // Import shared components from the letter template (the invoice was born from it)
-#import "../letter/components.typ": empfaenger_block, geschaeftszeile_block, signatur_block
+#import "../letter/components.typ": absender_block, empfaenger_block, geschaeftszeile_block
 
 // Import invoice-specific components
-#import "components.typ": absender_block, posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
+#import "components.typ": posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
 
 /// A German invoice (Rechnung) with optional EPC QR code (GiroCode).
 ///
@@ -47,7 +47,8 @@
     steuernummer: "000/000/00000",
     iban: "DE00 0000 0000 0000 0000 00",
     bic: "",
-    bank: "Musterbank"
+    bank: "Musterbank",
+    logo: none,
   ),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
   datum: datetime.today().display("[day].[month].[year]"),
@@ -64,7 +65,8 @@
 ) = {
   let zeilenabstand = 0.65em
 
-  // Ensure optional keys exist in empfaenger (callers may omit zusatz/land)
+  // Ensure optional keys exist in absender and empfaenger (callers may omit them)
+  let absender = (telefon: "", email: "", bic: "", zusatz: none, ..absender)
   let empfaenger = (zusatz: none, land: "", ..empfaenger)
 
   // --- Global styles ---
@@ -85,7 +87,7 @@
   set par(leading: zeilenabstand, justify: true)
 
   // --- Sender block (top-right) ---
-  absender_block(absender, zeilenabstand)
+  absender_block(absender, zeilenabstand, (tel: "Tel.", email: "E-Mail"))
   v(3 * zeilenabstand)
 
   // --- Recipient (window envelope field, shared with letter) ---
@@ -138,8 +140,8 @@
   bank_qr_block(absender, qr, epc-string, zeilenabstand)
 
   v(2 * zeilenabstand)
-
-  // --- Signature (shared with letter) ---
   [Mit freundlichen Grüßen]
-  signatur_block(absender.name, "", zeilenabstand)
+  v(2 * zeilenabstand)
+  absender.name
+
 }

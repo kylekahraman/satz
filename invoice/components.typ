@@ -1,22 +1,4 @@
-// Invoice-specific components — shared rendering not provided by the letter template.
-
-/// Renders the sender block (Absender) top-right, invoice style.
-///
-/// Includes zusatz (c/o) line and bold company name.
-/// No phone/email — those are letter-specific.
-///
-/// - absender (dictionary): Sender details (name, zusatz, strasse, plz_ort)
-/// - zeilenabstand (length): Line spacing
-#let absender_block(absender, zeilenabstand) = {
-  align(right, text(size: 9pt)[
-    #text(weight: "bold")[#absender.name] \
-    #if absender.zusatz != none and absender.zusatz != "" [
-      #absender.zusatz \
-    ]
-    #absender.strasse \
-    #absender.plz_ort
-  ])
-}
+// Invoice-specific components — absender, empfaenger, and geschaeftszeile are shared from letter.
 
 /// Renders the line-item table (Posten) with quantity, unit price, and subtotals.
 ///
@@ -28,7 +10,7 @@
     
     table(
       columns: (1fr, auto, auto, auto),
-      inset: 5pt,
+      inset: 10pt,
       align: (left, center, right, right),
       stroke: none,
       
@@ -57,20 +39,15 @@
 /// - epc-string (str): EPC QR code data string
 /// - zeilenabstand (length): Line spacing
 #let bank_qr_block(absender, qr, epc-string, zeilenabstand) = {
+  let bic = absender.at("bic", default: "")
   block(width: 100%, breakable: false)[
     #v(2 * zeilenabstand)
     
     #if qr and absender.iban != "" [
       // QR Code and bank details side by side
       #grid(
-        columns: (auto, 1fr),
+        columns: (1fr, auto),
         gutter: 2em,
-        [
-          #import "@preview/cades:0.3.1": qr-code
-          #qr-code(epc-string, width: 3.5cm)
-          #v(0.3em)
-          #text(size: 7pt, fill: black.lighten(40%))[Scannen für Überweisung]
-        ],
         [
           Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
           #v(0.5em)
@@ -81,14 +58,20 @@
             [*Bank:*], [#absender.bank],
             [*IBAN:*], [#absender.iban],
           )
-          #if absender.bic != "" [
+          #if bic != "" [
             #grid(
               columns: (auto, 1fr),
               gutter: 12pt,
-              [*BIC:*], [#absender.bic],
+              [*BIC:*], [#bic],
             )
           ]
-        ]
+        ],
+        [
+          #import "@preview/cades:0.3.1": qr-code
+          #qr-code(epc-string, width: 3.5cm)
+          #v(0.3em)
+          #text(size: 7pt, fill: black.lighten(40%))[Scannen für Überweisung]
+        ],
       )
     ] else [
       Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
@@ -100,7 +83,7 @@
         [*Bank:*], [#absender.bank],
         [*IBAN:*], [#absender.iban],
       )
-      #if absender.bic != "" [
+      #if bic != "" [
         #grid(
           columns: (auto, 1fr),
           gutter: 12pt,
@@ -117,7 +100,7 @@
 ///
 /// - zeilenabstand (length): Line spacing
 #let kleinunternehmer_notice(zeilenabstand) = {
-  v(2 * zeilenabstand)
+  v(1 * zeilenabstand)
   text(size: 9pt, style: "italic")[
     Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.
   ]
@@ -132,5 +115,6 @@
 /// - qr-verwendungszweck (str): Payment reference
 /// -> str
 #let build_epc_string(absender, qr-amount, qr-verwendungszweck) = {
-  "BCD\n002\n1\nSCT\n" + absender.bic + "\n" + absender.name + "\n" + absender.iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
+  let bic = absender.at("bic", default: "")
+  "BCD\n002\n1\nSCT\n" + bic + "\n" + absender.name + "\n" + absender.iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
 }

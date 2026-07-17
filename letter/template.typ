@@ -13,6 +13,7 @@
 ///   - plz_ort (str): Postal code and city
 ///   - telefon (str): Phone number (optional)
 ///   - email (str): Email address (optional)
+///   - logo (none, content): Logo image (e.g. `image("logo.png", width: 3cm)`).
 /// - empfaenger (dictionary): Recipient details
 ///   - name (str): Full name or company
 ///   - zusatz (str, none): Additional line (e.g. c/o, z.Hd.)
@@ -30,7 +31,7 @@
 /// - font (str): Body font family. Defaults to "Inter".
 /// - body (content): Letter body content
 #let brief(
-  absender: (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: ""),
+  absender: (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", logo: none),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
   datum: datetime.today().display("[year]-[month]-[day]"),
   geschaeftszeile: (),
@@ -43,8 +44,9 @@
   font: "Inter",
   body
 ) = {
-  // Ensure zusatz exists in absender (callers may omit it)
-  let absender = (zusatz: none, ..absender)
+  // Ensure optional keys exist in absender and empfaenger (callers may omit them)
+  let absender = (telefon: "", email: "", zusatz: none, ..absender)
+  let empfaenger = (zusatz: none, land: "", ..empfaenger)
   let zeilenabstand = 0.65em
   
   let strings = if lang == "de" {

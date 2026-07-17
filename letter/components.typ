@@ -1,20 +1,60 @@
-/// Renders the sender block (Absender) in the top-right corner.
+/// Renders the sender block (Absender) with optional logo.
 ///
-/// - absender (dictionary): Sender details (name, strasse, plz_ort, telefon, email)
+/// DIN 5008 standard: logo left, sender info right in a two-column header.
+/// When no logo is provided, the sender info is right-aligned as before.
+///
+/// - absender (dictionary): Sender details (name, zusatz, strasse, plz_ort, telefon, email, logo)
 /// - zeilenabstand (length): Line spacing
 /// - strings (dictionary): i18n strings (tel, email keys)
 #let absender_block(absender, zeilenabstand, strings) = {
-  align(right, text(size: 9pt)[
-    #absender.name \
-    #absender.strasse \
-    #absender.plz_ort \
-    #if absender.telefon != "" and absender.telefon != none [
-      #strings.tel: #absender.telefon \
-    ]
-    #if absender.email != "" and absender.email != none [
-      #strings.email: #link("mailto:" + absender.email)[#absender.email]
-    ]
-  ])
+  let logo = absender.at("logo", default: none)
+  let logo = if type(logo) == str {
+    image(logo, height: 2cm)
+  } else {
+    logo
+  }
+  let telefon = absender.at("telefon", default: "")
+  let email = absender.at("email", default: "")
+  let zusatz = absender.at("zusatz", default: none)
+  
+  if logo != none {
+    // Logo left, sender info right
+    grid(
+      columns: (auto, 1fr),
+      gutter: 2em,
+      align(top + left)[#logo],
+      align(right, text(size: 9pt)[
+        #absender.name \
+        #if zusatz != none and zusatz != "" [
+          #zusatz \
+        ]
+        #absender.strasse \
+        #absender.plz_ort \
+        #if telefon != "" [
+          #strings.tel: #telefon \
+        ]
+        #if email != "" [
+          #strings.email: #link("mailto:" + email)[#email]
+        ]
+      ]),
+    )
+  } else {
+    // No logo — sender info right-aligned (classic)
+    align(right, text(size: 9pt)[
+      #absender.name \
+      #if zusatz != none and zusatz != "" [
+        #zusatz \
+      ]
+      #absender.strasse \
+      #absender.plz_ort \
+      #if telefon != "" [
+        #strings.tel: #telefon \
+      ]
+      #if email != "" [
+        #strings.email: #link("mailto:" + email)[#email]
+      ]
+    ])
+  }
 }
 
 /// Renders the recipient address field (Empfänger) for window envelopes.
