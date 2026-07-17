@@ -1,4 +1,8 @@
-#import "@preview/cades:0.3.1": qr-code
+// Import shared components from the letter template (the invoice was born from it)
+#import "../letter/components.typ": empfaenger_block, geschaeftszeile_block, signatur_block
+
+// Import invoice-specific components
+#import "components.typ": absender_block, posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
 
 /// A German invoice (Rechnung) with optional EPC QR code (GiroCode).
 ///
@@ -6,31 +10,33 @@
 /// bank details, and an optional scannable QR code for SEPA bank transfers.
 /// When scanned, banking apps auto-fill IBAN, amount, and purpose.
 ///
+/// Shares the letter template's address field, business line, and signature components.
+///
 /// - absender (dictionary): Sender/billing details
 ///   - name (str): Full name or company
-///   - zusatz (none, str): Optional additional line (e.g. c/o)
+///   - zusatz (str, none): Additional line (e.g. c/o)
 ///   - strasse (str): Street and house number
 ///   - plz_ort (str): Postal code and city
-///   - steuernummer (str): Tax number (Steuernummer)
+///   - steuernummer (str): Tax number
 ///   - iban (str): IBAN for bank transfer
 ///   - bic (str): BIC/SWIFT code (optional)
 ///   - bank (str): Bank name
-/// - empfaenger (dictionary): Recipient details
+/// - empfaenger (dictionary): Recipient
 ///   - name (str): Full name or company
-///   - zusatz (none, str): Optional additional line (e.g. c/o, z.Hd.)
+///   - zusatz (str, none): Additional line (e.g. c/o)
 ///   - strasse (str): Street and house number
 ///   - plz_ort (str): Postal code and city
-///   - land (str): Country (optional, for international mail)
+///   - land (str): Country (optional)
 /// - datum (str): Invoice date, defaults to today
 /// - rechnungsnummer (str): Invoice number
-/// - leistungsdatum (str): Service period (Leistungszeitraum)
+/// - leistungsdatum (str): Service period
 /// - betreff (str): Subject line, defaults to "Rechnung"
 /// - posten (array): Line items as (("Description", quantity, unit-price), ...)
-/// - qr (bool): Enable EPC QR code (GiroCode) for scan-to-pay
+/// - qr (bool): Enable EPC QR code for scan-to-pay
 /// - qr-betrag (none, float): Override QR amount. None = auto-calculate from posten
 /// - qr-verwendungszweck (str): Payment reference for QR code
 /// - font (str): Body font family. Defaults to "Inter".
-/// - kleinunternehmer (bool): Show German small business tax exemption notice (§ 19 UStG).
+/// - kleinunternehmer (bool): Show German small business tax notice (§ 19 UStG)
 /// - body (content): Invoice body content (letter text)
 #let rechnung(
   absender: (
@@ -48,7 +54,7 @@
   rechnungsnummer: "",
   leistungsdatum: "",
   betreff: "Rechnung",
-  posten: (), // Format: (("Text", Menge, Preis),)
+  posten: (),
   qr: true,
   qr-betrag: none,
   qr-verwendungszweck: "",
@@ -56,10 +62,13 @@
   kleinunternehmer: false,
   body
 ) = {
-  // --- Globale Stile & Raster ---
   let zeilenabstand = 0.65em
+
+  // Ensure optional keys exist in empfaenger (callers may omit zusatz/land)
+  let empfaenger = (zusatz: none, land: "", ..empfaenger)
+
+  // --- Global styles ---
   set text(font: font, size: 11pt, lang: "de", hyphenate: false, weight: "regular")
-  
   set page(
     "a4",
     margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm),
@@ -73,108 +82,51 @@
       ]
     },
   )
-
   set par(leading: zeilenabstand, justify: true)
 
-  // --- Absenderblock (rechts) ---
-  align(right, text(size: 9pt)[
-    #text(weight: "bold")[#absender.name] \
-    #if absender.zusatz != none and absender.zusatz != "" [
-      #absender.zusatz \
-    ]
-    #absender.strasse \
-    #absender.plz_ort
-  ])
-
+  // --- Sender block (top-right) ---
+  absender_block(absender, zeilenabstand)
   v(3 * zeilenabstand)
 
-  // --- Empfänger ---
-  block(width: 85mm)[
-    #text(size: 8pt, fill: black)[
-      #absender.name · #if absender.zusatz != none and absender.zusatz != "" { absender.zusatz + " · " } #absender.strasse · #absender.plz_ort
-    ]
-    #v(-2.5mm)
-    #line(length: 100%, stroke: 0.25pt)
-    #v(1.5mm)
-    #text(size: 11pt)[
-      #if empfaenger.zusatz != none and empfaenger.zusatz != "" [
-        #empfaenger.zusatz \
-      ]
-      #empfaenger.name \
-      #empfaenger.strasse \
-      #empfaenger.plz_ort
-      #if empfaenger.land != "" and empfaenger.land != none [
-        \
-        #empfaenger.land
-      ]
-    ]
-  ]
-
+  // --- Recipient (window envelope field, shared with letter) ---
+  // The letter's empfaenger_block takes (absender, empfaenger, postvermerk, strings).
+  // Invoice: no postal remark, no i18n — pass empty postvermerk and dummy strings.
+  empfaenger_block(absender, empfaenger, "", (:))
   v(4 * zeilenabstand)
 
-  // --- Geschäftszeile (DIN 5008 layout) ---
-  // Items spaced equally across the page, date right-aligned.
-  block(width: 100%)[
-    #let entries = (
+  // --- Business reference line (shared with letter) ---
+  geschaeftszeile_block(
+    (
       ("Rechnungsnummer", rechnungsnummer),
       ("Leistungszeitraum", leistungsdatum),
       ("Steuernummer", absender.steuernummer),
-      ("Datum", datum),
-    )
-    #let blocks = entries.enumerate().map(((i, pair)) => {
-      let al = if i == entries.len() - 1 { right } else { left }
-      block(align(al)[
-        #text(size: 7.5pt)[#pair.at(0)] \
-        #text(size: 9pt)[#pair.at(1)]
-      ])
-    })
-    #stack(dir: ltr, spacing: 1fr, ..blocks)
-  ]
-  
+    ),
+    datum,
+    zeilenabstand,
+    (datum: "Datum"),
+  )
   v(2 * zeilenabstand)
 
-  // --- Betreff ---
+  // --- Subject ---
   block(width: 100%)[
     #set text(weight: "bold", size: 11pt)
     #betreff
   ]
-
   v(2 * zeilenabstand)
 
+  // --- Body ---
   body
-
   v(2 * zeilenabstand)
 
-  if posten.len() > 0 {
-    let gesamt_summe = posten.map(p => p.at(1) * p.at(2)).sum()
-    
-    table(
-      columns: (1fr, auto, auto, auto),
-      inset: 5pt,
-      align: (left, center, right, right),
-      stroke: none,
-      
-      table.hline(stroke: 0.5pt),
-      [*Beschreibung*], [*Anzahl*], [*Einzelpreis*], [*Gesamt*],
-      table.hline(stroke: 0.25pt),
-      
-      ..posten.map(p => (
-        [#p.at(0)],
-        [#p.at(1)],
-        [#p.at(2) €],
-        [#(p.at(1) * p.at(2)) €]
-      )).flatten(),
-      
-      table.hline(stroke: 0.5pt),
-      [], [], [*Gesamtbetrag:*], [*#gesamt_summe €*],
-      table.hline(stroke: 0.5pt)
-    )
+  // --- Line item table ---
+  posten_table(posten)
+
+  // --- Kleinunternehmer notice ---
+  if kleinunternehmer {
+    kleinunternehmer_notice(zeilenabstand)
   }
 
-  // --- Bank details + QR Code section ---
-  v(2 * zeilenabstand)
-  
-  // Calculate the actual amount for QR code
+  // --- Bank details + QR code ---
   let qr-amount = if qr-betrag != none {
     qr-betrag
   } else if posten.len() > 0 {
@@ -182,73 +134,12 @@
   } else {
     0
   }
-  
-  // Build EPC QR code string
-  // Format: Service Tag\nVersion\nEncoding\nIdentification\nBIC\nName\nIBAN\nAmount\nPurpose\nReference\nInfo
-  let epc-string = "BCD\n002\n1\nSCT\n" + absender.bic + "\n" + absender.name + "\n" + absender.iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
-
-  block(width: 100%, breakable: false)[
-    #if kleinunternehmer [
-      #text(size: 9pt, style: "italic")[
-        Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.
-      ]
-      #v(2 * zeilenabstand)
-    ]
-    
-    #v(2 * zeilenabstand)
-    
-    #if qr and absender.iban != "" [
-      // QR Code and bank details side by side
-      #grid(
-        columns: (auto, 1fr),
-        gutter: 2em,
-        [
-          // EPC QR Code
-          #qr-code(epc-string, width: 3.5cm)
-          #v(0.3em)
-          #text(size: 7pt, fill: black.lighten(40%))[Scannen für Überweisung]
-        ],
-        [
-          Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
-          #v(0.5em)
-          #grid(
-            columns: (auto, 1fr),
-            gutter: 12pt,
-            [*Kontoinhaber:*], [#absender.name],
-            [*Bank:*], [#absender.bank],
-            [*IBAN:*], [#absender.iban],
-          )
-          #if absender.bic != "" [
-            #grid(
-              columns: (auto, 1fr),
-              gutter: 12pt,
-              [*BIC:*], [#absender.bic],
-            )
-          ]
-        ]
-      )
-    ] else [
-      Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
-      #v(0.5em)
-      #grid(
-        columns: (auto, 1fr),
-        gutter: 12pt,
-        [*Kontoinhaber:*], [#absender.name],
-        [*Bank:*], [#absender.bank],
-        [*IBAN:*], [#absender.iban],
-      )
-      #if absender.bic != "" [
-        #grid(
-          columns: (auto, 1fr),
-          gutter: 12pt,
-          [*BIC:*], [#absender.bic],
-        )
-      ]
-    ]
-  ]
+  let epc-string = build_epc_string(absender, qr-amount, qr-verwendungszweck)
+  bank_qr_block(absender, qr, epc-string, zeilenabstand)
 
   v(2 * zeilenabstand)
+
+  // --- Signature (shared with letter) ---
   [Mit freundlichen Grüßen]
-  v(5 * zeilenabstand)
-  absender.name
+  signatur_block(absender.name, "", zeilenabstand)
 }
