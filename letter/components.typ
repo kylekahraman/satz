@@ -12,12 +12,30 @@
   let email = absender.at("email", default: "")
   let zusatz = absender.at("zusatz", default: none)
   
-  if logo != none {
-    // Logo left, sender info right
-    grid(
-      columns: (auto, 1fr),
-      gutter: 2em,
-      align(top + left)[#logo],
+  block(height: 2.8cm, clip: true)[
+    #if logo != none {
+      // Logo left, sender info right
+      grid(
+        columns: (auto, 1fr),
+        gutter: 2em,
+        align(top + left)[#logo],
+        align(right, text(size: 9pt)[
+          #absender.name \
+          #if zusatz != none and zusatz != "" [
+            #zusatz \
+          ]
+          #absender.strasse \
+          #absender.plz_ort \
+          #if telefon != "" [
+            #strings.tel: #telefon \
+          ]
+          #if email != "" [
+            #strings.email: #link("mailto:" + email)[#email]
+          ]
+        ]),
+      )
+    } else {
+      // No logo — sender info right-aligned (classic)
       align(right, text(size: 9pt)[
         #absender.name \
         #if zusatz != none and zusatz != "" [
@@ -31,25 +49,9 @@
         #if email != "" [
           #strings.email: #link("mailto:" + email)[#email]
         ]
-      ]),
-    )
-  } else {
-    // No logo — sender info right-aligned (classic)
-    align(right, text(size: 9pt)[
-      #absender.name \
-      #if zusatz != none and zusatz != "" [
-        #zusatz \
-      ]
-      #absender.strasse \
-      #absender.plz_ort \
-      #if telefon != "" [
-        #strings.tel: #telefon \
-      ]
-      #if email != "" [
-        #strings.email: #link("mailto:" + email)[#email]
-      ]
-    ])
-  }
+      ])
+    }
+  ]
 }
 
 /// Renders the recipient address field (Empfänger) for window envelopes.
