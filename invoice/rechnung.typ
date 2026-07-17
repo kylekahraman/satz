@@ -21,6 +21,7 @@
 ///   - iban (str): IBAN for bank transfer
 ///   - bic (str): BIC/SWIFT code (optional)
 ///   - bank (str): Bank name
+///   - kontoinhaber (str): Bank account holder name. Defaults to absender.name.
 /// - empfaenger (dictionary): Recipient
 ///   - name (str): Full name or company
 ///   - zusatz (str, none): Additional line (e.g. c/o)
@@ -48,6 +49,7 @@
     iban: "DE00 0000 0000 0000 0000 00",
     bic: "",
     bank: "Musterbank",
+    kontoinhaber: none,
     logo: none,
   ),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
@@ -136,7 +138,12 @@
   } else {
     0
   }
-  let epc-string = build_epc_string(absender, qr-amount, qr-verwendungszweck)
+  let kontoinhaber = if absender.at("kontoinhaber", default: none) != none {
+    absender.kontoinhaber
+  } else {
+    absender.name
+  }
+  let epc-string = build_epc_string(kontoinhaber, absender.at("bic", default: ""), absender.iban, qr-amount, qr-verwendungszweck)
   bank_qr_block(absender, qr, epc-string, zeilenabstand)
 
   v(2 * zeilenabstand)

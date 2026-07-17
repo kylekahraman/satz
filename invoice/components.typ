@@ -10,7 +10,7 @@
     
     table(
       columns: (1fr, auto, auto, auto),
-      inset: 10pt,
+      inset: 7pt,
       align: (left, center, right, right),
       stroke: none,
       
@@ -39,6 +39,11 @@
 /// - epc-string (str): EPC QR code data string
 /// - zeilenabstand (length): Line spacing
 #let bank_qr_block(absender, qr, epc-string, zeilenabstand) = {
+  let kontoinhaber = if absender.at("kontoinhaber", default: none) != none {
+    absender.kontoinhaber
+  } else {
+    absender.name
+  }
   let bic = absender.at("bic", default: "")
   block(width: 100%, breakable: false)[
     #v(2 * zeilenabstand)
@@ -54,17 +59,10 @@
           #grid(
             columns: (auto, 1fr),
             gutter: 12pt,
-            [*Kontoinhaber:*], [#absender.name],
+            [*Kontoinhaber:*], [#kontoinhaber],
             [*Bank:*], [#absender.bank],
             [*IBAN:*], [#absender.iban],
           )
-          #if bic != "" [
-            #grid(
-              columns: (auto, 1fr),
-              gutter: 12pt,
-              [*BIC:*], [#bic],
-            )
-          ]
         ],
         [
           #import "@preview/cades:0.3.1": qr-code
@@ -79,17 +77,10 @@
       #grid(
         columns: (auto, 1fr),
         gutter: 12pt,
-        [*Kontoinhaber:*], [#absender.name],
+        [*Kontoinhaber:*], [#kontoinhaber],
         [*Bank:*], [#absender.bank],
         [*IBAN:*], [#absender.iban],
       )
-      #if bic != "" [
-        #grid(
-          columns: (auto, 1fr),
-          gutter: 12pt,
-          [*BIC:*], [#absender.bic],
-        )
-      ]
     ]
   ]
 }
@@ -110,11 +101,12 @@
 ///
 /// Banking apps parse this to auto-fill SEPA transfer forms.
 ///
-/// - absender (dictionary): Sender details (name, iban, bic)
+/// - kontoinhaber (str): Bank account holder name
+/// - bic (str): BIC/SWIFT code
+/// - iban (str): IBAN
 /// - qr-amount (float): Transfer amount
 /// - qr-verwendungszweck (str): Payment reference
 /// -> str
-#let build_epc_string(absender, qr-amount, qr-verwendungszweck) = {
-  let bic = absender.at("bic", default: "")
-  "BCD\n002\n1\nSCT\n" + bic + "\n" + absender.name + "\n" + absender.iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
+#let build_epc_string(kontoinhaber, bic, iban, qr-amount, qr-verwendungszweck) = {
+  "BCD\n002\n1\nSCT\n" + bic + "\n" + kontoinhaber + "\n" + iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"
 }
