@@ -8,6 +8,7 @@
 ///
 /// - absender (dictionary): Sender details
 ///   - name (str): Full name or company
+///   - zusatz (none, str): Optional additional line (e.g. c/o)
 ///   - strasse (str): Street and house number
 ///   - plz_ort (str): Postal code and city
 ///   - telefon (str): Phone number (optional)
@@ -29,7 +30,7 @@
 /// - font (str): Body font family. Defaults to "Inter".
 /// - body (content): Letter body content
 #let brief(
-  absender: (name: "", strasse: "", plz_ort: "", telefon: "", email: ""),
+  absender: (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: ""),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
   datum: datetime.today().display("[year]-[month]-[day]"),
   geschaeftszeile: (),
@@ -42,6 +43,8 @@
   font: "Inter",
   body
 ) = {
+  // Ensure zusatz exists in absender (callers may omit it)
+  let absender = (zusatz: none, ..absender)
   let zeilenabstand = 0.65em
   
   let strings = if lang == "de" {

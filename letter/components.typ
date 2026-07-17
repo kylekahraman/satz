@@ -35,7 +35,7 @@
     // Small sender reference line above the address
     #if absender.name != "" [
       #text(size: 7pt, fill: black)[
-        #absender.name · #absender.strasse · #absender.plz_ort
+        #absender.name · #if absender.zusatz != none and absender.zusatz != "" { absender.zusatz + " · " } #absender.strasse · #absender.plz_ort
       ]
       #v(-2.5mm)
       #line(length: 100%, stroke: 0.25pt + black)
