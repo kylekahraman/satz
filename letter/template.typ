@@ -13,7 +13,7 @@
 ///   - plz_ort (str): Postal code and city
 ///   - telefon (str): Phone number (optional)
 ///   - email (str): Email address (optional)
-///   - logo (none, content): Logo image (e.g. `image("logo.png", width: 3cm)`).
+///   - logo (none, content): Logo content, e.g. `image("logo.pdf", width: 3cm)`. Place the file in your project's root or a subdirectory.
 /// - empfaenger (dictionary): Recipient details
 ///   - name (str): Full name or company
 ///   - zusatz (str, none): Additional line (e.g. c/o, z.Hd.)

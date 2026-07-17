@@ -8,11 +8,6 @@
 /// - strings (dictionary): i18n strings (tel, email keys)
 #let absender_block(absender, zeilenabstand, strings) = {
   let logo = absender.at("logo", default: none)
-  let logo = if type(logo) == str {
-    image(logo, height: 2cm)
-  } else {
-    logo
-  }
   let telefon = absender.at("telefon", default: "")
   let email = absender.at("email", default: "")
   let zusatz = absender.at("zusatz", default: none)
