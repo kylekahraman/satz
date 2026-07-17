@@ -12,7 +12,7 @@
   let email = absender.at("email", default: "")
   let zusatz = absender.at("zusatz", default: none)
   
-  block(height: 2.8cm, clip: true)[
+  block(width: 100%, height: 2.8cm, clip: true)[
     #if logo != none {
       // Logo left, sender info right
       grid(

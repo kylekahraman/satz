@@ -17,7 +17,6 @@
 - [ ] **Running headers** — section/chapter name in page header for report/thesis. Pattern proven in journal.
 - [ ] **Binding correction (BCOR)** — two-sided layout, alternating inner/outer margins for printed theses
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
-- [ ] **Force push** clean history to GitHub
 - [ ] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [ ] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
 - [ ] **List of Abbreviations (Abkürzungsverzeichnis)** — key-value glossary table
