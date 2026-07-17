@@ -54,7 +54,7 @@
         columns: (1fr, auto),
         gutter: 2em,
         [
-          Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
+          Bitte überweisen Sie den Gesamtbetrag innerhalb von 14 Tagen auf das folgende Konto:
           #v(0.5em)
           #grid(
             columns: (auto, 1fr),
@@ -72,7 +72,7 @@
         ],
       )
     ] else [
-      Bitte überweisen Sie den Gesamtbetrag auf das folgende Bankkonto:
+      Bitte überweisen Sie den Gesamtbetrag innerhalb von 14 Tagen auf das folgende Konto:
       #v(0.5em)
       #grid(
         columns: (auto, 1fr),

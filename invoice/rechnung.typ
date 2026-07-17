@@ -130,10 +130,6 @@
     kleinunternehmer_notice(zeilenabstand)
   }
 
-  // --- Zahlungsziel ---
-  v(2 * zeilenabstand)
-  text(size: 10pt)[Zahlbar innerhalb von 14 Tagen ohne Abzug.]
-
   // --- Bank details + QR code ---
   let qr-amount = if qr-betrag != none {
     qr-betrag
