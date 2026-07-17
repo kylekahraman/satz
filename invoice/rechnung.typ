@@ -8,13 +8,19 @@
 ///
 /// - absender (dictionary): Sender/billing details
 ///   - name (str): Full name or company
+///   - zusatz (none, str): Optional additional line (e.g. c/o)
 ///   - strasse (str): Street and house number
 ///   - plz_ort (str): Postal code and city
 ///   - steuernummer (str): Tax number (Steuernummer)
 ///   - iban (str): IBAN for bank transfer
 ///   - bic (str): BIC/SWIFT code (optional)
 ///   - bank (str): Bank name
-/// - empfaenger (content): Recipient address (free-form content)
+/// - empfaenger (dictionary): Recipient details
+///   - name (str): Full name or company
+///   - zusatz (none, str): Optional additional line (e.g. c/o, z.Hd.)
+///   - strasse (str): Street and house number
+///   - plz_ort (str): Postal code and city
+///   - land (str): Country (optional, for international mail)
 /// - datum (str): Invoice date, defaults to today
 /// - rechnungsnummer (str): Invoice number
 /// - leistungsdatum (str): Service period (Leistungszeitraum)
@@ -29,6 +35,7 @@
 #let rechnung(
   absender: (
     name: "Musterfirma GmbH",
+    zusatz: none,
     strasse: "Musterstraße 1",
     plz_ort: "12345 Musterstadt",
     steuernummer: "000/000/00000",
@@ -36,7 +43,7 @@
     bic: "",
     bank: "Musterbank"
   ),
-  empfaenger: [],
+  empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
   datum: datetime.today().display("[day].[month].[year]"),
   rechnungsnummer: "",
   leistungsdatum: "",
@@ -72,6 +79,9 @@
   // --- Absenderblock (rechts) ---
   align(right, text(size: 9pt)[
     #text(weight: "bold")[#absender.name] \
+    #if absender.zusatz != none and absender.zusatz != "" [
+      #absender.zusatz \
+    ]
     #absender.strasse \
     #absender.plz_ort
   ])
@@ -87,7 +97,16 @@
     #line(length: 100%, stroke: 0.25pt)
     #v(1.5mm)
     #text(size: 11pt)[
-      #empfaenger
+      #if empfaenger.zusatz != none and empfaenger.zusatz != "" [
+        #empfaenger.zusatz \
+      ]
+      #empfaenger.name \
+      #empfaenger.strasse \
+      #empfaenger.plz_ort
+      #if empfaenger.land != "" and empfaenger.land != none [
+        \
+        #empfaenger.land
+      ]
     ]
   ]
 

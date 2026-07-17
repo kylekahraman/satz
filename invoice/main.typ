@@ -4,6 +4,7 @@
   // Überschreibt bei Bedarf eure Band-Stammdaten:
   absender: (
     name: "Musterfirma GmbH",
+    zusatz: none,
     strasse: "Musterstraße 1",
     plz_ort: "12345 Musterstadt",
     steuernummer: "000/000/00000",
@@ -12,12 +13,13 @@
     bank: "Musterbank",
     logo: none, // Replace with your logo file, e.g. "logo.png"
   ),
-  empfaenger: [
-    Musterfirma GmbH \
-    Frau Erika Beispiel \
-    Beispielallee 42 \
-    60311 Frankfurt am Main \
-  ],
+  empfaenger: (
+    name: "Musterfirma GmbH",
+    zusatz: "z.Hd. Frau Erika Beispiel",
+    strasse: "Beispielallee 42",
+    plz_ort: "60311 Frankfurt am Main",
+    land: "",
+  ),
   
   rechnungsnummer: "2026-02",
   leistungsdatum: "01.01.2025 – 31.12.2025",
