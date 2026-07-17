@@ -112,28 +112,23 @@
 
   v(4 * zeilenabstand)
 
-  // --- Geschäftszeile ---
+  // --- Geschäftszeile (DIN 5008 layout) ---
+  // Items spaced equally across the page, date right-aligned.
   block(width: 100%)[
-    #grid(
-      columns: (1fr, 1fr, 1fr, 1fr),
-      gutter: 10pt,
-      [
-        #text(size: 7.5pt, fill: black.lighten(30%))[Rechnungsnummer] \
-        #text(size: 9pt)[#rechnungsnummer]
-      ],
-      [
-        #text(size: 7.5pt, fill: black.lighten(30%))[Leistungszeitraum] \
-        #text(size: 9pt)[#leistungsdatum]
-      ],
-      [
-        #text(size: 7.5pt, fill: black.lighten(30%))[Steuernummer] \
-        #text(size: 9pt)[#absender.steuernummer]
-      ],
-      align(right)[
-        #text(size: 7.5pt, fill: black.lighten(30%))[Datum] \
-        #text(size: 9pt)[#datum]
-      ]
+    #let entries = (
+      ("Rechnungsnummer", rechnungsnummer),
+      ("Leistungszeitraum", leistungsdatum),
+      ("Steuernummer", absender.steuernummer),
+      ("Datum", datum),
     )
+    #let blocks = entries.enumerate().map(((i, pair)) => {
+      let al = if i == entries.len() - 1 { right } else { left }
+      block(align(al)[
+        #text(size: 7.5pt)[#pair.at(0)] \
+        #text(size: 9pt)[#pair.at(1)]
+      ])
+    })
+    #stack(dir: ltr, spacing: 1fr, ..blocks)
   ]
   
   v(2 * zeilenabstand)
