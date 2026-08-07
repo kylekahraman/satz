@@ -5,6 +5,7 @@
   page: (
     paper: "a4",
     margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
+    binding: none,
   ),
   typography: (
     font: "Libertinus Serif",
@@ -22,6 +23,7 @@
   ),
   links: (
     color: rgb("#B4313F"),
+    url-color: rgb("#45556c"),
   ),
   bibliography: (
     style: "apa",

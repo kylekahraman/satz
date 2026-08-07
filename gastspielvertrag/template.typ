@@ -48,11 +48,19 @@
 /// - sonstiges_text (str): Additional cost description
 /// - sonstiges_betrag (int): Additional cost amount
 /// - buyout_pro_person (int): Buy-out per person in EUR
+/// - kuenstler (str): Artist name
+/// - kuenstler_vertreter (str): Artist representative
+/// - kuenstler_anschrift (str): Artist address
 /// - font (str): Body font. Defaults to "Inter".
 /// - body (content): Additional contract text (appended after §8)
 #let gastspielvertrag(
   // Document type
   dokument: "vertrag",
+
+  // Artist info
+  kuenstler: "Max Mustermann",
+  kuenstler_vertreter: "Max Mustermann",
+  kuenstler_anschrift: "Musterstraße 1, 12345 Musterstadt",
 
   // Event
   veranstaltung: "",
@@ -120,9 +128,9 @@
     sonstiges_text: sonstiges_text,
     sonstiges_betrag: sonstiges_betrag,
     buyout_pro_person: buyout_pro_person,
-    kuenstler: "Max Mustermann",
-    kuenstler_vertreter: "Max Mustermann",
-    kuenstler_anschrift: "Musterstraße 1, 12345 Musterstadt",
+    kuenstler: kuenstler,
+    kuenstler_vertreter: kuenstler_vertreter,
+    kuenstler_anschrift: kuenstler_anschrift,
   )
 
   // --- Global styles ---

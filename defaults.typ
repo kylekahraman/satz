@@ -21,8 +21,7 @@
   page: (
     paper: "a4",
     margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
-    // TODO: binding correction (BCOR) for double-sided book layout
-    // binding: none,  // future: auto | length
+    binding: none,
   ),
   typography: (
     font: "Libertinus Serif",
@@ -52,6 +51,7 @@
   ),
   links: (
     color: rgb("#B4313F"),
+    url-color: rgb("#45556c"),
   ),
   tables: (
     stroke: 0.5pt,
@@ -71,13 +71,19 @@
   bibliography: (
     style: "apa",
   ),
+  // === Slate palette (dark → light) ===
+  // #020618 #0f172b #1d293d #314158 #45556c #90a1b9 #cad5e2 #e2e8f0 #f1f5f9 #f8fafc
+  //
+  // === Gray palette (dark → light) ===
+  // #030712 #101828 #1e2939 #364153 #4a5565 #6a7282 #99a1af #d1d5dc #e5e7eb #f3f4f6 #f9fafb
+
   colors: (
-    bg-paper: rgb("#fafafa"),
-    bg-subtle: rgb("#f5f5f5"),
-    brand-primary: rgb("#14151a"),
-    brand-accent: rgb("#2a2b30"),
-    text-main: rgb("#1e1f24"),
-    text-muted: rgb("#5e5e5a"),
+    bg-paper: rgb("#f8fafc"),
+    bg-subtle: rgb("#f1f5f9"),
+    brand-primary: rgb("#1d293d"),
+    brand-accent: rgb("#0f172b"),
+    text-main: rgb("#020618"),
+    text-muted: rgb("#90a1b9"),
   ),
 )
 

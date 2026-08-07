@@ -102,7 +102,7 @@
   geschaeftszeile_block(
     (
       ("Rechnungsnummer", rechnungsnummer),
-      ("Leistungszeitraum", leistungsdatum),
+      ("Leistungsdatum", leistungsdatum),
       ("Steuernummer", absender.steuernummer),
     ),
     datum,
@@ -146,9 +146,9 @@
   let epc-string = build_epc_string(kontoinhaber, absender.at("bic", default: ""), absender.iban, qr-amount, qr-verwendungszweck)
   bank_qr_block(absender, qr, epc-string, zeilenabstand)
 
-  v(2 * zeilenabstand)
+  //v(2 * zeilenabstand)
   [Mit freundlichen Grüßen]
-  v(2 * zeilenabstand)
+  v(-1*zeilenabstand)
   absender.name
 
 }

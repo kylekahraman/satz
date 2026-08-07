@@ -26,21 +26,92 @@
 ) = {
   let c = merge(defaults, config)
 
+  // --- Running header state (same pattern as journal/template.typ) ---
+  // State updated by heading show rules, read by the page header.
+  let chapter-state = state("satz-chapter", none)
+  let section-state = state("satz-section", none)
+
   // --- Build page arguments ---
   let numbering = if kind == "report" or kind == "thesis" {
     (n) => { if n > 1 { str(n - 1) } else { none } }
   } else {
     none
   }
+  let two-sided = "binding" in c.page and c.page.binding != none
+
+  // Convert left/right to inside/outside when two-sided
+  let margin = c.page.margin
+  if two-sided {
+    margin = (
+      inside: margin.at("left", default: margin.at("x", default: 2.5cm)),
+      outside: margin.at("right", default: margin.at("x", default: 2.5cm)),
+      top: margin.at("top", default: 2.5cm),
+      bottom: margin.at("bottom", default: 2.5cm),
+    )
+  }
+
   let page-args = (
     paper: c.page.paper,
-    margin: c.page.margin,
+    margin: margin,
     fill: c.colors.bg-paper,
     header: if header != none { header } else { none },
     footer: if footer != none { footer } else { none },
     numbering: numbering,
   )
+  if two-sided {
+    page-args.insert("binding", c.page.binding)
+  }
   set page(..page-args)
+
+  // Two-sided: alternating page numbers (only when no custom footer provided).
+  // Set rules are block-scoped in Typst, so a `set page` inside an `if` block
+  // would not apply to the body — compute the footer value, then set it once.
+  let page-footer = if two-sided and footer == none {
+    context {
+      let d = counter(page).display()
+      if d != none {
+        let n = counter(page).get().first()
+        let displayed = text(size: c.page-footer.size, weight: c.page-footer.weight, fill: c.colors.brand-primary, d)
+        if calc.rem(n, 2) == 0 {
+          align(left, displayed)
+        } else {
+          align(right, displayed)
+        }
+      }
+    }
+  } else {
+    if footer != none { footer } else { none }
+  }
+  set page(footer: page-footer)
+
+  // Two-sided: textbook-style running headers.
+  // Uses state variables (same pattern as journal) instead of query().
+  // Even pages (left) show the chapter (h1), odd pages (right) show the
+  // section (h2) with fallback to h1. No running header on pages before
+  // any heading has been encountered (chapter opening pages, textbook convention).
+  let page-header = if two-sided and header == none {
+    context {
+      let n = counter(page).get().first()
+      let is-even = calc.rem(n, 2) == 0
+      if is-even {
+        let ch = chapter-state.get()
+        if ch != none {
+          align(left, text(size: c.decorative.header-size, fill: c.colors.text-muted, ch.body))
+        }
+      } else {
+        let sec = section-state.get()
+        if sec == none {
+          sec = chapter-state.get()
+        }
+        if sec != none {
+          align(right, text(size: c.decorative.header-size, fill: c.colors.text-muted, sec.body))
+        }
+      }
+    }
+  } else {
+    if header != none { header } else { none }
+  }
+  set page(header: page-header)
 
   // --- Text ---
   set text(
@@ -64,19 +135,28 @@
   set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
 
   // --- Heading show rules ---
-  show heading.where(level: 1): it => block(width: 100%, below: c.headings.h1-below)[
-    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
-    #v(0.5em)
-    #if kind == "journal" {
-      smallcaps(it.body)
-    } else {
-      it
+  show heading.where(level: 1): it => {
+    // Exclude the auto-generated TOC title heading from running header state
+    if it.body != c.toc.title {
+      context { chapter-state.update((body: it.body, page: counter(page).get().first())) }
     }
-  ]
-  show heading.where(level: 2): it => block(below: c.headings.h2-below)[
-    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
-    #it
-  ]
+    block(width: 100%, below: c.headings.h1-below)[
+      #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
+      #v(0.5em)
+      #if kind == "journal" {
+        smallcaps(it.body)
+      } else {
+        it
+      }
+    ]
+  }
+  show heading.where(level: 2): it => {
+    context { section-state.update((body: it.body, page: counter(page).get().first())) }
+    block(below: c.headings.h2-below)[
+      #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
+      #it
+    ]
+  }
   show heading.where(level: 3): it => block(below: c.headings.h3-below)[
     #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h3-size)
     #it
@@ -86,8 +166,18 @@
     #it
   ]
 
-  // --- Links (not for journal) ---
-  show link: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
+  // --- Links ---
+  // External URLs (string dest) get url-color + underline for all document kinds.
+  // Internal links (cross-refs, TOC) get color only for report/thesis.
+  show link: it => {
+    if type(it.dest) == str {
+      text(fill: c.links.url-color, underline(it))
+    } else if kind != "journal" {
+      text(fill: c.links.color, it)
+    } else {
+      it
+    }
+  }
 
   // --- Table styling (booktabs-style) ---
   set table(
@@ -100,12 +190,27 @@
 
   // --- Table of Contents (report/thesis) ---
   if kind != "journal" and c.toc.depth != 0 {
-    outline(
-      title: c.toc.title,
-      depth: c.toc.depth,
-      indent: c.toc.indent,
-    )
-    v(c.toc.below)
+    {
+      set page(header: none, footer: none, numbering: none)
+      outline(
+        title: c.toc.title,
+        depth: c.toc.depth,
+        indent: c.toc.indent,
+      )
+      v(c.toc.below)
+    }
+    // Start content on fresh page, numbering at 1.
+    // The template's numbering function is (n) => if n > 1 { str(n-1) },
+    // so counter=2 displays "1" on the first content page.
+    // Counter=2 is even → left page → running header shows h1 (chapter name).
+    //
+    // Set the counter BEFORE the pagebreak: the page counter auto-increments
+    // when a new page starts, so update(1) makes the first content page read
+    // counter=2. The header is evaluated at page start (unlike the footer at
+    // page end), so updating after the pagebreak would leave the header on the
+    // first content page seeing counter=3 → odd → wrong page parity.
+    counter(page).update(1)
+    pagebreak()
   }
 
   body

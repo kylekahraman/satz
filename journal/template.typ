@@ -109,7 +109,7 @@
   )
   set text(font: c.typography.font, size: c.typography.size, fill: c.colors.text-main)
 
-  heading(level: 1, numbering: none)[Index]
+  heading(level: 1, numbering: none)[#text(fill: c.colors.brand-primary, weight: "bold")[Index]]
   v(1.5em)
 
   let entries = query(<journal-item>)
@@ -129,11 +129,11 @@
     if month-name != current-month {
       current-month = month-name
       text(fill: c.colors.brand-primary, weight: "bold", size: 13pt)[#month-name]
-      v(0.65em)
+      v(0.3em)
     }
 
     let entry-text = [
-      #text(fill: c.colors.text-main, weight: "bold")[#clean-date] #text(fill: c.colors.text-main, weight: "regular")[--- #data.title]
+      #text(fill: c.colors.text-main, weight: "bold")[#clean-date] #text(fill: c.colors.text-main, weight: "regular")[#h(0.5em) #data.title]
     ]
 
     link(entry.location())[
@@ -144,6 +144,6 @@
         [#text(weight: "bold", fill: c.colors.brand-primary)[#page-num]]
       )
     ]
-    v(0.65em)
+    v(0.5em)
   }
 }
