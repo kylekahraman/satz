@@ -14,7 +14,11 @@
 /// - decorative (dictionary): sizes for headers, footers, dates, keywords, lists
 /// - page-footer (dictionary): page number format, size, weight
 /// - links (dictionary): link color
+/// - tables (dictionary): table stroke, inset, font size
+/// - captions (dictionary): figure/table caption size and weight
 /// - toc (dictionary): table of contents configuration
+/// - lof (dictionary): list of figures configuration
+/// - lot (dictionary): list of tables configuration
 /// - bibliography (dictionary): citation style
 /// - colors (dictionary): color palette (bg-paper, brand-primary, text-main, etc.)
 #let defaults = (
@@ -22,6 +26,7 @@
     paper: "a4",
     margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
     binding: none,
+    headers: false, // running headers (h1/h2) on two-sided pages — frozen until stable (opt-in via headers: true)
   ),
   typography: (
     font: "Libertinus Serif",
@@ -58,6 +63,10 @@
     inset: (x: 8pt, y: 4pt),
     font-size: 10pt,
   ),
+  captions: (
+    size: 10pt,
+    weight: "regular",
+  ),
   toc: (
     // Set depth: 0 to disable. none = auto (uses heading numbering depth).
     depth: none,
@@ -66,6 +75,22 @@
     // Indent per heading level (e.g. 1em for sub-sections)
     indent: 1em,
     // Spacing below the ToC before body content begins
+    below: 2em,
+  ),
+  lof: (
+    // Set depth: 0 to disable. none = auto.
+    depth: none,
+    // Title shown above the list of figures. Set to none to omit.
+    title: [List of Figures],
+    // Indent per level
+    indent: 1em,
+    // Spacing below the list
+    below: 2em,
+  ),
+  lot: (
+    depth: none,
+    title: [List of Tables],
+    indent: 1em,
     below: 2em,
   ),
   bibliography: (

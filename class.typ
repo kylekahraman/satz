@@ -89,7 +89,7 @@
   // Even pages (left) show the chapter (h1), odd pages (right) show the
   // section (h2) with fallback to h1. No running header on pages before
   // any heading has been encountered (chapter opening pages, textbook convention).
-  let page-header = if two-sided and header == none {
+  let page-header = if two-sided and header == none and c.page.at("headers", default: false) {
     context {
       let n = counter(page).get().first()
       let is-even = calc.rem(n, 2) == 0
@@ -136,8 +136,8 @@
 
   // --- Heading show rules ---
   show heading.where(level: 1): it => {
-    // Exclude the auto-generated TOC title heading from running header state
-    if it.body != c.toc.title {
+    // Exclude the auto-generated TOC/LOF/LOT title headings from running header state
+    if it.body != c.toc.title and it.body != c.lof.title and it.body != c.lot.title {
       context { chapter-state.update((body: it.body, page: counter(page).get().first())) }
     }
     block(width: 100%, below: c.headings.h1-below)[
@@ -185,6 +185,12 @@
     inset: (x: 8pt, y: 4pt),
   )
 
+  // --- Figure/table caption styling ---
+  show figure.caption: it => {
+    set text(size: c.captions.size, weight: c.captions.weight)
+    it
+  }
+
   // --- Bibliography ---
   set bibliography(style: c.bibliography.style)
 
@@ -199,17 +205,57 @@
       )
       v(c.toc.below)
     }
+    // --- List of Figures (report/thesis) ---
+    // Auto-hide when no figures exist: the pagebreak and title are guarded by a
+    // query() so an empty document yields no LoF page at all.
+    if "lof" in c and c.lof.depth != 0 {
+      context {
+        if query(figure.where(kind: image)).len() > 0 {
+          pagebreak()
+          {
+            set page(header: none, footer: none, numbering: none)
+            outline(
+              title: c.lof.title,
+              target: figure.where(kind: image),
+              depth: c.lof.depth,
+              indent: c.lof.indent,
+            )
+            v(c.lof.below)
+          }
+        }
+      }
+    }
+    // --- List of Tables (report/thesis) ---
+    // Auto-hide when no tables exist: same guard as the LoF above.
+    if "lot" in c and c.lot.depth != 0 {
+      context {
+        if query(figure.where(kind: table)).len() > 0 {
+          pagebreak()
+          {
+            set page(header: none, footer: none, numbering: none)
+            outline(
+              title: c.lot.title,
+              target: figure.where(kind: table),
+              depth: c.lot.depth,
+              indent: c.lot.indent,
+            )
+            v(c.lot.below)
+          }
+        }
+      }
+    }
     // Start content on fresh page, numbering at 1.
     // The template's numbering function is (n) => if n > 1 { str(n-1) },
     // so counter=2 displays "1" on the first content page.
     // Counter=2 is even → left page → running header shows h1 (chapter name).
     //
-    // Set the counter BEFORE the pagebreak: the page counter auto-increments
-    // when a new page starts, so update(1) makes the first content page read
-    // counter=2. The header is evaluated at page start (unlike the footer at
-    // page end), so updating after the pagebreak would leave the header on the
-    // first content page seeing counter=3 → odd → wrong page parity.
-    counter(page).update(1)
+    // Set the counter BEFORE the pagebreak: update(2) makes the first content
+    // page read counter=2 → displays "1" on the left (verso) page. The header
+    // is evaluated at page start (unlike the footer at page end), so updating
+    // after the pagebreak would leave the header on the first content page
+    // seeing the natural counter (higher when LOF/LOT are enabled) → wrong
+    // page number and parity.
+    counter(page).update(2)
     pagebreak()
   }
 
