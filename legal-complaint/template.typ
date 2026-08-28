@@ -72,6 +72,7 @@
     ],
   )
   set par(justify: true, leading: zeilenabstand)
+  set list(spacing: zeilenabstand)
 
   // --- Sender block (top-right, smaller than letter version) ---
   court_absender_block(klagername, klagerin_str + " " + klagerin_plz, zeilenabstand)

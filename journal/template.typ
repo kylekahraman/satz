@@ -1,7 +1,7 @@
 #import "@preview/cheq:0.4.0": checklist
 #import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
-#import "components.typ": journal-metadata-entry, journal-date-keywords
+#import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
 
 /// Tracks whether a journal entry has started (used for page breaks).
 #let journal-entry-state = state("entry-start", true)
@@ -113,7 +113,26 @@
   v(1.5em)
 
   let entries = query(<journal-item>)
+
+  // Detect whether entries span multiple years.
+  // If yes, append the year to month group headings.
+  let years = ()
+  for entry in entries {
+    let data = entry.value
+    let date-parts = data.date.split(", ")
+    let clean-date = if date-parts.len() > 1 { date-parts.at(1) } else { data.date }
+    let clean-date-parts = clean-date.split("/")
+    if clean-date-parts.len() > 2 {
+      let y = clean-date-parts.at(2)
+      if not years.contains(y) {
+        years.push(y)
+      }
+    }
+  }
+  let multi-year = years.len() > 1
+
   let current-month = ""
+  let current-year = ""
 
   for entry in entries {
     let data = entry.value
@@ -123,12 +142,24 @@
     let clean-date = if date-parts.len() > 1 { date-parts.at(1) } else { data.date }
 
     let clean-date-parts = clean-date.split("/")
+    let year = if clean-date-parts.len() > 2 {
+      let y = clean-date-parts.at(2)
+      if y.len() == 2 { "20" + y } else { y }
+    } else {
+      ""
+    }
     let month-code = if clean-date-parts.len() > 1 { clean-date-parts.at(1) } else { "" }
     let month-name = month-names.at(month-code, default: "Unknown Month")
 
-    if month-name != current-month {
+    if month-name != current-month or year != current-year {
       current-month = month-name
-      text(fill: c.colors.brand-primary, weight: "bold", size: 13pt)[#month-name]
+      current-year = year
+      let heading-text = if multi-year {
+        [#month-name #year]
+      } else {
+        [#month-name]
+      }
+      text(fill: c.colors.brand-primary, weight: "bold", size: 13pt)[#heading-text]
       v(0.3em)
     }
 

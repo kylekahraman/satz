@@ -31,13 +31,13 @@
 
 ## 🚧 v0.2.0 — Planned
 
-- [ ] **Running headers** — section/chapter name in page header for report/thesis
+- [ ] **Running headers** — section/chapter name in page header for report/thesis. Code is implemented but still blocked by Typst's header-evaluation-timing issue: the state-variable approach works for journals (where headers are set per-entry), but the header evaluates at page-start in reports, before the first heading's show rule fires. This means the first page of each chapter has no running header (textbook convention, acceptable). The blocking issue was that the counter parity was off — now fixed.
 - [ ] **Binding correction (BCOR)** — two-sided layout, alternating inner/outer margins
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
-- [ ] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
-- [ ] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
+- [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
+- [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
 - [ ] **List of Abbreviations (Abkürzungsverzeichnis)** — key-value glossary table
-- [ ] **Figure/table caption styling** — configurable prefix, numbering, separator, font size
+- [x] **Figure/table caption styling** — configurable prefix, numbering, separator, font size
 - [ ] **Abstract environment** — styled abstract block
 - [ ] **Author/affiliation block** — name, affiliation, email, ORCID
 - [ ] **Article mode** — `kind: "article"`, two-column layout, abstract, author block
@@ -46,10 +46,13 @@
 - [x] **Legal complaint (Klageschrift)** — ZPO civil court template with Rubrum, Streitwert, Anlagen
 - [x] **Gastspielvertrag** — guest performance contract, fill-in blanks, 3 doc modes, §1–8, transport calc, buy-out
 
+> **Note:** Counter parity fix resolved — `counter(page).update(1)` → `update(2)`, so the first content page after a TOC displays correctly in two-sided layout (see AGENTS.md, "Page counter ordering matters").
+
 ## 🧪 Later / Maybe
 
 - [ ] **Margin notes** — likely its own package
 - [ ] **`\typearea`-style auto-margins** — compute page margins from font size
+- [ ] **Signature helper for letters** — `signature(name, rolle: none)` composable block: underline for signing + name + optional role beneath. Support multiple stacked signatures. Currently users must define this themselves with `signatur: false` on brief().
 - [ ] **CI/CD** — `typst compile` on all examples in GitHub Actions
 
 ## 📦 Publishing

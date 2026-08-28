@@ -39,6 +39,7 @@
   anlagenverzeichnis: (),
   anlagen: (),
   signatur_zusatz: "",
+  signatur: true,
   postvermerk: "",
   lang: "de",
   font: "Inter",
@@ -74,12 +75,32 @@
   // Stile konfigurieren
   set text(font: font, size: 11pt, lang: lang, hyphenate: false, weight: "regular")
   set par(leading: zeilenabstand, justify: true)
+  set list(spacing: zeilenabstand)
   set page(
     "a4",
     margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm),
     background: falz_und_locher_marken(),
     footer: seiten_footer(strings),
   )
+
+  // Heading show rules — headings match body size (11pt), only differ by weight/style.
+  // This keeps the Betreff (11.5pt bold) as the visually dominant element per DIN 5008.
+  show heading.where(level: 1): it => block(below: 0.65em)[
+    #set text(weight: "bold", size: 11pt)
+    #it
+  ]
+  show heading.where(level: 2): it => block(below: 0.65em)[
+    #set text(weight: "bold", size: 11pt)
+    #it
+  ]
+  show heading.where(level: 3): it => block(below: 0.65em)[
+    #set text(weight: "bold", size: 11pt)
+    #it
+  ]
+  show heading.where(level: 4): it => block(below: 0.65em)[
+    #set text(weight: "italic", size: 11pt)
+    #it
+  ]
 
   // Dokumentenstruktur aufbauen
   absender_block(absender, zeilenabstand, strings)
@@ -101,7 +122,9 @@
   body
   
   // Abschluss-Segmente
-  signatur_block(absender.name, signatur_zusatz, zeilenabstand)
+  if signatur {
+    signatur_block(absender.name, signatur_zusatz, zeilenabstand)
+  }
 
   if anlagen.len() > 0 {
     v(3 * zeilenabstand)

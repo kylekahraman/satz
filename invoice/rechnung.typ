@@ -87,6 +87,7 @@
     },
   )
   set par(leading: zeilenabstand, justify: true)
+  set list(spacing: zeilenabstand)
 
   // --- Sender block (top-right) ---
   absender_block(absender, zeilenabstand, (tel: "Tel.", email: "E-Mail"))

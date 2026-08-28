@@ -144,6 +144,7 @@
     ],
   )
   set par(justify: true, leading: zeilenabstand)
+  set list(spacing: zeilenabstand)
 
   // --- Title ---
   let title = if dokument == "angebot" {
