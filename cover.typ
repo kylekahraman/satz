@@ -1,3 +1,5 @@
+#import "defaults.typ": merge
+
 // Shared cover page — handles page setup, logos, centered body, footer.
 // Used by journal, report, thesis templates.
 
@@ -21,26 +23,6 @@
     text-muted: rgb("#5e5e5a"),
   ),
 )
-
-/// Deep merge for cover defaults.
-///
-/// - base (dictionary): Cover defaults
-/// - overrides (dictionary): User overrides
-/// -> dictionary
-#let merge(base, overrides) = {
-  let result = (:)
-  for (k, v) in base {
-    result.insert(k, v)
-  }
-  for (k, v) in overrides {
-    if type(v) == dictionary and k in result and type(result.at(k)) == dictionary {
-      result.insert(k, merge(result.at(k), v))
-    } else {
-      result.insert(k, v)
-    }
-  }
-  result
-}
 
 /// A centered cover page with optional logos and footer.
 ///

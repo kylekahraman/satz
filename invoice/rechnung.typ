@@ -1,4 +1,4 @@
-// Import shared components from the letter template (the invoice was born from it)
+// Reuses letter address components (absender/empfaenger/geschaeftszeile)
 #import "../letter/components.typ": absender_block, empfaenger_block, geschaeftszeile_block
 
 // Import invoice-specific components
@@ -147,7 +147,6 @@
   let epc-string = build_epc_string(kontoinhaber, absender.at("bic", default: ""), absender.iban, qr-amount, qr-verwendungszweck)
   bank_qr_block(absender, qr, epc-string, zeilenabstand)
 
-  //v(2 * zeilenabstand)
   [Mit freundlichen Grüßen]
   v(-1*zeilenabstand)
   absender.name

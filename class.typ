@@ -2,6 +2,45 @@
 
 #import "defaults.typ": defaults, merge
 
+/// A figure with a decoupled List-of-Figures caption.
+///
+/// Typst has no built-in short caption, so `outline` always pulls the full
+/// `figure.caption` verbatim into the List of Figures. This helper lets you
+/// show a long caption under the figure while the LoF shows a short title.
+///
+/// How it works: the figure's `caption` is set to `short-caption` (so the LoF
+/// reads the short text automatically), and the long `caption` is stored as
+/// invisible `<satz-long>` metadata inside the figure body. A `show
+/// figure.caption` rule in `personal` swaps the displayed caption back to the
+/// long text when that metadata is present.
+///
+/// If `short-caption` is omitted, the figure behaves exactly like a plain
+/// `figure` (long caption is used for both display and the LoF).
+///
+/// - body (content): The figure body (image, rect, etc.)
+/// - caption (content): Long caption shown under the figure
+/// - short-caption (content): Short title shown in the List of Figures
+/// - ..args: Passed through to `figure` (e.g. `placement`, `kind`)
+///
+/// ```example
+/// #satz-figure(
+///   image("plot.png"),
+///   caption: [Full description spanning several lines.],
+///   short-caption: [Empirical verification of Picard ICA],
+/// ) <fig:results>
+/// ```
+#let satz-figure(body, caption: none, short-caption: none, ..args) = {
+  if short-caption != none {
+    figure(
+      [#metadata(caption) <satz-long> #body],
+      caption: short-caption,
+      ..args,
+    )
+  } else {
+    figure(body, caption: caption, ..args)
+  }
+}
+
 /// The core satz document class — sets up page, typography, headings, and more.
 ///
 /// All templates (report, journal-entry, etc.) delegate to this function.
@@ -186,8 +225,93 @@
   )
 
   // --- Figure/table caption styling ---
-  show figure.caption: it => {
+  // Captions are styled here. Figures built with `satz-figure` may carry a
+  // long caption for display (stored as invisible `<satz-long>` metadata inside
+  // the figure body) while the figure's `caption` holds the short LoF text.
+  // When that metadata is present, the long caption is shown below the figure;
+  // the List of Figures still reads the short `caption` from the figure element.
+  show figure.caption: it => context {
     set text(size: c.captions.size, weight: c.captions.weight)
+    let caploc = here()
+    // Locate the figure that owns this caption (closest figure start at/above
+    // the caption on the same page). This prevents a figure from inheriting
+    // another figure's stored long caption.
+    let owner = none
+    for f in query(figure) {
+      let fl = f.location()
+      if fl.page() == caploc.page() and fl.position().y <= caploc.position().y {
+        if owner == none or fl.position().y > owner.location().position().y {
+          owner = f
+        }
+      }
+    }
+    let long-cap = none
+    if owner != none {
+      let top-y = owner.location().position().y
+      for m in query(label("satz-long")) {
+        let ml = m.location()
+        // The metadata sits at the figure body's start, between the figure
+        // top and its caption — restrict the match to this figure's span.
+        if ml.page() == caploc.page() and ml.position().y >= top-y and ml.position().y <= caploc.position().y {
+          long-cap = m.value
+        }
+      }
+    }
+    if long-cap != none {
+      // Rebuild "Figure 1: <long caption>" — `it` holds supplement/counter/separator
+      // but its body is the short LoF text, so we swap in long-cap.
+      [#it.supplement #h(0.2em) #it.counter.display(it.numbering)#it.separator#long-cap]
+    } else { it }
+  }
+
+  // --- Compact LoF/Lot (global, no per-figure changes) ---
+  // When `lof.compact` / `lot.compact` is true, the outline shows only
+  // "Figure 1 .... 5" / "Table 1 .... 5" without caption text.
+  // Show rule must be unconditional — `show` inside `if` is dead code
+  // in Typst (see AGENTS.md: "set/show rules inside if blocks are dead code").
+  let lof-compact = "lof" in c and c.lof.at("compact", default: false)
+  let lot-compact = "lot" in c and c.lot.at("compact", default: false)
+  show outline.entry: it => context {
+    if lof-compact or lot-compact {
+      let el = it.element
+      if el.func() == figure {
+        let is-lof = el.kind == image and lof-compact
+        let is-lot = el.kind == table and lot-compact
+        if is-lof or is-lot {
+          let loc = el.location()
+          let fig-num = if el.kind == image {
+            counter(figure.where(kind: image)).at(loc).first()
+          } else {
+            counter(figure.where(kind: table)).at(loc).first()
+          }
+          // Force black for LoF/Lot entries — no fancy link color
+          let body = link(loc, text(fill: c.colors.text-main, [#el.supplement #fig-num]))
+          // Page number respecting report/thesis offset (display = raw-1)
+          let raw-pg = counter(page).at(loc).first()
+          let pg-str = if kind == "report" or kind == "thesis" {
+            if raw-pg > 1 { str(raw-pg - 1) } else { none }
+          } else {
+            str(raw-pg)
+          }
+          block(width: 100%, inset: (y: 2pt), [#body #box(width: 1fr, it.fill) #text(fill: c.colors.text-main, pg-str)])
+        } else {
+          it
+        }
+      } else {
+        it
+      }
+    } else {
+      it
+    }
+  }
+
+  // Outline links (ToC/LoF/Lot) — uniform black, no fancy color.
+  // Body cross-refs (@fig:...) keep `c.links.color` via the global
+  // `show link` above. This show must be inside `outline` scope only;
+  // we use a nested show that applies only while rendering the outline.
+  // (Do not move `show link` outside — it would affect body links.)
+  show outline: it => context {
+    show link: lnk => text(fill: c.colors.text-main, lnk)
     it
   }
 

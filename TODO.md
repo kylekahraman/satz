@@ -12,9 +12,9 @@
 - [x] **Bug fixes** — Typst 0.15 scoping (set/show in if blocks), merge reference mutation, DIN date format
 - [x] **Security** — all examples use placeholder text, no PII in repo
 
-## ✅ v0.1.1 — Done (this session)
+## ✅ v0.1.1 — Done (2026-09-01)
 
-- [x] **Letter/invoice unification** — invoice imports absender_block, empfaenger_block, geschaeftszeile_block, signatur_block from letter. Rechnung.typ reduced 254→145 lines.
+- [x] **Letter/invoice unification** — invoice imports absender_block, empfaenger_block, geschaeftszeile_block from letter. Rechnung.typ reduced 254→145 lines.
 - [x] **Invoice components extracted** — `invoice/components.typ` (absender_block, posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string)
 - [x] **Shared absender_block** — supports zusatz (c/o), logo (two-column grid), height constraint for window envelopes
 - [x] **Structured empfaenger** for invoice — dict with name, zusatz, strasse, plz_ort, land
@@ -28,11 +28,13 @@
 - [x] **Postvermerk alignment** — left-aligned in address field (not right)
 - [x] **Kleinunternehmer toggle** — `kleinunternehmer: true/false` shows/hides § 19 UStG
 - [x] **8 public exports** in lib.typ: brief/letter, rechnung/invoice, dfg-proposal, klageschrift, gastspielvertrag, journal-entry, journal-index, report, cover-page
+- [x] **satz-figure + LoF/Lot compact** — `satz-figure(caption:, short-caption:)` decouples display vs outline via `<satz-long>` metadata; `lof.compact`/`lot.compact` global flag shows only `Figure 1 .... 5`; outline links uniform black
+- [x] **Link/outline polish** — ToC/LoF/Lot text `c.colors.text-main` (no fancy red in outlines), body links keep `c.links.color`
 
 ## 🚧 v0.2.0 — Planned
 
-- [ ] **Running headers** — section/chapter name in page header for report/thesis. Code is implemented but still blocked by Typst's header-evaluation-timing issue: the state-variable approach works for journals (where headers are set per-entry), but the header evaluates at page-start in reports, before the first heading's show rule fires. This means the first page of each chapter has no running header (textbook convention, acceptable). The blocking issue was that the counter parity was off — now fixed.
-- [ ] **Binding correction (BCOR)** — two-sided layout, alternating inner/outer margins
+- [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
+- [x] **Running headers** — implemented via `state("satz-chapter")`/`state("satz-section")` + two-sided `page.header`; first chapter page intentionally blank (textbook convention). Toggle `page.headers: true` (frozen until stable).
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
 - [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions

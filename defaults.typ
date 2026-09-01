@@ -86,12 +86,17 @@
     indent: 1em,
     // Spacing below the list
     below: 2em,
+    // When true, LoF shows only "Figure N .... page", no caption text.
+    // Set to true for long captions where the full text clutters the list.
+    compact: false,
   ),
   lot: (
     depth: none,
     title: [List of Tables],
     indent: 1em,
     below: 2em,
+    // Same as lof.compact, but for tables.
+    compact: false,
   ),
   bibliography: (
     style: "apa",

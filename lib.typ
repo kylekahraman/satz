@@ -9,4 +9,4 @@
 #import "defaults.typ": defaults, merge
 #import "report/template.typ": report
 #import "cover.typ": cover-page
-#import "class.typ": personal
+#import "class.typ": personal, satz-figure

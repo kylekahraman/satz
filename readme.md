@@ -7,11 +7,11 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 ## Quick Usage
 
 ```typst
-#import "@preview/satz:0.0.1": *
-
+#import "@preview/satz:0.1.1": report
 #show: report.with(config: (
   page: (margin: (left: 3cm)),
-  typography: (font: "Gentium Plus"),
+  typography: (font: "Libertinus Serif"),
+  lof: (compact: true), // List of Figures shows only "Figure 1 .... 5"
 ))
 
 = My Report
@@ -19,8 +19,7 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 ```
 
 ```typst
-#import "@preview/satz:0.0.1": *
-
+#import "@preview/satz:0.1.1": journal-entry
 #show: journal-entry.with(
   title: "Experiment 42",
   date: "2025-03-15",
@@ -39,7 +38,9 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
 | **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis (article mode, BCOR, TOC planned) |
 | **dfg-proposal** | `dfg-proposal(...)` | DFG form 53.01 (Sachbeihilfe) in German and English — **work in progress** |
-| **legal-complaint** | — | Formal complaint for submission to German courts (ZPO) — **placeholder** |
+| **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
+| **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
+| **cover** | `cover-page(...)` | Composable cover page with logos/body/footer slots |
 
 ### Letter — Internationalization
 
@@ -55,19 +56,41 @@ Set `qr: true` (default) to embed a scannable GiroCode:
 
 ## Structure
 
-satz is built around a shared document class defined in `personal.typ`. It reads its defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary. Each template in its own folder wraps `personal.typ` with the appropriate layout, page geometry, and template-specific parameters.
+satz is built around the shared document class `class.typ:personal()`. It reads defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary (deep merge — nested dicts are merged, not overwritten).
 
 ```
-lib.typ              ← re-exports all templates
-defaults.typ         ← unified default configuration
-personal.typ         ← shared document class
-letter/              ← brief() — DIN 5008 letter with i18n
-invoice/             ← rechnung() — German invoice with QR code
-journal/             ← journal-entry / journal-index
-report/              ← report() wrapper
-dfg-proposal/        ← dfg-proposal wrapper
-legal-complaint/     ← placeholder for German court complaints
-cover.typ            ← cover page composable
+lib.typ              ← public API
+defaults.typ         ← unified defaults + merge()
+class.typ            ← personal() + satz-figure
+cover.typ            ← cover-page() — logos/body/footer slots
+letter/              ← brief() — DIN 5008 letter, i18n (de/en)
+invoice/             ← rechnung() — German invoice, EPC QR code
+journal/             ← journal-entry / journal-index + remember/question
+report/              ← report() — thin wrapper around personal(kind: "report")
+dfg-proposal/        ← dfg-proposal — 53.01 (WIP)
+legal-complaint/     ← klageschrift — ZPO
+gastspielvertrag/    ← gastspielvertrag — guest performance contract
+```
+
+## Configuration
+
+All templates share the same `config` system:
+
+```typst
+#show: report.with(config: (
+  typography: (font: "EB Garamond"),
+  colors: (brand-primary: blue),
+  lof: (compact: true), // hide caption text in List of Figures
+))
+```
+
+Nested dictionaries are deep-merged. See `defaults.typ` for all keys.
+
+For long captions use `satz-figure` — long text under the figure, short title in the List of Figures (or `short-caption: []` for compact):
+
+```typst
+#import "@preview/satz:0.1.1": satz-figure
+#satz-figure(image("plot.png"), caption: [Very long ...], short-caption: [Short title])
 ```
 
 ## License
@@ -76,4 +99,4 @@ MIT
 
 ## Status
 
-Early development. The API is still evolving and may change without notice.
+`0.1.1` — letters, invoices, journal, report, cover, LoF/Lot ready. API stable for these templates; DFG/article still WIP and may change.
