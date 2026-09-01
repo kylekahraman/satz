@@ -208,8 +208,9 @@
   ]
 
   // --- Links ---
-  // External URLs (string dest) get url-color + underline for all document kinds.
-  // Internal links (cross-refs, TOC) get color only for report/thesis.
+  // External URLs (string dest) get url-color + underline for all kinds.
+  // Internal links, refs (@fig: / @eq:) and cites (@key) get c.links.color
+  // for report/thesis; journal stays black. Outline overrides to black below.
   show link: it => {
     if type(it.dest) == str {
       text(fill: c.links.url-color, underline(it))
@@ -219,6 +220,8 @@
       it
     }
   }
+  show ref: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
+  show cite: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
 
   // --- Table styling (booktabs-style) ---
   set table(
@@ -314,6 +317,8 @@
   // (Do not move `show link` outside — it would affect body links.)
   show outline: it => context {
     show link: lnk => text(fill: c.colors.text-main, lnk)
+    show ref: r => text(fill: c.colors.text-main, r)
+    show cite: c => text(fill: c.colors.text-main, c)
     it
   }
 
