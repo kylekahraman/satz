@@ -30,6 +30,7 @@
 - [x] **8 public exports** in lib.typ: brief/letter, rechnung/invoice, dfg-proposal, klageschrift, gastspielvertrag, journal-entry, journal-index, report, cover-page
 - [x] **satz-figure + LoF/Lot compact** — `satz-figure(caption:, short-caption:)` decouples display vs outline via `<satz-long>` metadata; `lof.compact`/`lot.compact` global flag shows only `Figure 1 .... 5`; outline links uniform black
 - [x] **Link/outline polish** — ToC/LoF/Lot text `c.colors.text-main` (no fancy red in outlines), body links keep `c.links.color`
+- [x] **List spacing** — `decorative.list-spacing` (`list` + `enum` unified, Word-like "Abstand nach Absatz")
 
 ## 🚧 v0.2.0 — Planned
 

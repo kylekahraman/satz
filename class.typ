@@ -168,7 +168,9 @@
   )
 
   // --- List spacing ---
+  // "Abstand vor/nach Listenpunkt" — extra air between items for readability
   set list(spacing: c.decorative.list-spacing)
+  set enum(spacing: c.decorative.list-spacing)
 
   // --- Heading numbering (journal uses none) ---
   set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
