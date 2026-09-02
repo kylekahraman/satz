@@ -10,3 +10,4 @@
 #import "report/template.typ": report
 #import "cover.typ": cover-page
 #import "class.typ": personal, satz-figure
+#import "citation.typ": citepre
