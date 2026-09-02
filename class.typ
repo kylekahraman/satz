@@ -220,8 +220,26 @@
       it
     }
   }
-  show ref: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
-  show cite: it => if kind != "journal" { text(fill: c.links.color, it) } else { it }
+  // NOTE: in Typst a `cite` element is also a `ref`, so `show ref` matches
+  // citations too. To color only the year of a citation (handled by `show
+  // cite` below), `show ref` must pass citations through untouched; otherwise
+  // it would wrap the whole "(Author, Year)" in c.links.color.
+  show ref: it => if kind != "journal" {
+    // Citations (@key) are also `ref` elements in Typst (they carry a
+    // `citation` field). Their year-only coloring is handled by `show cite`
+    // below, so pass them through untouched here; only real cross-references
+    // (no `citation` field, e.g. @fig: / @eq:) get the full link color.
+    if it.has("citation") {
+      it
+    } else {
+      text(fill: c.links.color, it)
+    }
+  } else { it }
+  show cite: it => if kind != "journal" {
+    // Only the year (4-digit) is colored — not "Fuster & Alexander,"
+    show regex("\d{4}[a-z]?"): y => text(fill: c.links.color, y)
+    it
+  } else { it }
 
   // --- Table styling (booktabs-style) ---
   set table(
