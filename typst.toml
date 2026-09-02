@@ -2,7 +2,7 @@
 name = "satz"
 version = "0.1.1"
 entrypoint = "lib.typ"
-authors = ["Kyle Kahraman <kylekahraman@icloud.com>"]
+authors = ["Kyle Kahraman <kylekahraman@gmail.com>"]
 description = "A Typst document class for everyday documents — letters, invoices, reports, journals, and grant proposals. Inspired by KOMA-Script."
 license = "MIT"
 repository = "https://github.com/kylekahraman/typst-templates"
