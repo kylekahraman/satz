@@ -2,7 +2,7 @@
 // Shows config overrides, sections, figures, tables, math, citations.
 // Compile: typst compile example.typ
 
-#import "template.typ": report
+#import "@preview/satz:0.1.1": report
 
 #show: report.with(
   config: (

@@ -1,4 +1,4 @@
-#import "template.typ": journal-entry, journal-index
+#import "@preview/satz:0.1.1": journal-entry, journal-index
 
 // ===== Research Diary Index =====
 // Placed first so the index appears before the journal entries.

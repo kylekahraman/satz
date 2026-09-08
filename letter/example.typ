@@ -1,4 +1,4 @@
-#import "template.typ": brief
+#import "@preview/satz:0.1.1": brief
 
 #show: brief.with(
   absender: (

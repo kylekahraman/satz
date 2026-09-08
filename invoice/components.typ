@@ -1,3 +1,5 @@
+#import "@preview/cades:0.3.1": qr-code
+
 // Invoice-specific components — absender, empfaenger, and geschaeftszeile are shared from letter.
 
 /// Your line items as a table.
@@ -71,7 +73,6 @@
           )
         ],
         [
-          #import "@preview/cades:0.3.1": qr-code
           #qr-code(epc-string, width: 3.5cm)
           #v(0.3em)
           #text(size: 7pt, fill: black.lighten(40%))[Scannen für Überweisung]
