@@ -2,24 +2,17 @@
 
 #import "defaults.typ": defaults, merge
 
-/// A figure with a decoupled List-of-Figures caption.
+/// Show a long caption under the figure, a short one in the List of Figures.
 ///
-/// Typst has no built-in short caption, so `outline` always pulls the full
-/// `figure.caption` verbatim into the List of Figures. This helper lets you
-/// show a long caption under the figure while the LoF shows a short title.
-///
-/// How it works: the figure's `caption` is set to `short-caption` (so the LoF
-/// reads the short text automatically), and the long `caption` is stored as
-/// invisible `<satz-long>` metadata inside the figure body. A `show
-/// figure.caption` rule in `personal` swaps the displayed caption back to the
-/// long text when that metadata is present.
-///
-/// If `short-caption` is omitted, the figure behaves exactly like a plain
-/// `figure` (long caption is used for both display and the LoF).
+/// Typst has no short caption — the LoF always shows the full caption.
+/// This helper puts the short text in `caption` so the LoF picks it up,
+/// and tucks the long text away as hidden `<satz-long>` metadata.
+/// `personal` swaps the long text back in when it renders the caption.
+/// Skip `short-caption` and it just behaves like a normal `figure`.
 ///
 /// - body (content): The figure body (image, rect, etc.)
-/// - caption (content): Long caption shown under the figure
-/// - short-caption (content): Short title shown in the List of Figures
+/// - caption (content): Long caption — what you see under the figure
+/// - short-caption (content): Short title — what shows up in the LoF
 /// - ..args: Passed through to `figure` (e.g. `placement`, `kind`)
 ///
 /// ```example
@@ -247,18 +240,13 @@
     inset: (x: 8pt, y: 4pt),
   )
 
-  // --- Figure/table caption styling ---
-  // Captions are styled here. Figures built with `satz-figure` may carry a
-  // long caption for display (stored as invisible `<satz-long>` metadata inside
-  // the figure body) while the figure's `caption` holds the short LoF text.
-  // When that metadata is present, the long caption is shown below the figure;
-  // the List of Figures still reads the short `caption` from the figure element.
+  // Figures with satz-figure store the long caption in <satz-long>
+  // metadata, the LoF reads the short caption. Swap the long one back here.
   show figure.caption: it => context {
     set text(size: c.captions.size, weight: c.captions.weight)
     let caploc = here()
-    // Locate the figure that owns this caption (closest figure start at/above
-    // the caption on the same page). This prevents a figure from inheriting
-    // another figure's stored long caption.
+    // Find the figure this caption belongs to — closest figure above
+    // the caption on the same page.
     let owner = none
     for f in query(figure) {
       let fl = f.location()
@@ -273,16 +261,15 @@
       let top-y = owner.location().position().y
       for m in query(label("satz-long")) {
         let ml = m.location()
-        // The metadata sits at the figure body's start, between the figure
-        // top and its caption — restrict the match to this figure's span.
+        // Only match metadata between this figure's top and its caption.
         if ml.page() == caploc.page() and ml.position().y >= top-y and ml.position().y <= caploc.position().y {
           long-cap = m.value
         }
       }
     }
     if long-cap != none {
-      // Rebuild "Figure 1: <long caption>" — `it` holds supplement/counter/separator
-      // but its body is the short LoF text, so we swap in long-cap.
+      // `it` holds supplement/counter/separator but its body is the short
+      // text, so rebuild with the long caption.
       [#it.supplement #h(0.2em) #it.counter.display(it.numbering)#it.separator#long-cap]
     } else { it }
   }
@@ -393,17 +380,8 @@
         }
       }
     }
-    // Start content on fresh page, numbering at 1.
-    // The template's numbering function is (n) => if n > 1 { str(n-1) },
-    // so counter=2 displays "1" on the first content page.
-    // Counter=2 is even → left page → running header shows h1 (chapter name).
-    //
-    // Set the counter BEFORE the pagebreak: update(2) makes the first content
-    // page read counter=2 → displays "1" on the left (verso) page. The header
-    // is evaluated at page start (unlike the footer at page end), so updating
-    // after the pagebreak would leave the header on the first content page
-    // seeing the natural counter (higher when LOF/LOT are enabled) → wrong
-    // page number and parity.
+    // Header runs at page start, footer at page end — so update
+    // the counter before the pagebreak. Counter 2 displays as 1.
     counter(page).update(2)
     pagebreak()
   }

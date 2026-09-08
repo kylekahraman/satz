@@ -26,7 +26,7 @@
     paper: "a4",
     margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
     binding: none,
-    headers: false, // running headers (h1/h2) on two-sided pages — frozen until stable (opt-in via headers: true)
+    headers: false,
   ),
   typography: (
     font: "Libertinus Serif",
