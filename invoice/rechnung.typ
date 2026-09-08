@@ -4,41 +4,40 @@
 // Import invoice-specific components
 #import "components.typ": posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
 
-/// A German invoice (Rechnung) with optional EPC QR code (GiroCode).
+/// A German invoice — with a QR code for tap-to-pay.
 ///
-/// Generates a DIN 5008 conform invoice with automatic line item calculation,
-/// bank details, and an optional scannable QR code for SEPA bank transfers.
-/// When scanned, banking apps auto-fill IBAN, amount, and purpose.
+/// It tallies your line items, shows your bank details,
+/// and adds a scannable QR code if you want. Banking apps
+/// pick up the IBAN, amount, and reference straight from it.
+/// Reuses the letter's address block and ref line.
 ///
-/// Shares the letter template's address field, business line, and signature components.
-///
-/// - absender (dictionary): Sender/billing details
-///   - name (str): Full name or company
-///   - zusatz (str, none): Additional line (e.g. c/o)
-///   - strasse (str): Street and house number
-///   - plz_ort (str): Postal code and city
-///   - steuernummer (str): Tax number
-///   - iban (str): IBAN for bank transfer
-///   - bic (str): BIC/SWIFT code (optional)
-///   - bank (str): Bank name
-///   - kontoinhaber (str): Bank account holder name. Defaults to absender.name.
-/// - empfaenger (dictionary): Recipient
-///   - name (str): Full name or company
-///   - zusatz (str, none): Additional line (e.g. c/o)
-///   - strasse (str): Street and house number
-///   - plz_ort (str): Postal code and city
-///   - land (str): Country (optional)
-/// - datum (str): Invoice date, defaults to today
-/// - rechnungsnummer (str): Invoice number
-/// - leistungsdatum (str): Service period
-/// - betreff (str): Subject line, defaults to "Rechnung"
-/// - posten (array): Line items as (("Description", quantity, unit-price), ...)
-/// - qr (bool): Enable EPC QR code for scan-to-pay
-/// - qr-betrag (none, float): Override QR amount. None = auto-calculate from posten
-/// - qr-verwendungszweck (str): Payment reference for QR code
-/// - font (str): Body font family. Defaults to "Inter".
-/// - kleinunternehmer (bool): Show German small business tax notice (§ 19 UStG)
-/// - body (content): Invoice body content (letter text)
+/// - absender (dictionary): your billing details
+///   - name (str): your name or company
+///   - zusatz (str, none): extra line (e.g. c/o)
+///   - strasse (str): street and number
+///   - plz_ort (str): zip and city
+///   - steuernummer (str): tax number
+///   - iban (str): your IBAN
+///   - bic (str): BIC (optional)
+///   - bank (str): bank name
+///   - kontoinhaber (str): account holder — defaults to your name
+/// - empfaenger (dictionary): who pays
+///   - name (str): name or company
+///   - zusatz (str, none): extra line (e.g. c/o)
+///   - strasse (str): street and number
+///   - plz_ort (str): zip and city
+///   - land (str): country (optional)
+/// - datum (str): invoice date — defaults to today
+/// - rechnungsnummer (str): invoice number
+/// - leistungsdatum (str): when you did the work
+/// - betreff (str): subject — defaults to "Rechnung"
+/// - posten (array): line items as (("What you did", qty, price), ...)
+/// - qr (bool): add the QR code?
+/// - qr-betrag (none, float): force a QR amount. None = add up the items
+/// - qr-verwendungszweck (str): payment note in the QR code
+/// - font (str): body font — "Inter" by default
+/// - kleinunternehmer (bool): show the § 19 VAT-free note?
+/// - body (content): your letter text
 #let rechnung(
   absender: (
     name: "Musterfirma GmbH",

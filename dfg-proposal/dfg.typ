@@ -8,15 +8,14 @@
 
 /// DFG form 53.01 — Project Description (Sachbeihilfe).
 ///
-/// Generates a DFG-compliant proposal document with the standard title block,
-/// page header showing form number and page count, and Arial 11pt formatting.
-/// Level-1 headings use "1" numbering; levels 2–4 are unnumbered.
+/// Title block, running header with page count, Arial 11pt — DFG wants it this way.
+/// H1 is numbered "1", h2–h4 are not.
 ///
-/// - applicant (content): Applicant name(s) and institution(s)
-/// - project (content): Project title
-/// - language (str): "german" or "english" — affects header strings
-/// - max-pages (int): Maximum page count shown in header (17 or 8)
-/// - doc (content): Proposal body content
+/// - applicant (content): your name and institution
+/// - project (content): project title
+/// - language (str): "german" or "english" — switches the header text
+/// - max-pages (int): max pages shown in the header (17 or 8)
+/// - doc (content): your proposal text
 ///
 /// ```example
 /// #show: dfg-proposal.with(

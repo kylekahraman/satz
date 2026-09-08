@@ -4,16 +4,16 @@
 
 /// Show a long caption under the figure, a short one in the List of Figures.
 ///
-/// Typst has no short caption — the LoF always shows the full caption.
-/// This helper puts the short text in `caption` so the LoF picks it up,
-/// and tucks the long text away as hidden `<satz-long>` metadata.
-/// `personal` swaps the long text back in when it renders the caption.
-/// Skip `short-caption` and it just behaves like a normal `figure`.
+/// Typst doesn't do short captions — LoF always shows the full text.
+/// This works around it: LoF gets the short text,
+/// the long one hides as `<satz-long>` metadata.
+/// `personal` puts the long one back when it draws the figure.
+/// No `short-caption`? It just acts like a normal `figure`.
 ///
-/// - body (content): The figure body (image, rect, etc.)
-/// - caption (content): Long caption — what you see under the figure
-/// - short-caption (content): Short title — what shows up in the LoF
-/// - ..args: Passed through to `figure` (e.g. `placement`, `kind`)
+/// - body (content): what you show (image, rect ...)
+/// - caption (content): the long text under the figure
+/// - short-caption (content): the short title for the LoF
+/// - ..args: pass to `figure` (e.g. `placement`, `kind`)
 ///
 /// ```example
 /// #satz-figure(
@@ -34,21 +34,21 @@
   }
 }
 
-/// The core satz document class — sets up page, typography, headings, and more.
+/// The heart of satz — page, fonts, headings, the lot.
 ///
-/// All templates (report, journal-entry, etc.) delegate to this function.
-/// Direct use is possible for custom document types:
+/// Every template calls this. You can also call it yourself
+/// if you need a custom doc type.
 ///
 /// ```example
 /// #show: personal.with(kind: "thesis", config: (page: (paper: "a5")))
 /// = My Thesis
 /// ```
 ///
-/// - kind (str): Document kind — "journal", "report", "thesis", or "letter"
-/// - config (dictionary): Partial overrides for satz defaults
-/// - header (none, content): Custom page header
-/// - footer (none, content): Custom page footer
-/// - body (content): Document body
+/// - kind (str): what you build — "journal", "report", "thesis", or "letter"
+/// - config (dictionary): tweak the defaults
+/// - header (none, content): your own header, if you want one
+/// - footer (none, content): your own footer, if you want one
+/// - body (content): your content
 #let personal(
   kind: "report",
   config: (:),

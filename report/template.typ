@@ -2,24 +2,19 @@
 
 #import "../class.typ": personal
 
-/// A general-purpose report document class (articles, protocols, thesis).
+/// A simple report — articles, protocols, lab notes, whatever.
 ///
-/// Thin wrapper around `personal(kind: "report")`. Supports full config
-/// customization via the `config` dictionary (fonts, colors, margins, etc.).
-/// Includes numbered headings, auto-generated Table of Contents,
-/// bibliography support, and link styling.
+/// It wraps `personal(kind: "report")`. You get numbered headings,
+/// a table of contents, and a bibliography out of the box.
+/// Need binding correction for a thesis? Call `personal(kind: "thesis")` instead.
 ///
-/// For thesis/dissertation, use `personal(kind: "thesis")` directly for
-/// features like binding correction (BCOR) and chapter-based page numbering.
-///
-/// - body (content): Document body
-/// - config (dictionary): Overrides for satz defaults
+/// - body (content): your text
+/// - config (dictionary): tweak fonts, colors, margins ...
 ///
 /// ```example
 /// #show: report.with(
 ///   config: (typography: (font: "EB Garamond"), colors: (brand-primary: blue))
 /// )
-///
 /// = Introduction
 /// #lorem(100)
 /// ```

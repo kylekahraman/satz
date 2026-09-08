@@ -2,25 +2,22 @@
 // All config keys with their default values.
 // Copy sections you want to change into your project's config.typ.
 
-/// Default configuration dictionary for the satz document class.
+/// All the knobs for your document.
 ///
-/// Override individual keys by passing a partial dictionary to any template function.
-/// Keys use deep merge — nested dictionaries are merged recursively.
+/// Pass only what you want to change — the rest stays.
+/// Nested dicts merge deep, so `config: (colors: (brand-primary: blue))` just changes that one color.
 ///
-/// Sections:
-/// - page (dictionary): paper size, margins, binding correction
+/// - page (dictionary): paper, margins, binding
 /// - typography (dictionary): font, size, leading, hyphenation, justification
-/// - headings (dictionary): numbering scheme, sizes, spacing per level
-/// - decorative (dictionary): sizes for headers, footers, dates, keywords, lists
-/// - page-footer (dictionary): page number format, size, weight
+/// - headings (dictionary): numbering, sizes, spacing per level
+/// - decorative (dictionary): header, footer, date, keyword, and list sizes
+/// - page-footer (dictionary): how page numbers look
 /// - links (dictionary): link color
-/// - tables (dictionary): table stroke, inset, font size
-/// - captions (dictionary): figure/table caption size and weight
-/// - toc (dictionary): table of contents configuration
-/// - lof (dictionary): list of figures configuration
-/// - lot (dictionary): list of tables configuration
-/// - bibliography (dictionary): citation style
-/// - colors (dictionary): color palette (bg-paper, brand-primary, text-main, etc.)
+/// - tables (dictionary): stroke, inset, font size
+/// - captions (dictionary): caption size and weight
+/// - toc / lof / lot (dictionary): table of contents, figures, and tables
+/// - bibliography (dictionary): cite style
+/// - colors (dictionary): your palette (bg-paper, brand-primary, text-main ...)
 #let defaults = (
   page: (
     paper: "a4",
@@ -117,14 +114,13 @@
   ),
 )
 
-/// Deep merge: user overrides win, nested dictionaries are merged recursively.
+/// Merge two dicts — your overrides win.
 ///
-/// Unlike shallow merge, this preserves unmentioned keys in nested dicts.
-/// Example: `config: (colors: (brand-primary: blue))` only changes that one color;
-/// all other colors (bg-paper, text-main, etc.) keep their defaults.
+/// It runs deep: nested dicts keep keys you didn't touch.
+/// So `config: (colors: (brand-primary: blue))` only swaps that color.
 ///
-/// - base (dictionary): The full defaults dictionary
-/// - overrides (dictionary): User-provided partial overrides
+/// - base (dictionary): the full defaults
+/// - overrides (dictionary): what you pass in
 /// -> dictionary
 #let merge(base, overrides) = {
   let result = (:)

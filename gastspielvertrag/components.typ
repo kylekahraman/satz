@@ -1,9 +1,10 @@
 // Gastspielvertrag components — contract-specific rendering blocks.
 
-/// Renders a fill-in-the-blank field.
-/// Bold label, then a full-width underline for the recipient to fill in.
+/// A blank field to fill in.
 ///
-/// - label (str): Field name
+/// Bold label on top, line below — fill it by hand.
+///
+/// - label (str): what goes above the line
 #let fillin(label) = {
   v(0.5em)
   text(weight: "bold", size: 10pt)[#label:]
@@ -11,10 +12,13 @@
   line(length: 100%, stroke: 0.25pt + black)
 }
 
-/// Renders the contract header with fill-in fields for the venue.
+/// The top of the contract — who plays, where, when.
 ///
-/// - g (dictionary): Gig config dict
-/// - zeilenabstand (length): Line spacing
+/// Blank lines for the venue to fill in, then your artist info
+/// and a table with the gig details.
+///
+/// - g (dictionary): your gig config
+/// - zeilenabstand (length): line spacing
 #let contract_header(g, zeilenabstand) = {
   // Veranstalter (venue) — fill-in fields
   fillin("Name / Firma")
@@ -55,7 +59,7 @@
   text(size: 10pt)[Besetzung: #g.musiker Musiker #if g.techniker [ + Techniker ] #if g.fotograf [ + Fotograf ] → #gesamt Personen]
 }
 
-/// Renders §1 — Gegenstand des Vertrages.
+/// §1 — What this contract is about.
 #let paragraph_1(g) = {
   text(weight: "bold", size: 11pt)[§ 1 Gegenstand des Vertrages]
   v(0.3em)
@@ -72,7 +76,7 @@
   )
 }
 
-/// Renders §2 — Gage und Konditionen.
+/// §2 — Pay and terms.
 #let paragraph_2(g, zeilenabstand) = {
   text(weight: "bold", size: 11pt)[§ 2 Gage und Konditionen]
   v(0.3em)
@@ -104,7 +108,7 @@
   }
 }
 
-/// Renders §3 — Pflichten des Veranstalters.
+/// §3 — What the venue has to do.
 #let paragraph_3() = {
   text(weight: "bold", size: 11pt)[§ 3 Pflichten des Veranstalters]
   v(0.3em)
@@ -117,7 +121,7 @@
   )
 }
 
-/// Renders §4 — Rücktritt und Ausfall.
+/// §4 — What if someone cancels.
 #let paragraph_4() = {
   text(weight: "bold", size: 11pt)[§ 4 Rücktritt und Ausfall]
   v(0.3em)
@@ -143,7 +147,7 @@
   )
 }
 
-/// Renders §5 — Hospitality.
+/// §5 — Hospitality — food, drinks, backstage.
 #let paragraph_5(g) = {
   let gesamt = g.musiker + (if g.techniker { 1 } else { 0 }) + (if g.fotograf { 1 } else { 0 })
   let buyout_total = gesamt * g.buyout_pro_person
@@ -169,7 +173,7 @@
   ]
 }
 
-/// Renders §6 — Zusatzkosten (optional line-item table).
+/// §6 — Extra costs (travel, tech, hotel …).
 #let paragraph_6(g) = {
   text(weight: "bold", size: 11pt)[§ 6 Zusatzkosten]
   v(0.3em)
@@ -219,7 +223,7 @@
   }
 }
 
-/// Renders §7 — Merchandise, Awareness, Sonstiges.
+/// §7 — Merch, respect, access.
 #let paragraph_7() = {
   text(weight: "bold", size: 11pt)[§ 7 Merchandise, Awareness, Sonstiges]
   v(0.3em)
@@ -231,7 +235,7 @@
   )
 }
 
-/// Renders §8 — Schlussbestimmungen.
+/// §8 — Final clauses.
 #let paragraph_8() = {
   text(weight: "bold", size: 11pt)[§ 8 Schlussbestimmungen]
   v(0.3em)
@@ -244,7 +248,7 @@
   ]
 }
 
-/// Renders the dual signature lines.
+/// Two lines to sign — venue and artist.
 #let signature_lines(kuenstler_vertreter) = {
   v(3em)
   grid(

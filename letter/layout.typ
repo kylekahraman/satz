@@ -1,8 +1,8 @@
-/// Draws fold and punch marks (Falz- und Lochmarken) on page 1.
+/// Fold and punch marks for page 1.
 ///
-/// DIN 5008: three horizontal marks on the left edge at 105mm, 148.5mm, and 210mm
-/// from the top. Only rendered on the first page.
-/// -> content (background for set page)
+/// Three small ticks on the left edge — at 105, 148.5, and 210 mm.
+/// Only page 1 gets them.
+/// -> content (use as `background` in `set page`)
 #let falz_und_locher_marken() = context {
   if counter(page).get().first() == 1 [
     #place(top + left, dx: 0mm, dy: 0mm)[
@@ -13,13 +13,12 @@
   ]
 }
 
-/// Renders the page footer with localized page numbering.
+/// Page numbers at the bottom — "Page X of Y".
 ///
-/// Shows "Page X of Y" (or "Seite X von Y") on pages 2+.
-/// Page 1 has no footer (assumed to be the letterhead page).
+/// Starts on page 2. Page 1 stays clean (it's the letterhead).
 ///
-/// - strings (dictionary): i18n strings (page, of keys)
-/// -> content (footer for set page)
+/// - strings (dictionary): translated "Page" / "of"
+/// -> content (use as `footer` in `set page`)
 #let seiten_footer(strings) = context {
   let p = counter(page).get().first()
   let last = counter(page).final().first()

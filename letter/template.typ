@@ -1,35 +1,35 @@
 #import "components.typ": absender_block, empfaenger_block, geschaeftszeile_block, signatur_block
 #import "layout.typ": falz_und_locher_marken, seiten_footer
 
-/// A DIN 5008 conform German business letter with fold and punch marks.
+/// A German business letter — DIN 5008, with fold and punch marks.
 ///
-/// Supports window envelopes (Fensterbriefumschlag) with automatic
-/// positioning of the address field. Internationalization via `lang` parameter.
+/// Fits window envelopes. The address field lands right where the window sits.
+/// Set `lang` to "de" or "en" to switch languages.
 ///
-/// - absender (dictionary): Sender details
-///   - name (str): Full name or company
-///   - zusatz (none, str): Optional additional line (e.g. c/o)
-///   - strasse (str): Street and house number
-///   - plz_ort (str): Postal code and city
-///   - telefon (str): Phone number (optional)
-///   - email (str): Email address (optional)
-///   - logo (none, content): Logo content, e.g. `image("logo.pdf", width: 3cm)`. Place the file in your project's root or a subdirectory.
-/// - empfaenger (dictionary): Recipient details
-///   - name (str): Full name or company
-///   - zusatz (str, none): Additional line (e.g. c/o, z.Hd.)
-///   - strasse (str): Street and house number
-///   - plz_ort (str): Postal code and city
-///   - land (str): Country (optional, for international mail)
-/// - datum (str): Date string. Defaults to today in DIN 5008 format (YYYY-MM-DD).
-/// - geschaeftszeile (array): Reference line as (("Label", "Value"), ...)
-/// - betreff (str): Subject line
-/// - postvermerk (str): Postal remark (e.g. "Einschreiben", "Eilzustellung")
-/// - anlagenverzeichnis (array): Attachment descriptions
-/// - anlagen (array): Attachment file paths (PDFs are rendered inline)
-/// - signatur_zusatz (str): Additional text below signature name
-/// - lang (str): Language — "de" (German) or "en" (English)
-/// - font (str): Body font family. Defaults to "Inter".
-/// - body (content): Letter body content
+/// - absender (dictionary): your details
+///   - name (str): your name or company
+///   - zusatz (none, str): extra line if you need it (e.g. c/o)
+///   - strasse (str): street and number
+///   - plz_ort (str): zip and city
+///   - telefon (str): phone (optional)
+///   - email (str): email (optional)
+///   - logo (none, content): e.g. `image("logo.pdf", width: 3cm)`
+/// - empfaenger (dictionary): who gets the letter
+///   - name (str): name or company
+///   - zusatz (str, none): extra line (e.g. c/o, z.Hd.)
+///   - strasse (str): street and number
+///   - plz_ort (str): zip and city
+///   - land (str): country (for international mail)
+/// - datum (str): date — defaults to today (YYYY-MM-DD)
+/// - geschaeftszeile (array): ref line as (("Label", "Value"), ...)
+/// - betreff (str): subject line
+/// - postvermerk (str): postal note like "Einschreiben"
+/// - anlagenverzeichnis (array): what you attach (just the names)
+/// - anlagen (array): PDFs to include inline
+/// - signatur_zusatz (str): extra line under your name
+/// - lang (str): "de" or "en"
+/// - font (str): body font — defaults to "Inter"
+/// - body (content): your letter text
 #let brief(
   absender: (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", logo: none),
   empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),

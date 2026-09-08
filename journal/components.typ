@@ -13,10 +13,10 @@
   )
 }
 
-/// Inline callout box for things to remember — library quirks, gotchas, insights.
+/// A blue box for things you want to keep in mind.
 ///
-/// Renders as a light-blue bordered box inline in the entry body.
-/// Usage: #remember[Picard ICA requires non-interpolated raw data.]
+/// Drop it right in your entry text.
+/// Usage: ` #remember[Picard ICA needs raw, non-interpolated data.] `
 #let remember(body) = block(
   fill: rgb("e1f5fe"),
   stroke: 0.5pt + rgb("0288d1"),
@@ -27,11 +27,10 @@
   *📌 TO REMEMBER:* #body
 ]
 
-/// Inline callout box for unresolved questions.
+/// An orange box for open questions.
 ///
-/// Renders as a light-orange bordered box inline in the entry body.
-/// Questions stay visible during review — answer them later.
-/// Usage: #question[Why did find_bads_eog flag component 3?]
+/// Stays visible when you review — answer it later.
+/// Usage: ` #question[Why did find_bads_eog flag component 3?] `
 #let question(body) = block(
   fill: rgb("fff3e0"),
   stroke: 0.5pt + rgb("f57c00"),

@@ -1,8 +1,11 @@
 // Invoice-specific components — absender, empfaenger, and geschaeftszeile are shared from letter.
 
-/// Renders the line-item table (Posten) with quantity, unit price, and subtotals.
+/// Your line items as a table.
 ///
-/// - posten (array): Line items as (("Description", quantity, unit-price), ...)
+/// Columns: what you did, how many, price each, total.
+/// Sums it up at the bottom.
+///
+/// - posten (array): items as (("What you did", qty, price), ...)
 /// -> content
 #let posten_table(posten) = {
   if posten.len() > 0 {
@@ -32,12 +35,15 @@
   }
 }
 
-/// Renders the bank details and optional EPC QR code section.
+/// Bank details plus QR code.
 ///
-/// - absender (dictionary): Sender details (name, bank, iban, bic)
-/// - qr (bool): Show QR code
-/// - epc-string (str): EPC QR code data string
-/// - zeilenabstand (length): Line spacing
+/// Bank info on the left, QR on the right. No QR?
+/// Just the bank info.
+///
+/// - absender (dictionary): your name, bank, IBAN, BIC
+/// - qr (bool): show the code?
+/// - epc-string (str): the data for the QR
+/// - zeilenabstand (length): line spacing
 #let bank_qr_block(absender, qr, epc-string, zeilenabstand) = {
   let kontoinhaber = if absender.at("kontoinhaber", default: none) != none {
     absender.kontoinhaber
@@ -85,11 +91,11 @@
   ]
 }
 
-/// Shows the Kleinunternehmer notice (§ 19 UStG) when enabled.
+/// The "no VAT" note for small businesses (§ 19 UStG).
 ///
-/// German small businesses are exempt from VAT — this notice is legally required.
+/// German law wants this on the invoice if you're exempt.
 ///
-/// - zeilenabstand (length): Line spacing
+/// - zeilenabstand (length): line spacing
 #let kleinunternehmer_notice(zeilenabstand) = {
   v(1 * zeilenabstand)
   text(size: 9pt, style: "italic")[
@@ -97,15 +103,15 @@
   ]
 }
 
-/// Builds the EPC QR code data string (GiroCode BCD format).
+/// Build the EPC string for the GiroCode QR.
 ///
-/// Banking apps parse this to auto-fill SEPA transfer forms.
+/// Banking apps read this and fill in the transfer form for you.
 ///
-/// - kontoinhaber (str): Bank account holder name
-/// - bic (str): BIC/SWIFT code
+/// - kontoinhaber (str): who owns the account
+/// - bic (str): BIC
 /// - iban (str): IBAN
-/// - qr-amount (float): Transfer amount
-/// - qr-verwendungszweck (str): Payment reference
+/// - qr-amount (float): how much to pay
+/// - qr-verwendungszweck (str): payment note
 /// -> str
 #let build_epc_string(kontoinhaber, bic, iban, qr-amount, qr-verwendungszweck) = {
   "BCD\n002\n1\nSCT\n" + bic + "\n" + kontoinhaber + "\n" + iban + "\nEUR" + str(qr-amount) + "\n\n" + qr-verwendungszweck + "\n"

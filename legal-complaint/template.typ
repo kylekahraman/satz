@@ -5,11 +5,11 @@
 
 #import "components.typ": rubrum_block, streitwert_block, anlagen_liste, court_absender_block, court_empfaenger_block
 
-/// A Klageschrift (statement of claim) for German civil courts (Amtsgericht).
+/// A Klageschrift for German civil court (Amtsgericht).
 ///
-/// Follows ZPO formatting conventions: party identification (Rubrum),
-/// amount in dispute (Streitwert), numbered claims (Anträge), and
-/// attachment list (Anlagenverzeichnis). Optionally includes anlagen PDF.
+/// Gives you Rubrum, Streitwert, your claims, and the Anlagen list.
+/// Attach a PDF if you need to include exhibits.
+/// ZPO-style layout with a wider right margin for the court file.
 ///
 /// ```example
 /// #show: klageschrift.with(
@@ -22,26 +22,26 @@
 ///   beklagter_str: "Beispielweg 2",
 ///   beklagter_plz: "54321 Beispielstadt",
 ///   streitwert: "1.000,00 EUR",
-///   anlagen: ("Anlage K 1: Vertrag", "Anlage K 2: Rechnung"),
+///   anlagen: ("Anlage K 1: Vertrag",),
 /// )
 /// = Anträge
 /// ...
 /// ```
 ///
-/// - gericht (str): Court name
-/// - gericht_ort (str): Court address
-/// - klagername (str): Plaintiff name
-/// - klagerin_str (str): Plaintiff street
-/// - klagerin_plz (str): Plaintiff postal code + city
-/// - beklagter (str): Defendant name
-/// - beklagter_str (str): Defendant street
-/// - beklagter_plz (str): Defendant postal code + city
-/// - streitwert (str): Amount in dispute, e.g. "600,00 EUR"
-/// - anlagen (array): Attachment descriptions
-/// - anlagen_pdf_path (none, str): Path to merged anlagen PDF. None = skip.
-/// - anlagen_max_pages (int): Pages to include from the anlagen PDF
-/// - font (str): Body font. Defaults to "Inter".
-/// - body (content): Complaint body (Anträge + Begründung)
+/// - gericht (str): court name
+/// - gericht_ort (str): court address
+/// - klagername (str): who sues
+/// - klagerin_str (str): their street
+/// - klagerin_plz (str): their zip and city
+/// - beklagter (str): who gets sued
+/// - beklagter_str (str): their street
+/// - beklagter_plz (str): their zip and city
+/// - streitwert (str): how much — e.g. "600,00 EUR"
+/// - anlagen (array): list your exhibits
+/// - anlagen_pdf_path (none, str): PDF to attach. None = skip
+/// - anlagen_max_pages (int): how many pages to pull from that PDF
+/// - font (str): body font — "Inter" by default
+/// - body (content): your claims and reasoning
 #let klageschrift(
   gericht: "Amtsgericht",
   gericht_ort: "",

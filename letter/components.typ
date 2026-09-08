@@ -1,11 +1,11 @@
-/// Renders the sender block (Absender) with optional logo.
+/// Show the sender at the top.
 ///
-/// DIN 5008 standard: logo left, sender info right in a two-column header.
-/// When no logo is provided, the sender info is right-aligned as before.
+/// Logo on the left, address on the right.
+/// No logo? We just push the address to the right.
 ///
-/// - absender (dictionary): Sender details (name, zusatz, strasse, plz_ort, telefon, email, logo)
-/// - zeilenabstand (length): Line spacing
-/// - strings (dictionary): i18n strings (tel, email keys)
+/// - absender (dictionary): your name, address, phone, email, logo
+/// - zeilenabstand (length): how tight the lines sit
+/// - strings (dictionary): translated "Tel." / "E-Mail"
 #let absender_block(absender, zeilenabstand, strings) = {
   let logo = absender.at("logo", default: none)
   let telefon = absender.at("telefon", default: "")
@@ -54,15 +54,16 @@
   ]
 }
 
-/// Renders the recipient address field (Empfänger) for window envelopes.
+/// The address window for envelopes.
 ///
-/// DIN 5008: 85mm wide, positioned for standard window envelopes.
-/// Includes sender reference line, optional postal remark, and address.
+/// 85 mm wide, sits where the window sits. Shows your
+/// name on top in small type, then the recipient's address.
+/// Add a postal note like "Einschreiben" if you need it.
 ///
-/// - absender (dictionary): Sender details (for the reference line)
-/// - empfaenger (dictionary): Recipient (name, zusatz, strasse, plz_ort, land)
-/// - postvermerk (str): Postal remark like "Einschreiben" (optional)
-/// - strings (dictionary): i18n strings
+/// - absender (dictionary): your details (for the tiny line on top)
+/// - empfaenger (dictionary): who it goes to
+/// - postvermerk (str): postal note (optional)
+/// - strings (dictionary): translations
 #let empfaenger_block(absender, empfaenger, postvermerk, strings) = {
   // DIN 5008: address field for window envelope
   // Window position: 45mm from top, 20mm from left, 85mm × 45mm
@@ -108,15 +109,15 @@
   ]
 }
 
-/// Renders the business reference line (Geschäftszeile) with multiple columns.
+/// The ref line above the subject.
 ///
-/// Each entry is a (label, value) pair. The date is automatically appended
-/// as the last (right-aligned) column.
+/// Each column is a (label, value) pair. We tack the
+/// date on as the last column, right-aligned.
 ///
-/// - geschaeftszeile (array): Column entries as (("Label", "Value"), ...)
-/// - datum (str): Date string
-/// - zeilenabstand (length): Line spacing
-/// - strings (dictionary): i18n strings (datum key)
+/// - geschaeftszeile (array): your columns as (("Label", "Value"), ...)
+/// - datum (str): date — lands in the last column
+/// - zeilenabstand (length): line spacing
+/// - strings (dictionary): translated "Datum"
 #let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings) = {
   block(width: 100%)[
     #let alle_posten = geschaeftszeile + ((strings.datum, datum),)
@@ -134,11 +135,13 @@
   ]
 }
 
-/// Renders the signature block with a line for handwritten signature.
+/// A line to sign, then your name under it.
 ///
-/// - name (str): Name below the signature line
-/// - zusatz (str): Additional text below the name (e.g. title, department)
-/// - zeilenabstand (length): Line spacing
+/// Add `zusatz` if you want a title or department below.
+///
+/// - name (str): your name
+/// - zusatz (str): extra line (e.g. your title)
+/// - zeilenabstand (length): line spacing
 #let signatur_block(name, zusatz, zeilenabstand) = {
   v(5 * zeilenabstand)
   line(length: 40%, stroke: 0.5pt + black)

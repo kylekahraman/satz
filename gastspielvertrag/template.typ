@@ -4,15 +4,15 @@
 
 #import "components.typ": contract_header, paragraph_1, paragraph_2, paragraph_3, paragraph_4, paragraph_5, paragraph_6, paragraph_7, paragraph_8, signature_lines
 
-/// A guest performance contract (Gastspielvertrag) with fill-in fields for the venue.
+/// Guest performance contract — blanks for the venue to fill in.
 ///
-/// Supports three output formats:
+/// Pick what you send:
 /// - `"vertrag"`: full contract with all §§ and signature lines
-/// - `"angebot"`: non-binding offer (no signatures, "Kostenvoranschlag" title)
-/// - `"rechnung"`: invoice mode (reuses satz invoice components)
+/// - `"angebot"`: offer — no sigs, says "Kostenvoranschlag"
+/// - `"rechnung"`: invoice mode
 ///
-/// Fill-in blanks are rendered as underlined spaces — the recipient fills them out
-/// by hand or in a PDF editor. All artist-side defaults use placeholder values.
+/// Blanks show as underlines — fill them by hand or in a PDF editor.
+/// Artist defaults are placeholders — set your own.
 ///
 /// ```example
 /// #show: gastspielvertrag.with(
@@ -26,33 +26,33 @@
 /// ```
 ///
 /// - dokument (str): "vertrag", "angebot", or "rechnung"
-/// - veranstaltung (str): Event name
-/// - location (str): Venue name
-/// - datum (str): Event date
-/// - auftrittszeit (str): Performance start time
-/// - auftrittsdauer (str): Performance duration
-/// - einlass (str): Doors open time
-/// - curfew (str): Curfew time
-/// - musiker (int): Number of musicians
-/// - techniker (bool): Technician present
-/// - fotograf (bool): Photographer present
+/// - veranstaltung (str): what's the show?
+/// - location (str): where?
+/// - datum (str): when?
+/// - auftrittszeit (str): stage time
+/// - auftrittsdauer (str): how long you play
+/// - einlass (str): doors open
+/// - curfew (str): when you stop
+/// - musiker (int): how many musicians
+/// - techniker (bool): bring a tech?
+/// - fotograf (bool): bring a photographer?
 /// - gage_typ (str): "fest" or "prozent"
-/// - festgage (int): Fixed fee in EUR
-/// - prozentsatz (int): Percentage of ticket sales
-/// - mindestgage (int): Minimum guaranteed fee
-/// - kleinunternehmer (bool): Show § 19 UStG small business notice
-/// - transport_km (int): One-way distance in km (0 = no transport)
-/// - transport_satz (float): EUR per km (default 0.30)
-/// - techniker_honorar (int): Technician fee (0 = none)
-/// - uebernachtung (int): Accommodation costs (0 = none)
-/// - sonstiges_text (str): Additional cost description
-/// - sonstiges_betrag (int): Additional cost amount
-/// - buyout_pro_person (int): Buy-out per person in EUR
-/// - kuenstler (str): Artist name
-/// - kuenstler_vertreter (str): Artist representative
-/// - kuenstler_anschrift (str): Artist address
-/// - font (str): Body font. Defaults to "Inter".
-/// - body (content): Additional contract text (appended after §8)
+/// - festgage (int): flat fee in EUR
+/// - prozentsatz (int): % of ticket sales
+/// - mindestgage (int): minimum you get
+/// - kleinunternehmer (bool): show the § 19 VAT-free note?
+/// - transport_km (int): one-way distance (0 = no transport)
+/// - transport_satz (float): EUR per km — 0.30 by default
+/// - techniker_honorar (int): tech fee (0 = none)
+/// - uebernachtung (int): hotel costs (0 = none)
+/// - sonstiges_text (str): what else costs?
+/// - sonstiges_betrag (int): how much else?
+/// - buyout_pro_person (int): buy-out per person in EUR
+/// - kuenstler (str): your artist name
+/// - kuenstler_vertreter (str): who signs for you
+/// - kuenstler_anschrift (str): your address
+/// - font (str): body font — "Inter" by default
+/// - body (content): extra text after §8 if you need it
 #let gastspielvertrag(
   // Document type
   dokument: "vertrag",
