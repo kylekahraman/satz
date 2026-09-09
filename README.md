@@ -2,7 +2,7 @@
 
 A Typst document class for everyday documents — letters, invoices, reports, journals, and grant proposals.
 
-Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `personal.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.
+Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `class.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.
 
 ## Quick Usage
 
@@ -99,4 +99,4 @@ MIT
 
 ## Status
 
-`0.1.1` — letters, invoices, journal, report, cover, LoF/Lot ready. API stable for these templates; DFG/article still WIP and may change.
+`0.1.1` — letters, invoices, journal, report, cover, LoF/LoT ready. API stable for these templates; DFG/article still WIP and may change.
