@@ -54,6 +54,22 @@
   ]
 }
 
+/// Sender header for a letter sent as a PDF rather than in a window envelope.
+/// Only populated contact fields are shown.
+#let digitaler_absender_block(absender, hoehe: 19mm) = {
+  let name = absender.at("name", default: "")
+  let email = absender.at("email", default: "")
+  let website = absender.at("website", default: "")
+
+  block(width: 100%, height: hoehe)[
+    #align(right)[
+      #if name != "" [#text(size: 12pt, weight: "bold")[#name] #linebreak()]
+      #if email != "" [#text(size: 9pt)[#link("mailto:" + email)[#email]] #linebreak()]
+      #if website != "" [#text(size: 9pt)[#link("https://" + website)[#website]]]
+    ]
+  ]
+}
+
 /// The address window for envelopes.
 ///
 /// 85 mm wide, sits where the window sits. Shows your
@@ -109,6 +125,25 @@
   ]
 }
 
+/// Recipient without the return-address line or window-envelope frame.
+#let digitaler_empfaenger_block(empfaenger) = {
+  let name = empfaenger.at("name", default: "")
+  let zusatz = empfaenger.at("zusatz", default: none)
+  let strasse = empfaenger.at("strasse", default: "")
+  let plz_ort = empfaenger.at("plz_ort", default: "")
+  let land = empfaenger.at("land", default: "")
+
+  block(width: 100%)[
+    #text(size: 11pt)[
+      #if name != "" [#name #linebreak()]
+      #if zusatz != none and zusatz != "" [#zusatz #linebreak()]
+      #if strasse != "" [#strasse #linebreak()]
+      #if plz_ort != "" [#plz_ort #linebreak()]
+      #if land != "" [#land]
+    ]
+  ]
+}
+
 /// The ref line above the subject.
 ///
 /// Each column is a (label, value) pair. We tack the
@@ -135,6 +170,12 @@
   ]
 }
 
+/// Date at the right edge, without business reference fields.
+#let digitales_datum_block(datum, strings) = align(right)[
+  #text(size: 7.5pt)[#strings.datum] \
+  #text(size: 9pt)[#datum]
+]
+
 /// A line to sign, then your name under it.
 ///
 /// Add `zusatz` if you want a title or department below.
@@ -142,8 +183,8 @@
 /// - name (str): your name
 /// - zusatz (str): extra line (e.g. your title)
 /// - zeilenabstand (length): line spacing
-#let signatur_block(name, zusatz, zeilenabstand) = {
-  v(5 * zeilenabstand)
+#let signatur_block(name, zusatz, zeilenabstand, davor) = {
+  v(davor)
   line(length: 40%, stroke: 0.5pt + black)
   v(1 * zeilenabstand)
   name

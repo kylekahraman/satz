@@ -43,11 +43,53 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 
 Stable: letter, invoice, journal, report, cover, legal-complaint, gastspielvertrag. Experimental: dfg-proposal, article mode.
 
-### Letter — Internationalization
+### Letter — Internationalization and PDF applications
 
 The `brief()` function accepts `lang: "de"` (default) or `"en"`:
 - Labels for phone, email, date, attachments, page numbers switch language
 - Text language is set accordingly for hyphenation rules
+
+The postal layout remains the default. For an application sent as a PDF, the
+same `brief()` template can hide envelope-specific components:
+
+```typst
+#import "@local/satz:0.1.1": brief
+
+#show: brief.with(
+  absender: (name: "Your Name", email: "you@example.org", website: "example.org"),
+  empfaenger: (name: "Recipient", zusatz: "University"),
+  betreff: "Application for a PhD position",
+  lang: "en",
+  falzmarken: false,
+  adressfenster: false,
+  seitenzahlen: false,
+  digitaler_absender: true,
+  datum_rechts: true,
+  blocksatz: false,
+  abstaende: (absender_empfaenger: 0.65em),
+  signatur: false,
+)
+
+Dear Recipient,
+
+Your letter text.
+```
+
+`postvermerk: ""` already hides the postal note. `signatur: false` omits the
+printed signature line; include a closing in the body when using it. The new
+options default to the previous postal behaviour, so existing letters render
+as before. The digital options are currently in the local development version;
+switch back to `@preview` after publishing a new package version.
+
+The page format, margins, and body text size are configurable with `papier`,
+`seitenraender`, and `schriftgroesse`. `zeilenabstand` controls body leading and
+the default gaps. `abstaende` accepts partial overrides for
+`absender_empfaenger`, `empfaenger_datum`, `datum_betreff`, `betreff_text`,
+`datum_text`, and the corresponding `absender_*` / `empfaenger_*` gaps when
+earlier blocks are hidden, plus `signatur`. Set
+`absender_anzeigen`, `empfaenger_anzeigen`, `datum_anzeigen`, or
+`betreff_anzeigen` to `false` to omit those blocks; `betreff_groesse` and
+`digitaler_absender_hoehe` adjust the subject size and digital header height.
 
 ### Invoice — EPC QR Code
 
