@@ -37,6 +37,7 @@
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
 - [ ] **Inline config quick start** — make the README show exactly how to pass a small config directly to a template; explain that a reusable `config.typ` is optional
 - [ ] **Journal onboarding** — make a new research journal straightforward to set up, with a copyable starter example and clear instructions for entries, the index, and customization
+- [x] **Cover page presets** — preserve the composable cover API and add ready-made classic, research, and minimal layouts with neutral, jade, slate, warm, plum, and rose themes
 - [ ] **Table authoring and styling** — make attractive tables easy to create with sensible defaults and reusable helpers; include examples for common table layouts
 - [ ] **Dependency review** — evaluate Typst packages that could simplify reusable document components, table creation, and diagrams/schematics; compare maintenance, API fit, and added complexity before adopting any dependency
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.

@@ -8,6 +8,6 @@
 #import "journal/template.typ": journal-entry, journal-index, remember, question
 #import "defaults.typ": defaults, merge
 #import "report/template.typ": report
-#import "cover.typ": cover-page
+#import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
 #import "class.typ": personal, satz-figure
 #import "citation.typ": citepre

@@ -39,7 +39,7 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 | **dfg-proposal** | `dfg-proposal(...)` | DFG form 53.01 (Sachbeihilfe) in German and English — **work in progress** |
 | **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
 | **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
-| **cover** | `cover-page(...)` | Composable cover page with logos/body/footer slots |
+| **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
 
 Stable: letter, invoice, journal, report, cover, legal-complaint, gastspielvertrag. Experimental: dfg-proposal, article mode.
 
@@ -96,6 +96,32 @@ earlier blocks are hidden, plus `signatur`. Set
 Set `qr: true` (default) to embed a scannable GiroCode:
 - Encodes IBAN, BIC, amount (auto-calculated from line items or overridden via `qr-betrag`), and purpose (`qr-verwendungszweck`)
 - Banking apps (e.g. N26, Sparkasse) auto-fill transfer details when scanned
+
+### Cover pages — ready-made layouts or full control
+
+For a research notebook, pass the usual title details directly. No separate
+`config.typ` is needed. These helpers are planned for v0.2.0. The import below
+uses a local development install; after release, use `@preview/satz:0.2.0`:
+
+```typst
+#import "@local/satz:0.1.1": research-cover
+
+#research-cover(
+  title: [MEG Connectivity Analysis in #box[Non-Conscious] Working Memory],
+  subtitle: "Research Notebook",
+  author: "Your Name",
+  date: "October 2026",
+  supervisors: ("Supervisor One", "Supervisor Two"),
+  theme: "soft-jade",
+  config: (page: (paper: "iso-b5")),
+)
+```
+
+Use `minimal-cover` for a centered title page, or `cover-page(layout: "classic", body: [...])`
+to keep composing the original logo/body/footer slots. Built-in themes are
+`neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
+`soft-rose`. You can still override individual colors with
+`config: (colors: (brand-primary: ...))`.
 
 ## Structure
 
