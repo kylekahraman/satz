@@ -174,7 +174,7 @@
     if it.body != c.toc.title and it.body != c.lof.title and it.body != c.lot.title {
       context { chapter-state.update((body: it.body, page: counter(page).get().first())) }
     }
-    block(width: 100%, below: c.headings.h1-below)[
+    block(width: 100%, above: c.headings.h1-above, below: c.headings.h1-below)[
       #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
       #v(0.5em)
       #if kind == "journal" {
@@ -186,16 +186,16 @@
   }
   show heading.where(level: 2): it => {
     context { section-state.update((body: it.body, page: counter(page).get().first())) }
-    block(below: c.headings.h2-below)[
+    block(above: c.headings.h2-above, below: c.headings.h2-below)[
       #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
       #it
     ]
   }
-  show heading.where(level: 3): it => block(below: c.headings.h3-below)[
+  show heading.where(level: 3): it => block(above: c.headings.h3-above, below: c.headings.h3-below)[
     #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h3-size)
     #it
   ]
-  show heading.where(level: 4): it => block(below: c.headings.h4-below)[
+  show heading.where(level: 4): it => block(above: c.headings.h4-above, below: c.headings.h4-below)[
     #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h4-size)
     #it
   ]
