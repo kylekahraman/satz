@@ -16,10 +16,10 @@
   ),
   headings: (
     numbering: "1.1",
-    h1-size: 14pt,  h1-above: 0.65em, h1-below: 0.65em,
-    h2-size: 12pt,  h2-above: 0.65em, h2-below: 0.65em,
-    h3-size: 11pt,  h3-above: 0.65em, h3-below: 0.65em,
-    h4-size: 11pt,  h4-above: 0.4em, h4-below: 0.4em,
+    h1-size: 14pt, h1-below: 0.65em,
+    h2-size: 12pt, h2-below: 0.65em,
+    h3-size: 11pt, h3-below: 0.65em,
+    h4-size: 11pt, h4-below: 0.4em,
   ),
   links: (
     color: rgb("#B4313F"),
