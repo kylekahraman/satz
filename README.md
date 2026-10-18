@@ -91,6 +91,11 @@ earlier blocks are hidden, plus `signatur`. Set
 `betreff_anzeigen` to `false` to omit those blocks; `betreff_groesse` and
 `digitaler_absender_hoehe` adjust the subject size and digital header height.
 
+Use `anlagenverzeichnis: ("Protocol copy", "Schedule copy")` to print an
+enclosure list without embedding files. If `anlagen` also contains file paths,
+the named list supplies their display labels; without it, the existing path
+labels remain the fallback.
+
 ### Invoice — EPC QR Code
 
 Set `qr: true` (default) to embed a scannable GiroCode:

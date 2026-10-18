@@ -223,12 +223,13 @@
     signatur_block(absender.name, signatur_zusatz, zeilenabstand, abstaende.signatur)
   }
 
-  if anlagen.len() > 0 {
+  let enclosure-names = if anlagenverzeichnis.len() > 0 { anlagenverzeichnis } else { anlagen }
+  if enclosure-names.len() > 0 {
     v(3 * zeilenabstand)
     block(breakable: false, [
       #text(weight: "bold", size: 10pt)[#strings.anlagen:] \
       #v(0.5em)
-      #list(..anlagen.map(a => text(size: 9.5pt)[#a]))
+      #list(..enclosure-names.map(a => text(size: 9.5pt)[#a]))
     ])
     
     // PDF-Anhänge rendern
