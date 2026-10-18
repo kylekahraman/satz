@@ -1,0 +1,44 @@
+% Original typography comparison, MIT, satz contributors (2026).
+% KOMA-Script supplies the reference rhythm; this is not a pixel-matching target.
+\documentclass[11pt,parskip=half]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=25mm]{geometry}
+\setkomafont{disposition}{\normalfont\bfseries}
+\RedeclareSectionCommand[runin=false,afterskip=.65\baselineskip]{paragraph}
+\pagestyle{empty}
+\begin{document}
+\section{A report with a consistent rhythm}
+A report should let the reader follow an argument without noticing its layout.
+This specimen uses ordinary prose, four heading levels, and common transitions.
+The author does not insert vertical spacing to make individual sections fit.
+
+A second paragraph makes the distinction between line spacing and paragraph
+spacing visible. Both paragraphs should form a readable block, with enough
+separation to show where the next thought begins.
+
+\subsection{A section followed by ordinary text}
+The heading belongs to this paragraph. Its spacing should be controlled once,
+and should behave in the same way when the section moves to another page.
+\subsubsection{A smaller heading}
+Lower levels retain a clear hierarchy without overwhelming the prose.
+\paragraph{A fourth-level heading}
+This remains a block heading rather than running into the paragraph.
+\subsection{A deliberately long section heading that wraps onto a second line and still stays attached to the text that explains it}
+Both lines of the heading belong together. The gap below the final line should
+follow the same rule as the gap below a short heading.
+\section{Consecutive headings}
+\subsection{A subsection immediately follows}
+There is no intervening prose here. The headings should read as one hierarchy,
+rather than as unrelated blocks with independently accumulated blank space.
+\subsection{A heading followed by a list}
+\begin{itemize}
+\item First inspect the hierarchy.
+\item Then inspect the transitions.
+\item Finally inspect the page breaks.
+\end{itemize}
+\subsection{A heading followed by an equation}
+\[y=ax+b\]
+The same spacing policy also needs to work when the following content is a
+displayed equation. No special adjustment is made for this one location.
+\end{document}
