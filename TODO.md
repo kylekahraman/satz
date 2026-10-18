@@ -50,7 +50,7 @@
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
 - [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
-- [ ] **List of Abbreviations (Abkürzungsverzeichnis)** — key-value glossary table
+- [x] **List of Abbreviations (Abkürzungsverzeichnis)** — optional Glossarium 0.5.10 namespace via satz, term dictionaries, first-use expansion, linked references, and printable abbreviation list; see `examples/glossary.typ`
 - [x] **Figure/table caption styling** — configurable prefix, numbering, separator, font size
 - [ ] **Abstract environment** — styled abstract block
 - [ ] **Author/affiliation block** — name, affiliation, email, ORCID

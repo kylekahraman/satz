@@ -178,6 +178,38 @@ See the [paired KOMA-Script comparison](examples/latex-parity/README.md) for
 reproducible checks. Hydra also imports `oxifmt:1.0.0`; Typst downloads missing
 packages on the first compilation. This integration is not yet published.
 
+### Glossaries and abbreviations
+
+The local development version exports the pinned
+[`glossarium:0.5.10`](https://typst.app/universe/package/glossarium/) namespace.
+Keep one list of term definitions and install its show rule before the report:
+
+```typst
+#import "@local/satz:0.1.1": report, glossarium
+#show: glossarium.make-glossary
+#show: report
+
+#let terms = (
+  (key: "api", short: "API", long: "application programming interface"),
+)
+#glossarium.register-glossary(terms)
+
+= Introduction
+An @api connects programs. The @api is used again here.
+
+= List of abbreviations
+#glossarium.print-glossary(terms, disable-back-references: true)
+```
+
+First use expands the term; later uses show the abbreviation. Unused terms are
+hidden by default; pass `show-all: true` to print them too. Glossarium setup is
+optional and its upstream API remains available under the namespace. Importing
+satz downloads the package if it is missing; ordinary documents need no glossary
+configuration. This integration is not yet published. See
+[the complete example](examples/glossary.typ), including ordinary figures,
+tables, and short/long captions. Avoid broad `show figure` transformations when
+using Glossarium: it uses a special figure kind internally.
+
 For long captions use `satz-figure` — long text under the figure, short title in the List of Figures (or `short-caption: []` for compact):
 
 ```typst

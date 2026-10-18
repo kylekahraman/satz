@@ -11,3 +11,5 @@
 #import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
 #import "class.typ": personal, satz-figure
 #import "citation.typ": citepre
+// Optional author-facing glossary API; setup stays explicit in the document.
+#import "@preview/glossarium:0.5.10"
