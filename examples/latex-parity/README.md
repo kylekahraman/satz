@@ -169,3 +169,11 @@ it does not create a nested figure or require a package.
 Next: improve general report structure and title/contents authoring, and extend
 the report with bibliography and automatic pagination cases. Reports and
 journals take priority over further letter parity work.
+# Article layout checks
+
+Run `python3 examples/latex-parity/check_article.py` from the repository root.
+This compiles the public article example and checks column/figure widths,
+footnotes, cross-references, numbering, single-column/inline-contents options,
+full-width report contents, and author affiliation validation. The example uses
+an explicit page break before the wide float to preserve figure order.
+

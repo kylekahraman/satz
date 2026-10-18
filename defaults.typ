@@ -24,6 +24,8 @@
     margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
     binding: none,
     headers: false,
+    columns: 1,
+    column-gutter: 5mm,
   ),
   typography: (
     font: "Libertinus Serif",

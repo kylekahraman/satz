@@ -45,6 +45,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 ### Work items
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
+- [x] **Article entry point and native columns** — full-width title/authors/affiliations/abstract, two-column body, one-column option, inline contents, and ordinary page numbering; report front matter stays single-column. See `examples/article.typ` and `examples/latex-parity/check_article.py`.
 - [x] **Native heading rhythm** — remove nested heading blocks and the forced h1 gap, increase default space below headings, expose paragraph spacing/indentation, and verify native flow plus page-edge cases in `examples/latex-parity/check_typography.py`
 - [x] **Inline config quick start** — README explains optional `config.typ`, inline overrides, and a complete one-file letter using the existing public API
 - [ ] **Journal onboarding** — make a new research journal straightforward to set up, with a copyable starter example and clear instructions for entries, the index, and customization

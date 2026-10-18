@@ -85,11 +85,13 @@
     header: if header != none { header } else { none },
     footer: if footer != none { footer } else { none },
     numbering: numbering,
+    columns: c.page.columns,
   )
   if two-sided {
     page-args.insert("binding", c.page.binding)
   }
   set page(..page-args)
+  set columns(gutter: c.page.column-gutter)
 
   // Two-sided: alternating page numbers (only when no custom footer provided).
   // Set rules are block-scoped in Typst, so a `set page` inside an `if` block
@@ -219,8 +221,9 @@
   // --- Table styling (booktabs-style) ---
   set table(
     stroke: none,
-    inset: (x: 8pt, y: 4pt),
+    inset: c.tables.inset,
   )
+  show table: set text(size: c.tables.font-size)
 
   // Figures with satz-figure store the long caption in <satz-long>
   // metadata, the LoF reads the short caption. Swap the long one back here.
@@ -315,7 +318,7 @@
   // --- Table of Contents (report/thesis) ---
   if kind != "journal" and c.toc.depth != 0 {
     {
-      set page(header: none, footer: none, numbering: none)
+      set page(header: none, footer: none, numbering: none, columns: 1)
       outline(
         title: c.toc.title,
         depth: c.toc.depth,
@@ -331,7 +334,7 @@
         if query(figure.where(kind: image)).len() > 0 {
           pagebreak()
           {
-            set page(header: none, footer: none, numbering: none)
+            set page(header: none, footer: none, numbering: none, columns: 1)
             outline(
               title: c.lof.title,
               target: figure.where(kind: image),
@@ -350,7 +353,7 @@
         if query(figure.where(kind: table)).len() > 0 {
           pagebreak()
           {
-            set page(header: none, footer: none, numbering: none)
+            set page(header: none, footer: none, numbering: none, columns: 1)
             outline(
               title: c.lot.title,
               target: figure.where(kind: table),
