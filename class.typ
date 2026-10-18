@@ -221,9 +221,8 @@
   // --- Table styling (booktabs-style) ---
   set table(
     stroke: none,
-    inset: c.tables.inset,
+    inset: (x: 8pt, y: 4pt),
   )
-  show table: set text(size: c.tables.font-size)
 
   // Figures with satz-figure store the long caption in <satz-long>
   // metadata, the LoF reads the short caption. Swap the long one back here.
