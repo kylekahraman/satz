@@ -8,7 +8,7 @@
 /// Nested dicts merge deep, so `config: (colors: (brand-primary: blue))` just changes that one color.
 ///
 /// - page (dictionary): paper, margins, binding
-/// - typography (dictionary): font, size, leading, hyphenation, justification
+/// - typography (dictionary): font, size, leading, paragraph spacing/indent, hyphenation, justification
 /// - headings (dictionary): numbering, sizes, spacing per level
 /// - decorative (dictionary): header, footer, date, keyword, and list sizes
 /// - page-footer (dictionary): how page numbers look
@@ -29,15 +29,17 @@
     font: "Libertinus Serif",
     size: 11pt,
     leading: 0.65em,
+    paragraph-spacing: 1.2em,
+    first-line-indent: 0pt,
     hyphenate: false,
     justify: true,
   ),
   headings: (
     numbering: "1.1",
-    h1-size: 14pt, h1-below: 0.65em,
-    h2-size: 12pt, h2-below: 0.65em,
-    h3-size: 11pt, h3-below: 0.65em,
-    h4-size: 11pt, h4-below: 0.4em,
+    h1-size: 14pt, h1-below: 1em,
+    h2-size: 12pt, h2-below: 1em,
+    h3-size: 11pt, h3-below: 0.9em,
+    h4-size: 11pt, h4-below: 0.75em,
   ),
   decorative: (
     header-size: 9pt,

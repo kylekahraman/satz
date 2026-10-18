@@ -155,6 +155,8 @@
   set par(
     justify: c.typography.justify,
     leading: c.typography.leading,
+    spacing: c.typography.paragraph-spacing,
+    first-line-indent: c.typography.first-line-indent,
   )
 
   // --- List spacing ---
@@ -165,32 +167,20 @@
   // --- Heading numbering (journal uses none) ---
   set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
 
-  // --- Heading show rules ---
-  show heading.where(level: 1): it => {
-    block(width: 100%, below: c.headings.h1-below)[
-      #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
-      #v(0.5em)
-      #if kind == "journal" {
-        smallcaps(it.body)
-      } else {
-        it
-      }
-    ]
-  }
-  show heading.where(level: 2): it => {
-    block(below: c.headings.h2-below)[
-      #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
-      #it
-    ]
-  }
-  show heading.where(level: 3): it => block(below: c.headings.h3-below)[
-    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h3-size)
-    #it
-  ]
-  show heading.where(level: 4): it => block(below: c.headings.h4-below)[
-    #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h4-size)
-    #it
-  ]
+  // --- Native heading styling ---
+  // Style the heading's own block rather than nesting a second heading block.
+  // Native above-spacing, page-start trimming, and stickiness remain intact.
+  show heading.where(level: 1): set text(size: c.headings.h1-size, fill: c.colors.brand-primary, weight: "bold")
+  show heading.where(level: 2): set text(size: c.headings.h2-size, fill: c.colors.brand-primary, weight: "bold")
+  show heading.where(level: 3): set text(size: c.headings.h3-size, fill: c.colors.brand-primary, weight: "bold")
+  show heading.where(level: 4): set text(size: c.headings.h4-size, fill: c.colors.brand-primary, weight: "bold")
+  show heading.where(level: 1): set block(below: c.headings.h1-below)
+  show heading.where(level: 2): set block(below: c.headings.h2-below)
+  show heading.where(level: 3): set block(below: c.headings.h3-below)
+  show heading.where(level: 4): set block(below: c.headings.h4-below)
+  show heading.where(level: 1): it => if kind == "journal" {
+    block(smallcaps(it.body))
+  } else { it }
 
   // --- Links ---
   // External URLs (string dest) get url-color + underline for all kinds.

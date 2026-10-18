@@ -128,6 +128,35 @@ journal were also recompiled: their rendered page hashes match the pre-fix
 versions. Header tests are behavioral; they do not establish identical LaTeX
 line breaking or page design.
 
-Next: remove the inline article title/contents/numbering workarounds through a
-small supported article mode, and expand the report with bibliography and
-automatic pagination cases.
+## Heading and paragraph typography
+
+`typography.typ`, `typography-content.typ`, and `typography.tex` are original
+MIT-licensed specimens. They show all four configured heading levels, paragraphs,
+consecutive headings, a wrapped heading, a list, and an equation. The KOMA
+reference uses `scrartcl` with half-line paragraph separation and a block-style
+fourth-level heading. Font metrics and page counts can differ; it supplies a
+visual reference rather than an exact spacing target.
+
+```sh
+python3 examples/latex-parity/check_typography.py
+```
+
+The script produces `output/typography-report.pdf`, an equivalent native Typst
+control, and `output/typography.pdf` from LaTeX. It checks native heading geometry,
+multiline/consecutive headings, eight small-page attachment cases, and the
+geometry of paragraph spacing and indentation overrides. Before the change,
+the level-one heading had an extra 7pt page-start offset, and the paragraph
+config keys were ignored. The page-edge probes already passed; no orphan-heading
+bug was established.
+
+The shared class now uses native heading styling and roomier below-spacing.
+Paragraph defaults retain the prior native behavior, with explicit config keys.
+Journal titles retain their small-caps presentation. The existing five-page
+journal example was compiled through local satz and visually inspected, along
+with the report and prior reference examples. These are intentional typography
+changes and may reflow documents; old `em` below-spacing values now resolve in
+the native heading context.
+
+Next: improve general report structure and title/contents authoring, and extend
+the report with bibliography and automatic pagination cases. Reports and
+journals take priority over further letter parity work.

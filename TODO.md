@@ -36,15 +36,16 @@
 
 ### Next priorities
 
-1. **Heading and paragraph rhythm** — compare native Typst, current satz, and KOMA-Script; fix heading/body and paragraph spacing together, including page starts, consecutive headings, multiline headings, and orphan prevention. Use native layout controls before adding a spacing dependency.
-2. **Letter coverage and ease of use** — extend the simple reference to a rich two-page letter; verify envelope geometry, date, closing/signature, enclosure list, and continuation behavior. Reduce digital-letter setup after those behaviors are tested.
-3. **Simple document/article entry points** — provide intentional defaults for ordinary documents and inline title/contents behavior without report-specific workarounds. Preserve the existing API while improving the shortest authoring path.
+1. **Report as the shared foundation** — keep improving typography and general document behavior for theses, assignments, and ordinary reports. The first native-heading/paragraph-spacing pass is complete; extend automatic-pagination and bibliography coverage next.
+2. **Simple document/article entry points** — provide intentional defaults for ordinary documents and inline title/contents behavior without report-specific workarounds. Preserve the existing API while improving the shortest authoring path.
+3. **Journal quality and onboarding** — validate shared changes in real entries, improve the entry/index workflow, and provide a concise starting point. Letter parity remains secondary backlog work.
 
 See [the quality and usability assessment](docs/document-quality.md) for current coverage, dependency fit, and acceptance criteria.
 
 ### Work items
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
+- [x] **Native heading rhythm** — remove nested heading blocks and the forced h1 gap, increase default space below headings, expose paragraph spacing/indentation, and verify native flow plus page-edge cases in `examples/latex-parity/check_typography.py`
 - [x] **Inline config quick start** — README explains optional `config.typ`, inline overrides, and a complete one-file letter using the existing public API
 - [ ] **Journal onboarding** — make a new research journal straightforward to set up, with a copyable starter example and clear instructions for entries, the index, and customization
 - [x] **Cover page presets** — preserve the composable cover API and add ready-made classic, research, and minimal layouts with neutral, jade, slate, warm, plum, and rose themes

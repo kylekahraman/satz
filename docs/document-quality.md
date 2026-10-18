@@ -4,9 +4,10 @@
 
 Satz should make ordinary writing quick and produce a coherent document without
 requiring authors to tune each heading. Current comparisons establish selected
-behaviors, not complete KOMA-Script parity. The next core task is heading and
-paragraph rhythm, followed by a richer letter comparison and simpler document
-entry points. Further template-file/interface work is deferred for discussion.
+behaviors, not complete KOMA-Script parity. Reports are the primary foundation
+for theses, assignments, and general documents; journals are the second focus
+and a consuming-document check. Letter parity is secondary. Further
+template-file/interface work is deferred for discussion.
 
 ## Dependency opportunities
 
@@ -25,24 +26,34 @@ Versions, licenses, and source links are in the
 [initial review](package-research.md) and [additional review](additional-packages.md).
 The broader package survey is complete; each integration is a separate task.
 
-## Heading and paragraph rhythm: next core increment
+## Heading and paragraph rhythm: first increment completed
 
-In `class.typ`, level-one headings have both an outer block and an internal
-`v(0.5em)`; all four levels wrap the native heading. Below-spacing is configurable,
-while paragraph spacing/indentation are inherited rather than exposed in the
-shared config. Above-spacing options were deliberately removed in `97f7809`.
-These are design facts, not proof that every current gap is wrong.
+The original level-one heading inserted an internal `v(0.5em)` and all four
+levels wrapped the native heading. The specimen measured a 7pt h1 page-start
+offset relative to equivalent native styling. The first pass removes these
+wrappers for reports, styles native headings with show-set rules, and increases
+default below-spacing to 1em/1em/0.9em/0.75em. Above-spacing remains native;
+options deliberately removed in `97f7809` have not been reintroduced.
+
+Paragraph spacing and first-line indentation now have shared config keys.
+Their explicit defaults retain the prior native paragraph behavior. The
+specimen checks that an 8pt spacing override changes the measured gap by 8pt,
+and that indentation is suppressed after headings. Eight bounded page-edge
+cases pass before and after the change; no orphan-heading defect was reproduced.
 
 Typst has native [paragraph leading/spacing](https://typst.app/docs/reference/model/par/)
 and [block above/below spacing and stickiness](https://typst.app/docs/reference/layout/block/).
 Adjacent block gaps collapse; leading is not a LaTeX baseline multiplier. A
 package cannot pick a coherent document rhythm for us without design choices.
 
-Build one compact paired specimen containing all four heading levels, ordinary
+The compact paired specimen contains all four heading levels, ordinary
 paragraphs, two consecutive headings, a multiline heading, a list and equation
-after headings, and headings near a page boundary. Compare current satz, plain
-Typst, and KOMA-Script using comparable fonts and content. Measure baseline and
-heading/body distances where useful, then refine the native heading styling.
+after headings, with separate page-boundary probes. It compares satz, plain
+Typst, and KOMA-Script using comparable fonts and content. The new report matches
+the native control's heading geometry; KOMA-Script remains a visual reference,
+not a claim of identical line breaking or spacing. See
+`examples/latex-parity/check_typography.py`. Header, glossary, caption, journal,
+and existing one-page comparisons were also checked.
 
 Acceptance criteria:
 

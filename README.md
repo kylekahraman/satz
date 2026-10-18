@@ -195,6 +195,32 @@ nested `config` dictionary shown here.
 
 Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `decorative`, `page-footer`, `links`, `tables`, `captions`, `toc`, `lof`, `lot`, `bibliography`, `colors`.
 
+### Heading and paragraph rhythm
+
+The local development version styles native headings directly. It removes the
+extra gap inside level-one headings and provides more space below all four
+configured heading levels. Native spacing above headings, page-start trimming,
+and attachment to following content remain in effect. Existing `h1-below`
+through `h4-below` overrides still work; `em` lengths are resolved in the native
+heading's text context. These intentional default changes can alter pagination.
+
+Paragraphs default to `paragraph-spacing: 1.2em` and `first-line-indent: 0pt`.
+For indented prose with the same line rhythm between paragraphs:
+
+```typst
+#show: report.with(config: (typography: (
+  leading: 0.65em,
+  paragraph-spacing: 0.65em,
+  first-line-indent: 1em,
+)))
+```
+
+Typst's paragraph spacing measures the gap between text edges, so matching it
+to `leading` gives continuous line spacing between paragraphs. The first
+paragraph after a heading stays unindented. The same config works in journal
+entries. See the [native/KOMA typography comparison](examples/latex-parity/README.md)
+for the specimen and checks. This change is not yet published.
+
 ### Running headers
 
 In the local development version, two-sided reports and theses use
