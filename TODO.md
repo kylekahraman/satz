@@ -65,6 +65,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
 - [x] **List of Abbreviations (Abkürzungsverzeichnis)** — optional Glossarium 0.5.10 namespace via satz, term dictionaries, first-use expansion, linked references, and printable abbreviation list; see `examples/glossary.typ`
 - [x] **Figure/table caption styling** — configurable prefix, numbering, separator, font size
+- [x] **Placeholder figures** — native `placeholder(width:, height:, label:)` box, composable with normal `figure` and `satz-figure`; verified dimensions, centering, captions, references, and LoF
 - [ ] **Abstract environment** — styled abstract block
 - [ ] **Author/affiliation block** — name, affiliation, email, ORCID
 - [ ] **Article mode** — `kind: "article"`, two-column layout, abstract, author block

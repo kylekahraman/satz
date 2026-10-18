@@ -157,6 +157,15 @@ with the report and prior reference examples. These are intentional typography
 changes and may reflow documents; old `em` below-spacing values now resolve in
 the native heading context.
 
+## Draft figure placeholders
+
+`examples/placeholders.typ` demonstrates the public `placeholder()` helper in a
+normal figure and in `satz-figure`. Run
+`python3 examples/latex-parity/check_placeholders.py` to compile the example and
+check label centering, physical dimensions, figure references, short/long
+captions, and the List of Figures. The helper draws a native rectangle and label;
+it does not create a nested figure or require a package.
+
 Next: improve general report structure and title/contents authoring, and extend
 the report with bibliography and automatic pagination cases. Reports and
 journals take priority over further letter parity work.

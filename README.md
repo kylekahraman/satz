@@ -282,6 +282,29 @@ For long captions use `satz-figure` — long text under the figure, short title 
 #satz-figure(image("plot.png"), caption: [Very long ...], short-caption: [Short title])
 ```
 
+### Placeholder figures
+
+Draft a report before the illustrations are ready with `placeholder`, available
+in the local development version. It draws a labeled empty box using native
+Typst, with no additional dependency:
+
+```typst
+#import "@local/satz:0.1.1": placeholder
+
+#figure(
+  placeholder(width: 80%, height: 4cm, label: [Planned result plot]),
+  caption: [Results will be inserted here.],
+) <fig:planned>
+
+See @fig:planned.
+```
+
+`placeholder()` defaults to the available width, 4cm height, and the label
+“Placeholder”. It also works inside `satz-figure` for short/long captions. The
+box itself adds no caption, numbering, or outline entry; the surrounding figure
+provides those. An optional `config` supplies satz color/caption-style overrides.
+See [the complete report example](examples/placeholders.typ).
+
 ## License
 
 MIT
