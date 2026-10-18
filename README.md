@@ -6,6 +6,35 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 
 ## Quick Usage
 
+### Write a letter in one file
+
+This is a complete `main.typ`; no copied template file or separate `config.typ`
+is required. The example uses the local development version, including the
+unpublished improvements described below:
+
+```typst
+#import "@local/satz:0.1.1": letter
+#show: letter.with(
+  absender: (name: "Example Author", strasse: "Example Street 1", plz_ort: "12345 Example City"),
+  empfaenger: (name: "Example Recipient", strasse: "Sample Road 2", plz_ort: "54321 Sample City"),
+  betreff: "Appointment request",
+  lang: "en",
+)
+
+Dear Example Recipient,
+
+Could we arrange an appointment next week?
+
+Kind regards,
+```
+
+`letter` is an alias for `brief`; both currently use German parameter names.
+The package supplies the page layout, sender/recipient blocks, date, subject,
+and signature line. Write the salutation and closing in the body. For a digital
+letter, see the options below; a concise digital preset is still a usability gap.
+
+### Reports and journals
+
 ```typst
 #import "@preview/satz:0.1.1": report
 #show: report.with(config: (
@@ -32,7 +61,7 @@ Inspired by KOMA-Script, **satz** provides a unified configuration system (`defa
 
 | Template | Function | Description |
 |---|---|---|
-| **letter** | `brief(absender, empfaenger, datum, betreff, lang:, body)` | DIN 5008 conform letter with fold/punch marks. Supports `lang: "de"` / `"en"` for localized labels. Structured recipient fields: `name`, `zusatz`, `strasse`, `plz_ort`, `land`. |
+| **letter** | `brief(absender, empfaenger, datum, betreff, lang:, body)` | DIN 5008-style postal letter with fold/punch marks; envelope geometry still needs verification. Supports `lang: "de"` / `"en"` for localized labels. Structured recipient fields: `name`, `zusatz`, `strasse`, `plz_ort`, `land`. |
 | **invoice** | `rechnung(absender, empfaenger, datum, posten, qr:, qr-betrag:, qr-verwendungszweck:, body)` | German invoice adapted from the letter template. Optional EPC QR code (GiroCode) — banking apps auto-fill transfer details. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
 | **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis — numbered headings, auto TOC/LoF/LoT, two-sided layout, bibliography |
@@ -150,6 +179,11 @@ gastspielvertrag/    ← gastspielvertrag — guest performance contract
 ## Configuration
 
 Override only what you need — everything else keeps its default:
+
+Pass small overrides directly in the show rule. A reusable `config.typ` is
+optional and useful when several documents should share settings. Letters and
+invoices currently take direct named options; reports and journals take the
+nested `config` dictionary shown here.
 
 ```typst
 #show: report.with(config: (

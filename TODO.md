@@ -34,17 +34,29 @@
 
 ## 🚧 v0.2.0 — Planned
 
+### Next priorities
+
+1. **Heading and paragraph rhythm** — compare native Typst, current satz, and KOMA-Script; fix heading/body and paragraph spacing together, including page starts, consecutive headings, multiline headings, and orphan prevention. Use native layout controls before adding a spacing dependency.
+2. **Letter coverage and ease of use** — extend the simple reference to a rich two-page letter; verify envelope geometry, date, closing/signature, enclosure list, and continuation behavior. Reduce digital-letter setup after those behaviors are tested.
+3. **Simple document/article entry points** — provide intentional defaults for ordinary documents and inline title/contents behavior without report-specific workarounds. Preserve the existing API while improving the shortest authoring path.
+
+See [the quality and usability assessment](docs/document-quality.md) for current coverage, dependency fit, and acceptance criteria.
+
+### Work items
+
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
-- [ ] **Inline config quick start** — make the README show exactly how to pass a small config directly to a template; explain that a reusable `config.typ` is optional
+- [x] **Inline config quick start** — README explains optional `config.typ`, inline overrides, and a complete one-file letter using the existing public API
 - [ ] **Journal onboarding** — make a new research journal straightforward to set up, with a copyable starter example and clear instructions for entries, the index, and customization
 - [x] **Cover page presets** — preserve the composable cover API and add ready-made classic, research, and minimal layouts with neutral, jade, slate, warm, plum, and rose themes
 - [ ] **Table authoring and styling** — make attractive tables easy to create with sensible defaults and reusable helpers; include examples for common table layouts
-- [ ] **Dependency review** — evaluate Typst packages that could simplify reusable document components, table creation, and diagrams/schematics; compare maintenance, API fit, and added complexity before adopting any dependency
+- [x] **Dependency review** — [initial package assessment](docs/package-research.md) and [additional candidates](docs/additional-packages.md); integration remains incremental
 - [ ] **LaTeX reference collection** — paired KOMA-Script/satz ordinary document, report/thesis extract, and letter; compare typography and authoring effort using [the parity plan](docs/latex-parity.md)
   - [x] First source/PDF recreations: official KOMA-Script letter and commentary article, with reproducible builds and documented gaps in [examples/latex-parity](examples/latex-parity/README.md)
   - [x] Original 12-page KOMA-Script/satz comparison: headers, front matter, simple top floats, cross-references, and override checks
   - [ ] Extend the report pair with bibliography and automatic pagination cases
 - [ ] **Package integration trials** — assess Hydra for running headers, Glossarium for glossary/abbreviations, Tidy for the API manual, and optional Tschich/Meander layouts; see [the package review](docs/package-research.md)
+  - [x] Hydra running headers and Glossarium abbreviation-list workflow compiled and checked through satz
+  - [ ] Tidy manual generation; compare Zero/Pillar on representative tables before selecting a table API
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
 - [x] **Running headers** — Hydra 0.6.3 replaces custom chapter/section state; chapter openings stay blank, sections update on their starting page, section-free chapters fall back correctly. Toggle `page.headers: true` with binding enabled; verified against the paired KOMA-Script report.
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
@@ -57,6 +69,7 @@
 - [ ] **Article mode** — `kind: "article"`, two-column layout, abstract, author block
 - [ ] **Footnote styling** — configurable separator, size, spacing
 - [ ] **i18n for invoice** — match letter's `lang: "de"/"en"` pattern
+- [x] **Named letter enclosures** — render `anlagenverzeichnis` even when no files are embedded; regression verified in `examples/latex-parity/check_letter.py`
 - [x] **Legal complaint (Klageschrift)** — ZPO civil court template with Rubrum, Streitwert, Anlagen
 - [x] **Gastspielvertrag** — guest performance contract, fill-in blanks, 3 doc modes, §1–8, transport calc, buy-out
 
