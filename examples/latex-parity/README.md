@@ -85,7 +85,35 @@ displays page 1. Remaining differences are intentionally recorded:
 | Numbering | Override report numbering and restore the automatic footer. An article should start at 1 without needing to understand the report's offset. |
 | Commentary notes | A two-row grid reproduces the finite content, but cannot replace flowing, collision-aware margin notes. Trial Marginalia against a longer example before promising that behavior. |
 
+## Multi-page running-header comparison
+
+`header-report.tex` and `header-report.typ` are original MIT-licensed fixtures,
+not downloaded examples. They contain the same fictional report material and
+explicit page breaks. The LaTeX version uses KOMA-Script `scrreprt` and
+`scrlayer-scrpage`, configured to match satz's intended header policy, including
+chapter fallback and the existing page-number offset. This is a behavioral
+comparison, not an assertion that their typography or default settings match.
+
+```sh
+python3 examples/latex-parity/build_report.py
+```
+
+Requires `pdflatex`, Typst, and PyMuPDF. The command compiles our own TeX source
+twice with shell escape disabled, compiles the Typst document and override
+variants, checks all twelve physical pages, and renders page PNGs under
+`output/`. `header-report.pdf` is the LaTeX reference;
+`header-report-satz.pdf` is the Typst result. Assertions cover chapter-opening
+suppression, section changes, chapter fallback, an unnumbered chapter, page
+numbers/alignment, a same-parity counter reset, custom headers/footers, disabled
+headers, and one-sided layout. Internal links and page markers are also checked.
+The table and diagram exercise simple top floats and cross-references; this is
+not comprehensive float-placement or bibliography coverage.
+
+Before the header fix, the script reproduces five wrong header strings in the
+satz version: old section on page 3, nonempty opening pages 5 and 10, stale section
+on page 7, and stale section after the unnumbered chapter on page 11. The
+configured LaTeX reference and the override variants pass.
+
 Next: remove the inline article title/contents/numbering workarounds through a
-small supported article mode, and add a multi-page report pair for Hydra's
-chapter/section header tests. These one-page documents do not exercise running
-headers, bibliography, tables, or float placement.
+small supported article mode, and expand the report with bibliography and
+automatic pagination cases.

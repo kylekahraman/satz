@@ -1,0 +1,94 @@
+% Original comparison fixture, MIT, satz contributors (2026).
+% KOMA-Script reference for the explicitly documented satz header policy.
+\documentclass[11pt,twoside,open=any]{scrreprt}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,inner=25mm,outer=25mm,top=25mm,bottom=25mm]{geometry}
+\usepackage{booktabs}
+\usepackage{scrlayer-scrpage}
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+\automark[section]{chapter}
+\clearpairofpagestyles
+\lehead{\leftmark}
+\rohead{\rightmark}
+\lefoot*{\pagemark}
+\rofoot*{\pagemark}
+\renewcommand*{\chaptermarkformat}{}
+\renewcommand*{\sectionmarkformat}{}
+% Chapter marks provide the fallback until the chapter has its own section.
+\renewcommand*{\chaptermark}[1]{\markboth{#1}{#1}}
+\renewcommand*{\sectionmark}[1]{\markright{#1}}
+% Preserve satz's existing raw-counter parity and displayed offset.
+\renewcommand*{\thepage}{\number\numexpr\value{page}-1\relax}
+\newcommand{\CaseText}[1]{%
+  \textbf{#1}\par\medskip
+  This report records a fictional instrument check. The values illustrate
+  document structure and do not describe an experiment. Each page has a fixed
+  break so that the LaTeX and Typst versions exercise the same header case.
+  \par\medskip
+  A useful running head identifies the current chapter or section without
+  carrying information from a previous chapter. Chapter-opening pages leave
+  the running head empty. Continuation pages retain their context even when
+  the chapter has no sections of its own.\par
+}
+\begin{document}
+\begingroup
+\pagestyle{empty}
+\renewcommand*{\chapterpagestyle}{empty}
+\tableofcontents
+\clearpage
+\endgroup
+\setcounter{page}{2}
+\chapter{Instrument checks}\label{ch:instrument}
+\section{Aim}
+\CaseText{CASE opening-a}
+\newpage
+
+\section{Measurements}
+\CaseText{CASE section-change}
+\begin{table}[t]
+\centering
+\begin{tabular}{lr}
+\toprule
+\textbf{Setting} & \textbf{Example value}\\
+\midrule
+Reference & 1.00\\
+Repeat & 1.02\\
+\bottomrule
+\end{tabular}
+\caption{Illustrative readings; no experimental data.}\label{tab:readings}
+\end{table}
+\newpage
+
+\CaseText{CASE continuation-a}
+The readings in Table~\ref{tab:readings} belong to Chapter~\ref{ch:instrument}.
+\begin{figure}[t]
+\centering
+\fbox{\rule{0pt}{32mm}\rule{.75\linewidth}{0pt}}
+\caption{Placeholder for an instrument diagram.}\label{fig:instrument}
+\end{figure}
+\clearpage
+
+\chapter{Section-free chapter}
+\CaseText{CASE opening-b}
+\newpage
+\CaseText{CASE continuation-b-even}
+\newpage
+\CaseText{CASE continuation-b-odd}
+\newpage
+\section{Follow-up}
+\CaseText{CASE follow-up-even}
+\newpage
+\CaseText{CASE follow-up-odd}
+The diagram in Figure~\ref{fig:instrument} remains linked across chapters.
+\clearpage
+
+\addchap{Closing remarks}
+\markboth{Closing remarks}{Closing remarks}
+\CaseText{CASE opening-unnumbered}
+\newpage
+\CaseText{CASE unnumbered-odd}
+\newpage
+\setcounter{page}{4}
+\CaseText{CASE counter-reset}
+\end{document}
