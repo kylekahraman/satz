@@ -40,6 +40,8 @@
 - [x] **Cover page presets** — preserve the composable cover API and add ready-made classic, research, and minimal layouts with neutral, jade, slate, warm, plum, and rose themes
 - [ ] **Table authoring and styling** — make attractive tables easy to create with sensible defaults and reusable helpers; include examples for common table layouts
 - [ ] **Dependency review** — evaluate Typst packages that could simplify reusable document components, table creation, and diagrams/schematics; compare maintenance, API fit, and added complexity before adopting any dependency
+- [ ] **LaTeX reference collection** — paired KOMA-Script/satz ordinary document, report/thesis extract, and letter; compare typography and authoring effort using [the parity plan](docs/latex-parity.md)
+- [ ] **Package integration trials** — assess Hydra for running headers, Glossarium for glossary/abbreviations, Tidy for the API manual, and optional Tschich/Meander layouts; see [the package review](docs/package-research.md)
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
 - [x] **Running headers** — implemented via `state("satz-chapter")`/`state("satz-section")` + two-sided `page.header`; first chapter page intentionally blank (textbook convention). Toggle `page.headers: true` (frozen until stable).
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
