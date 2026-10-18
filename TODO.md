@@ -42,10 +42,11 @@
 - [ ] **Dependency review** — evaluate Typst packages that could simplify reusable document components, table creation, and diagrams/schematics; compare maintenance, API fit, and added complexity before adopting any dependency
 - [ ] **LaTeX reference collection** — paired KOMA-Script/satz ordinary document, report/thesis extract, and letter; compare typography and authoring effort using [the parity plan](docs/latex-parity.md)
   - [x] First source/PDF recreations: official KOMA-Script letter and commentary article, with reproducible builds and documented gaps in [examples/latex-parity](examples/latex-parity/README.md)
-  - [ ] Add a multi-page report/thesis pair to exercise running headers, front matter, references, and float placement
+  - [x] Original 12-page KOMA-Script/satz comparison: headers, front matter, simple top floats, cross-references, and override checks
+  - [ ] Extend the report pair with bibliography and automatic pagination cases
 - [ ] **Package integration trials** — assess Hydra for running headers, Glossarium for glossary/abbreviations, Tidy for the API manual, and optional Tschich/Meander layouts; see [the package review](docs/package-research.md)
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
-- [x] **Running headers** — implemented via `state("satz-chapter")`/`state("satz-section")` + two-sided `page.header`; first chapter page intentionally blank (textbook convention). Toggle `page.headers: true` (frozen until stable).
+- [x] **Running headers** — Hydra 0.6.3 replaces custom chapter/section state; chapter openings stay blank, sections update on their starting page, section-free chapters fall back correctly. Toggle `page.headers: true` with binding enabled; verified against the paired KOMA-Script report.
 - [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
 - [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions

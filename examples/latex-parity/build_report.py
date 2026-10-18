@@ -14,7 +14,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 OUTPUT = HERE / "output"
 HEADERS = [
-    "", "", "Measurements", "Instrument checks", "", "Section-free chapter",
+    "", "", "Repeat measurements", "Instrument checks", "", "Section-free chapter",
     "Section-free chapter", "Section-free chapter", "Follow-up", "", "Closing remarks",
     "Closing remarks",
 ]
@@ -67,6 +67,8 @@ def inspect(path, custom_header=False, custom_footer=False, headers=True, number
                     failures.append(f"page {index + 1} {kind}: {actual!r}, expected {expected!r}")
             if CASES[index] and f"CASE {CASES[index]}" not in page.get_text():
                 failures.append(f"page {index + 1}: missing case marker")
+            if index == 0 and "Local note" in page.get_text():
+                failures.append("non-outlined local heading appeared in the contents")
             if index and not custom_footer and numbered:
                 words = page.get_text("words", clip=footer_rect)
                 center = (words[0][0] + words[0][2]) / 2 if words else width / 2

@@ -1,6 +1,7 @@
 // Unified document class — kind: "journal" | "report" | "thesis" | "letter"
 
 #import "defaults.typ": defaults, merge
+#import "@preview/hydra:0.6.3": hydra, selectors
 
 /// Show a long caption under the figure, a short one in the List of Figures.
 ///
@@ -58,11 +59,6 @@
 ) = {
   let c = merge(defaults, config)
 
-  // --- Running header state (same pattern as journal/template.typ) ---
-  // State updated by heading show rules, read by the page header.
-  let chapter-state = state("satz-chapter", none)
-  let section-state = state("satz-section", none)
-
   // --- Build page arguments ---
   let numbering = if kind == "report" or kind == "thesis" {
     (n) => { if n > 1 { str(n - 1) } else { none } }
@@ -116,28 +112,29 @@
   }
   set page(footer: page-footer)
 
-  // Two-sided: textbook-style running headers.
-  // Uses state variables (same pattern as journal) instead of query().
-  // Even pages (left) show the chapter (h1), odd pages (right) show the
-  // section (h2) with fallback to h1. No running header on pages before
-  // any heading has been encountered (chapter opening pages, textbook convention).
+  // Two-sided: chapter on even counters, section/chapter on odd counters.
+  // Hydra selects the last relevant heading on the page, or the previous one.
+  // Including h1 in the odd-page selector resets section context each chapter.
+  // Outlined headings include unnumbered chapters but exclude outline titles.
   let page-header = if two-sided and header == none and c.page.at("headers", default: false) {
     context {
       let n = counter(page).get().first()
       let is-even = calc.rem(n, 2) == 0
-      if is-even {
-        let ch = chapter-state.get()
-        if ch != none {
-          align(left, text(size: c.decorative.header-size, fill: c.colors.text-muted, ch.body))
+      let chapters = heading.where(level: 1, outlined: true)
+      // Suppress every chapter-opening page, even when styling or a float
+      // moves the chapter heading below the top margin.
+      let opening = query(chapters).any(h => h.location().page() == here().page())
+      if not opening {
+        let target = if is-even {
+          selectors.custom(chapters)
+        } else {
+          selectors.custom(heading, filter: (_, h) => h.outlined and h.level <= 2)
         }
-      } else {
-        let sec = section-state.get()
-        if sec == none {
-          sec = chapter-state.get()
-        }
-        if sec != none {
-          align(right, text(size: c.decorative.header-size, fill: c.colors.text-muted, sec.body))
-        }
+        align(
+          if is-even { left } else { right },
+          text(size: c.decorative.header-size, fill: c.colors.text-muted,
+            hydra(target, skip-starting: false, use-last: true, display: (_, h) => h.body)),
+        )
       }
     }
   } else {
@@ -170,10 +167,6 @@
 
   // --- Heading show rules ---
   show heading.where(level: 1): it => {
-    // Exclude the auto-generated TOC/LOF/LOT title headings from running header state
-    if it.body != c.toc.title and it.body != c.lof.title and it.body != c.lot.title {
-      context { chapter-state.update((body: it.body, page: counter(page).get().first())) }
-    }
     block(width: 100%, below: c.headings.h1-below)[
       #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h1-size)
       #v(0.5em)
@@ -185,7 +178,6 @@
     ]
   }
   show heading.where(level: 2): it => {
-    context { section-state.update((body: it.body, page: counter(page).get().first())) }
     block(below: c.headings.h2-below)[
       #set text(fill: c.colors.brand-primary, weight: "bold", size: c.headings.h2-size)
       #it

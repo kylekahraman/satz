@@ -2,7 +2,8 @@
 
 These are first iterations through the current public satz API, with explicit
 local workarounds. They establish comparison fixtures; they do not claim full
-LaTeX parity. No shared rendering defaults or runtime dependencies changed.
+LaTeX parity. The report comparison below subsequently drove a Hydra integration
+in the shared class; the original one-page examples retain their rendering.
 
 ## Original source and compiled PDFs
 
@@ -93,6 +94,8 @@ explicit page breaks. The LaTeX version uses KOMA-Script `scrreprt` and
 `scrlayer-scrpage`, configured to match satz's intended header policy, including
 chapter fallback and the existing page-number offset. This is a behavioral
 comparison, not an assertion that their typography or default settings match.
+The reference explicitly uses `\rightbotmark` for the last section on a page;
+KOMA-Script's usual `\rightmark` would use the first section mark instead.
 
 ```sh
 python3 examples/latex-parity/build_report.py
@@ -103,9 +106,10 @@ twice with shell escape disabled, compiles the Typst document and override
 variants, checks all twelve physical pages, and renders page PNGs under
 `output/`. `header-report.pdf` is the LaTeX reference;
 `header-report-satz.pdf` is the Typst result. Assertions cover chapter-opening
-suppression, section changes, chapter fallback, an unnumbered chapter, page
+suppression, section changes (including two sections on one page), chapter fallback, an unnumbered chapter, page
 numbers/alignment, a same-parity counter reset, custom headers/footers, disabled
-headers, and one-sided layout. Internal links and page markers are also checked.
+headers, non-outlined local headings, and one-sided layout. Internal links and
+page markers are also checked.
 The table and diagram exercise simple top floats and cross-references; this is
 not comprehensive float-placement or bibliography coverage.
 
@@ -113,6 +117,16 @@ Before the header fix, the script reproduces five wrong header strings in the
 satz version: old section on page 3, nonempty opening pages 5 and 10, stale section
 on page 7, and stale section after the unnumbered chapter on page 11. The
 configured LaTeX reference and the override variants pass.
+
+After integrating Hydra 0.6.3 into `class.typ`, all cases pass. Chapter-opening
+suppression is explicit rather than relying on a heading's top-margin position;
+last-on-page heading selection comes from Hydra. Including chapter headings in
+the section-side selector gives a fresh fallback at every chapter. `outlined:
+false` headings are excluded, so TOC titles and local non-outline headings do not
+become running heads. The original letter, commentary, and a five-page consuming
+journal were also recompiled: their rendered page hashes match the pre-fix
+versions. Header tests are behavioral; they do not establish identical LaTeX
+line breaking or page design.
 
 Next: remove the inline article title/contents/numbering workarounds through a
 small supported article mode, and expand the report with bibliography and

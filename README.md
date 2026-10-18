@@ -156,6 +156,28 @@ Override only what you need — everything else keeps its default:
 
 Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `decorative`, `page-footer`, `links`, `tables`, `captions`, `toc`, `lof`, `lot`, `bibliography`, `colors`.
 
+### Running headers
+
+In the local development version, two-sided reports and theses use
+[`hydra:0.6.3`](https://typst.app/universe/package/hydra/) for heading selection:
+
+```typst
+#import "@local/satz:0.1.1": report
+#show: report.with(config: (page: (binding: left, headers: true)))
+```
+
+Even page counters show the chapter at the left; odd counters show the current
+section, falling back to the chapter, at the right. Headers use the last relevant
+heading on the page, including a section introduced on that page. Chapter-opening
+pages have no running header. Unnumbered, outlined chapters participate;
+headings with `outlined: false` do not. Headers remain disabled by default.
+Custom `personal(header: ...)` content takes precedence.
+
+The existing report page-number offset and counter-based alignment are retained.
+See the [paired KOMA-Script comparison](examples/latex-parity/README.md) for
+reproducible checks. Hydra also imports `oxifmt:1.0.0`; Typst downloads missing
+packages on the first compilation. This integration is not yet published.
+
 For long captions use `satz-figure` — long text under the figure, short title in the List of Figures (or `short-caption: []` for compact):
 
 ```typst

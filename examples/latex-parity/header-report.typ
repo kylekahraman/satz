@@ -50,6 +50,8 @@
   caption: [Illustrative readings; no experimental data.],
   placement: top,
 ) <tab:readings>
+== Repeat measurements
+The final section on this page supplies the running head.
 #pagebreak()
 
 #case-body("CASE continuation-a")
@@ -68,6 +70,7 @@ The readings in @tab:readings belong to @ch:instrument.
 #case-body("CASE continuation-b-even")
 #pagebreak()
 
+#heading(level: 2, numbering: none, outlined: false)[Local note]
 #case-body("CASE continuation-b-odd")
 #pagebreak()
 
