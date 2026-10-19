@@ -298,7 +298,12 @@
         it
       }
     } else {
-      it
+      if it.level == 1 and it.element.func() == heading {
+        let loc = it.element.location()
+        link(loc, it.indented(it.prefix(), [#it.body() #h(1fr) #it.page()]))
+      } else {
+        it
+      }
     }
   }
 
