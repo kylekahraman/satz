@@ -46,6 +46,10 @@
 /// - binding (alignment, none): inside edge for two-sided pages
 /// - binding-correction (length): extra room at the binding edge
 /// - config (dictionary): advanced shared satz overrides
+/// - config.book.contents: contents title position, size, entry size, and row spacing
+/// - config.book.worked-example: default spacing, inset, and type sizes
+/// - config.book.exercise: spacing between each prompt and its grid, and between exercise groups
+/// - config.book.footer-dy: vertical position of the page number
 /// - body (content): preliminary pages and book structure
 #let book(
   body,
@@ -87,6 +91,7 @@
       hyphenate: true,
       justify: true,
     ),
+    page-footer: (weight: "regular"),
     headings: (
       numbering: "1",
       h1-size: 18pt,
@@ -108,6 +113,26 @@
     links: (color: link-accent, url-color: link-accent),
     book: (
       ink: ink,
+      contents: (
+        title-before: 24.5pt,
+        title-after: 26pt,
+        title-size: 17pt,
+        entry-size: 10pt,
+        entry-spacing: 11.8pt,
+      ),
+      worked-example: (
+        inset: 27pt,
+        above: 26pt,
+        below: 27pt,
+        label-gap: 0pt,
+        label-size: 9pt,
+        body-size: 9pt,
+      ),
+      exercise: (
+        grid-gap: 11pt,
+        group-gap: 20pt,
+      ),
+      footer-dy: 5pt,
       cover-top: 28mm,
       cover-eyebrow-size: 14.3pt,
       cover-eyebrow-below: 14mm,
@@ -132,6 +157,10 @@
     #book-style.update((
       accent: c.colors.brand-primary,
       ink: c.book.ink,
+      contents: c.book.contents,
+      worked-example: c.book.worked-example,
+      exercise: c.book.exercise,
+      footer-dy: c.book.footer-dy,
       footer: c.colors.text-main,
       grid: rgb("#D2D2D2"),
       grid-width: 0.2pt,
@@ -199,7 +228,8 @@
       let n = counter(page).get().first()
       if n > 0 {
         let folio = text(size: c.page-footer.size, weight: c.page-footer.weight, fill: c.colors.text-main, counter(page).display())
-        if calc.rem(n, 2) == 0 { align(left, folio) } else { align(right, folio) }
+        let positioned = move(dy: c.book.footer-dy, folio)
+        if calc.rem(n, 2) == 0 { align(left, positioned) } else { align(right, positioned) }
       }
     })
     #body
@@ -214,14 +244,22 @@
 /// - depth (int): heading depth to include; 1 lists chapters only
 #let book-contents(title: [Contents], depth: 1) = context {
   let style = book-style.get()
+  let toc = style.contents
   [
     #pagebreak()
-    #block(below: 12pt)[
-      #text(size: 17pt, weight: "bold", fill: style.ink)[#title]
+    #v(toc.title-before)
+    #block(below: toc.title-after)[
+      #text(size: toc.title-size, weight: "bold", fill: style.ink)[#title]
     ]
-    #set text(size: 10pt)
+    #set text(size: toc.entry-size)
     #set par(leading: 0.45em, spacing: 0pt)
-    #show outline.entry: set block(above: 3pt)
+    #show outline.entry: it => context {
+      block(above: toc.entry-spacing)[
+        #link(it.element.location())[
+          #it.indented(it.prefix(), [#it.body() #h(1fr) #it.page()])
+        ]
+      ]
+    }
     #show outline.entry.where(level: 1): set text(fill: style.accent)
     #outline(title: none, depth: depth)
   ]
@@ -237,6 +275,10 @@
     #book-style.update((
       accent: style.accent,
       ink: style.ink,
+      contents: style.contents,
+      worked-example: style.worked-example,
+      exercise: style.exercise,
+      footer-dy: style.footer-dy,
       footer: style.footer,
       grid: style.grid,
       grid-width: style.grid-width,
@@ -256,7 +298,8 @@
       if n > 0 {
         let d = counter(page).display()
         let folio = text(size: style.footer-size, weight: style.footer-weight, fill: style.footer, d)
-        if calc.rem(n, 2) == 0 { align(left, folio) } else { align(right, folio) }
+        let positioned = move(dy: style.footer-dy, folio)
+        if calc.rem(n, 2) == 0 { align(left, positioned) } else { align(right, positioned) }
       }
     })
     #body
@@ -270,6 +313,10 @@
     #book-style.update((
       accent: style.accent,
       ink: style.ink,
+      contents: style.contents,
+      worked-example: style.worked-example,
+      exercise: style.exercise,
+      footer-dy: style.footer-dy,
       footer: style.footer,
       grid: style.grid,
       grid-width: style.grid-width,

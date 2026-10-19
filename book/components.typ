@@ -3,18 +3,47 @@
 #let book-style = state("satz-book-style", (
   accent: rgb("#23616B"),
   ink: rgb("#24313B"),
+  contents: (
+    title-before: 24.5pt,
+    title-after: 26pt,
+    title-size: 17pt,
+    entry-size: 10pt,
+    entry-spacing: 11.8pt,
+  ),
+  worked-example: (
+    inset: 27pt,
+    above: 26pt,
+    below: 27pt,
+    label-gap: 0pt,
+    label-size: 9pt,
+    body-size: 9pt,
+  ),
+  exercise: (
+    grid-gap: 11pt,
+    group-gap: 20pt,
+  ),
+  footer-dy: 5pt,
   footer: black,
   grid: rgb("#D2D2D2"),
   grid-width: 0.2pt,
 ))
 
 /// A worked example with a restrained label and indented content.
-#let worked-example(body) = context {
+///
+/// - body (content): worked steps or a short worked calculation
+/// - above (length, none): optional local space before the block
+/// - below (length, none): optional local space after the block
+/// - inset (length, none): optional local left inset
+#let worked-example(body, above: none, below: none, inset: none) = context {
   let style = book-style.get()
-  block(above: 3pt, below: 6pt, inset: (left: 38pt, right: 20pt))[
-    #text(size: 9pt, weight: "bold", fill: style.accent)[Worked example]
-    #v(2pt)
-    #set text(size: 9pt)
+  let layout = style.worked-example
+  let top-space = if above == none { layout.above } else { above }
+  let bottom-space = if below == none { layout.below } else { below }
+  let left-inset = if inset == none { layout.inset } else { inset }
+  block(above: top-space, below: bottom-space, inset: (left: left-inset, right: 20pt))[
+    #text(size: layout.label-size, weight: "bold", fill: style.accent)[Worked example]
+    #v(layout.label-gap)
+    #set text(size: layout.body-size)
     #set par(spacing: 0pt)
     #body
   ]
@@ -70,15 +99,17 @@
     #counter("satz-exercise").step()
     #context {
       let style = book-style.get()
+      let layout = style.exercise
       let chapter = counter(heading).display(style.numbering)
       let number = counter("satz-exercise").get().first()
-      block(breakable: false, below: 8pt)[
+      block(breakable: false, below: layout.group-gap)[
+        #set par(spacing: 0pt)
         #text(weight: "bold", fill: style.accent)[
           Exercise #chapter.#number (#kind).
         ]
         #h(0.5em)
         #body
-        #v(3pt)
+        #v(layout.grid-gap)
         #answer-grid(height: height)
       ]
     }
