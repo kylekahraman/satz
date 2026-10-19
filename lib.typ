@@ -9,6 +9,8 @@
 #import "defaults.typ": defaults, merge
 #import "report/template.typ": report
 #import "article/template.typ": article
+#import "book/template.typ": book, book-contents, book-mainmatter, book-appendix, book-backmatter
+#import "book/components.typ": exercise, worked-example, analysis-note, answer-grid
 #import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
 #import "class.typ": personal, satz-figure
 #import "citation.typ": citepre

@@ -66,13 +66,16 @@
     none
   }
   let two-sided = "binding" in c.page and c.page.binding != none
+  let binding-correction = c.page.at("binding-correction", default: 0pt)
 
   // Convert left/right to inside/outside when two-sided
   let margin = c.page.margin
   if two-sided {
+    let inside-side = if c.page.binding == right { "right" } else { "left" }
+    let outside-side = if inside-side == "left" { "right" } else { "left" }
     margin = (
-      inside: margin.at("left", default: margin.at("x", default: 2.5cm)),
-      outside: margin.at("right", default: margin.at("x", default: 2.5cm)),
+      inside: margin.at(inside-side, default: margin.at("x", default: 2.5cm)) + binding-correction,
+      outside: margin.at(outside-side, default: margin.at("x", default: 2.5cm)),
       top: margin.at("top", default: 2.5cm),
       bottom: margin.at("bottom", default: 2.5cm),
     )

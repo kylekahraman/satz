@@ -65,12 +65,13 @@ letter, see the options below; a concise digital preset is still a usability gap
 | **invoice** | `rechnung(absender, empfaenger, datum, posten, qr:, qr-betrag:, qr-verwendungszweck:, body)` | German invoice adapted from the letter template. Optional EPC QR code (GiroCode) — banking apps auto-fill transfer details. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
 | **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis — numbered headings, auto TOC/LoF/LoT, two-sided layout, bibliography |
+| **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]` | KOMA-Script-inspired book layout with adjustable cover, page furniture, appendices, and optional exercise components |
 | **dfg-proposal** | `dfg-proposal(...)` | DFG form 53.01 (Sachbeihilfe) in German and English — **work in progress** |
 | **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
 | **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
 | **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
 
-Stable: letter, invoice, journal, report, cover, legal-complaint, gastspielvertrag. Experimental: dfg-proposal, article mode.
+Stable: letter, invoice, journal, report, cover, legal-complaint, gastspielvertrag. Experimental: dfg-proposal, article mode, book.
 
 ### Letter — Internationalization and PDF applications
 
@@ -281,6 +282,20 @@ For long captions use `satz-figure` — long text under the figure, short title 
 #import "@preview/satz:0.1.1": satz-figure
 #satz-figure(image("plot.png"), caption: [Very long ...], short-caption: [Short title])
 ```
+
+### Books and workbooks
+
+The local development version has an experimental `book` entry point for
+KOMA-Script-like book authoring: set the title, typeface, and accent once, then
+write with ordinary headings. `book-contents`, `book-mainmatter`,
+`book-appendix`, and `book-backmatter` mark the document parts. Optional
+components add worked examples, analysis prompts, and exercises with answer
+grids. See [the complete example](examples/book.typ) and
+[the API and layout guide](docs/book-api.md). Its source-PDF measurements and
+remaining parity gaps are in [the workbook comparison](docs/book-workbook-parity.md).
+The RSA workbook specimen and rebuild instructions are saved in the ignored local
+`workbook-conversion/` directory; its source PDF and personal details are not
+included in the package.
 
 ### Placeholder figures
 
