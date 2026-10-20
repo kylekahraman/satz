@@ -29,6 +29,9 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Preserve left-aligned reading text in callouts nested inside centered figures.
 - Expose caption alignment and label weight independently, preserving native
   labels/references and the existing long-caption/short-list workflow.
+- Add `chapter-numbering` scopes: figure/table/equation prefixes remain correct
+  in forward, backward and cross-appendix references. Add opt-in
+  `headings.h1-pagebreak` for report chapters that start on a new page.
 
 ### Other development work already committed
 

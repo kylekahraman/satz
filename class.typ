@@ -194,7 +194,10 @@
   show heading.where(level: 4): set block(below: c.headings.h4-below)
   show heading.where(level: 1): it => if kind == "journal" {
     block(smallcaps(it.body))
-  } else { it }
+  } else {
+    if c.headings.h1-pagebreak { pagebreak(weak: true) }
+    it
+  }
 
   // --- Links ---
   // External URLs (string dest) get url-color + underline for all kinds.

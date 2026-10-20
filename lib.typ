@@ -19,3 +19,4 @@
 #import "@preview/glossarium:0.5.10"
 #import "tables.typ": scientific-table, scientific-tables
 #import "callouts.typ": callout
+#import "chapter-numbering.typ": chapter-numbering
