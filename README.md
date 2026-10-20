@@ -4,6 +4,33 @@ A Typst document class for everyday documents — letters, invoices, reports, jo
 
 Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `class.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.
 
+## Quick start: a report
+
+Create `main.typ`, import Satz, and start writing. You do not need to copy a
+template file or create a separate configuration file:
+
+```typst
+#import "@preview/satz:0.1.1": report
+#show: report.with()
+
+= Introduction
+
+Write your report here.
+
+== Background
+
+Continue with ordinary Typst markup.
+```
+
+Compile with `typst compile main.typ`, or paste this into a Typst web-app
+project for live preview. The report adds numbered headings and contents while
+your content remains ordinary Typst. Add configuration only when you need to
+change a default.
+
+See the [full report quick start](docs/site/getting-started/report.md) or browse
+the [Satz documentation](https://kylekahraman.github.io/satz/) for journal,
+letter, figure, table, and layout guides. The site source is in `docs/site/`.
+
 ## Quick Usage
 
 ### Write a letter in one file
