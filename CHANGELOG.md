@@ -36,6 +36,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   citation field, so testing for that field incorrectly skipped their styling.
 - Expose `typography.math-font`; `auto` retains Typst's native math typeface.
   The research report explicitly selects STIX Two Math to match its LaTeX source.
+- Expose `typography.mono-font` independently; `auto` retains native raw-text
+  styling, while the research report selects Fira Code.
 
 ### Other development work already committed
 
