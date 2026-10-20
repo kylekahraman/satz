@@ -70,9 +70,9 @@
     stroke: 0.5pt,
     inset: (x: 8pt, y: 4pt),
     font-size: 10pt,
-  ),
     caption-position: top,
     caption-gap: 6pt,
+  ),
   callouts: (
     inset: 9pt,
     radius: 3pt,
@@ -84,9 +84,9 @@
   captions: (
     size: 10pt,
     weight: "regular",
-  ),
     alignment: center,
     label-weight: "regular",
+  ),
   toc: (
     // Set depth: 0 to disable. none = auto (uses heading numbering depth).
     depth: none,
