@@ -1,5 +1,6 @@
-#import "../lib.typ": report, scientific-table
+#import "../lib.typ": report, scientific-table, scientific-tables
 #show: report.with(config: (toc: (depth: 0), lot: (depth: 0)))
+#show: scientific-tables
 
 = Results
 

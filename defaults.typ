@@ -68,6 +68,8 @@
     inset: (x: 8pt, y: 4pt),
     font-size: 10pt,
   ),
+    caption-position: top,
+    caption-gap: 6pt,
   callouts: (
     inset: 9pt,
     radius: 3pt,

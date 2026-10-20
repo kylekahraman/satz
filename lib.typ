@@ -17,5 +17,5 @@
 #import "figures.typ": placeholder
 // Optional author-facing glossary API; setup stays explicit in the document.
 #import "@preview/glossarium:0.5.10"
-#import "tables.typ": scientific-table
+#import "tables.typ": scientific-table, scientific-tables
 #import "callouts.typ": callout

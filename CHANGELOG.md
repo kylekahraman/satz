@@ -17,6 +17,9 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Add `scientific-table`: explicit header cells, stronger top/bottom rules,
   a thinner header separator, repeated headings/rules across pages, native
   table cells and optional group separators.
+- Add the opt-in `scientific-tables` show rule for table figures,
+  top captions, ragged-right caption text and deliberate breakability. Related
+  native tables can share one figure, caption and reference.
 - Add `callout`: breakable explanatory boxes, consistent paragraph/list gaps,
   inherited body type and leading, and body-height preservation for smaller
   code-only lines. The research report now consumes this shared helper.
