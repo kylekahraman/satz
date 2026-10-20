@@ -32,6 +32,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Add `chapter-numbering` scopes: figure/table/equation prefixes remain correct
   in forward, backward and cross-appendix references. Add opt-in
   `headings.h1-pagebreak` for report chapters that start on a new page.
+- Fix internal reference colors: resolved references also carry a fallback
+  citation field, so testing for that field incorrectly skipped their styling.
 
 ### Other development work already committed
 

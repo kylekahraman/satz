@@ -212,16 +212,10 @@
       it
     }
   }
-  // NOTE: in Typst a `cite` element is also a `ref`, so `show ref` matches
-  // citations too. To color only the year of a citation (handled by `show
-  // cite` below), `show ref` must pass citations through untouched; otherwise
-  // it would wrap the whole "(Author, Year)" in c.links.color.
+  // Every ref carries a fallback citation, including resolved figure refs.
+  // A resolved element distinguishes cross-references from bibliography keys.
   show ref: it => if kind != "journal" {
-    // Citations (@key) are also `ref` elements in Typst (they carry a
-    // `citation` field). Their year-only coloring is handled by `show cite`
-    // below, so pass them through untouched here; only real cross-references
-    // (no `citation` field, e.g. @fig: / @eq:) get the full link color.
-    if it.has("citation") {
+    if it.element == none {
       it
     } else {
       text(fill: c.links.color, it)
