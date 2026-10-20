@@ -5,6 +5,7 @@
 #import "dfg-proposal/dfg.typ": dfg-proposal, dfg-supplement, dfg-publications
 #import "proposal/template.typ": research-proposal, project-proposal
 #import "proposal/components.typ": proposal-budget
+#import "proposal/citations.typ": proposal-citations, proposal-publications
 #import "legal-complaint/template.typ": klageschrift
 #import "gastspielvertrag/template.typ": gastspielvertrag
 #import "journal/template.typ": journal-entry, journal-index, remember, question

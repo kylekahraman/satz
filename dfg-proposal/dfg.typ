@@ -2,6 +2,7 @@
 #import "../class.typ": personal
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as dfg-defaults
+#import "../proposal/citations.typ": proposal-publications
 
 /// Start sections 4–5 on a new page, resetting the displayed page to 1.
 /// Insert exactly once, immediately before the level-one section 4 heading.
@@ -14,10 +15,18 @@
 
 /// Render section 3's bibliography at 9, 10 or 11pt (without another heading).
 /// Place under the ordinary level-one publications heading.
-#let dfg-publications(source, size: 9pt, style: "apa", ..args) = {
+#let dfg-publications(source: none, size: 9pt, style: "apa", ..args) = {
   assert(size >= 9pt, message: "DFG publications must be at least 9pt.")
   set text(size: size)
-  bibliography(source, title: none, style: style, ..args)
+  let positional = args.pos()
+  assert(positional.len() <= 1, message: "Provide one bibliography source.")
+  let chosen = if positional.len() == 1 { positional.first() } else { source }
+  if chosen == none {
+    assert(args.named().len() == 0, message: "Set CSL options on proposal-citations, not dfg-publications.")
+    proposal-publications(size: size, max-highlight: 10)
+  } else {
+    bibliography(chosen, title: none, style: style, ..args.named())
+  }
 }
 
 /// DFG form 53.01 project description, revision 09/26, German or English.
@@ -47,7 +56,7 @@
   personal(kind: "proposal", config: c, header: furniture)[
     #set text(lang: if de { "de" } else { "en" })
     #set page(numbering: none, footer: none)
-    #show link: it => text(fill: c.links.color, it.body)
+    #show link: it => text(fill: c.links.color, it)
     #align(left, text(weight: "bold")[
       #if de [Beschreibung des Vorhabens – Projektanträge] else [Project Description – Project Proposals]
       #parbreak()

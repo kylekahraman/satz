@@ -67,12 +67,63 @@ warning. The regression fixture rejects compiler warnings. Tables and captions
 also default to 11pt. Shared `config` overrides remain available, but changing
 these values does not imply that the resulting document retains DFG formatting.
 
-`dfg-publications("references.bib", size: 9pt, style: "apa")` renders the
+`dfg-publications(path("references.bib"), size: 9pt, style: "apa")` renders the
 bibliography without adding a second heading. Place it under section 3. Sizes
 below 9pt are rejected. Native citation styles and bibliography arguments remain
 available, including `full: true`. Cite works in sections 1–2 using ordinary
-Typst citations. Automatic highlighting of selected bibliography entries is not
-provided; the DFG maximum of ten highlighted own works remains an author check.
+Typst citations. For automatic highlighting by BibTeX key, use the optional CSL workflow below.
+The template cannot infer which papers are yours: select their keys explicitly.
+
+## Automatic selected-publication highlighting
+
+You do not need to edit the `.bib` file or format entries by hand. The optional
+CSL workflow selects complete entries by their unique BibTeX keys:
+
+```typst
+#import "@local/satz:0.1.1": dfg-proposal, proposal-citations, dfg-publications
+#show: dfg-proposal.with(applicant: [Example Author], project: [Project title])
+#show: proposal-citations.with(
+  read("references.bib"),
+  highlight: ("author2024", "author2025"),
+)
+
+// Write the complete prescribed sections here, using ordinary @key citations.
+// In section 3:
+#dfg-publications()
+```
+
+Keep `proposal-citations` after the layout show rule. It accepts **BibTeX file
+text**, so `read(...)` resolves relative to your document. `highlight` is an
+array of keys; unknown and duplicate keys are rejected. Complete selected
+bibliography entries become bold, including italic publication names. In-text
+citations and unselected entries retain regular weight. References keep their
+citation destinations; bibliography entries link to their DOI or URL when
+available. DFG styling preserves clickable links.
+
+With this workflow, call `dfg-publications()` without a source. It enforces a
+maximum of ten **printed** highlighted entries and the 9pt minimum size.
+For general proposals use `proposal-publications(size: 11pt)` instead.
+Without this show rule, continue using the native
+`dfg-publications(path("references.bib"))` API; a `path(...)` value resolves
+relative to your caller, unlike a path string evaluated inside a helper.
+Do not combine a native bibliography with the CSL workflow in one document.
+
+The bundled style is Satz's own **author-date** format, not an APA compliance
+claim. Pass `style: read("custom.csl")` to `proposal-citations` for a different
+CSL style. The native helper's `style:` argument does not configure the optional
+CSL backend. To include uncited entries or grouped citations, use Citrus's
+`nocite` or `multicite` API explicitly.
+
+This workflow lazily imports MIT-licensed `citrus:0.2.1` and
+`citegeist:0.2.1`; ordinary Satz documents keep their native citation backend.
+Typst downloads those packages on first use. Citrus/Citegeist is an independent
+CSL/BibTeX implementation: complete BibLaTeX macro, crossref and arbitrary CSL
+parity has not been established. Test your actual database and custom style.
+See [the runnable example](../examples/proposal-publications.typ) and run
+`python3 examples/latex-parity/check_publications.py` with `pdfplumber` and
+`pypdf` installed. Tests inspect bold/italic versus regular PDF fonts, citation
+and DOI destinations, unknown/duplicate keys, the ten-item limit and the original
+native bibliography path.
 
 ## Budgets
 
