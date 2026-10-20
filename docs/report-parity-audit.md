@@ -60,9 +60,9 @@ permanent typst directory under ncwm-dcm.
 
 | Difference | Evidence and next step |
 | --- | --- |
-| Float distribution | Some reference figures sit centrally on dedicated float pages. Typst places them near the top and often follows them with a related table. Compare by caption identity as well as physical page. A source-compatible float policy needs a separate representative trial. |
-| Sparse chapter endings | Physical Typst pages 27 and 34 contain short concluding passages before the next chapter. Rebalance the preceding figure/table flow; do not reduce leading to force a page count. |
-| Line wrapping and page count | Paragraphs, long headings and table labels wrap differently despite matched fonts and calibrated spacing. The current 70/71 page difference is not proof of missing content or exact parity. |
+| Float distribution | Some figures move to different pages than in LaTeX, and related tables may sit closer to the discussion. This follows each engine's layout decisions; the difference is acceptable when figures remain readable, correctly captioned and referenced. Compare by caption identity when checking content. |
+| Sparse chapter endings | Printed Typst pages 23 and 30 each contain a short chapter-ending passage with substantial open space below. These are visible but modest differences; keep them only if they distract in ordinary reading. No page-count target is required. |
+| Line wrapping and page count | Paragraphs, long headings and table labels wrap differently despite matched fonts and calibrated spacing. Those differences are acceptable if reading remains clear and no content is lost. The current 70/71 page difference is not proof of a content problem or exact parity. |
 | Contents | Chapter grouping is much closer; long subsection wrapping, color and running-header treatment still differ from LaTeX. The custom outline needs broader testing before generalizing its policy. |
 | Diagram typography | Six diagrams remain existing vector assets. Their embedded labels do not inherit document fonts; native reconstruction should be justified individually. |
 | Coverage beyond this specimen | Report and journal consumers compile, but this visual review does not establish journal, two-column article, letter or full KOMA compatibility. |
