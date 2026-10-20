@@ -1,9 +1,11 @@
 # Research report parity audit — 20 October 2026
 
 **Visually reviewed, not 1:1 parity.** The reference is the 71-page decoding/RSA
-report using LaTeX scrreprt. The current Typst port has 70 pages. Both PDFs were
-rendered to PNGs and inspected visually across the full document, including
-chapter openings, split boxes, equations, diagrams, captions and both appendices.
+report using LaTeX scrreprt. The earlier Typst port had 70 pages; the current
+continuous-chapter-flow version has 69. Both PDFs were rendered to PNGs and
+inspected visually across the full document, including chapter openings, split
+boxes, equations, diagrams, captions and both appendices. The latest flow change
+was additionally rendered and checked on the affected chapter transitions.
 No Python layout analysis was used for this review. Text extraction was used
 only to index caption identities; it does not substitute for image inspection.
 Research sources, PDFs and participant data remain outside this repository.
@@ -61,7 +63,7 @@ permanent typst directory under ncwm-dcm.
 | Difference | Evidence and next step |
 | --- | --- |
 | Float distribution | Some figures move to different pages than in LaTeX, and related tables may sit closer to the discussion. This follows each engine's layout decisions; the difference is acceptable when figures remain readable, correctly captioned and referenced. Compare by caption identity when checking content. |
-| Sparse chapter endings | Printed Typst pages 23 and 30 each contain a short chapter-ending passage with substantial open space below. These are visible but modest differences; keep them only if they distract in ordinary reading. No page-count target is required. |
+| Sparse chapter endings | Resolved in the current workbook by setting `headings.h1-pagebreak: false`. Chapter 6 now follows the short ending on printed page 23, and Chapter 7 follows the Chapter 6 ending on page 29; the affected pages were rendered and visually checked. This improves page density but gives up KOMA's fresh-page chapter openings. Set the option back to `true` when that convention matters more than the extra white space. This is document-level calibration, not a changed package default. |
 | Line wrapping and page count | Paragraphs, long headings and table labels wrap differently despite matched fonts and calibrated spacing. Those differences are acceptable if reading remains clear and no content is lost. The current 70/71 page difference is not proof of a content problem or exact parity. |
 | Contents | Chapter grouping is much closer; long subsection wrapping, color and running-header treatment still differ from LaTeX. The custom outline needs broader testing before generalizing its policy. |
 | Diagram typography | Six diagrams remain existing vector assets. Their embedded labels do not inherit document fonts; native reconstruction should be justified individually. |
