@@ -175,6 +175,8 @@
   // --- Native heading styling ---
   // Style the heading's own block rather than nesting a second heading block.
   // Native above-spacing, page-start trimming, and stickiness remain intact.
+  show heading: set text(hyphenate: c.headings.hyphenate)
+  show heading: set par(justify: false)
   show heading.where(level: 1): set text(size: c.headings.h1-size, fill: c.colors.brand-primary, weight: "bold")
   show heading.where(level: 2): set text(size: c.headings.h2-size, fill: c.colors.brand-primary, weight: "bold")
   show heading.where(level: 3): set text(size: c.headings.h3-size, fill: c.colors.brand-primary, weight: "bold")

@@ -20,6 +20,9 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Add `callout`: breakable explanatory boxes, consistent paragraph/list gaps,
   inherited body type and leading, and body-height preservation for smaller
   code-only lines. The research report now consumes this shared helper.
+- Keep headings ragged-right and unhyphenated by default, even in justified
+  prose. Add optional attached, palette-colored callout titles with a deliberate
+  title/body gap; see `examples/callout.typ`.
 
 ### Other development work already committed
 

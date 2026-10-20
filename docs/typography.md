@@ -61,16 +61,15 @@ within the normal text area and keeps the ordinary footer clear.
 #import "@local/satz:0.1.1": report, callout
 #show: report.with(config: (toc: (depth: 0),))
 
-#callout[
-  *Main finding*
-
+#callout(title: [Main finding])[
   Explain the result here. Long content can continue onto the next page.
 ]
 ```
 
 Component configuration is explicit: pass `config:` to `callout` to share a
 document palette or customize `callouts.inset`, `radius`, `stroke`,
-`paragraph-spacing` and `list-spacing`. `fill:` and `stroke:` allow individual
+`paragraph-spacing`, `list-spacing` and `title-below`. Optional `title:` uses
+the component palette and stays with following content. `fill:` and `stroke:` allow individual
 overrides. Arbitrary headings, custom show rules or unbreakable objects inside
 a box still need visual review.
 

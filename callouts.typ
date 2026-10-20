@@ -2,7 +2,7 @@
 
 /// Breakable explanatory box that retains the surrounding body line rhythm.
 /// Pass the document config to share its palette; fill/stroke can override it.
-#let callout(body, config: (:), fill: auto, stroke: auto) = context {
+#let callout(body, title: none, config: (:), fill: auto, stroke: auto) = context {
   let c = merge(defaults, config)
   let style = c.callouts
   // A line containing only smaller code must keep the body's cap-height.
@@ -21,6 +21,12 @@
     stroke: if stroke == auto {
       (paint: c.colors.brand-primary, thickness: style.stroke)
     } else { stroke },
-    body,
+    {
+      if title != none {
+        block(sticky: true, below: style.title-below,
+          text(weight: "bold", fill: c.colors.brand-primary, title))
+      }
+      body
+    },
   )
 }
