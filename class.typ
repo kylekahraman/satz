@@ -240,6 +240,7 @@
 
   // Figures with satz-figure store the long caption in <satz-long>
   // metadata, the LoF reads the short caption. Swap the long one back here.
+  show figure.caption: set align(c.captions.alignment)
   show figure.caption: it => context {
     set text(size: c.captions.size, weight: c.captions.weight)
     let caploc = here()
@@ -265,7 +266,16 @@
         }
       }
     }
-    if long-cap != none {
+    if c.captions.label-weight != "regular" {
+      let caption-body = if long-cap != none { long-cap } else { it.body }
+      if it.numbering != none {
+        let separator = if it.separator == auto { [: ] } else { it.separator }
+        text(weight: c.captions.label-weight)[
+          #if it.supplement != none { [#it.supplement~] }#it.counter.display(it.numbering)#separator
+        ]
+      }
+      caption-body
+    } else if long-cap != none {
       // `it` holds supplement/counter/separator but its body is the short
       // text, so rebuild with the long caption.
       [#it.supplement #h(0.2em) #it.counter.display(it.numbering)#it.separator#long-cap]

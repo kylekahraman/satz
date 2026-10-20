@@ -82,6 +82,8 @@
     size: 10pt,
     weight: "regular",
   ),
+    alignment: center,
+    label-weight: "regular",
   toc: (
     // Set depth: 0 to disable. none = auto (uses heading numbering depth).
     depth: none,
