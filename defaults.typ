@@ -67,6 +67,13 @@
     inset: (x: 8pt, y: 4pt),
     font-size: 10pt,
   ),
+  callouts: (
+    inset: 9pt,
+    radius: 3pt,
+    stroke: 0.8pt,
+    paragraph-spacing: 1em,
+    list-spacing: 1.2em,
+  ),
   captions: (
     size: 10pt,
     weight: "regular",
