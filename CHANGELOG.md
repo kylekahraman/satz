@@ -57,7 +57,9 @@ gaps. Focused PDF checks cover heading flow, callout fragmentation, scientific
 rules, table configuration and repeated table headings. A successful compile
 does not establish visual or content parity.
 
-Before a release: resolve the report's missing converted macros, review table
-grouping/captions and figure placement, verify the final integrated package in
-real report and journal consumers, and update the supported API documentation.
+The research report's missing verdict macros, grouped table captions, chapter
+references and math/code typefaces are now corrected. All pages were rendered
+and visually reviewed against LaTeX. Before a release: refine float distribution
+and sparse chapter endings, broaden two-column/journal visual coverage, review
+the final integrated package and update supported API documentation.
 Concurrent outline/palette work is not represented here as a verified release.

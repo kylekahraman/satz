@@ -367,3 +367,22 @@ See the [complete table example](examples/scientific-table.typ),
 Satz does **not** yet claim complete LaTeX/KOMA parity.
 [Unreleased changes](CHANGELOG.md) are being prepared toward 0.2.0;
 the manifest remains 0.1.1 and no release has been made.
+
+### Report numbering, captions and fonts (unreleased)
+
+Use `#show: scientific-tables` for scientific table figures with top captions;
+pass `breakable: true` only when the enclosing figure should split across pages.
+Related native tables can share one figure and caption. See the
+[table guide](docs/scientific-tables.md).
+
+Use `chapter-numbering(chapter: 2)[...]` around a chapter to reset figure,
+table and equation counters while retaining correct prefixes in references
+from other chapters. `appendix: true` selects letter prefixes. This leaves
+heading numbering and page breaks to the document; see the
+[numbering guide](docs/chapter-numbering.md).
+
+Configuration adds `typography.math-font` and `typography.mono-font`
+(both default to `auto`), `captions.alignment`, `captions.label-weight`,
+and opt-in `headings.h1-pagebreak`. Callouts accept an attached `title:`.
+The [research report audit](docs/report-parity-audit.md) records what was
+visually verified and what still differs from LaTeX. These APIs are unreleased.

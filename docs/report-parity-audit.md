@@ -1,90 +1,97 @@
 # Research report parity audit — 20 October 2026
 
-**Status: useful improvements, not 1:1 parity.** This comparison concerns the
-71-page decoding/RSA research report in ncwm-dcm: LaTeX `scrreprt`, STIX text
-and maths in the Typst port. It is distinct from the Georgia maths workbook
-used for the experimental `book` API in [the book review](book-workbook-parity.md).
-Research content, PDFs and participant data remain outside this repository.
+**Visually reviewed, not 1:1 parity.** The reference is the 71-page decoding/RSA
+report using LaTeX scrreprt. The current Typst port has 70 pages. Both PDFs were
+rendered to PNGs and inspected visually across the full document, including
+chapter openings, split boxes, equations, diagrams, captions and both appendices.
+No Python layout analysis was used for this review. Text extraction was used
+only to index caption identities; it does not substitute for image inspection.
+Research sources, PDFs and participant data remain outside this repository.
 
-## Fixes incorporated into Satz
+## Shared fixes incorporated into Satz
 
-| Behavior | Shared implementation | Real-document evidence |
-| --- | --- | --- |
-| Heading before-spacing | Native show-set rules; `h1-above` through `h4-above`, omitted for `auto` | Section/subsection gaps calibrated against LaTeX; 21 same-page heading grouping checks pass. |
-| Callout paragraph/code rhythm | Public `callout`, inherited body leading, separate paragraph/list spacing, code line-height safeguard | All 14 callouts use it; 16 page fragments stay within the text area. Replacing the corrected local implementation produced identical rendered pixels on all 71 pages. |
-| Scientific table rules | Public `scientific-table`, native header/footer rules and repeated headings | Applied to all 20 main-text tables; 45 appendix tables retain existing rules. All 19 changed pages compared with LaTeX. |
-| Table configuration | `tables.font-size` and `tables.inset` honored by the document class | Focused PDF checks verify actual font sizes, padding and local overrides. |
+| Area | Implemented behavior |
+| --- | --- |
+| Heading rhythm | Native heading flow, configurable above/below spacing at four levels, ragged-right unhyphenated headings, opt-in chapter page breaks. |
+| Callouts | Inherited body leading, deliberate paragraph/list spacing, body-height safeguard for small code-only lines, attached colored titles, left-aligned reading text even inside centered figures, normal page fragmentation. |
+| Scientific tables | Strong top/bottom rules and thin header rules, repeatable native headings, configurable font/padding, ragged-right cells, shared figure/caption for related panels. |
+| Table figures | Opt-in scientific-tables show rule sets top captions and explicit breakability without replacing native labels/references. |
+| Captions | Configurable alignment and label weight, preserving numbering and short-list/long-caption behavior. |
+| Numbering | Chapter-numbering scopes capture fixed figure/table/equation prefixes, including cross-appendix and backward references. |
+| References | Internal references receive the configured color; bibliography citations retain their separate styling. |
+| Typefaces | Independent math-font and mono-font configuration, with native defaults retained through auto. |
 
-The oversized results table continues across physical pages 46–47, repeats its
-column headings and contains all 35 mean/SEM rows. Rules and repeated headings
-are checked on every fragment of a separate 60-row regression fixture, including
-a spanning cell. The workbook's ordinary leading, heading grouping, callout
-bounds and folios still pass after the table changes. Neither these checks nor
-the matching 71-page counts prove complete conversion accuracy.
+See [typography](typography.md), [scientific tables](scientific-tables.md),
+[chapter numbering](chapter-numbering.md), and the [unreleased changelog](../CHANGELOG.md).
 
-## Document settings that should not become universal defaults
+## Corrections in the real workbook
 
-- STIX font choices, the KOMA reference's page geometry and its chapter sizes.
-- The particular section/subsection above/below values in the
-  [typography guide](typography.md).
-- Blue/yellow callout colors, 9pt code and 9pt table text.
-- Hidden folios on four front-matter pages, then visible body numbering from 1.
-- The decision to make the long table's enclosing figure breakable. A breakable
-  native table cannot escape an enclosing unbreakable figure.
+- STIX Two Text, STIX Two Math and Fira Code now match the source choices.
+  Earlier matching prose fonts did not ensure matching math fonts.
+- All 14 explanatory boxes use the shared callout helper and title API.
+- Related test/CI panels share captions and restored labels. The document retains
+  20 main-text native tables and 45 appendix native tables, grouped into
+  26 captioned table figures, alongside 20 image figures.
+- Fifty missing table verdicts and eight missing prose verdicts were copied
+  from the LaTeX source. They were not inferred from statistical values.
+- All 45 captions visible in the reference remain represented. Figure 1.1's
+  caption is additionally visible: the reference clipped it below the page.
+- The chronology map is rebuilt as eleven readable native cards that flow
+  between pages. Other diagram assets remain vector PDFs.
+- Captions, explicit column widths, spanning panel titles and dense-table
+  padding are calibrated by table family. The 35-row results table fits on
+  one page with all mean/SEM values and verdicts.
+- Appendix headings precede their actual tables rather than collecting ahead
+  of deferred floats. Forward/backward references use the correct chapter or
+  appendix prefix. Callout equations stay unnumbered where the source is.
+- The cover is calibrated against the reference. Contents entries are grouped
+  by chapter; two-em chapter-group spacing keeps chapter 9 with its entries.
+  This is document calibration, not a general guarantee against orphaned
+  custom-outline groups.
+- Front matter has no visible folios; body numbering begins at 1. This is a
+  deliberate correction to the reference's visible front-matter numbering.
 
-The report carries a vendored snapshot. Only the relevant shared files have
-been synchronized; it is not identical to the package working tree. In
-particular, ongoing outline/theme/list work must be evaluated before adopting
-it. Otherwise a stale vendored class can silently ignore a new config key.
+The report carries a vendored snapshot. Only relevant shared files were adopted;
+ongoing outline/theme/list edits were not silently copied into the document.
+Source, compiled output, comparison images and backups live together in its
+permanent typst directory under ncwm-dcm.
 
-## Remaining differences, in priority order
+## Remaining differences and next work
 
-| Priority | Difference observed against LaTeX | Next action / owner |
-| --- | --- | --- |
-| 1 | Converted tables 9.1/9.2 have empty Verdict cells where LaTeX contains Positive/Null labels. Other source verdict macros also need a prose audit. | Restore source macros in the conversion and verify every occurrence. This is a document-content loss, not table styling. |
-| 1 | Related test/CI tables are often separate numbered figures in Typst where LaTeX groups them under one caption. | Restore the intended grouping and references; test long grouped tables without overflowing. |
-| 1 | Captions are generally below the main-text tables in the port; the source places them above. Several converted captions are repeated across related tables. | Reconcile caption placement, shared captions and table numbering before tuning fine spacing. |
-| 2 | Many short tables use intrinsic width in Typst while LaTeX stretches them across the text width. Dense tables wrap headings and labels differently. | Choose explicit column widths per table family, keeping numeric values readable; consider decimal/uncertainty alignment packages only after a focused trial. |
-| 2 | Row groups rely on labels/empty cells; the source also uses deliberate extra group spacing. | Restore meaningful group separation; the helper already permits native `table.hline` separators. |
-| 2 | Figure placement and page distribution differ substantially. Equal page counts hide different content per page. | Compare by figure/section identity, not physical page number alone; evaluate float policies on a representative chapter. |
-| 2 | Some diagram assets remain pre-rendered PDFs and the source typography differs from body text. | Decide which diagrams merit native reconstruction; preserve vector output and legible labels. |
-| 2 | Formula numbering differs: the port numbers a displayed callout formula as 8.1 where the LaTeX reference is unnumbered. | Audit numbered versus unnumbered equations and cross-references before changing the shared numbering API. |
-| 2 | Callout titles still differ in color/weight treatment from LaTeX. | Agree a reusable title treatment after inspecting short and split callouts; do not solve it with arbitrary paragraph spacers. |
-| 3 | Cover, contents typography/wrapping and chapter openings still differ. | Review final integrated outline changes against the source and retain easy user configuration. |
-| 3 | Journal consumers and two-column scientific layouts do not have equivalent coverage to this report. | Verify journal rhythm and mixed-width floats separately before claiming general document parity. |
+| Difference | Evidence and next step |
+| --- | --- |
+| Float distribution | Some reference figures sit centrally on dedicated float pages. Typst places them near the top and often follows them with a related table. Compare by caption identity as well as physical page. A source-compatible float policy needs a separate representative trial. |
+| Sparse chapter endings | Physical Typst pages 27 and 34 contain short concluding passages before the next chapter. Rebalance the preceding figure/table flow; do not reduce leading to force a page count. |
+| Line wrapping and page count | Paragraphs, long headings and table labels wrap differently despite matched fonts and calibrated spacing. The current 70/71 page difference is not proof of missing content or exact parity. |
+| Contents | Chapter grouping is much closer; long subsection wrapping, color and running-header treatment still differ from LaTeX. The custom outline needs broader testing before generalizing its policy. |
+| Diagram typography | Six diagrams remain existing vector assets. Their embedded labels do not inherit document fonts; native reconstruction should be justified individually. |
+| Coverage beyond this specimen | Report and journal consumers compile, but this visual review does not establish journal, two-column article, letter or full KOMA compatibility. |
 
-The page comparisons show a safer, more legible port, not identical text
-distribution. Missing macros must take precedence over cosmetic refinements.
-Do not silently infer scientific verdicts from a p-value: copy the source's
-actual labels, including any inconsistencies, and flag discrepancies separately.
+No clipping into page numbers or recurrence of the original cramped callout
+paragraph boundaries was observed in the final images. This is a visual finding,
+not a proof for arbitrary future document content.
 
-## Dependencies and scope
+## Reproduce and verify
 
-The source's scientific-table rules come from `booktabs`; explanatory boxes and
-math support also belong to the wider LaTeX ecosystem, not `scrreprt` alone.
-Native Typst provides the rules, repeatable headers/footers and breakable blocks
-needed for the fixes above, so these do not need another dependency. Hydra and
-Glossarium already address separate concerns. Subfigure work remains shelved.
+Compile the real workbook from its typst directory, then render it and the
+reference with Poppler's pdftoppm. Retain the page PNGs and inspect them visually;
+compare shifted figures/tables by their caption identities. The saved review
+folder contains paired contact sheets and original page images.
 
-## Repeatable checks
+The committed package was exported into an isolated directory. Seven focused
+fixtures (callouts, scientific tables, table flow, caption styles, chapter
+numbering, reference colors and text/math/code fonts), plus report and journal
+consumers, all compiled successfully. Consumer imports were redirected to that
+snapshot's lib.typ so the check exercised these changes rather than the old
+published package. The report example requests unavailable EB Garamond and
+falls back; the actual research workbook uses installed STIX fonts.
 
-```sh
-python3 examples/latex-parity/check_typography.py
-python3 examples/latex-parity/check_callouts.py
-python3 examples/latex-parity/check_tables.py
-python3 examples/latex-parity/check_scientific_tables.py
-typst compile --root . examples/scientific-table.typ /tmp/scientific-table.pdf
-```
+The isolated check caught and corrected two caption configuration groups nested
+at the wrong level in an earlier commit. Legacy numeric PDF-check scripts remain
+available, but their old workbook fragment/page-count expectations do not describe
+this updated native chronology map and should not be cited as current evidence.
 
-Report and journal example consumers were also compiled against an isolated
-committed checkout, substituting their published-package imports with the
-checkout's `lib.typ` for the check. Compiling an example's unchanged
-`@preview/satz:0.1.1` import alone tests the published package, not these fixes.
-The report example requests unavailable EB Garamond on this host and falls back;
-the actual research report uses installed STIX fonts for visual comparison.
-
-The real report stores sources, output and layout-review backups together under
-its permanent `typst/` directory. Its saved review script checks 14 callouts,
-16 fragments, 21 heading gaps, body baseline candidates, front/body folios and
-the 35-row long table. Review images and PDFs stay outside Git. No version bump,
-tag, release or package publication accompanies this work.
+Native Typst provides the needed table rules, repeated headings and breakable
+blocks, so these fixes require no extra dependencies. Hydra and Glossarium address
+separate concerns. Subfigure work remains shelved. The manifest stays at 0.1.1:
+no version bump, tag, release or publication accompanies this work.
