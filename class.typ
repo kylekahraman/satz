@@ -157,6 +157,10 @@
   )
 
   // --- Paragraph ---
+  // Omit auto to retain Typst's native mathematical typeface and local rules.
+  let math-typeface = if c.typography.math-font == auto { (:) } else { (font: c.typography.math-font) }
+  show math.equation: set text(..math-typeface)
+
   set par(
     justify: c.typography.justify,
     leading: c.typography.leading,

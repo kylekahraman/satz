@@ -34,6 +34,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   `headings.h1-pagebreak` for report chapters that start on a new page.
 - Fix internal reference colors: resolved references also carry a fallback
   citation field, so testing for that field incorrectly skipped their styling.
+- Expose `typography.math-font`; `auto` retains Typst's native math typeface.
+  The research report explicitly selects STIX Two Math to match its LaTeX source.
 
 ### Other development work already committed
 

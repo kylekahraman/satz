@@ -30,6 +30,7 @@
   ),
   typography: (
     font: "Libertinus Serif",
+    math-font: auto,
     size: 11pt,
     leading: 0.65em,
     paragraph-spacing: 1.2em,
