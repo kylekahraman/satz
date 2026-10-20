@@ -91,3 +91,25 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 
 - [ ] Push to GitHub (`git push --force origin main`)
 - [ ] Submit to Typst Universe (`satz` package name confirmed available)
+
+
+## Report parity checkpoint — 20 October 2026 (unreleased)
+
+See the [current research report audit](docs/report-parity-audit.md) and
+[unreleased changelog](CHANGELOG.md). No release or version bump is authorized.
+
+- [x] Add native heading before-spacing controls while preserving `auto` flow.
+- [x] Promote corrected breakable callouts and code-line rhythm into Satz.
+- [x] Add `scientific-table` with repeatable headings and scientific rules;
+  apply it to 20 real main-text tables, retaining 45 ruled appendix tables.
+- [x] Honor table font/padding configuration and verify rendered values.
+- [ ] Restore dropped source verdict macros in the report conversion, including
+  the empty Verdict columns; verify every occurrence rather than infer labels.
+- [ ] Restore related-table grouping, shared captions and source references.
+- [ ] Compare caption placement, full-width tables, row groups and numeric
+  alignment before choosing an additional table dependency.
+- [ ] Audit numbered/unnumbered equations and figures by identity across pages.
+- [ ] Review final contents/cover/float behavior and real journal consumers.
+
+Subpar work remains shelved. Native rules, repeated headers and breakable
+blocks suffice for the current table/callout fixes; no new dependency was added.

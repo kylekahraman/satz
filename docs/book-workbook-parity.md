@@ -1,5 +1,10 @@
 # Book API: workbook parity findings
 
+This is the Georgia maths workbook used for the experimental book API. It is
+separate from the STIX decoding/RSA research report audited
+[here](report-parity-audit.md); their page counts and parity results must not
+be combined.
+
 The private RSA maths workbook is the real-document specimen for satz's
 experimental `book(...)` entry point. Its LaTeX source and PDF stay outside the
 package. The rebuildable Typst source and generated PDF are in the ignored

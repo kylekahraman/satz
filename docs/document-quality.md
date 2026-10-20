@@ -16,10 +16,10 @@ template-file/interface work is deferred for discussion.
 | Running headers | Hydra | Integrated and checked against a configured 12-page KOMA-Script fixture. |
 | Abbreviations/glossary | Glossarium | Integrated as an optional namespace; five-page example checks first/repeated use, links, unused terms, and coexistence with figures/captions. |
 | API manual | Tidy | Next small tooling trial; adapt doc-comment syntax and generate a manual. Keep it outside ordinary document compilation. |
-| Scientific tables | Zero, optionally Pillar | Useful trial, not a complete table-design solution. Compare decimal/uncertainty alignment and authoring effort before exposing a supported interface. |
+| Scientific tables | Native Typst; Zero/Pillar for a later alignment trial | `scientific-table` now supplies rules and repeated headings. Compare decimal/uncertainty alignment and authoring effort before adding an alignment dependency. |
 | Margin notes | Marginalia | Relevant to the commentary reference, but test collisions, binding, and page breaks before promising support. |
 | Page proportions | Tschich | Opt-in layout candidate, not a substitute for coordinated heading/paragraph spacing or KOMA type-area calculations. |
-| Figures and technical diagrams | Subpar, Fletcher | Useful when the next reference needs subfigures or repeated diagram work; not required for basic figures. |
+| Figures and technical diagrams | Fletcher; subfigures deferred | Subpar work is shelved at the user's request. Test a diagram dependency only when a real document justifies it. |
 | Ordinary heading spacing | Native Typst | No new package needed to start. Satz needs to coordinate the controls it already uses. |
 
 Versions, licenses, and source links are in the
@@ -32,8 +32,10 @@ The original level-one heading inserted an internal `v(0.5em)` and all four
 levels wrapped the native heading. The specimen measured a 7pt h1 page-start
 offset relative to equivalent native styling. The first pass removes these
 wrappers for reports, styles native headings with show-set rules, and increases
-default below-spacing to 1em/1em/0.9em/0.75em. Above-spacing remains native;
-options deliberately removed in `97f7809` have not been reintroduced.
+default below-spacing to 1em/1em/0.9em/0.75em. Above-spacing remains native by
+default. Commit `08c4fb4` adds opt-in `h1-above` through `h4-above` overrides,
+omitting them when `auto` to preserve native behavior. See the
+[typography guide](typography.md) for calibration and spacing semantics.
 
 Paragraph spacing and first-line indentation now have shared config keys.
 Their explicit defaults retain the prior native paragraph behavior. The

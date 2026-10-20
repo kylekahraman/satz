@@ -323,3 +323,47 @@ See [the complete report example](examples/placeholders.typ).
 ## License
 
 MIT
+
+
+### Scientific tables and callouts (unreleased)
+
+The development version exports `scientific-table` and `callout`. A scientific
+table has explicit column headings, stronger top/bottom rules and a thinner
+header rule. Headings and boundary rules repeat across page breaks. Native
+cells, alignment and group separators remain available:
+
+```typst
+#import "@local/satz:0.1.1": scientific-table, callout
+
+#scientific-table(
+  columns: (1fr, auto),
+  align: (left, right),
+  header: ([Condition], [Mean]),
+  [Baseline], [0.12],
+  [Treatment], [0.38],
+)
+
+#callout[
+  *Main finding*
+
+  Explain the finding here. The box can continue onto the next page.
+]
+```
+
+Wrap the table in `figure(..., kind: table, caption: [...])` for captions and
+references. For a multi-page table figure, also add
+`#show figure.where(kind: table): set block(breakable: true)` in its surrounding
+scope; ordinary figures are kept together by default. Pass `config:` explicitly
+to either helper to share a document palette or override component settings.
+The table helper uses `tables.font-size`, `tables.inset` and `tables.stroke`
+(the thin rule; boundary rules are 1.6 times thicker). Native table arguments
+such as `inset:` can override the helper's padding locally.
+
+See the [complete table example](examples/scientific-table.typ),
+[heading and paragraph guide](docs/typography.md), and
+[research report parity audit](docs/report-parity-audit.md).
+`headings.h1-above` through `h4-above` now provide opt-in before-spacing;
+`auto` retains native spacing. The audit lists concrete remaining differences:
+Satz does **not** yet claim complete LaTeX/KOMA parity.
+[Unreleased changes](CHANGELOG.md) are being prepared toward 0.2.0;
+the manifest remains 0.1.1 and no release has been made.

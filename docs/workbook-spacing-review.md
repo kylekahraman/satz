@@ -1,5 +1,10 @@
 # Workbook spacing review
 
+Historical diagnosis of an earlier conversion. For the current shared fixes,
+71-page report verification and remaining gaps, see the
+[20 October parity audit](report-parity-audit.md). Measurements below describe
+the earlier state and must not be read as final parity evidence.
+
 The workbook migration exposed a document-style regression despite the shared
 class already containing the native heading/paragraph fixes. The supplied port
 uses a vendored satz snapshot and overrides body, heading, contents, callout,
