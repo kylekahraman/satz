@@ -25,6 +25,18 @@ previous passage. Smaller headings generally need smaller absolute gaps.
 Chapter openings, consecutive headings, lists, equations and page starts
 require separate inspection.
 
+`headings.h1-pagebreak` defaults to `false`. Set it to `true` when every
+top-level heading must begin on a fresh page. That preserves the chapter-opening
+convention used by report classes such as `scrreprt`, but it can leave a short
+ending on the previous page when Typst's wrapping differs from another engine.
+Set it to `false` for continuous reports where flowing into the next chapter is
+preferable to that extra white space; native heading stickiness still keeps a
+heading with its following content.
+
+```typst
+#show: report.with(config: (headings: (h1-pagebreak: false)))
+```
+
 The research report's STIX Two Text calibration is **document configuration**,
 not a replacement for the shared defaults:
 
