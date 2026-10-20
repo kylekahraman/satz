@@ -93,7 +93,8 @@ letter, see the options below; a concise digital preset is still a usability gap
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
 | **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis — numbered headings, auto TOC/LoF/LoT, two-sided layout, bibliography |
 | **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]` | KOMA-Script-inspired book layout with adjustable cover, page furniture, appendices, and optional exercise components |
-| **dfg-proposal** | `dfg-proposal(...)` | DFG form 53.01 (Sachbeihilfe) in German and English — **work in progress** |
+| **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), complete German/English starters, separate page limits and counters (unreleased) |
+| **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers and exact budget totals (unreleased) |
 | **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
 | **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
 | **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
@@ -413,3 +414,19 @@ Configuration adds `typography.math-font` and `typography.mono-font`
 and opt-in `headings.h1-pagebreak`. Callouts accept an attached `title:`.
 The [research report audit](docs/report-parity-audit.md) records what was
 visually verified and what still differs from LaTeX. These APIs are unreleased.
+
+### Research and grant proposals (unreleased)
+
+Start from the complete [English DFG form](dfg-proposal/example.typ) or
+[German DFG form](dfg-proposal/example-de.typ). The 09/26 layout uses Arial,
+four numbered heading levels, and separately checked 17/8-page parts. Insert
+`dfg-supplement()` before section 4 to restart the header at page 1 of max. 8.
+For a proposal with your own structure, use `research-proposal` (also
+`project-proposal`); see [the example](proposal/example.typ). Both can use
+`proposal-budget` for exact euro-cent calculations.
+
+The [proposal guide](docs/proposals.md) covers imports, bibliography sizing,
+budgets, verification and scope. DFG support here covers form 53.01 project
+descriptions; other DFG forms and NWO are future work. The supplied
+[NWO LaTeX reference](https://github.com/MMMPeeters1981/NWO_LaTeX_Template) is
+recorded for a later scheme-specific implementation.

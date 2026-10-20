@@ -63,7 +63,9 @@ See [the quality and usability assessment](docs/document-quality.md) for current
   - [ ] Tidy manual generation; compare Zero/Pillar on representative tables before selecting a table API
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
 - [x] **Running headers** — Hydra 0.6.3 replaces custom chapter/section state; chapter openings stay blank, sections update on their starting page, section-free chapters fall back correctly. Toggle `page.headers: true` with binding enabled; verified against the paired KOMA-Script report.
-- [ ] **DFG proposal** — fix level 2–4 numbering, Arial font, proper 53.01 layout
+- [x] **DFG 53.01 proposal** — 09/26 German/English starters, Arial, four-level numbering, separate 17/8-page checks and verified header resets, publication sizing and exact budget totals; see [proposal guide](docs/proposals.md)
+- [x] **General research/project proposal** — inline title/summary, configurable structure, current/total page headers and shared budget helper (unreleased)
+- [ ] **NWO proposal** — use [MMMPeeters1981/NWO_LaTeX_Template](https://github.com/MMMPeeters1981/NWO_LaTeX_Template) as a starting reference; verify the selected Veni/Vidi/Vici call and current official form first
 - [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
 - [x] **List of Abbreviations (Abkürzungsverzeichnis)** — optional Glossarium 0.5.10 namespace via satz, term dictionaries, first-use expansion, linked references, and printable abbreviation list; see `examples/glossary.typ`

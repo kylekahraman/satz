@@ -10,7 +10,8 @@ Use a document-level function for the overall structure, and native Typst elemen
 | Invoice | `invoice` / `rechnung` | Published |
 | Two-column article | `article` | Development |
 | Book with exercises | `book` | Experimental |
-| DFG proposal | `dfg-proposal` | Work in progress |
+| DFG proposal | `dfg-proposal`, `dfg-supplement`, `dfg-publications` | 53.01 (09/26), bilingual starters and separate 17/8-page checks (unreleased) |
+| Research/project proposal | `research-proposal`, `project-proposal`, `proposal-budget` | Inline title/summary, current/total page headers and exact budgets (unreleased) |
 | Legal complaint | `klageschrift` | Published |
 | Guest performance contract | `gastspielvertrag` | Published |
 | Cover page | `cover-page`, `research-cover`, `minimal-cover` | Published |
@@ -23,3 +24,6 @@ Import the function you need:
 ```
 
 Template functions are not all configured in the same way yet. Reports and journals use shared `config`; letters and invoices retain German field names for compatibility. The [API design notes](../maintainers/api-design.md) describe how future interfaces can become more uniform without breaking existing documents.
+
+For the complete proposal API and bilingual DFG starters, see the
+[proposal guide](https://github.com/kylekahraman/satz/blob/main/docs/proposals.md).
