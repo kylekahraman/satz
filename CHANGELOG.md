@@ -26,6 +26,7 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Keep headings ragged-right and unhyphenated by default, even in justified
   prose. Add optional attached, palette-colored callout titles with a deliberate
   title/body gap; see `examples/callout.typ`.
+- Preserve left-aligned reading text in callouts nested inside centered figures.
 - Expose caption alignment and label weight independently, preserving native
   labels/references and the existing long-caption/short-list workflow.
 

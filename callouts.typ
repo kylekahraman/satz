@@ -5,6 +5,7 @@
 #let callout(body, title: none, config: (:), fill: auto, stroke: auto) = context {
   let c = merge(defaults, config)
   let style = c.callouts
+  set align(left)
   // A line containing only smaller code must keep the body's cap-height.
   let body-top = measure([H]).height
   show raw: set text(top-edge: body-top, bottom-edge: 0pt)

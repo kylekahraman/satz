@@ -16,3 +16,12 @@
 
   A final paragraph with the same body rhythm.
 ]
+
+#figure(
+  callout(title: [A box inside a figure])[
+    This text keeps its reading alignment instead of inheriting the figure's
+    centered alignment.
+  ],
+  kind: image,
+  caption: [An explanatory box inside a figure.],
+)
