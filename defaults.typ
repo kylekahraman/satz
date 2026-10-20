@@ -39,10 +39,12 @@
   ),
   headings: (
     numbering: "1.1",
-    h1-size: 14pt, h1-below: 1em,
-    h2-size: 12pt, h2-below: 1em,
-    h3-size: 11pt, h3-below: 0.9em,
-    h4-size: 11pt, h4-below: 0.75em,
+    // `auto` preserves Typst's native before-spacing; explicit lengths let
+    // report templates match KOMA-Script's per-level section skips.
+    h1-size: 14pt, h1-above: auto, h1-below: 1em,
+    h2-size: 12pt, h2-above: auto, h2-below: 1em,
+    h3-size: 11pt, h3-above: auto, h3-below: 0.9em,
+    h4-size: 11pt, h4-above: auto, h4-below: 0.75em,
   ),
   decorative: (
     header-size: 9pt,

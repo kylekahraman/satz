@@ -179,6 +179,13 @@
   show heading.where(level: 2): set text(size: c.headings.h2-size, fill: c.colors.brand-primary, weight: "bold")
   show heading.where(level: 3): set text(size: c.headings.h3-size, fill: c.colors.brand-primary, weight: "bold")
   show heading.where(level: 4): set text(size: c.headings.h4-size, fill: c.colors.brand-primary, weight: "bold")
+  // Setting block(above: auto) replaces native per-level heading skips.
+  // Omit the property entirely when callers request native spacing.
+  let heading-above(value) = if value == auto { (:) } else { (above: value) }
+  show heading.where(level: 1): set block(..heading-above(c.headings.h1-above))
+  show heading.where(level: 2): set block(..heading-above(c.headings.h2-above))
+  show heading.where(level: 3): set block(..heading-above(c.headings.h3-above))
+  show heading.where(level: 4): set block(..heading-above(c.headings.h4-above))
   show heading.where(level: 1): set block(below: c.headings.h1-below)
   show heading.where(level: 2): set block(below: c.headings.h2-below)
   show heading.where(level: 3): set block(below: c.headings.h3-below)

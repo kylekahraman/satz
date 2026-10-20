@@ -86,10 +86,35 @@ def main():
     if abs(baselines[1] - baselines[0] - 8) > 0.05:
         failures.append("Configured paragraph spacing did not change the gap by 8pt")
     measurements["paragraph_gap_change_pt"] = baselines[1] - baselines[0]
+
+    # Before-spacing must actually reach the heading block. Otherwise a large
+    # below-spacing can visually attach the heading to the preceding paragraph.
+    heading_gaps = {}
+    for level in range(1, 5):
+        gaps = []
+        for above in (12, 32):
+            source = '#import "/lib.typ": report\n#show: report.with(config: ('
+            source += 'toc: (depth: 0), typography: (paragraph-spacing: 4pt), '
+            source += f'headings: (h{level}-above: {above}pt, h{level}-below: 6pt)))\n'
+            source += '#v(30pt)\nPRECEDINGBODY\n\n'
+            source += '=' * level + ' TUNABLEHEADING\nFOLLOWINGBODY\n'
+            with fitz.open(compile_source(f"heading-gaps-{level}-{above}", source)) as document:
+                preceding_page, preceding = locate(document, "PRECEDINGBODY")
+                heading_page, heading = locate(document, "TUNABLEHEADING")
+                following_page, following = locate(document, "FOLLOWINGBODY")
+                assert preceding_page == heading_page == following_page
+                gaps.append((heading[0].y0 - preceding[0].y1,
+                             following[0].y0 - heading[0].y1))
+        if abs(gaps[1][0] - gaps[0][0] - 20) > 0.05:
+            failures.append(f"Level {level}: above-spacing did not increase the gap by 20pt")
+        if abs(gaps[1][1] - gaps[0][1]) > 0.05 or gaps[1][0] <= gaps[1][1]:
+            failures.append(f"Level {level}: heading does not group with its following paragraph")
+        heading_gaps[str(level)] = gaps
+    measurements["heading_gaps_pt"] = heading_gaps
     (OUTPUT / "typography-checks.json").write_text(json.dumps(measurements, indent=2) + "\n")
     if failures:
         raise AssertionError("\n".join(failures))
-    print("Passed: native heading flow, multiline/consecutive headings, 8 page-edge cases, paragraph spacing/indentation.")
+    print("Passed: native heading flow, multiline/consecutive headings, 8 page-edge cases, paragraph spacing/indentation, above/below heading grouping at all 4 levels.")
 
 
 if __name__ == "__main__":
