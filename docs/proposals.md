@@ -216,12 +216,13 @@ cover call uses an incompatible older API, so its full-document check could
 not complete; that consumer was left unchanged. The focused proposal suite also
 passes against a clean staged snapshot without unrelated workspace edits.
 
-## Later: NWO
+## NWO Talent Programme
 
-The supplied [MMMPeeters1981/NWO_LaTeX_Template](https://github.com/MMMPeeters1981/NWO_LaTeX_Template)
-is recorded as the starting reference for future NWO work. Its Veni/Vidi/Vici
-layout must be checked against the chosen scheme's current official call and
-Word form before implementation. No NWO submission layout is exposed yet.
+Veni, Vidi and Vici authoring layouts now have explicit 2026 profiles and
+scheme/domain-specific starters. See the [NWO guide](nwo-proposals.md) for the
+15 represented combinations, typography, form sources, tests and concrete
+remaining gaps. The full Vici form prohibits own-publication highlighting;
+the optional CSL workflow enforces this distinction from DFG.
 
 ## DFG typography comparison and known limits
 

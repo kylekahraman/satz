@@ -12,6 +12,7 @@ Use a document-level function for the overall structure, and native Typst elemen
 | Book with exercises | `book` | Experimental |
 | DFG proposal | `dfg-proposal`, `dfg-supplement`, `dfg-publications` | 53.01 (09/26), bilingual starters and separate 17/8-page checks (unreleased) |
 | Research/project proposal | `research-proposal`, `project-proposal`, `proposal-budget` | Inline title/summary, current/total page headers and exact budgets (unreleased) |
+| NWO Talent Programme | `nwo-proposal`, `nwo-profile` | Veni/Vidi/Vici 2026 profiles and starters; see coverage and limitations (unreleased) |
 | Legal complaint | `klageschrift` | Published |
 | Guest performance contract | `gastspielvertrag` | Published |
 | Cover page | `cover-page`, `research-cover`, `minimal-cover` | Published |

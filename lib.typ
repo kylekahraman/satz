@@ -23,3 +23,7 @@
 #import "tables.typ": scientific-table, scientific-tables
 #import "callouts.typ": callout
 #import "chapter-numbering.typ": chapter-numbering
+
+#import "nwo-proposal/template.typ": nwo-proposal
+#import "nwo-proposal/profiles.typ": nwo-profile
+#import "nwo-proposal/components.typ": nwo-text, nwo-key-output, nwo-page-budget

@@ -65,7 +65,8 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Running headers** — Hydra 0.6.3 replaces custom chapter/section state; chapter openings stay blank, sections update on their starting page, section-free chapters fall back correctly. Toggle `page.headers: true` with binding enabled; verified against the paired KOMA-Script report.
 - [x] **DFG 53.01 proposal** — 09/26 German/English starters, Arial, four-level numbering, separate 17/8-page checks and verified header resets, publication sizing and exact budget totals; see [proposal guide](docs/proposals.md)
 - [x] **General research/project proposal** — inline title/summary, configurable structure, current/total page headers and shared budget helper (unreleased)
-- [ ] **NWO proposal** — use [MMMPeeters1981/NWO_LaTeX_Template](https://github.com/MMMPeeters1981/NWO_LaTeX_Template) as a starting reference; verify the selected Veni/Vidi/Vici call and current official form first
+- [x] **NWO proposal foundation** — Veni/Vidi/Vici 2026 profiles and starters for 15 source-consulted combinations; header, rhythm and limit checks; see [coverage and gaps](docs/nwo-proposals.md)
+- [ ] **Remaining NWO forms and visual parity** — obtain Vici ZonMw pre-proposal and Veni/Vidi 2026 full forms; reproduce remaining fixed form content/layout and validate real submissions before claiming full coverage
 - [x] **List of Figures (Abbildungsverzeichnis)** — auto-generated from figure captions
 - [x] **List of Tables (Tabellenverzeichnis)** — auto-generated from table captions
 - [x] **List of Abbreviations (Abkürzungsverzeichnis)** — optional Glossarium 0.5.10 namespace via satz, term dictionaries, first-use expansion, linked references, and printable abbreviation list; see `examples/glossary.typ`

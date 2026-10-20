@@ -33,6 +33,10 @@
   set text(size: size)
   csl-bibliography(title: none, full-control: entries => {
     let count = entries.filter(e => e.key in selected).len()
+    let nwo = state("satz-nwo-profile").get()
+    if type(nwo) == dictionary and nwo.stage == "full" {
+      assert(count == 0, message: "NWO Vici full proposals prohibit highlighting your own publications.")
+    }
     if max-highlight != none {
       assert(count <= max-highlight, message: "At most " + str(max-highlight) + " highlighted publications may be printed.")
     }

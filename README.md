@@ -427,6 +427,6 @@ For a proposal with your own structure, use `research-proposal` (also
 
 The [proposal guide](docs/proposals.md) covers imports, bibliography sizing,
 budgets, verification and scope. DFG support here covers form 53.01 project
-descriptions; other DFG forms and NWO are future work. The supplied
-[NWO LaTeX reference](https://github.com/MMMPeeters1981/NWO_LaTeX_Template) is
-recorded for a later scheme-specific implementation.
+descriptions; other DFG forms are future work. NWO Veni, Vidi and Vici now
+have 2026 profiles and starters; see the [NWO guide](docs/nwo-proposals.md)
+for the 15 represented scheme/domain/stage combinations and remaining gaps.
