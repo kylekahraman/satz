@@ -1,0 +1,60 @@
+% Reference: emtpb/proposal_dfg proposal.cls. No upstream class code is copied.
+% Compile with LuaLaTeX and the reference class alongside this file.
+% Arial and official 53.01 margins isolate typography from font/page differences.
+\documentclass[english,53.01]{proposal}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\usepackage[left=25mm,right=20mm,top=25mm,bottom=15mm]{geometry}
+\applicant{Example Applicant, Example University}
+\project{Reliable Measurements Across Laboratories}
+\begin{document}
+\section{Starting Point}
+\textbf{State of the art and preliminary work}\par
+
+Measurement protocols often differ between laboratories. These differences can
+change the observed signal even when the underlying process remains stable.
+A shared reference protocol is therefore needed to distinguish biological
+variation from variation introduced by acquisition and analysis. The proposed
+project will establish this reference and test its reproducibility across sites.
+
+The preliminary work has established a calibration procedure and an analysis
+pipeline. Both have been applied to independent recordings. The remaining
+question is whether the same quality criteria transfer to instruments with
+different noise characteristics. This question motivates the validation work.
+
+\section{Objectives and work programme}
+\subsection{Anticipated total duration of the project}
+The project will run for twelve months. Acquisition and calibration will take
+place during the first four months, followed by validation and dissemination.
+
+\subsection{Objectives}
+The central objective is to quantify how reliably a reference protocol recovers
+known changes under realistic measurement conditions. Success requires both
+stable baseline measurements and sufficient sensitivity to the target change.
+
+\subsection{Work programme incl. proposed research methods}
+\subsubsection{Reference protocol}
+BASELINEONE \\ BASELINETWO \\ BASELINETHREE\par
+
+A controlled comparison will vary acquisition settings while retaining the same
+reference samples. Analysis will use pre-specified quality criteria, and the
+final evaluation will use recordings held out during protocol development.
+
+\begin{itemize}
+\item Calibrate the instruments against shared reference samples.
+\item Estimate repeatability within each laboratory.
+\item Evaluate transfer to independent instruments and recordings.
+\end{itemize}
+
+\subsubsection{Validation and dissemination}
+Results will be reported with uncertainty estimates and explicit failure cases.
+The protocol, analysis scripts and permitted data will be archived together.
+
+\begin{tabular}{ll}
+\textbf{Period} & \textbf{Milestone} \\
+Months 1--4 & Calibration complete \\
+Months 5--9 & Independent validation \\
+Months 10--12 & Release and documentation
+\end{tabular}
+\end{document}

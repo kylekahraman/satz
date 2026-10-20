@@ -61,7 +61,13 @@ argument changes the first-part allowance only; keep its default for DFG 53.01.
 A document containing only the research part can omit `dfg-supplement()`.
 
 Defaults use A4, Arial 11pt, 25mm left/top, 20mm right and 15mm bottom margins,
-black text on white, no cover, no contents, no footer, and 0.5em leading.
+black text on white, no cover, no contents, no footer, and the shared Satz spacing defaults.
+Leading, paragraph spacing, list spacing and gaps around headings inherit the
+root defaults rather than the earlier compressed DFG overrides. At 11pt Arial,
+`typography.leading: 0.65em` currently yields about 15.03pt between baselines;
+`0.65em` is the gap Typst adds between line boxes, not a LaTeX line-spacing
+multiplier. The shared paragraph spacing is 1.2em. These remain configurable via
+`config: (typography: (leading: ..., paragraph-spacing: ...))`.
 Arial must be installed: Typst can otherwise substitute a font and issue a
 warning. The regression fixture rejects compiler warnings. Tables and captions
 also default to 11pt. Shared `config` overrides remain available, but changing
@@ -216,3 +222,37 @@ The supplied [MMMPeeters1981/NWO_LaTeX_Template](https://github.com/MMMPeeters19
 is recorded as the starting reference for future NWO work. Its Veni/Vidi/Vici
 layout must be checked against the chosen scheme's current official call and
 Word form before implementation. No NWO submission layout is exposed yet.
+
+## DFG typography comparison and known limits
+
+The first implementation passed functional tests but compressed heading-to-text
+gaps to 0.1em. PDF measurements exposed about 2pt overlap between the text bounds
+of a heading and its first body line. The DFG wrapper now inherits shared Satz
+vertical rhythm. A regression checks both actual baseline distance and positive
+heading-to-body ink gaps, including a configuration override.
+
+The paired specimens in `examples/latex-parity/proposal-rhythm.typ` and
+`proposal-rhythm.tex` contain the same filled paragraphs, heading hierarchy,
+list and table. The LaTeX version uses emtpb's unmodified `proposal.cls`, with
+Arial and the official margins selected in the specimen to isolate typography.
+The reference class still identifies itself as form 09/25; its historical header
+is not evidence of current form compliance. Both specimens render to two pages.
+The LaTeX baseline is about 13.55pt; Satz deliberately retains its shared
+15.03pt baseline. The specimens do not claim pixel parity.
+
+To reproduce: place emtpb's `proposal.cls` beside a copy of the `.tex` specimen,
+compile it with LuaLaTeX, then run
+`python3 examples/latex-parity/check_proposal_rhythm.py --latex-reference PATH`.
+The test without that argument needs only Typst and pdfplumber. It checks the
+shared-default baseline, no overlap at selected h2/h3 boundaries, the 1.2 minimum
+and a user override. Inspect the filled rendered specimen after spacing changes;
+empty starter sections are insufficient visual validation.
+
+DFG verification currently covers section headings, four-level numbering,
+bilingual headers and resets, explicit page limits, configured geometry/fonts,
+selected line/heading spacing, native/optional CSL bibliographies, automatic
+highlighting, hyperlink destinations and exact budget arithmetic. It does not
+establish every possible pagination, math, footnote, float, BibLaTeX or custom-CSL
+case, nor acceptance of a particular submission. A full visual reproduction of
+the current official RTF has not been demonstrated. Other DFG forms remain
+outside this implementation.

@@ -32,10 +32,13 @@ def main():
 
         for name, lang in [('example.typ', 'english'), ('example-de.typ', 'german')]:
             with compile_doc(lang, load('dfg-proposal/' + name)) as pdf:
-                assert len(pdf.pages) == 3
+                assert len(pdf.pages) >= 3
+                supplement_index = next(i for i, p in enumerate(pdf.pages)
+                    if ('max. 8' in p.crop((0, 0, float(p.width), 60)).extract_text()))
+                assert supplement_index >= 1
                 for index, page in enumerate(pdf.pages):
                     header = page.crop((0, 0, float(page.width), 60)).extract_text()
-                    n, limit = (1, 17) if index == 0 else (index, 8)
+                    n, limit = (index + 1, 17) if index < supplement_index else (index - supplement_index + 1, 8)
                     expected = f'page {n} of max. {limit}' if lang == 'english' else f'Seite {n} von max. {limit}'
                     assert expected in header, header
                     assert '53.01 – 09/26' in header, header
