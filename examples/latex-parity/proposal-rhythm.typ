@@ -47,7 +47,7 @@ The protocol, analysis scripts and permitted data will be archived together.
 
 #block(breakable: false)[
 #table(
-  columns: (1fr, 1fr),
+  columns: (auto, auto),
   table.header([*Period*], [*Milestone*]),
   [Months 1–4], [Calibration complete],
   [Months 5–9], [Independent validation],

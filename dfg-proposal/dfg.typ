@@ -3,6 +3,7 @@
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as dfg-defaults
 #import "../proposal/citations.typ": proposal-publications
+#import "layout.typ": proposal-headings, proposal-title
 
 /// Start sections 4–5 on a new page, resetting the displayed page to 1.
 /// Insert exactly once, immediately before the level-one section 4 heading.
@@ -54,22 +55,20 @@
     text(size: c.decorative.header-size, weight: "regular")[#if de [DFG-Vordruck] else [DFG form] 53.01 – #form-date #h(1fr) #if de [Seite] else [page] #part-page #if de [von max.] else [of max.] #limit]
   }
   personal(kind: "proposal", config: c, header: furniture)[
-    #set text(lang: if de { "de" } else { "en" })
-    #set page(numbering: none, footer: none)
+    #set text(lang: if de { "de" } else { "en" }, top-edge: 1467 / 2048 * 1em, bottom-edge: 0pt)
+    #set page(numbering: none, footer: none, header-ascent: c.page.header-ascent)
+    #set list(indent: c.decorative.list-indent, body-indent: c.decorative.list-body-indent, spacing: c.decorative.list-spacing)
+    #set enum(indent: c.decorative.list-indent, body-indent: c.decorative.list-body-indent, spacing: c.decorative.list-spacing)
+    #show list: set block(above: c.decorative.list-block-spacing, below: c.decorative.list-block-spacing)
+    #show enum: set block(above: c.decorative.list-block-spacing, below: c.decorative.list-block-spacing)
     #show link: it => text(fill: c.links.color, it)
-    #align(left, text(weight: "bold")[
-      #if de [Beschreibung des Vorhabens – Projektanträge] else [Project Description – Project Proposals]
-      #parbreak()
-      #applicant
-      #parbreak()
-      #project
-      #parbreak()
-      #line(length: 100%, stroke: 0.5pt)
-      #parbreak()
-      #if de [Beschreibung des Vorhabens] else [Project Description]
-    ])
-    #v(1em)
-    #doc
+    #v(11 * 72 / 72.27 * 1pt - 1467 / 2048 * 11pt)
+    #proposal-title(c,
+      if de [Beschreibung des Vorhabens – Projektanträge] else [Project Description – Project Proposals],
+      applicant, project,
+      if de [Beschreibung des Vorhabens] else [Project Description],
+    )
+    #proposal-headings(c, doc)
     #metadata("end") <satz-dfg-end>
     #context {
       let parts = query(<satz-dfg-supplement>)

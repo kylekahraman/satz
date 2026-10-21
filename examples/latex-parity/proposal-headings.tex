@@ -1,0 +1,37 @@
+% Reference: emtpb/proposal_dfg proposal.cls. No upstream class code is copied.
+% Compile with LuaLaTeX and the reference class alongside this file.
+% Arial and official 53.01 margins isolate typography from font/page differences.
+\documentclass[english,53.01]{proposal}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+% Normalize TeX's 11pt class size to the same physical 11 PDF points as Typst.
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize{11bp}{13.6pt}}
+\normalsize
+\makeatother
+\setlength{\parskip}{0.5em}
+\renewcommand{\formdate}{09/26}
+\usepackage[left=25mm,right=20mm,top=25mm,bottom=15mm]{geometry}
+\applicant{Example Applicant, Example University}
+\project{Reliable Measurements Across Laboratories}
+\begin{document}
+\section{LEVELONE}
+BODYONE\par
+\subsection{LEVELTWO}
+BODYTWO\par
+\subsubsection{LEVELTHREE}
+BODYTHREE\par
+\subsubsubsection{LEVELFOUR}
+BODYFOUR\par
+\section{STACKONE}
+\subsection{STACKTWO}
+\subsubsection{STACKTHREE}
+\subsubsubsection{STACKFOUR}
+STACKBODY\par
+\subsection{A deliberately long heading that wraps onto another line and tests continuation alignment of the heading text}
+WRAPBODY\par
+\newpage
+\subsection{PAGESTART}
+PAGEBODY\par
+\end{document}

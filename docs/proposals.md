@@ -61,13 +61,13 @@ argument changes the first-part allowance only; keep its default for DFG 53.01.
 A document containing only the research part can omit `dfg-supplement()`.
 
 Defaults use A4, Arial 11pt, 25mm left/top, 20mm right and 15mm bottom margins,
-black text on white, no cover, no contents, no footer, and the shared Satz spacing defaults.
-Leading, paragraph spacing, list spacing and gaps around headings inherit the
-root defaults rather than the earlier compressed DFG overrides. At 11pt Arial,
-`typography.leading: 0.65em` currently yields about 15.03pt between baselines;
-`0.65em` is the gap Typst adds between line boxes, not a LaTeX line-spacing
-multiplier. The shared paragraph spacing is 1.2em. These remain configurable via
-`config: (typography: (leading: ..., paragraph-spacing: ...))`.
+black text on white, no cover, no contents and no footer. The DFG defaults now
+translate emtpb/KOMA's vertical rhythm: an approximately 13.549pt body baseline,
+5.5pt paragraph skip and distinct before/after skips for all four heading levels.
+Typst's `leading` and block gaps are line-box distances, so copying LaTeX's
+numeric values directly produces compressed headings. The wrapper also handles
+stacked headings, hanging continuation lines and the page-top baseline.
+All values remain configurable through the ordinary deep-merged config.
 Arial must be installed: Typst can otherwise substitute a font and issue a
 warning. The regression fixture rejects compiler warnings. Tables and captions
 also default to 11pt. Shared `config` overrides remain available, but changing
@@ -226,34 +226,25 @@ the optional CSL workflow enforces this distinction from DFG.
 
 ## DFG typography comparison and known limits
 
-The first implementation passed functional tests but compressed heading-to-text
-gaps to 0.1em. PDF measurements exposed about 2pt overlap between the text bounds
-of a heading and its first body line. The DFG wrapper now inherits shared Satz
-vertical rhythm. A regression checks both actual baseline distance and positive
-heading-to-body ink gaps, including a configuration override.
+The paired specimens now compare the **actual independently compiled** LaTeX
+reference with Satz, rather than merely asserting positive heading gaps. Run:
 
-The paired specimens in `examples/latex-parity/proposal-rhythm.typ` and
-`proposal-rhythm.tex` contain the same filled paragraphs, heading hierarchy,
-list and table. The LaTeX version uses emtpb's unmodified `proposal.cls`, with
-Arial and the official margins selected in the specimen to isolate typography.
-The reference class still identifies itself as form 09/25; its historical header
-is not evidence of current form compliance. Both specimens render to two pages.
-The LaTeX baseline is about 13.55pt; Satz deliberately retains its shared
-15.03pt baseline. The specimens do not claim pixel parity.
+```
+python3 examples/latex-parity/check_proposal_rhythm.py --output /tmp/satz-dfg-comparison
+```
 
-To reproduce: place emtpb's `proposal.cls` beside a copy of the `.tex` specimen,
-compile it with LuaLaTeX, then run
-`python3 examples/latex-parity/check_proposal_rhythm.py --latex-reference PATH`.
-The test without that argument needs only Typst and pdfplumber. It checks the
-shared-default baseline, no overlap at selected h2/h3 boundaries, the 1.2 minimum
-and a user override. Inspect the filled rendered specimen after spacing changes;
-empty starter sections are insufficient visual validation.
+Requirements: Typst, LuaLaTeX with the reference class's packages, Arial,
+`pdfplumber` and `pypdf`. The unmodified upstream class and license are pinned
+under `examples/latex-parity/reference`; no download is needed. See its README
+for the explicit physical-font normalization and provenance.
 
-DFG verification currently covers section headings, four-level numbering,
-bilingual headers and resets, explicit page limits, configured geometry/fonts,
-selected line/heading spacing, native/optional CSL bibliographies, automatic
-highlighting, hyperlink destinations and exact budget arithmetic. It does not
-establish every possible pagination, math, footnote, float, BibLaTeX or custom-CSL
-case, nor acceptance of a particular submission. A full visual reproduction of
-the current official RTF has not been demonstrated. Other DFG forms remain
-outside this implementation.
+Both specimens match page count and every text row's vertical bounds within
+0.02pt. Coverage includes title/rule, headers, body/paragraph rhythm, all four
+heading levels, consecutive headings, multiline hanging indents, page-start
+headings, lists and table rows. Explicit leading overrides and PDF heading
+bookmarks are also checked. The complete DFG suite separately checks bilingual
+headers, resets and page limits. Text justification and optical margin behavior
+still differ between TeX and Typst; arbitrary manuscripts are not guaranteed
+pixel-identical. Math, footnotes, floats and custom citation styles require their
+own comparisons. The template currently implements DFG **53.01**, not the other
+forms exposed by the upstream LaTeX class.

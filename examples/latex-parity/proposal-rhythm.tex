@@ -5,6 +5,13 @@
 \usepackage{fontspec}
 \setmainfont{Arial}
 \setsansfont{Arial}
+% Normalize TeX's 11pt class size to the same physical 11 PDF points as Typst.
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize{11bp}{13.6pt}}
+\normalsize
+\makeatother
+\setlength{\parskip}{0.5em}
+\renewcommand{\formdate}{09/26}
 \usepackage[left=25mm,right=20mm,top=25mm,bottom=15mm]{geometry}
 \applicant{Example Applicant, Example University}
 \project{Reliable Measurements Across Laboratories}
