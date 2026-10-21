@@ -44,4 +44,5 @@ so explicit page breaks remain supported.
 Continuation-page headers reserve an unbroken date column and wrap the entry
 title in the remaining width. `journal.running-gutter` defaults to 1em and
 `journal.running-leading` to 0.35em, both resolved at the running-header size.
-The date stays right-aligned and separate from every wrapped title line.
+The date stays right-aligned, level with the first title line, and separate
+from every wrapped continuation line.

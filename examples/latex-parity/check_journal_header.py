@@ -78,6 +78,7 @@ FINALPAGE
                     assert abs(date['x1'] - (page.width - 20 * 72 / 25.4)) < .1
                     title_words = [w for w in header.extract_words() if w['x0'] < date['x0'] - 1]
                     assert title_words
+                    assert abs(min(w['top'] for w in title_words) - date['top']) < .05, 'Date must align to the first title line.'
                     assert max(w['x1'] for w in title_words) <= date['x0'] - 8.9, (name, title_words, date)
                     if name == 'very-long':
                         assert len({round(w['top'], 1) for w in title_words}) >= 2

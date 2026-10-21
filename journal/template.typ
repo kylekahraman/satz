@@ -60,8 +60,9 @@
         #set par(justify: false, first-line-indent: 0pt, leading: c.journal.running-leading)
         #grid(
           columns: (1fr, auto), column-gutter: c.journal.running-gutter,
-          align(left)[#text(weight: "medium")[#entry.title]],
-          align(right)[#box[#entry.date]]
+          align: top,
+          align(left + top)[#text(weight: "medium")[#entry.title]],
+          align(right + top)[#box[#entry.date]]
         )
       ]
     },
