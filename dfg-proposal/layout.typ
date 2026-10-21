@@ -5,6 +5,26 @@
     state("satz-dfg-previous-block", none).update("body")
     it
   }
+  show list: it => {
+    it
+    state("satz-dfg-previous-block", none).update("body")
+  }
+  show enum: it => {
+    it
+    state("satz-dfg-previous-block", none).update("body")
+  }
+  show math.equation.where(block: true): it => {
+    it
+    state("satz-dfg-previous-block", none).update("body")
+  }
+  show table: it => {
+    it
+    state("satz-dfg-previous-block", none).update("body")
+  }
+  show figure: it => {
+    it
+    state("satz-dfg-previous-block", none).update("body")
+  }
   show heading: it => {
     context {
       let level = calc.min(it.level, 4)

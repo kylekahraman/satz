@@ -68,6 +68,8 @@ Typst's `leading` and block gaps are line-box distances, so copying LaTeX's
 numeric values directly produces compressed headings. The wrapper also handles
 stacked headings, hanging continuation lines and the page-top baseline.
 All values remain configurable through the ordinary deep-merged config.
+General Satz documents now also use a [shared KOMA heading policy](heading-spacing.md);
+DFG retains the distinct skips prescribed by its reference class.
 Arial must be installed: Typst can otherwise substitute a font and issue a
 warning. The regression fixture rejects compiler warnings. Tables and captions
 also default to 11pt. Shared `config` overrides remain available, but changing

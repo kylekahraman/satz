@@ -1,6 +1,7 @@
 // Unified document class — kind: "journal" | "report" | "thesis" | "letter"
 
 #import "defaults.typ": defaults, merge
+#import "heading-layout.typ": koma-headings
 #import "@preview/hydra:0.6.3": hydra, selectors
 
 /// Show a long caption under the figure, a short one in the List of Figures.
@@ -402,5 +403,6 @@
     pagebreak()
   }
 
-  body
+  assert(c.headings.spacing in ("koma", "native"), message: "headings.spacing must be koma or native.")
+  if c.headings.spacing == "koma" { koma-headings(c, kind, body) } else { body }
 }

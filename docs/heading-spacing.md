@@ -1,0 +1,34 @@
+# Shared heading spacing
+
+Satz now defaults to `headings.spacing: "koma"` in the shared class. Reports,
+articles and general proposals inherit this policy. Existing template-specific
+lengths and document overrides take precedence; book chapter designs and the
+DFG form retain their own rendering.
+
+KOMA's before/after skips are measured between baselines. Typst's block gaps
+sit between line boxes. `heading-layout.typ` measures cap height, x-height,
+leading and paragraph distance in the chosen font, then translates the skips.
+Changing fonts or heading sizes therefore does not require hand tuning gaps.
+
+The standard section skips are 3.5ex before / 2.3ex after level one, and
+3.25ex / 1.5ex for levels two and three. Level four uses the 3.25ex before-skip
+but stays a block heading with zero extra after-skip; KOMA normally runs its
+paragraph heading into the following text. Consecutive headings suppress the
+second before-skip while retaining the preceding after-skip. Wrapped headings
+have hanging continuation indents and stay attached to the following block.
+
+Explicit `h1-above`, `h1-below`, … `h4-below` lengths remain Typst block gaps.
+`auto` now selects the measured KOMA value. Set
+`config: (headings: (spacing: "native"))` to use the native renderer; add explicit
+per-level lengths if recreating an older layout. Body leading, paragraph spacing,
+font sizes and colors are unchanged by this policy. Existing documents can reflow.
+
+Run `python3 examples/latex-parity/check_typography.py` for the original native
+opt-out and paragraph/page-boundary checks, plus the shared KOMA comparison.
+The independent `check_shared_headings.py` needs LuaLaTeX, Typst, Arial,
+`pdfplumber` and `pypdf`. Its reference uses standard `scrartcl` section skips,
+normalizes physical font sizes and baseline distances to match the specimen,
+and compares relative positions to exclude page-top conventions. It covers
+mixed heading sizes and consecutive headings within 0.05pt, page attachment,
+explicit gaps, equations, cross-references and bookmarks. This is a heading
+rhythm comparison, not a claim of identical full-document pagination.

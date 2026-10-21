@@ -36,7 +36,11 @@ def locate(document, phrase):
 
 def main():
     OUTPUT.mkdir(exist_ok=True)
-    for mode in ("report", "native"):
+    # Keep the original native-flow comparison as the explicit opt-out check.
+    source = (HERE / "typography.typ").read_text().replace('"../../lib.typ"', '"/lib.typ"').replace('"typography-content.typ"', '"/examples/latex-parity/typography-content.typ"')
+    source = source.replace('typography: (font:', 'headings: (spacing: "native", h1-below: 1em, h2-below: 1em, h3-below: 0.9em, h4-below: 0.75em), typography: (font:')
+    compile_source("typography-report", source)
+    for mode in ("native",):
         run(["typst", "compile", "--root", str(ROOT), "--input", f"mode={mode}",
              str(HERE / "typography.typ"), str(OUTPUT / f"typography-{mode}.pdf")])
     run(["pdflatex", "-no-shell-escape", "-interaction=nonstopmode", "-halt-on-error",
@@ -119,3 +123,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    from check_shared_headings import main as check_shared
+    check_shared()

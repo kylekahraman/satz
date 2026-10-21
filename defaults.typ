@@ -43,12 +43,13 @@
     numbering: "1.1",
     hyphenate: false,
     h1-pagebreak: false,
-    // `auto` preserves Typst's native before-spacing; explicit lengths let
-    // report templates match KOMA-Script's per-level section skips.
-    h1-size: 14pt, h1-above: auto, h1-below: 1em,
-    h2-size: 12pt, h2-above: auto, h2-below: 1em,
-    h3-size: 11pt, h3-above: auto, h3-below: 0.9em,
-    h4-size: 11pt, h4-above: auto, h4-below: 0.75em,
+    // auto translates KOMA baseline skips using the actual body/heading fonts.
+    // Explicit lengths remain Typst block gaps. "native" opts out of translation.
+    spacing: "koma",
+    h1-size: 14pt, h1-above: auto, h1-below: auto,
+    h2-size: 12pt, h2-above: auto, h2-below: auto,
+    h3-size: 11pt, h3-above: auto, h3-below: auto,
+    h4-size: 11pt, h4-above: auto, h4-below: auto,
   ),
   decorative: (
     header-size: 9pt,
