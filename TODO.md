@@ -118,3 +118,5 @@ See the [current research report audit](docs/report-parity-audit.md) and
 
 Subpar work remains shelved. Native rules, repeated headers and breakable
 blocks suffice for the current table/callout fixes; no new dependency was added.
+
+- [x] **Journal sharing workflow** — self-contained starter ZIP builder, optional portable entry launcher, shared palette selection, inherited settings and verified opening/running headers; see [starter guide](docs/journal-starter.md)

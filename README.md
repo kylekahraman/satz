@@ -432,3 +432,15 @@ budgets, verification and scope. DFG support here covers form 53.01 project
 descriptions; other DFG forms are future work. NWO Veni, Vidi and Vici now
 have 2026 profiles and starters; see the [NWO guide](docs/nwo-proposals.md)
 for the 15 represented scheme/domain/stage combinations and remaining gaps.
+
+### Journal setup and appearance (unreleased)
+
+The [journal starter guide](docs/journal-starter.md) covers a ready-to-edit
+project for VS Code and Tinymist on Windows, macOS and Linux. The optional
+standalone `journal` command creates entries and opens your editor; users need
+no Python, Node, Go, Bash or Make. Cover identity, layout, paper and palette live in one config.
+
+Use `theme:` on journal entries and indexes, or the reusable `theme-config`
+helper for other templates. The [journal theme guide](docs/journal-themes.md)
+explains the six palettes and keeping config as minimal overrides so updated
+Satz defaults can take effect.
