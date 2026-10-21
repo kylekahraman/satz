@@ -67,10 +67,14 @@
       ]]
     },
     [
-      #journal-metadata-entry(title, date, keywords)
-      #heading(level: 1)[#title]
-      #journal-date-keywords(date, keywords, config: c)
-      #v(0.5em)
+      #block(breakable: false, sticky: true, below: 0pt)[
+        #journal-metadata-entry(title, date, keywords)
+        #heading(level: 1)[#title]
+        #journal-date-keywords(date, keywords, config: c)
+      ]
+      // A non-collapsing boundary owns this gap once. Keep the notes in the
+      // page flow so explicit page breaks and later heading spacing still work.
+      #v(c.journal.header-below, weak: false)
       #body
     ],
   )

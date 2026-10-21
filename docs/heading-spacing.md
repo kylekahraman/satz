@@ -32,3 +32,11 @@ and compares relative positions to exclude page-top conventions. It covers
 mixed heading sizes and consecutive headings within 0.05pt, page attachment,
 explicit gaps, equations, cross-references and bookmarks. This is a heading
 rhythm comparison, not a claim of identical full-document pagination.
+
+## Journal opening
+
+Journal entries group their title, date and keywords in one unbreakable, sticky
+header block. `config: (journal: (header-below: 1.5em))` controls one non-collapsing
+gap before the notes, whether the body starts with a heading, prose or a list.
+Later headings retain their ordinary spacing. The body stays in the page flow,
+so explicit page breaks remain supported.

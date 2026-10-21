@@ -51,6 +51,10 @@
     h3-size: 11pt, h3-above: auto, h3-below: auto,
     h4-size: 11pt, h4-above: auto, h4-below: auto,
   ),
+  journal: (
+    // One gap between the complete entry heading/date block and the notes.
+    header-below: 1.5em,
+  ),
   decorative: (
     header-size: 9pt,
     footer-size: 10pt,
