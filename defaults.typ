@@ -54,6 +54,8 @@
   journal: (
     // One gap between the complete entry heading/date block and the notes.
     header-below: 1.5em,
+    running-gutter: 1em,
+    running-leading: 0.35em,
   ),
   decorative: (
     header-size: 9pt,

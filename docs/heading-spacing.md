@@ -40,3 +40,8 @@ header block. `config: (journal: (header-below: 1.5em))` controls one non-collap
 gap before the notes, whether the body starts with a heading, prose or a list.
 Later headings retain their ordinary spacing. The body stays in the page flow,
 so explicit page breaks remain supported.
+
+Continuation-page headers reserve an unbroken date column and wrap the entry
+title in the remaining width. `journal.running-gutter` defaults to 1em and
+`journal.running-leading` to 0.35em, both resolved at the running-header size.
+The date stays right-aligned and separate from every wrapped title line.

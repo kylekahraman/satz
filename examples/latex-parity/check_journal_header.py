@@ -55,7 +55,37 @@ CONTINUATION
                         documents.append((visible_gap, final['top'] - body['bottom'], later['top'] - first['top']))
                 assert abs(documents[1][0] - documents[0][0] - 18) < .05, documents
                 assert abs(documents[1][1] - documents[0][1]) < .05, 'Later heading spacing changed.'
-        print('Passed: one configurable opening gap for headings/prose/lists, both spacing modes, header attachment and unchanged later heading spacing.')
+        title = "Figure 5 Pooled Mahalanobis Recovery, Cross-Visibility RSA, and State Geometry"
+        for name, value in [('short', 'ENTRYTITLE'), ('long', title), ('very-long', title + ' with additional validation across independent measurement sessions')]:
+            source = f'''#import "/lib.typ": journal-entry
+#show: journal-entry.with(title: "{value}", date: "Sunday, 18/10/26", config: (
+ page: (paper: "iso-b5", margin: (left: 20mm, right: 20mm, top: 25mm, bottom: 25mm)),
+))
+== FIRSTHEADING
+BODYONE
+#pagebreak()
+CONTINUATION
+#pagebreak()
+FINALPAGE
+'''
+            with compile_doc('running-' + name, source) as pdf:
+                assert len(pdf.pages) == 3
+                for page in pdf.pages[1:]:
+                    header = page.crop((0, 0, float(page.width), 60))
+                    date = header.search('Sunday, 18/10/26', regex=False)
+                    assert len(date) == 1, header.extract_text()
+                    date = date[0]
+                    assert abs(date['x1'] - (page.width - 20 * 72 / 25.4)) < .1
+                    title_words = [w for w in header.extract_words() if w['x0'] < date['x0'] - 1]
+                    assert title_words
+                    assert max(w['x1'] for w in title_words) <= date['x0'] - 8.9, (name, title_words, date)
+                    if name == 'very-long':
+                        assert len({round(w['top'], 1) for w in title_words}) >= 2
+                    body = page.search('CONTINUATION' if page.page_number == 2 else 'FINALPAGE', regex=False)[0]
+                    assert max(w['bottom'] for w in title_words) < body['top'] - 6
+                    assert min(w['top'] for w in title_words) > 0
+        print('Passed: opening gap for headings/prose/lists, unchanged later spacing, manual breaks, wrapped running titles and reserved right-aligned dates.')
+
 
 
 if __name__ == '__main__':

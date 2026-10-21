@@ -53,10 +53,11 @@
       let entry = journal-state.get()
       if entry != none and counter(page).get().first() != entry.page [
         #set text(size: c.decorative.header-size, fill: c.colors.text-muted)
+        #set par(justify: false, first-line-indent: 0pt, leading: c.journal.running-leading)
         #grid(
-          columns: (1fr, auto),
+          columns: (1fr, auto), column-gutter: c.journal.running-gutter,
           align(left)[#text(weight: "medium")[#entry.title]],
-          align(right)[#entry.date]
+          align(right)[#box[#entry.date]]
         )
       ]
     },
