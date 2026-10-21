@@ -2,6 +2,7 @@
 #import "config.typ": identity, journal-style
 
 #let cover-page() = base-cover-page(
+  config: (page: (paper: journal-style.paper,)),
   layout: journal-style.cover-layout,
   theme: journal-style.theme,
   title: identity.title,

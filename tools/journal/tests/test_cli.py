@@ -69,6 +69,36 @@ class JournalCliTests(unittest.TestCase):
                 self.assertTrue(cli.open_editor(project, entry, "code"))
                 popen.assert_called_once_with(["code", "--reuse-window", str(project.resolve()), str(entry)])
 
+    def test_windows_editor_path_with_spaces_is_unquoted_before_lookup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project = Path(temporary) / "journal folder"
+            executable = r"C:\Program Files\Microsoft VS Code\Code.exe"
+            command = cli.editor_command(
+                project,
+                project / "entries" / "entry.typ",
+                f'"{executable}" --wait',
+                windows=True,
+                which=lambda candidate: candidate if candidate == executable else None,
+            )
+            self.assertEqual(command, [executable, "--wait", "--reuse-window", str(project), str(project / "entries" / "entry.typ")])
+
+    def test_starter_config_keeps_only_small_overrides(self):
+        setup = Path(__file__).parents[1] / "src/satz_journal/templates/setup.typ"
+        source = setup.read_text(encoding="utf-8")
+        self.assertIn('merge((page: (paper: journal-style.paper,)), journal-overrides)', source)
+        self.assertNotIn("defaults", source)
+
+    def test_init_delivers_preview_guidance_and_current_dated_entry(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project = Path(temporary) / "journal"
+            cli.init_project(project)
+            today = dt.date.today().isoformat()
+            self.assertTrue((project / "entries" / f"{today}-getting-started.typ").is_file())
+            self.assertIn("Typst: Preview", (project / "README.md").read_text(encoding="utf-8"))
+            self.assertIn("Typst: Pin Main", (project / "README.md").read_text(encoding="utf-8"))
+            self.assertIn("journal-overrides", (project / "config.typ").read_text(encoding="utf-8"))
+            self.assertIn("Source revision:", (project / "_satz/VERSION.txt").read_text(encoding="utf-8"))
+
     def test_missing_marker_leaves_no_partial_entry(self):
         with tempfile.TemporaryDirectory() as temporary:
             project = self.project(Path(temporary))
@@ -76,6 +106,29 @@ class JournalCliTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 cli.create_entry(project, "Title", "notes", "")
             self.assertEqual(list((project / "entries").iterdir()), [])
+
+    def test_meeting_and_session_get_distinct_research_scaffolds(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project = self.project(Path(temporary))
+            meeting = cli.create_entry(project, "Team meeting", "meeting", "", dt.date(2026, 1, 1))
+            session = cli.create_entry(project, "Lab session", "session", "", dt.date(2026, 1, 2))
+            meeting_source = meeting.read_text(encoding="utf-8")
+            session_source = session.read_text(encoding="utf-8")
+            for heading in ("Agenda", "What we talked about", "Outcomes", "Rationale", "Action Items", "Questions"):
+                self.assertIn(f"== {heading}", meeting_source)
+            for heading in ("Goal", "Log", "Outcomes", "Rationale", "Next Steps", "Questions"):
+                self.assertIn(f"== {heading}", session_source)
+            self.assertNotIn("== Agenda", session_source)
+            self.assertNotIn("== Goal", meeting_source)
+
+    def test_empty_title_or_unknown_kind_fails_before_writing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project = self.project(Path(temporary))
+            for title, kind in (("  ", "notes"), ("Title", "proposal")):
+                with self.assertRaises(ValueError):
+                    cli.create_entry(project, title, kind, "")
+            self.assertEqual(list((project / "entries").iterdir()), [])
+            self.assertEqual((project / "main.typ").read_text(encoding="utf-8"), "// --- entries ---\n// --- end entries ---\n")
 
     def test_macos_config_path(self):
         with patch.object(cli.sys, "platform", "darwin"):

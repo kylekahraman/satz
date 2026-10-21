@@ -14,3 +14,7 @@
   cover-layout: "research", // research or minimal
   paper: "a4",
 )
+
+// Optional Satz overrides. Keep this small so new Satz defaults continue to
+// flow into the journal. For example: (typography: (leading: 0.75em,))
+#let journal-overrides = (:)

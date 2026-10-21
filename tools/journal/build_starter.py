@@ -18,29 +18,36 @@ def refresh_runtime() -> None:
     target = PACKAGE / "runtime"
     shutil.rmtree(target, ignore_errors=True)
     target.mkdir(parents=True)
-    # Only the public runtime and its local Typst dependencies are shipped.
-    for path in sorted(REPO.rglob("*.typ")):
-        relative = path.relative_to(REPO)
+    # Use files tracked in the current commit, so local examples and personal
+    # drafts cannot accidentally enter a shared starter archive.
+    tracked = subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", "-z", "HEAD"], cwd=REPO
+    ).decode("utf-8").split("\0")
+    for name in sorted(name for name in tracked if name.endswith(".typ")):
+        relative = Path(name)
         if any(part.startswith(".") for part in relative.parts):
             continue
         if relative.parts[0] in {"testing", "workbook-conversion", "examples", "tools", "docs"}:
             continue
-        if "example" in path.name.lower() or path.name.endswith("-test.typ"):
+        if "example" in relative.name.lower() or relative.name.endswith("-test.typ") or relative.name == "main.typ":
             continue
         output = target / relative
         output.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(path, output)
-    shutil.copyfile(REPO / "LICENSE", target / "LICENSE")
+        content = subprocess.check_output(["git", "show", f"HEAD:{name}"], cwd=REPO)
+        output.write_bytes(content)
+    (target / "LICENSE").write_bytes(subprocess.check_output(["git", "show", "HEAD:LICENSE"], cwd=REPO))
     version = "unknown"
-    for line in (REPO / "typst.toml").read_text(encoding="utf-8").splitlines():
+    manifest = subprocess.check_output(["git", "show", "HEAD:typst.toml"], cwd=REPO).decode("utf-8")
+    for line in manifest.splitlines():
         if line.startswith("version ="):
             version = line.split('"')[1]
             break
-    try:
-        commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, text=True).strip()
-    except Exception:
-        commit = "working-tree"
-    (target / "VERSION.txt").write_text(f"Satz {version}\nSource revision: {commit}\n", encoding="utf-8")
+    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, text=True).strip()
+    dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=REPO, text=True).strip())
+    provenance = "Working-tree changes were excluded." if dirty else "Source tree was clean."
+    (target / "VERSION.txt").write_text(
+        f"Satz {version}\nSource revision: {commit}\n{provenance}\n", encoding="utf-8"
+    )
 
 
 def build_zip(output: Path) -> None:

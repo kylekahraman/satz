@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import ntpath
 import os
 from pathlib import Path
 import re
@@ -67,12 +68,16 @@ def init_project(destination: Path) -> None:
     (destination / ".gitignore").write_text("*.pdf\n", encoding="utf-8")
     (destination / "README.md").write_text(
         "# Your Satz research journal\n\n"
-        "Open this folder in VS Code, install the recommended Tinymist extension, "
-        "then open `main.typ` and choose **Typst: Preview**. Edit `config.typ` "
+        "Open this folder in VS Code and install the recommended Tinymist extension. "
+        "Open `main.typ` first, then choose **Typst: Preview** to see the whole journal. "
+        "If you later open an entry and want its preview to stay on the whole journal, "
+        "run **Typst: Pin Main** with `main.typ` active. Edit `config.typ` "
         "to change the cover identity, theme, layout, and paper size. Add entries "
         "in `entries/` and include them in `main.typ`. The `_satz/` folder keeps "
-        "this starter self-contained. Run `journal update-satz .` from a Satz "
-        "checkout to refresh it with a newer local runtime.\n",
+        "this starter self-contained. With the optional launcher installed, run "
+        "`journal update-satz .` in this folder to refresh it from that helper's "
+        "bundled runtime. See `_satz/VERSION.txt` "
+        "for the bundled Satz source revision.\n",
         encoding="utf-8",
     )
 
@@ -93,6 +98,12 @@ def append_include(main: Path, relative: str) -> None:
 
 def create_entry(project: Path, title: str, kind: str, keywords: str, date: dt.date | None = None) -> Path:
     project = project.expanduser().resolve()
+    title = title.strip()
+    kind = kind.strip().lower()
+    if not title:
+        raise ValueError("Title cannot be empty.")
+    if kind not in {"meeting", "session", "notes"}:
+        raise ValueError("Entry type must be meeting, session, or notes.")
     main = project / "main.typ"
     entries = project / "entries"
     if not main.is_file() or not entries.is_dir():
@@ -106,6 +117,25 @@ def create_entry(project: Path, title: str, kind: str, keywords: str, date: dt.d
     if target.exists():
         raise FileExistsError(f"Entry already exists; nothing was changed: {target}")
     weekday = date.strftime("%A")
+    sections = {
+        "meeting": (
+            "  == Agenda\n  - Add agenda items here.\n\n"
+            "  == What we talked about\n\n"
+            "  == Outcomes\n\n"
+            "  == Rationale\n\n"
+            "  == Action Items\n  - [ ] Add an action item\n\n"
+            "  == Questions\n"
+        ),
+        "session": (
+            "  == Goal\n  Describe the goal for this session.\n\n"
+            "  == Log\n\n"
+            "  == Outcomes\n\n"
+            "  == Rationale\n\n"
+            "  == Next Steps\n  - [ ] Add the next step\n\n"
+            "  == Questions\n"
+        ),
+        "notes": "  == Notes\n  Add your notes here.\n",
+    }
     content = (
         '#import "../setup.typ": journal-entry\n\n'
         "#journal-entry(\n"
@@ -113,11 +143,8 @@ def create_entry(project: Path, title: str, kind: str, keywords: str, date: dt.d
         f"  date: {typst_string(weekday + ', ' + date.strftime('%d/%m/%Y'))},\n"
         f"  keywords: {typst_string(keywords)},\n"
         ")[\n"
-        f"  == {kind}\n"
-        "  Add your notes here.\n\n"
-        "  == Next steps\n"
-        "  - [ ] Add the next action\n"
-        "]\n"
+        + sections[kind]
+        + "]\n"
     )
     # Exclusive create protects existing entries. All validation happens first.
     with target.open("x", encoding="utf-8", newline="\n") as stream:
@@ -130,15 +157,37 @@ def create_entry(project: Path, title: str, kind: str, keywords: str, date: dt.d
     return target
 
 
-def editor_command(project: Path, entry: Path, requested: str | None = None) -> list[str] | None:
+def editor_command(
+    project: Path,
+    entry: Path,
+    requested: str | None = None,
+    *,
+    windows: bool | None = None,
+    which=None,
+) -> list[str] | None:
     value = requested or os.environ.get("VISUAL") or os.environ.get("EDITOR") or "code"
+    windows = os.name == "nt" if windows is None else windows
+    which = which or shutil.which
     try:
-        parts = shlex.split(value, posix=os.name != "nt")
+        # shlex in non-POSIX mode preserves quotes and splits a quoted Windows
+        # executable path at its spaces. Parse that first path explicitly.
+        stripped = value.lstrip()
+        if windows and stripped[:1] in {'"', "'"}:
+            quote = stripped[0]
+            end = stripped.find(quote, 1)
+            if end < 0:
+                return None
+            executable = stripped[1:end]
+            remaining = shlex.split(stripped[end + 1 :].strip(), posix=True)
+            parts = [executable, *remaining]
+        else:
+            parts = shlex.split(value, posix=not windows)
     except ValueError:
         return None
-    if not parts or shutil.which(parts[0]) is None:
+    if not parts or which(parts[0]) is None:
         return None
-    if Path(parts[0]).name.lower() in {"code", "code.exe", "code.cmd"}:
+    executable_name = ntpath.basename(parts[0]).lower() if windows else Path(parts[0]).name.lower()
+    if executable_name in {"code", "code.exe", "code.cmd"}:
         return parts + ["--reuse-window", str(project), str(entry)]
     return parts + [str(entry)]
 
