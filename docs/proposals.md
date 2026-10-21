@@ -133,6 +133,15 @@ See [the runnable example](../examples/proposal-publications.typ) and run
 and DOI destinations, unknown/duplicate keys, the ten-item limit and the original
 native bibliography path.
 
+## Work packages and Gantt charts
+
+Use `work-package` for automatically numbered, referenceable summaries with
+objectives, tasks, deliverables, milestones and contingency plans. Use
+`proposal-gantt` for monthly/quarterly schedules with work-package groups,
+split phases, milestone diamonds and optional resource columns. See the
+[planning guide](proposal-planning.md) and
+[complete example](../examples/proposal-planning.typ).
+
 ## Budgets
 
 The shared `proposal-budget` helper replaces LaTeX's `funds`, `position` and

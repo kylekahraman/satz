@@ -242,6 +242,9 @@
 
   show table: set text(size: c.tables.font-size)
 
+  // Work-package summaries can continue across pages without clipping.
+  show figure.where(kind: "work-package"): set block(breakable: true)
+
   // Figures with satz-figure store the long caption in <satz-long>
   // metadata, the LoF reads the short caption. Swap the long one back here.
   show figure.caption: set align(c.captions.alignment)

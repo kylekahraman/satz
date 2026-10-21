@@ -226,12 +226,11 @@ Available sections (see `defaults.typ` for every key): `page`, `typography`, `he
 
 ### Heading and paragraph rhythm
 
-The local development version styles native headings directly. It removes the
-extra gap inside level-one headings and provides more space below all four
-configured heading levels. Native spacing above headings, page-start trimming,
-and attachment to following content remain in effect. Existing `h1-below`
-through `h4-below` overrides still work; `em` lengths are resolved in the native
-heading's text context. These intentional default changes can alter pagination.
+The local development version defaults to shared KOMA-Script heading spacing.
+It translates baseline skips using the actual font metrics, including stacked
+and wrapped headings. Explicit per-level gaps remain available; set
+`headings.spacing: "native"` to opt out. See the
+[shared spacing guide](docs/heading-spacing.md). Existing documents can reflow.
 
 Paragraphs default to `paragraph-spacing: 1.2em` and `first-line-indent: 0pt`.
 For indented prose with the same line rhythm between paragraphs:
@@ -390,8 +389,8 @@ such as `inset:` can override the helper's padding locally.
 See the [complete table example](examples/scientific-table.typ),
 [heading and paragraph guide](docs/typography.md), and
 [research report parity audit](docs/report-parity-audit.md).
-`headings.h1-above` through `h4-above` now provide opt-in before-spacing;
-`auto` retains native spacing. The audit lists concrete remaining differences:
+`headings.h1-above` through `h4-below` accept explicit block gaps;
+`auto` selects the measured KOMA default. The audit lists remaining differences:
 Satz does **not** yet claim complete LaTeX/KOMA parity.
 [Unreleased changes](CHANGELOG.md) are being prepared toward 0.2.0;
 the manifest remains 0.1.1 and no release has been made.
@@ -423,7 +422,10 @@ four numbered heading levels, and separately checked 17/8-page parts. Insert
 `dfg-supplement()` before section 4 to restart the header at page 1 of max. 8.
 For a proposal with your own structure, use `research-proposal` (also
 `project-proposal`); see [the example](proposal/example.typ). Both can use
-`proposal-budget` for exact euro-cent calculations.
+`proposal-budget` for exact euro-cent calculations. Add `proposal-gantt` for
+monthly/quarterly schedules and `work-package` for numbered summaries with
+references. See the [planning guide](docs/proposal-planning.md) and
+[complete example](examples/proposal-planning.typ).
 
 The [proposal guide](docs/proposals.md) covers imports, bibliography sizing,
 budgets, verification and scope. DFG support here covers form 53.01 project

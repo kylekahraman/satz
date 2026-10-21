@@ -64,6 +64,8 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Binding correction (BCOR)** — two-sided layout implemented in `class.typ:79-103` (binding → inside/outside margins, alternating footers, running headers parity fix). Needs visual QA on printed book.
 - [x] **Running headers** — Hydra 0.6.3 replaces custom chapter/section state; chapter openings stay blank, sections update on their starting page, section-free chapters fall back correctly. Toggle `page.headers: true` with binding enabled; verified against the paired KOMA-Script report.
 - [x] **DFG 53.01 proposal** — 09/26 German/English starters, Arial, four-level numbering, separate 17/8-page checks and verified header resets, publication sizing and exact budget totals; see [proposal guide](docs/proposals.md)
+- [x] **Proposal planning tools** — native Gantt groups/tasks/split phases/milestones/resource columns and referenceable WP summaries; see [planning guide](docs/proposal-planning.md)
+- [x] **Shared KOMA heading rhythm** — font-metric translation, stacked/wrapped heading checks and measured DFG comparison
 - [x] **General research/project proposal** — inline title/summary, configurable structure, current/total page headers and shared budget helper (unreleased)
 - [x] **NWO proposal foundation** — Veni/Vidi/Vici 2026 profiles and starters for 15 source-consulted combinations; header, rhythm and limit checks; see [coverage and gaps](docs/nwo-proposals.md)
 - [ ] **Remaining NWO forms and visual parity** — obtain Vici ZonMw pre-proposal and Veni/Vidi 2026 full forms; reproduce remaining fixed form content/layout and validate real submissions before claiming full coverage

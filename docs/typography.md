@@ -1,23 +1,25 @@
 # Heading, paragraph and callout rhythm
 
-Satz keeps native Typst heading layout. Headings remain attached to following
-content, spacing can trim at a page start, and adjacent block gaps collapse.
-Use configuration rather than inserting manual `v()` around each heading.
+Satz defaults to a shared KOMA-Script heading rhythm, calculated from the actual
+font metrics. Headings stay attached to following content, wrap with hanging
+indents and suppress extra before-spacing when consecutive. Use configuration
+rather than manual `v()` around individual headings. See the
+[shared spacing policy](heading-spacing.md) for formulas and compatibility.
 
 ## Shared defaults and document calibration
 
-| Level | Size | Above | Below |
-| --- | --- | --- | --- |
-| 1 | 14pt | native (`auto`) | 1em |
-| 2 | 12pt | native (`auto`) | 1em |
-| 3 | 11pt | native (`auto`) | 0.9em |
-| 4 | 11pt | native (`auto`) | 0.75em |
+| Level | Size | KOMA before / after skip |
+| --- | --- | --- |
+| 1 | 14pt | 3.5ex / 2.3ex |
+| 2 | 12pt | 3.25ex / 1.5ex |
+| 3 | 11pt | 3.25ex / 1.5ex |
+| 4 | 11pt | 3.25ex / 0 (block heading) |
 
-`headings.h1-above` through `h4-above` accept explicit lengths. For `auto`, Satz
-omits the block override entirely: explicitly setting `block(above: auto)`
-does not preserve the heading's own spacing in the same way. The regression
-checks verify that increasing above-spacing changes the preceding gap without
-changing the following gap, at every supported level.
+These are baseline skips, translated to Typst block gaps rather than copied
+literally. `headings.h1-above` through `h4-below` accept explicit block-gap
+lengths; `auto` selects the measured KOMA value. Set `headings.spacing: "native"`
+to opt out of the renderer. Template-specific and document-specific lengths
+continue to override the shared policy.
 
 There is no universal correct number of points. Inside a flowing text passage,
 the heading should normally be closer to the text it introduces than to the
@@ -30,7 +32,7 @@ top-level heading must begin on a fresh page. That preserves the chapter-opening
 convention used by report classes such as `scrreprt`, but it can leave a short
 ending on the previous page when Typst's wrapping differs from another engine.
 Set it to `false` for continuous reports where flowing into the next chapter is
-preferable to that extra white space; native heading stickiness still keeps a
+preferable to that extra white space; heading stickiness still keeps a
 heading with its following content.
 
 ```typst
@@ -88,7 +90,7 @@ a box still need visual review.
 ## Verification
 
 Run `python3 examples/latex-parity/check_typography.py` and
-`python3 examples/latex-parity/check_callouts.py`. The first checks native flow,
+`python3 examples/latex-parity/check_callouts.py`. The first checks the KOMA default and native opt-out,
 page boundaries and all four heading levels; the second checks body/code
 paragraphs at 11pt and 13pt, content preservation and footer clearance.
 
