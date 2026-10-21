@@ -16,6 +16,7 @@
 #import "book/template.typ": book, book-contents, book-mainmatter, book-appendix, book-backmatter
 #import "book/components.typ": exercise, worked-example, analysis-note, answer-grid
 #import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
+#import "themes.typ": document-themes, theme-config
 #import "class.typ": personal, satz-figure
 #import "citation.typ": citepre
 #import "figures.typ": placeholder

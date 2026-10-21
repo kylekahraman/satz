@@ -1,6 +1,7 @@
 #import "@preview/cheq:0.4.0": checklist
 #import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
+#import "../themes.typ": theme-config
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
 
 /// Has an entry started? We check this for page breaks.
@@ -26,13 +27,16 @@
 /// - keywords (str): comma-separated, e.g. "MEG, ICA"
 /// - body (content): your notes
 /// - config (dictionary): tweak colors, fonts ...
+/// - theme (str, none): optional shared palette; explicit config overrides win.
 #let journal-entry(
   title: "",
   date: "",
   keywords: "",
   body,
-  config: (:)
+  config: (:),
+  theme: none,
 ) = {
+  let config = theme-config(theme, config: config)
   let c = merge(defaults, config)
 
   context {
@@ -97,7 +101,8 @@
 /// Put this before your entries — Typst finds them anyway at compile time.
 ///
 /// - config (dictionary): tweak defaults
-#let journal-index(config: (:)) = context {
+#let journal-index(config: (:), theme: none) = context {
+  let config = theme-config(theme, config: config)
   let c = merge(defaults, config)
 
   set page(
