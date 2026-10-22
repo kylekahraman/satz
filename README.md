@@ -144,6 +144,27 @@ experimental. None of these imply support for every proposal form or complete
 LaTeX/KOMA-Script parity. Article mode and the proposal APIs are also under
 review; see the [release plan](docs/release-0.2.0-plan.md).
 
+### English input names for letters and invoices
+
+The 0.2.0 development API accepts English names alongside the existing German
+arguments. Both spellings normalize to the same templates. Nested sender and
+recipient fields are translated too:
+
+```typst
+#show: letter.with(
+  sender: (name: "Example Sender", street: "Example Street 1", postal-code-city: "London"),
+  recipient: (name: "Example Recipient", street: "Sample Road 2", postal-code-city: "York", country: "UK"),
+  subject: "A letter in German",
+  language: "de",
+)
+```
+
+English field spelling does not select the output language; `language:` controls
+letter labels and hyphenation. Invoices accept English `items:` records with
+`description`, `quantity`, and `unit-price`; invoice output remains German.
+Supplying both spellings of a field produces an error that names the conflict.
+These aliases are planned for 0.2.0 and are not in the published 0.1.1 package.
+
 ### Letter — Internationalization and PDF applications
 
 The `brief()` function accepts `lang: "de"` (default) or `"en"`:

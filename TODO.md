@@ -50,7 +50,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 ### Work items
 
 - [x] **Report outlines and palettes** — native section/figure/table numbering, hanging indents, consistent line/item/section gaps, independently enabled LoF/LoT, compact lists respecting custom numbers and page formats, and the existing named palettes for reports (black on white by default; colored accents opt-in). PDF assertions are in `examples/latex-parity/check_outlines.py`.
-- [ ] **English letter and invoice inputs** — accept English top-level and nested sender, recipient, and invoice-item fields while preserving all German calls; define invoice output language separately.
+- [x] **English letter and invoice inputs** — accept English top-level and nested sender, recipient, and invoice-item fields while preserving all German calls; English invoice input retains German output. Paired documents produce identical extracted text; the PyMuPDF regression script is in `examples/latex-parity/check_english_inputs.py`.
 - [ ] **Appearance precedence and reference** — resolve defaults, template defaults, theme, direct options, and nested config consistently; document exact supported value contracts and migration behavior.
 - [ ] **Public input validation** — add actionable validation for high-impact enum values and nested records while preserving supported extension keys.
 - [ ] **Release package verification** — exercise published-version examples, CI starters, staged package contents, fresh install, dependencies, license, and example privacy.

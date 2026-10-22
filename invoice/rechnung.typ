@@ -1,5 +1,6 @@
 // Reuses letter address components (absender/empfaenger/geschaeftszeile)
 #import "../letter/components.typ": absender_block, empfaenger_block, geschaeftszeile_block
+#import "../input.typ": normalize-record, normalize-invoice-items, select-alias
 
 // Import invoice-specific components
 #import "components.typ": posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
@@ -38,37 +39,60 @@
 /// - font (str): body font — "Inter" by default
 /// - kleinunternehmer (bool): show the § 19 VAT-free note?
 /// - body (content): your letter text
+/// - sender (dictionary): English alias for `absender`; includes `street`, `postal-code-city`, `tax-number`, and `account-holder`
+/// - recipient (dictionary): English alias for `empfaenger`; includes `street`, `postal-code-city`, and `country`
+/// - date, invoice-number, service-date, subject, items, qr-amount, qr-purpose, small-business: English aliases for the corresponding German fields
+/// - items (array): tuples `(description, quantity, unit-price)` or records with those three keys
+///
+/// English field names only change the input spelling. Invoice output remains German.
 #let rechnung(
-  absender: (
-    name: "Musterfirma GmbH",
-    zusatz: none,
-    strasse: "Musterstraße 1",
-    plz_ort: "12345 Musterstadt",
-    steuernummer: "000/000/00000",
-    iban: "DE00 0000 0000 0000 0000 00",
-    bic: "",
-    bank: "Musterbank",
-    kontoinhaber: none,
-    logo: none,
-  ),
-  empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
-  datum: datetime.today().display("[day].[month].[year]"),
-  rechnungsnummer: "",
-  leistungsdatum: "",
-  betreff: "Rechnung",
-  posten: (),
+  absender: none,
+  empfaenger: none,
+  datum: none,
+  rechnungsnummer: none,
+  leistungsdatum: none,
+  betreff: none,
+  posten: none,
+  sender: none,
+  recipient: none,
+  date: none,
+  invoice-number: none,
+  service-date: none,
+  subject: none,
+  items: none,
   qr: true,
   qr-betrag: none,
+  qr-amount: none,
   qr-verwendungszweck: "",
+  qr-purpose: none,
   font: "Inter",
-  kleinunternehmer: false,
+  kleinunternehmer: none,
+  small-business: none,
   body
 ) = {
+  let absender = normalize-record(
+    absender,
+    sender,
+    (name: "name", care-of: "zusatz", street: "strasse", postal-code-city: "plz_ort", phone: "telefon", tax-number: "steuernummer", account-holder: "kontoinhaber"),
+    (name: "Musterfirma GmbH", zusatz: none, strasse: "Musterstraße 1", plz_ort: "12345 Musterstadt", steuernummer: "000/000/00000", iban: "DE00 0000 0000 0000 0000 00", bic: "", bank: "Musterbank", kontoinhaber: none, logo: none),
+    "sender",
+  )
+  let empfaenger = normalize-record(
+    empfaenger,
+    recipient,
+    (name: "name", care-of: "zusatz", street: "strasse", postal-code-city: "plz_ort", country: "land"),
+    (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
+    "recipient",
+  )
+  let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[day].[month].[year]"))
+  let rechnungsnummer = select-alias(rechnungsnummer, invoice-number, "rechnungsnummer", "invoice-number", "")
+  let leistungsdatum = select-alias(leistungsdatum, service-date, "leistungsdatum", "service-date", "")
+  let betreff = select-alias(betreff, subject, "betreff", "subject", "Rechnung")
+  let posten = normalize-invoice-items(select-alias(posten, items, "posten", "items", ()))
+  let qr-betrag = select-alias(qr-betrag, qr-amount, "qr-betrag", "qr-amount", none)
+  let qr-verwendungszweck = select-alias(qr-verwendungszweck, qr-purpose, "qr-verwendungszweck", "qr-purpose", "")
+  let kleinunternehmer = select-alias(kleinunternehmer, small-business, "kleinunternehmer", "small-business", false)
   let zeilenabstand = 0.65em
-
-  // Ensure optional keys exist in absender and empfaenger (callers may omit them)
-  let absender = (telefon: "", email: "", bic: "", zusatz: none, ..absender)
-  let empfaenger = (zusatz: none, land: "", ..empfaenger)
 
   // --- Global styles ---
   set text(font: font, size: 11pt, lang: "de", hyphenate: false, weight: "regular")

@@ -61,6 +61,16 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   under review and is not the same specimen as the research report.
 - A one-file letter quick start and named enclosures without embedded files.
 
+### Letter and invoice inputs
+
+- Accept English top-level names and English sender/recipient fields alongside
+  the existing German spellings; both paths normalize to the existing renderers.
+- Accept invoice items as `(description, quantity, unit-price)` records or keep
+  the original tuple form. Invoice output remains German; English input does not
+  imply localization.
+- Report a field-specific conflict when callers provide both spellings, and
+  identify missing fields in English invoice item records.
+
 ### Verification and remaining release work
 
 The [research report audit](docs/report-parity-audit.md) distinguishes shared

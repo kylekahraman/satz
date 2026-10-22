@@ -1,4 +1,5 @@
 #import "components.typ": absender_block, digitaler_absender_block, empfaenger_block, digitaler_empfaenger_block, geschaeftszeile_block, digitales_datum_block, signatur_block
+#import "../input.typ": normalize-record, select-alias
 #import "layout.typ": falz_und_locher_marken, seiten_footer
 
 /// A letter with optional postal and digital components.
@@ -48,19 +49,32 @@
 /// - abstaende (dictionary): vertical gaps between sender, recipient, date, subject, and body
 /// - betreff_groesse (length): subject size (default: 11.5pt)
 /// - digitaler_absender_hoehe (length): reserved digital sender-header height (default: 19mm)
+/// - sender (dictionary): English alias for `absender`; keys include `name`, `care-of`, `street`, `postal-code-city`, `phone`, `email`, and `logo`
+/// - recipient (dictionary): English alias for `empfaenger`; keys include `name`, `care-of`, `street`, `postal-code-city`, and `country`
+/// - date, reference-line, subject, enclosure-list, attachments, signature-addition, postal-mark, language (content): English aliases for the corresponding German arguments
 /// - body (content): your letter text
 #let brief(
-  absender: (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", logo: none),
-  empfaenger: (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
-  datum: datetime.today().display("[year]-[month]-[day]"),
-  geschaeftszeile: (),
-  betreff: "",
-  anlagenverzeichnis: (),
-  anlagen: (),
-  signatur_zusatz: "",
+  absender: none,
+  empfaenger: none,
+  datum: none,
+  geschaeftszeile: none,
+  betreff: none,
+  anlagenverzeichnis: none,
+  anlagen: none,
+  signatur_zusatz: none,
   signatur: true,
-  postvermerk: "",
-  lang: "de",
+  postvermerk: none,
+  lang: none,
+  sender: none,
+  recipient: none,
+  date: none,
+  reference-line: none,
+  subject: none,
+  enclosure-list: none,
+  attachments: none,
+  signature-addition: none,
+  postal-mark: none,
+  language: none,
   font: "Inter",
   falzmarken: true,
   adressfenster: true,
@@ -81,9 +95,28 @@
   digitaler_absender_hoehe: 19mm,
   body
 ) = {
-  // Ensure optional keys exist in absender and empfaenger (callers may omit them)
-  let absender = (telefon: "", email: "", zusatz: none, ..absender)
-  let empfaenger = (zusatz: none, land: "", ..empfaenger)
+  let absender = normalize-record(
+    absender,
+    sender,
+    (name: "name", care-of: "zusatz", street: "strasse", postal-code-city: "plz_ort", phone: "telefon"),
+    (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", logo: none),
+    "sender",
+  )
+  let empfaenger = normalize-record(
+    empfaenger,
+    recipient,
+    (name: "name", care-of: "zusatz", street: "strasse", postal-code-city: "plz_ort", country: "land"),
+    (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
+    "recipient",
+  )
+  let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[year]-[month]-[day]"))
+  let geschaeftszeile = select-alias(geschaeftszeile, reference-line, "geschaeftszeile", "reference-line", ())
+  let betreff = select-alias(betreff, subject, "betreff", "subject", "")
+  let anlagenverzeichnis = select-alias(anlagenverzeichnis, enclosure-list, "anlagenverzeichnis", "enclosure-list", ())
+  let anlagen = select-alias(anlagen, attachments, "anlagen", "attachments", ())
+  let signatur_zusatz = select-alias(signatur_zusatz, signature-addition, "signatur_zusatz", "signature-addition", "")
+  let postvermerk = select-alias(postvermerk, postal-mark, "postvermerk", "postal-mark", "")
+  let lang = select-alias(lang, language, "lang", "language", "de")
   let seitenraender = (
     left: 25mm,
     right: 20mm,
