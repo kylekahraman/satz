@@ -62,7 +62,18 @@ def main():
     invalid.write_text('#import "/lib.typ": article\n#show: article.with(authors: ((name: "Example", affiliations: (2,)),), affiliations: ("Institute",))\nBody')
     result = subprocess.run(['typst', 'compile', '--root', str(ROOT), str(invalid), str(invalid.with_suffix('.pdf'))], text=True, capture_output=True)
     assert result.returncode != 0 and 'Author affiliation indices' in result.stderr
-    print('Passed: article column widths, spanning title/figures, footnote, references, numbering, single-column/outline options, report contents, affiliation validation.')
+    invalid_records = [
+        ('author-shape', 'authors: ("Example",)', 'must be a dictionary with a name field'),
+        ('author-name', 'authors: ((affiliations: ()),)', 'must have a string or content `name`'),
+        ('author-affiliations', 'authors: ((name: "Example", affiliations: "1"),)', 'must be an array of one-based affiliation indices'),
+        ('affiliation-shape', 'affiliations: (1,)', 'must be a string or content'),
+    ]
+    for name, arguments, message in invalid_records:
+        path = OUTPUT / f'article-{name}.typ'
+        path.write_text(f'#import "/lib.typ": article\n#show: article.with({arguments})\nBody')
+        result = subprocess.run(['typst', 'compile', '--root', str(ROOT), str(path), str(path.with_suffix('.pdf'))], text=True, capture_output=True)
+        assert result.returncode != 0 and message in result.stderr, result.stderr
+    print('Passed: article column widths, spanning title/figures, footnote, references, numbering, single-column/outline options, report contents, and author/affiliation validation.')
 
 
 if __name__ == '__main__':

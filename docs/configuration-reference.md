@@ -117,3 +117,9 @@ for drafts; otherwise use ISO `YYYY-MM-DD`, `DD/MM/YY`, or `DD/MM/YYYY`, with an
 optional weekday prefix separated by a comma or one space. Calendar values are
 validated, and an empty date is grouped as “Undated” in the monthly index. See
 the [journal guide](site/guides/journals.md).
+
+For `article`, `authors` is an array of dictionaries with a required `name`
+(string or content) and optional `affiliations` (an array of one-based integer
+indices). The top-level `affiliations` value is an array of strings or content.
+Out-of-range indices and malformed records produce field-specific errors;
+unknown author dictionary keys are preserved for caller-side metadata.

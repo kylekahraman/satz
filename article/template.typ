@@ -18,14 +18,27 @@
 /// - theme (str, none): optional shared document palette; explicit config overrides it
 /// - body (content): the article
 #let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: none, body) = {
-  let config = theme-config(theme, config: config)
-  let c = merge(merge(defaults, article-defaults), config)
-  for author in authors {
-    for index in author.at("affiliations", default: ()) {
+  assert(type(authors) == array, message: "article authors must be an array of records.")
+  assert(type(affiliations) == array, message: "article affiliations must be an array of strings or content.")
+  for (index, affiliation) in affiliations.enumerate() {
+    assert(type(affiliation) == str or type(affiliation) == content,
+      message: "Article affiliation " + str(index + 1) + " must be a string or content.")
+  }
+  for (author-index, author) in authors.enumerate() {
+    assert(type(author) == dictionary,
+      message: "Article author " + str(author-index + 1) + " must be a dictionary with a name field.")
+    assert("name" in author and (type(author.name) == str or type(author.name) == content),
+      message: "Article author " + str(author-index + 1) + " must have a string or content `name`.")
+    let author-affiliations = author.at("affiliations", default: ())
+    assert(type(author-affiliations) == array,
+      message: "Article author affiliations must be an array of one-based affiliation indices.")
+    for index in author-affiliations {
       assert(type(index) == int and index >= 1 and index <= affiliations.len(),
         message: "Author affiliation indices must refer to an entry in affiliations.")
     }
   }
+  let config = theme-config(theme, config: config)
+  let c = merge(merge(defaults, article-defaults), config)
   let front = [
     #set par(justify: false, first-line-indent: 0pt, spacing: 0.5em)
     #align(center)[

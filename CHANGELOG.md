@@ -85,6 +85,9 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   `DD/MM/YY`, and `DD/MM/YYYY` for month grouping. Optional weekday prefixes
   are accepted; blank dates remain valid for drafts and group under “Undated”.
   See `examples/latex-parity/check_journal_dates.py`.
+- Validate article author/affiliation record shapes, required author names,
+  one-based indices, and affiliation content types with field-specific errors.
+  Unknown author keys remain available for caller metadata.
 
 ### Verification and remaining release work
 
