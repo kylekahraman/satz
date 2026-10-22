@@ -90,6 +90,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   Unknown author keys remain available for caller metadata.
 - Validate letter/invoice address record shapes and text fields, plus invoice
   item tuples/records and numeric ranges, without rejecting extension keys.
+- Validate letter language values, DFG form-date/page-check types, and require
+  an integer source-checked NWO year.
 
 ### Verification and remaining release work
 

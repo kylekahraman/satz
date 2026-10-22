@@ -70,6 +70,8 @@ def main():
         compile_doc('too-long-second', base + 'First part\n#dfg-supplement()\n' + pages(9), error='sections 4–5 exceed 8 pages')
         compile_doc('duplicate-split', base + 'A\n#dfg-supplement()\nB\n#dfg-supplement()\nC', error='only once')
         compile_doc('invalid-lang', base.replace('.with()', '.with(language: "dutch")') + 'Body', error='english or german')
+        compile_doc('invalid-form-date', base.replace('.with()', '.with(form-date: 9)') + 'Body', error='form-date must be a string')
+        compile_doc('invalid-page-check', base.replace('.with()', '.with(check-pages: "yes")') + 'Body', error='check-pages must be true or false')
         with compile_doc('draft', base.replace(".with()", ".with(check-pages: false)") + pages(17) + "\n#dfg-supplement()\n" + pages(9)) as pdf:
             assert len(pdf.pages) == 26
         compile_doc('missing-split', base + '= One\nText\n= Two\nText\n= Three\nText\n= Four\nText', error='immediately before section 4')

@@ -43,6 +43,8 @@
 ) = {
   assert(language in ("english", "german"), message: "DFG language must be english or german.")
   assert(type(max-pages) == int and max-pages > 0, message: "max-pages must be a positive integer.")
+  assert(type(form-date) == str, message: "DFG form-date must be a string such as `09/26`.")
+  assert(type(check-pages) == bool, message: "DFG check-pages must be true or false.")
   let de = language == "german"
   let c = merge(merge(root-defaults, dfg-defaults), config)
   let furniture = context {

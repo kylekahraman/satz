@@ -13,7 +13,7 @@
   assert(scheme in ("veni", "vidi", "vici"), message: "NWO scheme must be veni, vidi or vici.")
   assert(domain in domains, message: "NWO domain must be science, ssh, aes or zonmw.")
   assert(stage in ("pre", "full"), message: "NWO stage must be pre or full.")
-  assert(year == 2026, message: "Only source-checked NWO 2026 profiles are available.")
+  assert(type(year) == int and year == 2026, message: "Only integer year 2026 has source-checked NWO profiles.")
   assert(stage != "full" or scheme == "vici", message: "The Veni/Vidi 2026 full-proposal forms are not yet represented; do not substitute the old LaTeX form.")
   assert(not (stage == "pre" and scheme == "vici" and domain == "zonmw"),
     message: "The Vici 2026 ZonMw pre-proposal source was unavailable; this profile is not yet verified.")

@@ -34,4 +34,6 @@ jobs:
           python examples/latex-parity/check_journal_dates.py
           python examples/latex-parity/check_journal_header.py
           python examples/latex-parity/check_journal_themes.py
+          python examples/latex-parity/check_nwo.py
           python examples/latex-parity/check_outlines.py
+          python examples/latex-parity/check_proposals.py

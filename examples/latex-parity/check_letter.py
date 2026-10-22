@@ -37,6 +37,10 @@ Kind regards,
         assert text.count("Protocol copy") == 1 and text.count("Schedule copy") == 1
         assert "Example Author" in text and "Example Recipient" in text
         document[0].get_pixmap().save(OUTPUT / "letter-enclosures.png")
+    invalid = OUTPUT / "letter-invalid-language.typ"
+    invalid.write_text('#import "/lib.typ": letter\n#show: letter.with(language: "nl")\nBody')
+    result = subprocess.run(["typst", "compile", "--root", str(ROOT), str(invalid), str(invalid.with_suffix(".pdf"))], text=True, capture_output=True)
+    assert result.returncode != 0 and "Letter language must be `de` or `en`" in result.stderr
     print("Passed: labeled enclosures render once without opening nonexistent files.")
 
 

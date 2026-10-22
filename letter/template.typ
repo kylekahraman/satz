@@ -125,6 +125,7 @@
   let signatur_zusatz = select-alias(signatur_zusatz, signature-addition, "signatur_zusatz", "signature-addition", "")
   let postvermerk = select-alias(postvermerk, postal-mark, "postvermerk", "postal-mark", "")
   let lang = select-alias(lang, language, "lang", "language", "de")
+  assert(lang in ("de", "en"), message: "Letter language must be `de` or `en`.")
   let seitenraender = (
     left: 25mm,
     right: 20mm,

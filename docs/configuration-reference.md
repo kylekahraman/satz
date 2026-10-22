@@ -131,3 +131,8 @@ three-value arrays `(description, quantity, unit-price)` or records with those
 three fields. Descriptions accept strings or content, quantities are positive
 numbers, and unit prices are non-negative numbers. The existing German tuple
 form remains supported.
+
+`brief` / `letter` accepts only `lang: "de"` or `lang: "en"` (the English
+alias is `language:`). DFG proposals accept `form-date` as a display string and
+`check-pages` as a boolean. NWO profiles currently require the integer year
+`2026`; an equal-looking floating-point value is rejected.
