@@ -14,7 +14,7 @@ import subprocess
 import unicodedata
 import zipfile
 
-import fitz
+import pymupdf as fitz
 
 
 HERE = Path(__file__).resolve().parent

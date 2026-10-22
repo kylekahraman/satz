@@ -4,7 +4,7 @@ from pathlib import Path
 import json
 import subprocess
 
-import fitz
+import pymupdf as fitz
 
 
 HERE = Path(__file__).resolve().parent

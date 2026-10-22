@@ -1,0 +1,37 @@
+name: Typst release checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typst-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  representative-documents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: typst-community/setup-typst@v5
+        with:
+          typst-version: 0.15.0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install PDF inspection tools
+        run: python -m pip install -r .github/requirements-release.txt
+      - name: Compile documented starters from the staged package
+        run: python examples/latex-parity/check_staged_package.py
+      - name: Check representative public APIs and rendered PDFs
+        run: |
+          python examples/latex-parity/check_appearance_precedence.py
+          python examples/latex-parity/check_article.py
+          python examples/latex-parity/check_english_inputs.py
+          python examples/latex-parity/check_journal_dates.py
+          python examples/latex-parity/check_journal_header.py
+          python examples/latex-parity/check_journal_themes.py
+          python examples/latex-parity/check_outlines.py

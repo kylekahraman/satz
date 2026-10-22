@@ -96,8 +96,10 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Exclude `tools/**` and local workbook conversions from the Typst package.
   A staged-package check now compiles report, article, journal, letter, invoice,
   cover, and proposal starters from the manifest-filtered tree. This verifies
-  the current source tree only; published-version comparison and CI wiring
-  remain open.
+  the current source tree only; published-version comparison remains open.
+- Add a GitHub Actions workflow for the staged-package check and focused public
+  API/PDF regressions on pushes and pull requests. Pin the Python PDF inspection
+  tools used by those checks and use the current `pymupdf` module import.
 
 The [research report audit](docs/report-parity-audit.md) distinguishes shared
 package fixes from document settings and records remaining conversion/layout
