@@ -22,6 +22,20 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Install fonts required by representative documents
+        run: |
+          sudo apt-get update
+          echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y fonts-firacode ttf-mscorefonts-installer unzip
+          font_dir="$HOME/.local/share/fonts/satz-ci"
+          mkdir -p "$font_dir"
+          curl --fail --location --retry 3 \
+            https://raw.githubusercontent.com/stipub/stixfonts/744a22a4dd626cd14d75728aef34fc8ad7c85db0/zipfiles/static_ttf.zip \
+            --output "$RUNNER_TEMP/stix-two-static.ttf.zip"
+          unzip -j "$RUNNER_TEMP/stix-two-static.ttf.zip" '*.ttf' -d "$font_dir"
+          fc-cache --force "$font_dir"
+      - name: Verify required fonts are available to Typst
+        run: python examples/latex-parity/check_ci_fonts.py
       - name: Install PDF inspection tools
         run: python -m pip install -r .github/requirements-release.txt
       - name: Compile documented starters from the staged package
