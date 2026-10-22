@@ -78,6 +78,10 @@ consistently, and themes apply predictably across representative templates.
 
 ## 4. Configuration reference with actual value contracts
 
+Status: shared `personal(config:)` defaults and candidate value contracts are
+drafted in `docs/configuration-reference.md`; template-specific argument and
+record contracts remain to be audited.
+
 The current public reference names groups but does not fully describe the
 interface. Each public field needs:
 

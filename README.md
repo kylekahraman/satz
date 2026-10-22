@@ -192,7 +192,9 @@ while keeping the selected palette's other colors:
 These appearance options are in the 0.2.0 development API and are not in the
 published 0.1.1 package. The book also resolves `accent`, `math-font`, and the
 nested config through this precedence order, so a raw argument cannot bypass
-an explicit nested override.
+an explicit nested override. See the in-progress
+[0.2.0 configuration reference](docs/configuration-reference.md) for the
+shared defaults and their candidate value contracts.
 
 ### Letter — Internationalization and PDF applications
 
