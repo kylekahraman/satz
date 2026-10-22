@@ -34,6 +34,10 @@
 
 ## 🚧 v0.2.0 — Planned
 
+Release scope and acceptance checks are tracked in the
+[0.2.0 release plan](docs/release-0.2.0-plan.md). The package remains at
+0.1.1 until those checks pass; this roadmap does not authorize publishing.
+
 ### Next priorities
 
 1. **Report as the shared foundation** — keep improving typography and general document behavior for theses, assignments, and ordinary reports. The first native-heading/paragraph-spacing pass is complete; extend automatic-pagination and bibliography coverage next.
@@ -44,6 +48,12 @@
 See [the quality and usability assessment](docs/document-quality.md) for current coverage, dependency fit, and acceptance criteria.
 
 ### Work items
+
+- [x] **Report outlines and palettes** — native section/figure/table numbering, hanging indents, consistent line/item/section gaps, independently enabled LoF/LoT, compact lists respecting custom numbers and page formats, and the existing named palettes for reports (black on white by default; colored accents opt-in). PDF assertions are in `examples/latex-parity/check_outlines.py`.
+- [ ] **English letter and invoice inputs** — accept English top-level and nested sender, recipient, and invoice-item fields while preserving all German calls; define invoice output language separately.
+- [ ] **Appearance precedence and reference** — resolve defaults, template defaults, theme, direct options, and nested config consistently; document exact supported value contracts and migration behavior.
+- [ ] **Public input validation** — add actionable validation for high-impact enum values and nested records while preserving supported extension keys.
+- [ ] **Release package verification** — exercise published-version examples, CI starters, staged package contents, fresh install, dependencies, license, and example privacy.
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
 - [ ] **Book entry point and educational components** — develop an easy KOMA-inspired `book(...)` path with adjustable cover, binding, heading rhythm, appendices, exercises, and answer grids. The first local API and RSA workbook conversion are under review; see `docs/book-api.md` and the ignored local `workbook-conversion/` directory.
@@ -76,7 +86,6 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Placeholder figures** — native `placeholder(width:, height:, label:)` box, composable with normal `figure` and `satz-figure`; verified dimensions, centering, captions, references, and LoF
 - [ ] **Abstract environment** — styled abstract block
 - [ ] **Author/affiliation block** — name, affiliation, email, ORCID
-- [ ] **Article mode** — `kind: "article"`, two-column layout, abstract, author block
 - [ ] **Footnote styling** — configurable separator, size, spacing
 - [ ] **i18n for invoice** — match letter's `lang: "de"/"en"` pattern
 - [x] **Named letter enclosures** — render `anlagenverzeichnis` even when no files are embedded; regression verified in `examples/latex-parity/check_letter.py`

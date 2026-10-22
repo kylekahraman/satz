@@ -62,6 +62,40 @@ The package supplies the page layout, sender/recipient blocks, date, subject,
 and signature line. Write the salutation and closing in the body. For a digital
 letter, see the options below; a concise digital preset is still a usability gap.
 
+### Two-column articles
+
+The local development version includes an article entry point. Start writing
+immediately after the show rule; a separate template or config file is optional:
+
+```typst
+#import "@local/satz:0.1.1": article
+#show: article.with(
+  title: [My paper],
+  authors: ((name: "Example Author", affiliations: (1,)),),
+  affiliations: ([Example Institute],),
+  abstract: [A short account of the question and findings.],
+)
+
+= Introduction
+Start writing here.
+```
+
+Articles use two native page columns, a full-width title/author/abstract block,
+unnumbered headings, and page numbers starting at 1. Set
+`config: (page: (columns: 1))` for a single-column article. The shared
+`page.column-gutter` controls the column gap (default 5mm). Reports also accept
+these column settings; their generated front matter stays single-column.
+An article's optional `toc.depth` inserts contents inline; automatic figure and
+table lists remain a report feature.
+
+Use ordinary `figure` for a column-width figure, with `image(..., width: 100%)`
+to fit the column. Add `scope: "parent", placement: top` to span both columns.
+Mixed column/page floats can appear out of numerical order; where order matters,
+try bottom placement for the wide figure, or a deliberate `pagebreak()` before
+it to establish a new page.
+See [the complete article example](examples/article.typ). Native columns are
+sufficient for this layout; Meander remains an option for custom text flow.
+
 ### Reports and journals
 
 ```typst
@@ -97,11 +131,18 @@ letter, see the options below; a concise digital preset is still a usability gap
 | **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]` | KOMA-Script-inspired book layout with adjustable cover, page furniture, appendices, and optional exercise components |
 | **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), complete German/English starters, separate page limits and counters (unreleased) |
 | **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers and exact budget totals (unreleased) |
+| **NWO proposal (experimental)** | `nwo-proposal(...)`, `nwo-profile(...)` | 15 represented Veni/Vidi/Vici 2026 scheme/domain/stage profiles; not full NWO form coverage (unreleased) |
 | **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
 | **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
 | **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
 
-Stable: letter, invoice, journal, report, cover, legal-complaint, gastspielvertrag. Experimental: dfg-proposal, article mode, book.
+The published package is still 0.1.1. This README describes both that version
+and unreleased development APIs. The 0.2.0 candidate will state each template's
+support level explicitly: DFG support is limited to form 53.01 (09/26), NWO
+support covers only the represented profiles, and book support remains
+experimental. None of these imply support for every proposal form or complete
+LaTeX/KOMA-Script parity. Article mode and the proposal APIs are also under
+review; see the [release plan](docs/release-0.2.0-plan.md).
 
 ### Letter — Internationalization and PDF applications
 
@@ -226,6 +267,91 @@ nested `config` dictionary shown here.
 
 Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `decorative`, `page-footer`, `links`, `tables`, `captions`, `toc`, `lof`, `lot`, `bibliography`, `colors`.
 
+### Contents, figure lists, and table lists
+
+The local development version uses native heading numbers and hanging indents
+in the contents. Main sections are bold and separated by larger gaps;
+subsections retain their complete numbers (`2.1`, `2.1.1`, etc.). Wrapped entries
+use normal line leading. Outline links use the body text color.
+
+`toc`, `lof`, and `lot` accept `entry-size`, `leading`, `entry-above`,
+`title-below`, and `indent`; `toc.main-entry-above` controls section separation.
+Defaults use 10pt entries, 0.65em leading, 0.65em contents row gaps, and 1.25em
+before main sections. Figure/table lists use 0.85em row gaps. These gaps replace
+the space between text edges: values below `leading` tighten the list.
+
+Each list is enabled independently; set its `depth: 0` to disable it. Empty
+figure/table lists and figures with `outlined: false` produce no list page.
+A table needs a captioned `figure` to have a number, caption, and list entry:
+
+```typst
+#figure(
+  table(columns: 2, [Measure], [Value], [Example], [12]),
+  kind: table,
+  caption: [Summary measurements.],
+) <tab:summary>
+```
+
+A bare `table(...)` is a layout element with no caption to list. For a short
+table-list caption, use `satz-figure(..., kind: table, caption: [...],
+short-caption: [...])`. Compact lists retain the actual figure/table numbering
+and page format, including Roman numerals. See [the complete outline
+example](examples/outline.typ).
+
+Bullet and numbered lists default to `decorative.list-tight: false` and
+`decorative.list-spacing: 0.9em`. This gives item boundaries more room than
+ordinary wrapped lines. Set `list-tight: true` to use paragraph leading between
+items instead; native local list rules still override the package defaults.
+
+### Report palettes
+
+Reports default to `neutral`: white paper, black body text, headings, and links,
+with gray secondary text and panels. Colored accents are opt-in. The six
+existing cover themes are also available as
+document palettes: `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`,
+and `soft-rose`. Cover backgrounds retain their previous colors.
+
+```typst
+#import "@local/satz:0.1.1": report
+#show: report.with(theme: "soft-jade")
+```
+
+Pass `theme: none` for the legacy shared palette. Explicit `config.colors` and
+`config.links` overrides win over the selected theme. The public
+`document-themes` dictionary also makes the same palettes available for custom
+`personal(config: (colors: document-themes.plum))` layouts. Report-specific
+defaults now contain only the report theme; font and layout defaults come from
+the shared configuration. These changes are local and not yet published.
+
+Callout colors can be chosen independently of the report theme: pass
+`config: (colors: (brand-primary: my-color, bg-subtle: my-fill))` to `callout`
+for its title/border and background, or use its direct `fill:` and `stroke:`
+options. Pass the same color config to the report and callout to share an accent.
+
+#### Migrating existing report appearance
+
+The 0.2.0 development defaults intentionally change report colors to neutral
+black on white, and improve contents/list spacing. Existing documents that rely
+on the previous report palette or tighter list gaps can set only those values:
+
+```typst
+#show: report.with(config: (
+  colors: (
+    bg-paper: rgb("#FFFFFF"), bg-subtle: rgb("#F5F5F5"),
+    text-main: rgb("#242422"), text-muted: rgb("#5e5e5a"),
+    brand-primary: rgb("#111110"), brand-accent: rgb("#2f2f2c"),
+  ),
+  links: (color: rgb("#B4313F"), url-color: rgb("#45556c")),
+  decorative: (list-spacing: 0.65em),
+))
+```
+
+The corrected `tables.font-size` and `tables.inset` settings now affect native
+tables; their defaults are 10pt and `(x: 8pt, y: 4pt)`. Tables that depended on
+inherited body size or the old hard-coded padding may wrap or paginate
+differently. Use a table-local `set text(size: ...)` or `inset:` when a specific
+table needs a different treatment. These changes are unreleased until 0.2.0.
+
 ### Heading and paragraph rhythm
 
 The local development version defaults to shared KOMA-Script heading spacing.
@@ -250,6 +376,15 @@ to `leading` gives continuous line spacing between paragraphs. The first
 paragraph after a heading stays unindented. The same config works in journal
 entries. See the [native/KOMA typography comparison](examples/latex-parity/README.md)
 for the specimen and checks. This change is not yet published.
+
+### Table text and padding
+
+The local development version applies `tables.font-size` (default `10pt`) and
+`tables.inset` (default `(x: 8pt, y: 4pt)`) to native tables. These existing keys
+were previously ignored, so the corrected font size can change wrapping and
+pagination. Explicit rules inside an individual table still override them.
+See the [research workbook migration](docs/workbook-migration.md) for the
+multi-page table and diagram findings.
 
 ### Running headers
 

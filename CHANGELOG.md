@@ -38,6 +38,18 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   The research report explicitly selects STIX Two Math to match its LaTeX source.
 - Expose `typography.mono-font` independently; `auto` retains native raw-text
   styling, while the research report selects Fira Code.
+- Refine contents, figure-list, and table-list typography with configurable
+  entry size, leading, row gaps, title gaps, and section gaps. Preserve Typst's
+  native numbering, links, page-number formatting, and wrapped-entry indents.
+- Make the contents, figure list, and table list independent; omit empty lists
+  and figures marked `outlined: false`. Compact lists keep custom numbering and
+  page formats while omitting captions.
+- Make the six named palettes available as report themes and custom document
+  palettes. Reports now default to neutral black-on-white colors; opt into a
+  colored palette with `theme:`. Explicit nested color settings take precedence.
+- Add `decorative.list-tight`; the default list gap is now `0.9em`, while
+  `list-tight: true` selects paragraph-leading spacing. These visual changes
+  can reflow existing reports; see the migration notes in the README.
 
 ### Other development work already committed
 
@@ -61,5 +73,6 @@ The research report's missing verdict macros, grouped table captions, chapter
 references and math/code typefaces are now corrected. All pages were rendered
 and visually reviewed against LaTeX. Before a release: refine float distribution
 and sparse chapter endings, broaden two-column/journal visual coverage, review
-the final integrated package and update supported API documentation.
-Concurrent outline/palette work is not represented here as a verified release.
+the final integrated package and update supported API documentation. The outline
+example compiles and its extracted text contains the expected contents and lists;
+the detailed geometry assertions still need PyMuPDF.

@@ -177,3 +177,14 @@ This compiles the public article example and checks column/figure widths,
 footnotes, cross-references, numbering, single-column/inline-contents options,
 full-width report contents, and author affiliation validation. The example uses
 an explicit page break before the wide float to preserve figure order.
+
+## Outline and list checks
+
+Run `python3 examples/latex-parity/check_outlines.py`. The public specimen is
+`examples/outline.typ`; compile it with `--input compact=true` for caption-free
+figure/table lists. The checks cover section numbers, wrapped entry indents,
+title/row/section spacing, neutral outline links, captioned tables, custom
+figure/table numbering, Roman page numbers, independently enabled lists, empty
+and excluded lists, bullet/numbered item spacing, and theme overrides. Temporary
+PDFs are removed after checking. Report page parity is checked separately by
+`build_report.py`, using painted glyph positions to handle PDF ActualText spans.

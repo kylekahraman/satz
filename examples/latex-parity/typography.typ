@@ -15,7 +15,7 @@
   show heading.where(level: 2): set block(below: 1em)
   show heading.where(level: 3): set block(below: 0.9em)
   show heading.where(level: 4): set block(below: 0.75em)
-  set list(spacing: 0.65em)
+  set list(tight: false, spacing: 0.9em)
   body
 }
 

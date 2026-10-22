@@ -62,7 +62,8 @@
     footer-size: 10pt,
     date-size: 10pt,
     keywords-size: 9pt,
-    list-spacing: 0.65em,
+    list-tight: false,
+    list-spacing: 0.9em,
   ),
   page-footer: (
     format: "1",
@@ -84,8 +85,8 @@
     inset: 9pt,
     radius: 3pt,
     stroke: 0.8pt,
-    paragraph-spacing: 1em,
     title-below: 1em,
+    paragraph-spacing: 1em,
     list-spacing: 1.2em,
   ),
   captions: (
@@ -95,13 +96,19 @@
     label-weight: "regular",
   ),
   toc: (
-    // Set depth: 0 to disable. none = auto (uses heading numbering depth).
+    // Set depth: 0 to disable. none includes all outlined heading levels.
     depth: none,
     // Title shown above the table of contents. Set to none to omit.
     title: [Table of Contents],
     // Indent per heading level (e.g. 1em for sub-sections)
-    indent: 1em,
-    // Spacing below the ToC before body content begins
+    indent: auto,
+    // Entry text size, spacing between rows, and extra space before each main section
+    entry-size: 10pt,
+    leading: 0.65em,
+    entry-above: 0.65em,
+    main-entry-above: 1.25em,
+    // Space between the title and first entry; space after the ToC before body content
+    title-below: 1.5em,
     below: 2em,
   ),
   lof: (
@@ -110,7 +117,11 @@
     // Title shown above the list of figures. Set to none to omit.
     title: [List of Figures],
     // Indent per level
-    indent: 1em,
+    indent: auto,
+    entry-size: 10pt,
+    leading: 0.65em,
+    entry-above: 0.85em,
+    title-below: 1.5em,
     // Spacing below the list
     below: 2em,
     // When true, LoF shows only "Figure N .... page", no caption text.
@@ -120,7 +131,11 @@
   lot: (
     depth: none,
     title: [List of Tables],
-    indent: 1em,
+    indent: auto,
+    entry-size: 10pt,
+    leading: 0.65em,
+    entry-above: 0.85em,
+    title-below: 1.5em,
     below: 2em,
     // Same as lof.compact, but for tables.
     compact: false,

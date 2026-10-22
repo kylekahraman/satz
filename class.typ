@@ -172,9 +172,9 @@
   )
 
   // --- List spacing ---
-  // "Abstand vor/nach Listenpunkt" — extra air between items for readability
-  set list(spacing: c.decorative.list-spacing)
-  set enum(spacing: c.decorative.list-spacing)
+  // Tight lists use paragraph leading instead of the configured item spacing.
+  set list(tight: c.decorative.list-tight, spacing: c.decorative.list-spacing)
+  set enum(tight: c.decorative.list-tight, spacing: c.decorative.list-spacing)
 
   // --- Heading numbering (journal uses none) ---
   set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
@@ -289,49 +289,21 @@
     } else { it }
   }
 
-  // --- Compact LoF/Lot (global, no per-figure changes) ---
-  // When `lof.compact` / `lot.compact` is true, the outline shows only
-  // "Figure 1 .... 5" / "Table 1 .... 5" without caption text.
-  // Show rule must be unconditional — `show` inside `if` is dead code
-  // in Typst (see AGENTS.md: "set/show rules inside if blocks are dead code").
+  // --- Outline entries ---
+  // Keep native numbering, hanging indents, and formatted page numbers.
+  // Compact figure/table lists omit only the caption, not the native prefix.
   let lof-compact = "lof" in c and c.lof.at("compact", default: false)
   let lot-compact = "lot" in c and c.lot.at("compact", default: false)
   show outline.entry: it => context {
-    if lof-compact or lot-compact {
-      let el = it.element
-      if el.func() == figure {
-        let is-lof = el.kind == image and lof-compact
-        let is-lot = el.kind == table and lot-compact
-        if is-lof or is-lot {
-          let loc = el.location()
-          let fig-num = if el.kind == image {
-            counter(figure.where(kind: image)).at(loc).first()
-          } else {
-            counter(figure.where(kind: table)).at(loc).first()
-          }
-          // Force black for LoF/Lot entries — no fancy link color
-          let body = link(loc, text(fill: c.colors.text-main, [#el.supplement #fig-num]))
-          // Page number respecting report/thesis offset (display = raw-1)
-          let raw-pg = counter(page).at(loc).first()
-          let pg-str = if kind == "report" or kind == "thesis" {
-            if raw-pg > 1 { str(raw-pg - 1) } else { none }
-          } else {
-            str(raw-pg)
-          }
-          block(width: 100%, inset: (y: 2pt), [#body #box(width: 1fr, it.fill) #text(fill: c.colors.text-main, pg-str)])
-        } else {
-          it
-        }
-      } else {
-        it
-      }
+    let el = it.element
+    if el.func() == figure and (
+      (el.kind == image and lof-compact) or
+      (el.kind == table and lot-compact)
+    ) {
+      link(el.location(), text(fill: c.colors.text-main,
+        it.indented(it.prefix(), [#box(width: 1fr, it.fill) #sym.wj#it.page()])))
     } else {
-      if it.level == 1 and it.element.func() == heading {
-        let loc = it.element.location()
-        link(loc, it.indented(it.prefix(), [#it.body() #h(1fr) #it.page()]))
-      } else {
-        it
-      }
+      it
     }
   }
 
@@ -347,63 +319,54 @@
     it
   }
 
+  // One rhythm for the automatic contents, figure list, and table list.
+  // Entry gaps must not fall below leading: paragraph spacing replaces leading
+  // at block boundaries, so tiny values squash rows rather than adding air.
+  let document-outline(settings, target: heading, contents: false) = {
+    if settings.title != none {
+      block(below: settings.title-below, sticky: true)[
+        #text(size: c.headings.h1-size, fill: c.colors.brand-primary, weight: "bold", settings.title)
+      ]
+    }
+    set text(size: settings.entry-size)
+    set par(justify: false, leading: settings.leading, spacing: settings.entry-above, first-line-indent: 0pt)
+    show outline.entry: set block(above: settings.entry-above, below: 0pt)
+    show outline.entry.where(level: 1): set block(above: if contents { settings.main-entry-above } else { settings.entry-above })
+    show outline.entry.where(level: 1): set text(weight: if contents { "bold" } else { "regular" })
+    show outline.entry.where(level: 1): set outline.entry(fill: if contents { none } else { repeat(gap: 0.15em)[.] })
+    outline(title: none, target: target, depth: settings.depth, indent: settings.indent)
+    v(settings.below)
+  }
+
   // --- Bibliography ---
   set bibliography(style: c.bibliography.style)
 
-  // --- Table of Contents (report/thesis) ---
-  if kind != "journal" and c.toc.depth != 0 {
-    {
-      set page(header: none, footer: none, numbering: none, columns: 1)
-      outline(
-        title: c.toc.title,
-        depth: c.toc.depth,
-        indent: c.toc.indent,
-      )
-      v(c.toc.below)
-    }
-    // --- List of Figures (report/thesis) ---
-    // Auto-hide when no figures exist: the pagebreak and title are guarded by a
-    // query() so an empty document yields no LoF page at all.
-    if "lof" in c and c.lof.depth != 0 {
-      context {
-        if query(figure.where(kind: image)).len() > 0 {
-          pagebreak()
-          {
-            set page(header: none, footer: none, numbering: none, columns: 1)
-            outline(
-              title: c.lof.title,
-              target: figure.where(kind: image),
-              depth: c.lof.depth,
-              indent: c.lof.indent,
-            )
-            v(c.lof.below)
+  // --- Automatic front matter (report/thesis) ---
+  // Each list has its own toggle; disabling the contents must not hide tables.
+  if kind == "report" or kind == "thesis" {
+    context {
+      let has-toc = c.toc.depth != 0
+      let has-lof = c.lof.depth != 0 and query(figure.where(kind: image, outlined: true)).len() > 0
+      let has-lot = c.lot.depth != 0 and query(figure.where(kind: table, outlined: true)).len() > 0
+      if has-toc or has-lof or has-lot {
+        {
+          set page(header: none, footer: none, numbering: none, columns: 1)
+          if has-toc { document-outline(c.toc, contents: true) }
+          if has-lof {
+            if has-toc { pagebreak() }
+            document-outline(c.lof, target: figure.where(kind: image))
+          }
+          if has-lot {
+            if has-toc or has-lof { pagebreak() }
+            document-outline(c.lot, target: figure.where(kind: table))
           }
         }
+        // Update before the pagebreak so the next header sees the right parity.
+        // Counter 2 displays as page 1 in reports and theses.
+        counter(page).update(2)
+        pagebreak()
       }
     }
-    // --- List of Tables (report/thesis) ---
-    // Auto-hide when no tables exist: same guard as the LoF above.
-    if "lot" in c and c.lot.depth != 0 {
-      context {
-        if query(figure.where(kind: table)).len() > 0 {
-          pagebreak()
-          {
-            set page(header: none, footer: none, numbering: none, columns: 1)
-            outline(
-              title: c.lot.title,
-              target: figure.where(kind: table),
-              depth: c.lot.depth,
-              indent: c.lot.indent,
-            )
-            v(c.lot.below)
-          }
-        }
-      }
-    }
-    // Header runs at page start, footer at page end — so update
-    // the counter before the pagebreak. Counter 2 displays as 1.
-    counter(page).update(2)
-    pagebreak()
   }
 
   assert(c.headings.spacing in ("koma", "native"), message: "headings.spacing must be koma or native.")

@@ -70,8 +70,18 @@ def inspect(path, custom_header=False, custom_footer=False, headers=True, number
             if index == 0 and "Local note" in page.get_text():
                 failures.append("non-outlined local heading appeared in the contents")
             if index and not custom_footer and numbered:
-                words = page.get_text("words", clip=footer_rect)
-                center = (words[0][0] + words[0][2]) / 2 if words else width / 2
+                # ActualText around outline page numbers can make MuPDF attach
+                # a footer digit to a body word. Check painted glyph positions;
+                # the extracted footer value is verified separately above.
+                boxes = [char[3] for s in page.get_texttrace()
+                         if s["type"] == 0 and s["opacity"] > 0
+                         for char in s["chars"]
+                         if char[3][2] > char[3][0]
+                         and footer_rect.contains(fitz.Rect(char[3]))]
+                if not boxes:
+                    failures.append(f"page {index + 1}: missing painted footer")
+                    continue
+                center = (min(b[0] for b in boxes) + max(b[2] for b in boxes)) / 2
                 if (center < width / 2) != (raw_counter % 2 == 0):
                     failures.append(f"page {index + 1}: footer alignment disagrees with counter parity")
             if header and not custom_header:
