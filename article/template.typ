@@ -1,5 +1,6 @@
 #import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
+#import "../themes.typ": theme-config
 #import "defaults.typ": defaults as article-defaults
 
 /// An article with a full-width title/author/abstract block and native columns.
@@ -14,8 +15,10 @@
 /// - abstract (content, none): full-width abstract
 /// - date (str, content, none): optional date beneath the authors
 /// - config (dictionary): shared satz and article style overrides
+/// - theme (str, none): optional shared document palette; explicit config overrides it
 /// - body (content): the article
-#let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), body) = {
+#let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: none, body) = {
+  let config = theme-config(theme, config: config)
   let c = merge(merge(defaults, article-defaults), config)
   for author in authors {
     for index in author.at("affiliations", default: ()) {

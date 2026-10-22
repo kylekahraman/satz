@@ -2,6 +2,7 @@
 
 #import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
+#import "../themes.typ": theme-config
 #import "components.typ": book-style
 
 /// A configurable book with a title page, front matter, contents, and main matter.
@@ -34,8 +35,9 @@
 /// - eyebrow (content, none): small line above the title
 /// - note (content, none): small text near the bottom of the cover
 /// - date (content, none): date near the bottom of the cover
-/// - accent (color): heading and component accent
-/// - ink (color): cover title and chapter-heading color
+/// - accent (color, none): heading and component accent; defaults to the book palette
+/// - ink (color, none): cover title and chapter-heading color; defaults to the book palette
+/// - theme (str, none): optional shared document palette; explicit arguments and config still win
 /// - font (str): body text family
 /// - math-font (str): equation font family
 /// - font-size (length): main text size
@@ -59,34 +61,36 @@
   eyebrow: none,
   note: none,
   date: none,
-  accent: rgb("#23616B"),
-  ink: rgb("#24313B"),
-  paper: "a4",
-  margin: (left: 27mm, right: 25mm, top: 25mm, bottom: 27mm),
-  math-font: "New Computer Modern Math",
-  font: "Libertinus Serif",
-  font-size: 11pt,
-  leading: 0.74em,
-  paragraph-spacing: 14pt,
-  binding: left,
-  binding-correction: 5mm,
+  accent: none,
+  ink: none,
+  theme: none,
+  paper: none,
+  margin: none,
+  math-font: none,
+  font: none,
+  font-size: none,
+  leading: none,
+  paragraph-spacing: none,
+  binding: auto,
+  binding-correction: none,
   config: (:),
 ) = {
-  // Keep links legible while deriving their shade from the selected accent.
-  let link-accent = color.mix((accent, 60%), (black, 40%), space: rgb)
+  let default-accent = rgb("#23616B")
+  let default-link = color.mix((default-accent, 60%), (black, 40%), space: rgb)
   let book-defaults = merge(defaults, (
     page: (
-      paper: paper,
-      margin: margin,
-      binding: binding,
-      binding-correction: binding-correction,
+      paper: "a4",
+      margin: (left: 27mm, right: 25mm, top: 25mm, bottom: 27mm),
+      binding: left,
+      binding-correction: 5mm,
       headers: false,
     ),
     typography: (
-      font: font,
-      size: font-size,
-      leading: leading,
-      paragraph-spacing: paragraph-spacing,
+      font: "Libertinus Serif",
+      math-font: "New Computer Modern Math",
+      size: 11pt,
+      leading: 0.74em,
+      paragraph-spacing: 14pt,
       first-line-indent: 0pt,
       hyphenate: true,
       justify: true,
@@ -105,14 +109,14 @@
     ),
     colors: (
       bg-paper: white,
-      brand-primary: accent,
-      brand-accent: accent,
+      brand-primary: default-accent,
+      brand-accent: default-accent,
       text-main: black,
       text-muted: luma(110),
     ),
-    links: (color: link-accent, url-color: link-accent),
+    links: (color: default-link, url-color: default-link),
     book: (
-      ink: ink,
+      ink: rgb("#24313B"),
       contents: (
         title-before: 24.5pt,
         title-after: 26pt,
@@ -151,7 +155,33 @@
     ),
     toc: (depth: 0),
   ))
-  let c = merge(book-defaults, config)
+  let themed-defaults = merge(book-defaults, theme-config(theme))
+  let accent-link = if accent != none { color.mix((accent, 60%), (black, 40%), space: rgb) } else { none }
+  let direct-config = (
+    page: (:
+      ..(if paper != none { (paper: paper) } else { (:) }),
+      ..(if margin != none { (margin: margin) } else { (:) }),
+      ..(if binding != auto { (binding: binding) } else { (:) }),
+      ..(if binding-correction != none { (binding-correction: binding-correction) } else { (:) }),
+    ),
+    typography: (:
+      ..(if font != none { (font: font) } else { (:) }),
+      ..(if font-size != none { (size: font-size) } else { (:) }),
+      ..(if leading != none { (leading: leading) } else { (:) }),
+      ..(if paragraph-spacing != none { (paragraph-spacing: paragraph-spacing) } else { (:) }),
+      ..(if math-font != none { (math-font: math-font) } else { (:) }),
+    ),
+    colors: (:
+      ..(if accent != none { (brand-primary: accent, brand-accent: accent) } else { (:) }),
+    ),
+    links: (:
+      ..(if accent-link != none { (color: accent-link, url-color: accent-link) } else { (:) }),
+    ),
+    book: (:
+      ..(if ink != none { (ink: ink) } else { (:) }),
+    ),
+  )
+  let c = merge(merge(themed-defaults, direct-config), config)
 
   personal(kind: "book", config: c, [
     #book-style.update((
@@ -170,7 +200,7 @@
     ))
     #set page(numbering: none)
     #set heading(numbering: none)
-    #show math.equation: set text(font: math-font)
+    #show math.equation: set text(font: c.typography.math-font)
     #show heading.where(level: 1): it => context {
       let style = book-style.get()
       let number = if it.numbering == none { none } else { counter(heading).display(it.numbering) }
@@ -198,7 +228,7 @@
     #set page(footer: none)
     #block(width: 100%, height: 100%)[
       #v(c.book.cover-top)
-      #if eyebrow != none { block(below: c.book.cover-eyebrow-below, text(size: c.book.cover-eyebrow-size, fill: accent)[#eyebrow]) }
+      #if eyebrow != none { block(below: c.book.cover-eyebrow-below, text(size: c.book.cover-eyebrow-size, fill: c.colors.brand-primary)[#eyebrow]) }
       #block(below: c.book.cover-title-below)[
         #set par(leading: c.book.cover-title-leading)
         #text(size: c.book.cover-title-size, weight: "bold", fill: c.book.ink)[#title]

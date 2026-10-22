@@ -1,5 +1,7 @@
 #import "components.typ": absender_block, digitaler_absender_block, empfaenger_block, digitaler_empfaenger_block, geschaeftszeile_block, digitales_datum_block, signatur_block
 #import "../input.typ": normalize-record, select-alias
+#import "../defaults.typ": defaults as shared-defaults, merge
+#import "../appearance.typ": resolve-postal-appearance
 #import "layout.typ": falz_und_locher_marken, seiten_footer
 
 /// A letter with optional postal and digital components.
@@ -52,6 +54,8 @@
 /// - sender (dictionary): English alias for `absender`; keys include `name`, `care-of`, `street`, `postal-code-city`, `phone`, `email`, and `logo`
 /// - recipient (dictionary): English alias for `empfaenger`; keys include `name`, `care-of`, `street`, `postal-code-city`, and `country`
 /// - date, reference-line, subject, enclosure-list, attachments, signature-addition, postal-mark, language (content): English aliases for the corresponding German arguments
+/// - theme (str, none): shared palette; defaults to the template's neutral letter colors
+/// - config (dictionary): appearance overrides for `page.paper`, `page.margin`, core `typography`, `colors`, and `links`
 /// - body (content): your letter text
 #let brief(
   absender: none,
@@ -75,6 +79,8 @@
   signature-addition: none,
   postal-mark: none,
   language: none,
+  theme: none,
+  config: (:),
   font: "Inter",
   falzmarken: true,
   adressfenster: true,
@@ -124,6 +130,18 @@
     bottom: 25mm,
     ..seitenraender,
   )
+  let appearance-defaults = merge(shared-defaults, (
+    page: (paper: "a4", margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)),
+    typography: (font: "Inter", size: 11pt, leading: 0.65em, justify: true, hyphenate: false),
+    colors: (brand-primary: black, text-main: black),
+  ))
+  let c = resolve-postal-appearance(
+    appearance-defaults,
+    theme,
+    (page: (paper: papier, margin: seitenraender), typography: (font: font, size: schriftgroesse, leading: zeilenabstand, justify: blocksatz)),
+    config,
+  )
+  let zeilenabstand = c.typography.leading
   let abstaende = (
     absender_empfaenger: 3 * zeilenabstand,
     absender_datum: 4 * zeilenabstand,
@@ -162,15 +180,17 @@
   }
   
   // Stile konfigurieren
-  set text(font: font, size: schriftgroesse, lang: lang, hyphenate: false, weight: "regular")
-  set par(leading: zeilenabstand, justify: blocksatz)
+  set text(font: c.typography.font, size: c.typography.size, lang: lang, hyphenate: c.typography.hyphenate, fill: c.colors.text-main, weight: "regular")
+  set par(leading: zeilenabstand, justify: c.typography.justify)
   set list(spacing: zeilenabstand)
   set page(
-    paper: papier,
-    margin: seitenraender,
+    paper: c.page.paper,
+    margin: c.page.margin,
+    fill: c.colors.bg-paper,
     background: if falzmarken { falz_und_locher_marken() } else { none },
     footer: if seitenzahlen { seiten_footer(strings) } else { none },
   )
+  show link: it => text(fill: if type(it.dest) == str { c.links.url-color } else { c.links.color }, underline(it))
 
   // Heading show rules — headings match body size (11pt), only differ by weight/style.
   // This keeps the Betreff (11.5pt bold) as the visually dominant element per DIN 5008.
@@ -242,7 +262,7 @@
   }
   if betreff_anzeigen {
     block(width: 100%)[
-      #set text(weight: "bold", size: betreff_groesse)
+      #set text(weight: "bold", size: betreff_groesse, fill: c.colors.brand-primary)
       #betreff
     ]
     v(abstaende.betreff_text)

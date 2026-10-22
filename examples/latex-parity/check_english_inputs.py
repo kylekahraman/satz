@@ -7,7 +7,9 @@ import fitz
 
 
 ROOT = Path(__file__).resolve().parents[2]
-IMPORT = ROOT / "lib.typ"
+# Fixtures live in a temporary child of examples/latex-parity. Typst resolves
+# absolute paths beneath --root, so use a relative import that stays in-root.
+IMPORT = "../../../lib.typ"
 
 
 def compile_pdf(folder, name, source):

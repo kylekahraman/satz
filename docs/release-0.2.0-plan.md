@@ -47,6 +47,9 @@ inputs produce equivalent document content/layout; conflicts identify the field.
 
 ## 3. Resolve appearance consistently
 
+Status: implemented in the 0.2.0 development source; focused precedence tests
+pass in `examples/latex-parity/check_appearance_precedence.py`.
+
 Separate document content (sender, recipient, title, date, invoice items) from
 appearance (`config`, theme, page geometry, typography). Keep specialized DIN
 letter geometry and grant-form requirements; they need not use identical layout

@@ -71,6 +71,17 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Report a field-specific conflict when callers provide both spellings, and
   identify missing fields in English invoice item records.
 
+### Shared appearance precedence
+
+- Resolve letter and invoice themes, direct appearance arguments, and nested
+  config overrides through one adapter while preserving DIN-specific geometry.
+- Apply the shared theme palette to article and book entry points. Book
+  `accent`, `math-font`, and other direct appearance arguments now participate
+  in the documented precedence order instead of bypassing nested config.
+- Reject unsupported letter/invoice appearance groups and keys with a
+  field-specific error. `examples/latex-parity/check_appearance_precedence.py`
+  checks palette application, nested overrides, and rejection behavior.
+
 ### Verification and remaining release work
 
 The [research report audit](docs/report-parity-audit.md) distinguishes shared
@@ -85,4 +96,4 @@ and visually reviewed against LaTeX. Before a release: refine float distribution
 and sparse chapter endings, broaden two-column/journal visual coverage, review
 the final integrated package and update supported API documentation. The outline
 example compiles and its extracted text contains the expected contents and lists;
-the detailed geometry assertions still need PyMuPDF.
+the PyMuPDF geometry assertions are in `examples/latex-parity/check_outlines.py`.

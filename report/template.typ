@@ -2,7 +2,7 @@
 
 #import "../class.typ": personal
 #import "../defaults.typ": merge
-#import "../themes.typ": document-themes
+#import "../themes.typ": theme-config
 #import "defaults.typ": defaults as report-defaults
 
 /// A simple report — articles, protocols, lab notes, whatever.
@@ -23,12 +23,5 @@
 /// #lorem(100)
 /// ```
 #let report(body, config: (:), theme: report-defaults.theme) = {
-  let themed = if theme == none { (:) } else {
-    let colors = document-themes.at(theme)
-    (
-      colors: colors,
-      links: (color: colors.brand-primary, url-color: colors.brand-primary),
-    )
-  }
-  personal(kind: "report", config: merge(themed, config), body)
+  personal(kind: "report", config: theme-config(theme, config: config), body)
 }

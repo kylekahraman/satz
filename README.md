@@ -165,6 +165,35 @@ letter labels and hyphenation. Invoices accept English `items:` records with
 Supplying both spellings of a field produces an error that names the conflict.
 These aliases are planned for 0.2.0 and are not in the published 0.1.1 package.
 
+### Shared appearance options
+
+Reports, articles, books, letters, and invoices accept the shared document
+palettes: `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
+`soft-rose`. Journal entries and indexes already support these palettes. The
+appearance order is shared defaults, template defaults, selected `theme:`,
+explicit direct appearance arguments, then nested `config:` overrides. Nested
+dictionaries merge by key, so an override can change one color without
+replacing the other palette values. `theme: none` keeps the template defaults.
+
+Letters and invoices retain their DIN page geometry and accept `config:` keys
+in these groups: `page.paper` and `page.margin`; `typography.font`, `size`,
+`leading`, `justify`, and `hyphenate`; `colors.bg-paper`, `brand-primary`, and
+`text-main`; and `links.color` and `url-color`. Unsupported groups or keys fail
+with an error naming the setting. For example, this changes the subject accent
+while keeping the selected palette's other colors:
+
+```typst
+#show: letter.with(
+  theme: "soft-jade",
+  config: (colors: (brand-primary: rgb("#336699"),)),
+)
+```
+
+These appearance options are in the 0.2.0 development API and are not in the
+published 0.1.1 package. The book also resolves `accent`, `math-font`, and the
+nested config through this precedence order, so a raw argument cannot bypass
+an explicit nested override.
+
 ### Letter — Internationalization and PDF applications
 
 The `brief()` function accepts `lang: "de"` (default) or `"en"`:

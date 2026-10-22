@@ -1,6 +1,8 @@
 // Reuses letter address components (absender/empfaenger/geschaeftszeile)
 #import "../letter/components.typ": absender_block, empfaenger_block, geschaeftszeile_block
 #import "../input.typ": normalize-record, normalize-invoice-items, select-alias
+#import "../defaults.typ": defaults as shared-defaults, merge
+#import "../appearance.typ": resolve-postal-appearance
 
 // Import invoice-specific components
 #import "components.typ": posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
@@ -43,6 +45,8 @@
 /// - recipient (dictionary): English alias for `empfaenger`; includes `street`, `postal-code-city`, and `country`
 /// - date, invoice-number, service-date, subject, items, qr-amount, qr-purpose, small-business: English aliases for the corresponding German fields
 /// - items (array): tuples `(description, quantity, unit-price)` or records with those three keys
+/// - theme (str, none): shared palette; defaults to neutral invoice colors
+/// - config (dictionary): appearance overrides for `page.paper`, `page.margin`, core `typography`, `colors`, and `links`
 ///
 /// English field names only change the input spelling. Invoice output remains German.
 #let rechnung(
@@ -68,6 +72,8 @@
   font: "Inter",
   kleinunternehmer: none,
   small-business: none,
+  theme: none,
+  config: (:),
   body
 ) = {
   let absender = normalize-record(
@@ -92,13 +98,26 @@
   let qr-betrag = select-alias(qr-betrag, qr-amount, "qr-betrag", "qr-amount", none)
   let qr-verwendungszweck = select-alias(qr-verwendungszweck, qr-purpose, "qr-verwendungszweck", "qr-purpose", "")
   let kleinunternehmer = select-alias(kleinunternehmer, small-business, "kleinunternehmer", "small-business", false)
-  let zeilenabstand = 0.65em
+  let appearance-defaults = merge(shared-defaults, (
+    page: (paper: "a4", margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)),
+    typography: (font: "Inter", size: 11pt, leading: 0.65em, justify: true, hyphenate: false),
+    colors: (brand-primary: black, text-main: black),
+  ))
+  let c = resolve-postal-appearance(
+    appearance-defaults,
+    theme,
+    (typography: (font: font)),
+    config,
+  )
+  let zeilenabstand = c.typography.leading
 
   // --- Global styles ---
-  set text(font: font, size: 11pt, lang: "de", hyphenate: false, weight: "regular")
+  set text(font: c.typography.font, size: c.typography.size, lang: "de", hyphenate: c.typography.hyphenate, fill: c.colors.text-main, weight: "regular")
+  set par(leading: c.typography.leading, justify: c.typography.justify)
   set page(
-    "a4",
-    margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm),
+    c.page.paper,
+    margin: c.page.margin,
+    fill: c.colors.bg-paper,
     background: context {
       if counter(page).get().first() == 1 [
         #place(top + left, dx: 0mm, dy: 0mm)[
@@ -109,7 +128,8 @@
       ]
     },
   )
-  set par(leading: zeilenabstand, justify: true)
+  show link: it => text(fill: if type(it.dest) == str { c.links.url-color } else { c.links.color }, underline(it))
+  set par(leading: zeilenabstand, justify: c.typography.justify)
   set list(spacing: zeilenabstand)
 
   // --- Sender block (top-right) ---
@@ -137,7 +157,7 @@
 
   // --- Subject ---
   block(width: 100%)[
-    #set text(weight: "bold", size: 11pt)
+    #set text(weight: "bold", size: c.typography.size, fill: c.colors.brand-primary)
     #betreff
   ]
   v(2 * zeilenabstand)
