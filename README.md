@@ -137,7 +137,8 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
 
 The published package is still 0.1.1. This README describes both that version
-and unreleased development APIs. The 0.2.0 candidate will state each template's
+and unreleased development APIs. The candidate requires Typst 0.15.0 or newer.
+The 0.2.0 candidate will state each template's
 support level explicitly: DFG support is limited to form 53.01 (09/26), NWO
 support covers only the represented profiles, and book support remains
 experimental. None of these imply support for every proposal form or complete

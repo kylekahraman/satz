@@ -1,6 +1,7 @@
 [package]
 name = "satz"
 version = "0.1.1"
+compiler = "0.15.0"
 entrypoint = "lib.typ"
 authors = ["Kyle Kahraman <kylekahraman@gmail.com>"]
 description = "A unified document class for everyday documents — letters, invoices, reports, journals, and grant proposals. Inspired by KOMA-Script."

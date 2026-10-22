@@ -7,6 +7,7 @@ every template consumes every key. `report`, `article`, `book`, `journal`,
 settings in their own APIs. Their documented differences take precedence over
 the shared baseline. The package is still 0.1.1, so these candidate contracts
 are not available from the published package.
+The candidate's declared minimum compiler version is Typst 0.15.0.
 
 Pass only values to change. Satz deep-merges dictionaries: an override such as
 `(colors: (brand-primary: blue))` preserves the other color defaults. Arrays,

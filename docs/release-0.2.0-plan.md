@@ -154,7 +154,8 @@ check plus focused API/PDF regressions with pinned inspection dependencies.
 An isolated download of published 0.1.1 also compiles the stable letter,
 invoice, report, journal, and cover starters. The manifest still says 0.1.1,
 so installing a distinct 0.2.0 candidate and checking its final dependencies
-remain open.
+remain open. The candidate manifest declares compiler minimum 0.15.0, which is
+the version used for the local and CI release checks.
 
 - Compile documented starters against both their declared published version
   and the candidate where appropriate. A local `@preview` symlink must not
