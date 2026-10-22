@@ -3,7 +3,7 @@
 Use the development API without copying a table template:
 
 ```typst
-#import "@local/satz:0.1.1": report, scientific-table, scientific-tables
+#import "@local/satz:0.2.0": report, scientific-table, scientific-tables
 #show: report.with(config: (toc: (depth: 0),))
 #show: scientific-tables
 

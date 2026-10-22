@@ -5,8 +5,8 @@ It documents the executable baseline in `defaults.typ`; it does not claim that
 every template consumes every key. `report`, `article`, `book`, `journal`,
 `cover-page`, `letter`, `invoice`, and proposal templates add or override
 settings in their own APIs. Their documented differences take precedence over
-the shared baseline. The package is still 0.1.1, so these candidate contracts
-are not available from the published package.
+the shared baseline. The package is the unpublished 0.2.0 candidate, so these
+contracts are not available from the published package.
 The candidate's declared minimum compiler version is Typst 0.15.0.
 
 Pass only values to change. Satz deep-merges dictionaries: an override such as
@@ -267,7 +267,7 @@ These signatures are taken from the current source; they show every optional arg
   qr: true,
   qr-betrag: none,
   qr-amount: none,
-  qr-verwendungszweck: "",
+  qr-verwendungszweck: none,
   qr-purpose: none,
   font: "Inter",
   kleinunternehmer: none,

@@ -95,5 +95,6 @@ this updated native chronology map and should not be cited as current evidence.
 
 Native Typst provides the needed table rules, repeated headings and breakable
 blocks, so these fixes require no extra dependencies. Hydra and Glossarium address
-separate concerns. Subfigure work remains shelved. The manifest stays at 0.1.1:
-no version bump, tag, release or publication accompanies this work.
+separate concerns. Subfigure work remains shelved. At this audit checkpoint the
+manifest was 0.1.1; the repository later identified an unpublished 0.2.0
+candidate. This audit itself did not tag, release or publish the package.

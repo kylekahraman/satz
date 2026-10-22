@@ -67,7 +67,7 @@
   qr: true,
   qr-betrag: none,
   qr-amount: none,
-  qr-verwendungszweck: "",
+  qr-verwendungszweck: none,
   qr-purpose: none,
   font: "Inter",
   kleinunternehmer: none,

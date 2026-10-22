@@ -5,7 +5,7 @@ The development package exposes six palettes: `neutral`, `soft-jade`,
 journals and indexes now accept the same names:
 
 ```typst
-#import "@local/satz:0.1.1": journal-entry, journal-index
+#import "@local/satz:0.2.0": journal-entry, journal-index
 #journal-index(theme: "soft-jade")
 #pagebreak()
 #journal-entry(title: "First notes", date: "Wednesday, 21/10/26", theme: "soft-jade")[
@@ -22,7 +22,7 @@ For **any** Satz template or component with a `config:` parameter, use the
 public helper rather than copying palette values:
 
 ```typst
-#import "@local/satz:0.1.1": theme-config
+#import "@local/satz:0.2.0": theme-config
 #let config = theme-config("plum", config: (
   typography: (size: 12pt),
 ))

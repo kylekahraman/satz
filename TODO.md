@@ -32,11 +32,11 @@
 - [x] **Link/outline polish** — ToC/LoF/Lot text `c.colors.text-main` (no fancy red in outlines), body links keep `c.links.color`
 - [x] **List spacing** — `decorative.list-spacing` (`list` + `enum` unified, Word-like "Abstand nach Absatz")
 
-## 🚧 v0.2.0 — Planned
+## 🚧 v0.2.0 — Release candidate
 
 Release scope and acceptance checks are tracked in the
-[0.2.0 release plan](docs/release-0.2.0-plan.md). The package remains at
-0.1.1 until those checks pass; this roadmap does not authorize publishing.
+[0.2.0 release plan](docs/release-0.2.0-plan.md). The manifest identifies the
+unpublished 0.2.0 candidate; this roadmap does not authorize publishing.
 
 ### Next priorities
 
@@ -54,7 +54,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Appearance precedence** — resolve defaults, template defaults, theme, direct options, and nested config consistently; shared theme application and postal-option validation are checked in `examples/latex-parity/check_appearance_precedence.py`.
 - [x] **Versioned configuration reference** — shared defaults, template appearance, exported API arguments, record/array contracts, enums, extension behavior, and version availability are documented in `docs/configuration-reference.md`; candidate and published-version starters compile in isolated package checks.
 - [x] **Public input validation** — Satz-owned enums and high-impact records are checked across shared config, article, postal, journal, proposal, DFG/NWO, legal complaint, and guest contract APIs. Focused regression checks require field-specific diagnostics and preserve template/caller extension groups.
-- [ ] **Release package verification** — in progress: `tools/**` and local workbook conversions are excluded; eight starters compile from an isolated 0.2.0 staging install, five stable starters compile against isolated published 0.1.1, and focused checks run in GitHub Actions. Typst 0.15.0 is declared and tested as the minimum; direct dependencies are pinned, the MIT license is present, and tracked examples use placeholders. The configuration-reference and input-validation gates are complete; perform the final release review before the separate version bump and publish step.
+- [ ] **Release package verification** — the manifest now identifies 0.2.0; `tools/**` and local workbook conversions are excluded, and eight starters compile from an isolated staged package. All focused API/PDF regressions pass locally. Bounded visual checks of the article and journal examples passed; the 69-page report review and accepted float differences are recorded in `docs/report-parity-audit.md`. The isolated published-0.1.1 compatibility check is recorded as passing previously, but its current rerun is blocked by DNS access to packages.typst.org. Typst 0.15.0 is declared and tested as the minimum; direct dependencies are pinned, the MIT license is present, and tracked examples use placeholders. Confirm published-package compatibility before submission.
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
 - [ ] **Book entry point and educational components** — develop an easy KOMA-inspired `book(...)` path with adjustable cover, binding, heading rhythm, appendices, exercises, and answer grids. The first local API and RSA workbook conversion are under review; see `docs/book-api.md` and the ignored local `workbook-conversion/` directory.

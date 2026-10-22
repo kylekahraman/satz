@@ -57,6 +57,7 @@ Dear Example Recipient,\nLetter body.\n'''
   empfaenger: (name: "Example Customer", strasse: "Side Road 4", plz_ort: "York", land: "UK"),
   datum: "01.10.2026", rechnungsnummer: "INV-1", leistungsdatum: "01.10.2026",
   betreff: "Example invoice", posten: (("Consulting", 2, 80),), qr: false,
+  qr-verwendungszweck: "Payment reference",
   kleinunternehmer: true,
 )
 Invoice text body.\n'''
@@ -66,6 +67,7 @@ Invoice text body.\n'''
   recipient: (name: "Example Customer", street: "Side Road 4", postal-code-city: "York", country: "UK"),
   date: "01.10.2026", invoice-number: "INV-1", service-date: "01.10.2026",
   subject: "Example invoice", items: ((description: "Consulting", quantity: 2, unit-price: 80),), qr: false,
+  qr-purpose: "Payment reference",
   small-business: true,
 )
 Invoice text body.\n'''

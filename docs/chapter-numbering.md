@@ -5,7 +5,7 @@ each chapter. The scope captures a fixed prefix in each element's numbering
 function, so a reference from another chapter uses the target's prefix.
 
 ```typst
-#import "@local/satz:0.1.1": report, chapter-numbering
+#import "@local/satz:0.2.0": report, chapter-numbering
 #show: report.with(config: (
   headings: (h1-pagebreak: true),
 ))

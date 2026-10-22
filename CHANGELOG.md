@@ -2,8 +2,9 @@
 
 ## Unreleased — work toward 0.2.0
 
-The package manifest remains at 0.1.1. These are development changes, not a
-release announcement or a claim of complete LaTeX/KOMA-Script parity.
+The manifest identifies this tree as 0.2.0, but the package has not been
+published. This is a release candidate, not a claim of complete
+LaTeX/KOMA-Script parity.
 
 ### Report typography and reusable components
 
@@ -136,8 +137,11 @@ does not establish visual or content parity.
 The configuration-reference and input-validation gates are complete and
 committed. The research report's missing verdict macros, grouped table captions,
 chapter references and math/code typefaces are now corrected. All pages were
-rendered and visually reviewed against LaTeX. Before a release: refine float
-distribution and sparse chapter endings, broaden two-column/journal visual
-coverage, and perform the final integrated package review. The outline
-example compiles and its extracted text contains the expected contents and lists;
-the PyMuPDF geometry assertions are in `examples/latex-parity/check_outlines.py`.
+rendered and visually reviewed against LaTeX. The remaining float-placement
+differences are documented and accepted when content stays readable and
+correctly captioned; sparse chapter endings are handled in the workbook with a
+document-level heading option. Article geometry and journal date, header, and
+theme behavior have focused PDF checks, without a claim of broad visual parity.
+The final integrated package review remains in progress. The outline example
+compiles and its extracted text contains the expected contents and lists; the
+PyMuPDF geometry assertions are in `examples/latex-parity/check_outlines.py`.

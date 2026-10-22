@@ -1,8 +1,8 @@
 # Satz 0.2.0 release plan
 
-Status: proposed release scope, based on the 22 October 2026 interface audit.
-The package remains at 0.1.1. This plan does not authorize a version bump,
-Typst Universe submission, or public CLI executable release.
+Status: release candidate prepared from the 22 October 2026 interface audit.
+The manifest identifies version 0.2.0; it is not published. This plan does not
+authorize a Typst Universe submission or public CLI executable release.
 
 ## Product decision
 
@@ -13,10 +13,9 @@ create those same documented starters, rather than maintain another set.
 
 ## 1. Establish the release candidate
 
-Status: the existing report, outline, list, and palette work has been
-reconciled into the changelog and roadmap, with migration notes and a clean
-working tree. The source remains at 0.1.1; final candidate identification
-waits for the reference and validation gates below.
+Status: the report, outline, list, and palette work is reconciled into the
+changelog and roadmap, with migration notes. The configuration reference and
+validation gates are complete; the manifest now identifies the 0.2.0 candidate.
 
 - Review and either finish or deliberately defer the existing uncommitted
   report, outline, list and palette changes. Preserve unrelated document work.
@@ -163,19 +162,21 @@ configurations compile in the regression suite.
 
 ## 6. Verify the exact package that will ship
 
-Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
-`examples/latex-parity/check_staged_package.py` stages the current manifest
+Status: `typst.toml` identifies version 0.2.0 and excludes `tools/**` and local
+workbook conversions; `examples/latex-parity/check_staged_package.py` stages the current manifest
 tree and compiles eight representative starters. GitHub Actions runs that
 check plus focused API/PDF regressions with pinned inspection dependencies.
 The regression workflow includes shared outlines, tables, callouts,
-placeholders, paragraph rhythm, article layout, and proposal forms.
-An isolated download of published 0.1.1 also compiles the stable letter,
-invoice, report, journal, and cover starters. The staged source tree is also
+placeholders, paragraph rhythm, article layout, and proposal forms. The latest
+local run passes the staged-package check and all focused API/PDF regressions.
+An isolated download of published 0.1.1 previously compiled the stable letter,
+invoice, report, journal, and cover starters; the current rerun is blocked by
+DNS resolution for `packages.typst.org`. The staged source tree is also
 installed under an isolated `0.2.0` package name and compiled. Direct package
 imports are version-pinned; the manifest declares compiler minimum 0.15.0, the
 version used for local and CI checks. The tracked examples use placeholders,
-and the MIT manifest has a root license file. The repository manifest remains
-0.1.1 until the separate release-versioning step.
+and the MIT manifest has a root license file. The repository manifest now
+identifies 0.2.0; publication remains a separate step.
 
 - Compile documented starters against both their declared published version
   and the candidate where appropriate. A local `@preview` symlink must not
@@ -195,7 +196,18 @@ and the MIT manifest has a root license file. The repository manifest remains
   minimum Typst version, dependency pins, license and example privacy.
 
 Acceptance: reproducible candidate checks, a clean package, and a migration guide.
-Then prepare the version bump/tag/Universe submission as a separate release step.
+Then submit the reviewed 0.2.0 package to Typst Universe as a separate release step.
+
+Current local status: the staged package and focused API/PDF checks pass. The
+independent review found and led to a fix for the `qr-purpose` alias, now covered
+by regression. The published-0.1.1 compatibility check previously passed, but
+its latest rerun could not resolve `packages.typst.org`; confirm that check
+again before submission. Remaining float-placement differences are documented
+as acceptable where content stays readable/correctly captioned. Sparse chapter
+endings are addressed through a document-level option in the audited workbook.
+The 69-page report has a recorded full visual review; current local article and
+journal examples were also rendered and visually checked for columns, figures,
+footnotes, headers, index layout, and page-boundary clipping.
 
 ## After the package release: general Satz CLI
 

@@ -3,12 +3,12 @@
 The unreleased `nwo-proposal` template covers Veni, Vidi and Vici with explicit
 scheme, domain, application-stage and year profiles. It uses the published 2026
 forms, rather than applying the historical six-section LaTeX example to every
-current application. The version remains 0.1.1; these APIs are not published yet.
+current application. These APIs are included in the unpublished 0.2.0 candidate.
 
 ## Start writing
 
 ```typst
-#import "@local/satz:0.1.1": nwo-proposal
+#import "@local/satz:0.2.0": nwo-proposal
 #show: nwo-proposal.with(
   scheme: "veni", domain: "science", stage: "pre", year: 2026,
 )
@@ -103,7 +103,7 @@ outside normal flow are outside the verified layout.
 ## Word counts and key outputs
 
 ```typst
-#import "@local/satz:0.1.1": nwo-text, nwo-key-output
+#import "@local/satz:0.2.0": nwo-text, nwo-key-output
 #nwo-text("research-idea", "Your complete plain-text response...")
 
 #nwo-key-output(

@@ -72,7 +72,7 @@ lines retain the surrounding body's measured cap-height. The block breaks
 within the normal text area and keeps the ordinary footer clear.
 
 ```typst
-#import "@local/satz:0.1.1": report, callout
+#import "@local/satz:0.2.0": report, callout
 #show: report.with(config: (toc: (depth: 0),))
 
 #callout(title: [Main finding])[

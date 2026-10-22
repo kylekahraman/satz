@@ -2,8 +2,8 @@
 
 The development version of Satz provides a DFG 53.01 project-description layout
 and a separate general research/project proposal layout. Both use the shared
-`personal()` class and deep configuration merge. These changes are unreleased;
-the package manifest remains 0.1.1.
+`personal()` class and deep configuration merge. These changes are included in
+the unpublished 0.2.0 candidate.
 
 ## DFG 53.01: start with the complete form
 
@@ -14,7 +14,7 @@ fourth-level safety and funding headings. Replace the relative import with your
 installed development package import when using the file outside this repo:
 
 ```typst
-#import "@local/satz:0.1.1": dfg-proposal, dfg-supplement, dfg-publications, proposal-budget
+#import "@local/satz:0.2.0": dfg-proposal, dfg-supplement, dfg-publications, proposal-budget
 #show: dfg-proposal.with(
   applicant: [Example Applicant, Example University, Example City],
   project: [Project title],
@@ -88,7 +88,7 @@ You do not need to edit the `.bib` file or format entries by hand. The optional
 CSL workflow selects complete entries by their unique BibTeX keys:
 
 ```typst
-#import "@local/satz:0.1.1": dfg-proposal, proposal-citations, dfg-publications
+#import "@local/satz:0.2.0": dfg-proposal, proposal-citations, dfg-publications
 #show: dfg-proposal.with(applicant: [Example Author], project: [Project title])
 #show: proposal-citations.with(
   read("references.bib"),
@@ -167,7 +167,7 @@ Use `research-proposal` or its alias `project-proposal` for a proposal without a
 prescribed funder form:
 
 ```typst
-#import "@local/satz:0.1.1": research-proposal
+#import "@local/satz:0.2.0": research-proposal
 #show: research-proposal.with(
   title: [A reproducible measurement platform],
   short-title: [Measurement platform],

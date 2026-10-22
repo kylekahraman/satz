@@ -42,7 +42,7 @@ is required. The example uses the local development version, including the
 unpublished improvements described below:
 
 ```typst
-#import "@local/satz:0.1.1": letter
+#import "@local/satz:0.2.0": letter
 #show: letter.with(
   absender: (name: "Example Author", strasse: "Example Street 1", plz_ort: "12345 Example City"),
   empfaenger: (name: "Example Recipient", strasse: "Sample Road 2", plz_ort: "54321 Sample City"),
@@ -68,7 +68,7 @@ The local development version includes an article entry point. Start writing
 immediately after the show rule; a separate template or config file is optional:
 
 ```typst
-#import "@local/satz:0.1.1": article
+#import "@local/satz:0.2.0": article
 #show: article.with(
   title: [My paper],
   authors: ((name: "Example Author", affiliations: (1,)),),
@@ -136,14 +136,14 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
 | **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
 
-The published package is still 0.1.1. This README describes both that version
-and unreleased development APIs. The candidate requires Typst 0.15.0 or newer.
-The 0.2.0 candidate will state each template's
-support level explicitly: DFG support is limited to form 53.01 (09/26), NWO
-support covers only the represented profiles, and book support remains
-experimental. None of these imply support for every proposal form or complete
-LaTeX/KOMA-Script parity. Article mode and the proposal APIs are also under
-review; see the [release plan](docs/release-0.2.0-plan.md).
+The manifest now identifies 0.2.0 as the release candidate; it has not been
+published yet. The published package is still 0.1.1. This README describes both
+that version and the candidate APIs. The candidate requires Typst 0.15.0 or newer.
+The 0.2.0 candidate states each template's support level explicitly: DFG
+support is limited to form 53.01 (09/26), NWO support covers only the
+represented profiles, and book support remains experimental. None of these
+imply support for every proposal form or complete LaTeX/KOMA-Script parity.
+See the [release plan](docs/release-0.2.0-plan.md).
 
 ### English input names for letters and invoices
 
@@ -164,7 +164,8 @@ English field spelling does not select the output language; `language:` controls
 letter labels and hyphenation. Invoices accept English `items:` records with
 `description`, `quantity`, and `unit-price`; invoice output remains German.
 Supplying both spellings of a field produces an error that names the conflict.
-These aliases are planned for 0.2.0 and are not in the published 0.1.1 package.
+These aliases are included in the 0.2.0 candidate and are not in the published
+0.1.1 package.
 
 ### Shared appearance options
 
@@ -190,7 +191,7 @@ while keeping the selected palette's other colors:
 )
 ```
 
-These appearance options are in the 0.2.0 development API and are not in the
+These appearance options are in the 0.2.0 candidate and are not in the
 published 0.1.1 package. The book also resolves `accent`, `math-font`, and the
 nested config through this precedence order, so a raw argument cannot bypass
 an explicit nested override. See the in-progress
@@ -207,7 +208,7 @@ The postal layout remains the default. For an application sent as a PDF, the
 same `brief()` template can hide envelope-specific components:
 
 ```typst
-#import "@local/satz:0.1.1": brief
+#import "@local/satz:0.2.0": brief
 
 #show: brief.with(
   absender: (name: "Your Name", email: "you@example.org", website: "example.org"),
@@ -259,11 +260,12 @@ Set `qr: true` (default) to embed a scannable GiroCode:
 ### Cover pages — ready-made layouts or full control
 
 For a research notebook, pass the usual title details directly. No separate
-`config.typ` is needed. These helpers are planned for v0.2.0. The import below
-uses a local development install; after release, use `@preview/satz:0.2.0`:
+`config.typ` is needed. These helpers are included in the unpublished 0.2.0
+candidate. The import below uses a local development install; after release,
+use `@preview/satz:0.2.0`:
 
 ```typst
-#import "@local/satz:0.1.1": research-cover
+#import "@local/satz:0.2.0": research-cover
 
 #research-cover(
   title: [MEG Connectivity Analysis in #box[Non-Conscious] Working Memory],
@@ -365,7 +367,7 @@ document palettes: `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum
 and `soft-rose`. Cover backgrounds retain their previous colors.
 
 ```typst
-#import "@local/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 #show: report.with(theme: "soft-jade")
 ```
 
@@ -445,7 +447,7 @@ In the local development version, two-sided reports and theses use
 [`hydra:0.6.3`](https://typst.app/universe/package/hydra/) for heading selection:
 
 ```typst
-#import "@local/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 #show: report.with(config: (page: (binding: left, headers: true)))
 ```
 
@@ -468,7 +470,7 @@ The local development version exports the pinned
 Keep one list of term definitions and install its show rule before the report:
 
 ```typst
-#import "@local/satz:0.1.1": report, glossarium
+#import "@local/satz:0.2.0": report, glossarium
 #show: glossarium.make-glossary
 #show: report
 
@@ -521,7 +523,7 @@ in the local development version. It draws a labeled empty box using native
 Typst, with no additional dependency:
 
 ```typst
-#import "@local/satz:0.1.1": placeholder
+#import "@local/satz:0.2.0": placeholder
 
 #figure(
   placeholder(width: 80%, height: 4cm, label: [Planned result plot]),
@@ -550,7 +552,7 @@ header rule. Headings and boundary rules repeat across page breaks. Native
 cells, alignment and group separators remain available:
 
 ```typst
-#import "@local/satz:0.1.1": scientific-table, callout
+#import "@local/satz:0.2.0": scientific-table, callout
 
 #scientific-table(
   columns: (1fr, auto),
@@ -582,8 +584,8 @@ See the [complete table example](examples/scientific-table.typ),
 `headings.h1-above` through `h4-below` accept explicit block gaps;
 `auto` selects the measured KOMA default. The audit lists remaining differences:
 Satz does **not** yet claim complete LaTeX/KOMA parity.
-[Unreleased changes](CHANGELOG.md) are being prepared toward 0.2.0;
-the manifest remains 0.1.1 and no release has been made.
+[Unreleased changes](CHANGELOG.md) are prepared for the 0.2.0 candidate;
+the package has not been published yet.
 
 ### Report numbering, captions and fonts (unreleased)
 
