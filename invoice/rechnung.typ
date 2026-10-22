@@ -1,6 +1,6 @@
 // Reuses letter address components (absender/empfaenger/geschaeftszeile)
 #import "../letter/components.typ": absender_block, empfaenger_block, geschaeftszeile_block
-#import "../input.typ": normalize-record, normalize-invoice-items, select-alias
+#import "../input.typ": normalize-record, normalize-invoice-items, select-alias, validate-postal-record
 #import "../defaults.typ": defaults as shared-defaults, merge
 #import "../appearance.typ": resolve-postal-appearance
 
@@ -90,6 +90,8 @@
     (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
     "recipient",
   )
+  validate-postal-record(absender, "Sender", ("name", "strasse", "plz_ort", "steuernummer", "iban", "bic", "bank"), nullable-fields: ("zusatz", "kontoinhaber"), content-fields: ("logo",))
+  validate-postal-record(empfaenger, "Recipient", ("name", "strasse", "plz_ort", "land"), nullable-fields: ("zusatz",))
   let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[day].[month].[year]"))
   let rechnungsnummer = select-alias(rechnungsnummer, invoice-number, "rechnungsnummer", "invoice-number", "")
   let leistungsdatum = select-alias(leistungsdatum, service-date, "leistungsdatum", "service-date", "")

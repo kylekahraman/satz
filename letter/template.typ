@@ -1,5 +1,5 @@
 #import "components.typ": absender_block, digitaler_absender_block, empfaenger_block, digitaler_empfaenger_block, geschaeftszeile_block, digitales_datum_block, signatur_block
-#import "../input.typ": normalize-record, select-alias
+#import "../input.typ": normalize-record, select-alias, validate-postal-record
 #import "../defaults.typ": defaults as shared-defaults, merge
 #import "../appearance.typ": resolve-postal-appearance
 #import "layout.typ": falz_und_locher_marken, seiten_footer
@@ -105,7 +105,7 @@
     absender,
     sender,
     (name: "name", care-of: "zusatz", street: "strasse", postal-code-city: "plz_ort", phone: "telefon"),
-    (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", logo: none),
+    (name: "", zusatz: none, strasse: "", plz_ort: "", telefon: "", email: "", website: "", logo: none),
     "sender",
   )
   let empfaenger = normalize-record(
@@ -115,6 +115,8 @@
     (name: "", zusatz: none, strasse: "", plz_ort: "", land: ""),
     "recipient",
   )
+  validate-postal-record(absender, "Sender", ("name", "strasse", "plz_ort", "telefon", "email", "website"), nullable-fields: ("zusatz",), content-fields: ("logo",))
+  validate-postal-record(empfaenger, "Recipient", ("name", "strasse", "plz_ort", "land"), nullable-fields: ("zusatz",))
   let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[year]-[month]-[day]"))
   let geschaeftszeile = select-alias(geschaeftszeile, reference-line, "geschaeftszeile", "reference-line", ())
   let betreff = select-alias(betreff, subject, "betreff", "subject", "")

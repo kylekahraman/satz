@@ -53,7 +53,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **English letter and invoice inputs** — accept English top-level and nested sender, recipient, and invoice-item fields while preserving all German calls; English invoice input retains German output. Paired documents produce identical extracted text; the PyMuPDF regression script is in `examples/latex-parity/check_english_inputs.py`.
 - [x] **Appearance precedence** — resolve defaults, template defaults, theme, direct options, and nested config consistently; shared theme application and postal-option validation are checked in `examples/latex-parity/check_appearance_precedence.py`.
 - [ ] **Versioned configuration reference** — in progress: shared `personal(config:)` defaults and types are drafted in `docs/configuration-reference.md`; finish template-specific fields, default checks, and published-version example checks.
-- [ ] **Public input validation** — in progress: journal dates and article author/affiliation records now fail clearly; continue auditing enum values and nested records while preserving supported extension keys.
+- [ ] **Public input validation** — in progress: journal dates, article author/affiliation records, postal addresses, and invoice items now fail clearly; continue auditing enum values and nested records while preserving supported extension keys.
 - [ ] **Release package verification** — exercise published-version examples, CI starters, staged package contents, fresh install, dependencies, license, and example privacy.
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections

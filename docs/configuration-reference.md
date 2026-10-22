@@ -123,3 +123,11 @@ For `article`, `authors` is an array of dictionaries with a required `name`
 indices). The top-level `affiliations` value is an array of strings or content.
 Out-of-range indices and malformed records produce field-specific errors;
 unknown author dictionary keys are preserved for caller-side metadata.
+
+Letter and invoice sender/recipient values must be dictionaries. Text address
+fields (`name`, street, postal-code/city, country, and contact/billing fields)
+must be strings; sender logos accept Typst content or `none`. Invoice items are
+three-value arrays `(description, quantity, unit-price)` or records with those
+three fields. Descriptions accept strings or content, quantities are positive
+numbers, and unit prices are non-negative numbers. The existing German tuple
+form remains supported.

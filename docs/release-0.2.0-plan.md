@@ -126,9 +126,9 @@ versioned examples compile against the version they name.
 
 ## 5. Helpful validation, proportionate to compatibility
 
-Status: started with journal date parsing and calendar validation plus article
-author/affiliation records. The broader enum and nested-record audit remains
-open.
+Status: started with journal date parsing/calendar validation, article
+author/affiliation records, postal-address types, and invoice-item shapes. The
+broader enum and nested-record audit remains open.
 
 Validate high-impact values and record shapes at public entry points: palette
 names, heading policy, cover layout, proposal language, author/affiliation

@@ -75,9 +75,13 @@ Invoice text body.\n'''
             "sender-record": '''absender: (name: "German"), sender: (name: "English"),''',
             "sender-field": '''sender: (street: "English", strasse: "German"),''',
             "invoice-item": '''items: ((description: "Consulting", quantity: 2),),''',
+            "sender-record-type": '''sender: "not a record",''',
+            "sender-field-type": '''sender: (street: 12),''',
+            "invoice-item-quantity": '''items: ((description: "Consulting", quantity: 0, unit-price: 80),),''',
+            "invoice-item-tuple": '''items: (("Consulting", 2),),''',
         }
         for name, arguments in conflicts.items():
-            template = "rechnung" if name == "invoice-item" else "brief"
+            template = "rechnung" if name.startswith("invoice-item") else "brief"
             source = f'''#import "{IMPORT}": {template}\n#show: {template}.with({arguments})\nBody.\n'''
             result, _ = compile_pdf(folder, name, source)
             assert result.returncode != 0, f"{name} should fail validation"
@@ -85,9 +89,17 @@ Invoice text body.\n'''
                 assert "Conflicting sender records" in result.stderr
             elif name == "sender-field":
                 assert "Conflicting sender fields" in result.stderr
+            elif name == "sender-record-type":
+                assert "English sender must be a dictionary" in result.stderr
+            elif name == "sender-field-type":
+                assert "Sender field `strasse` must be a string" in result.stderr
+            elif name == "invoice-item-quantity":
+                assert "`quantity` must be a positive number" in result.stderr
+            elif name == "invoice-item-tuple":
+                assert "must be a three-value tuple" in result.stderr
             else:
                 assert "unit-price" in result.stderr
-    print("Passed: German and English inputs produce identical letter/invoice text; conflicting and incomplete English records fail clearly.")
+    print("Passed: equivalent German/English inputs render the same text; alias conflicts, malformed addresses, and invalid invoice items fail clearly.")
 
 
 if __name__ == "__main__":

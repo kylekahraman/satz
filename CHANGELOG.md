@@ -88,6 +88,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Validate article author/affiliation record shapes, required author names,
   one-based indices, and affiliation content types with field-specific errors.
   Unknown author keys remain available for caller metadata.
+- Validate letter/invoice address record shapes and text fields, plus invoice
+  item tuples/records and numeric ranges, without rejecting extension keys.
 
 ### Verification and remaining release work
 
