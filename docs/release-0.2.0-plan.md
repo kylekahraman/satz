@@ -151,8 +151,10 @@ Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
 `examples/latex-parity/check_staged_package.py` stages the current manifest
 tree and compiles seven representative starters. GitHub Actions runs that
 check plus focused API/PDF regressions with pinned inspection dependencies.
-The manifest still says 0.1.1, so this is not yet a comparison against a
-distinct 0.2.0 candidate or the published 0.1.1 package.
+An isolated download of published 0.1.1 also compiles the stable letter,
+invoice, report, journal, and cover starters. The manifest still says 0.1.1,
+so installing a distinct 0.2.0 candidate and checking its final dependencies
+remain open.
 
 - Compile documented starters against both their declared published version
   and the candidate where appropriate. A local `@preview` symlink must not

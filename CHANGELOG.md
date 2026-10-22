@@ -102,6 +102,9 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Add a GitHub Actions workflow for the staged-package check and focused public
   API/PDF regressions on pushes and pull requests. Pin the Python PDF inspection
   tools used by those checks and use the current `pymupdf` module import.
+- Compile stable letter, invoice, report, journal, and cover starters against
+  an isolated download of the published 0.1.1 package; this avoids a local
+  package alias masking the actual published source.
 
 The [research report audit](docs/report-parity-audit.md) distinguishes shared
 package fixes from document settings and records remaining conversion/layout
