@@ -13,6 +13,11 @@ create those same documented starters, rather than maintain another set.
 
 ## 1. Establish the release candidate
 
+Status: the existing report, outline, list, and palette work has been
+reconciled into the changelog and roadmap, with migration notes and a clean
+working tree. The source remains at 0.1.1; final candidate identification
+waits for the reference and validation gates below.
+
 - Review and either finish or deliberately defer the existing uncommitted
   report, outline, list and palette changes. Preserve unrelated document work.
 - Reconcile the changelog and roadmap with the implemented journal, proposal,
@@ -25,6 +30,10 @@ create those same documented starters, rather than maintain another set.
 Acceptance: a clean, identified candidate commit with a truthful changelog.
 
 ## 2. English interfaces without breaking German documents
+
+Status: implemented and checked by `examples/latex-parity/check_english_inputs.py`.
+German and English spellings render equivalent letter/invoice text, and
+conflicting aliases, malformed records, and invalid item values fail clearly.
 
 `letter` and `invoice` are currently aliases of `brief` and `rechnung`; their
 fields are still German. Add English input support to the familiar public
