@@ -101,6 +101,11 @@ def main():
             assert '0.31 €' in pdf.pages[0].extract_text()
         compile_doc('invalid-money', budget.replace('unit-cost: 10', 'unit-cost: 0.1'), error='integer cents')
         compile_doc('invalid-quantity', budget.replace('quantity: 3', 'quantity: 0'), error='positive integer')
+        compile_doc('invalid-budget-record', '#import "/lib.typ": proposal-budget\n#proposal-budget(("bad",))', error='must be a record')
+        gantt = '#import "/lib.typ": proposal-gantt\n#proposal-gantt('
+        compile_doc('invalid-gantt-row', gantt + '("bad",))', error='Each Gantt row must be a record')
+        compile_doc('invalid-gantt-label', gantt + '((spans: ((1, 2),)),))', error='needs a string or content `label`')
+        compile_doc('invalid-gantt-span', gantt + '((label: "Task", spans: ("bad",)),))', error='intervals must contain two integer period numbers')
     print('Passed: bilingual DFG starters, all-page headers and reset, 17+8 limits, draft mode, hierarchy, Arial, margins, bibliography, legacy consumer, general proposals and budget arithmetic.')
 
 

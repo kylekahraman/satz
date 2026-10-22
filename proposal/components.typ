@@ -13,11 +13,16 @@
 /// Each row shows quantity × unit cost, subtotal, and a final grand total.
 /// A total label and German/English number formatting are configurable.
 #let proposal-budget(items, language: "english", total-label: none) = {
+  assert(type(items) == array, message: "Budget items must be an array of records.")
   assert(language in ("english", "german"), message: "Budget language must be english or german.")
   let de = language == "german"
   let rows = ()
   let total = 0
   for item in items {
+    assert(type(item) == dictionary, message: "Each budget item must be a record.")
+    assert("description" in item and (type(item.description) == str or type(item.description) == content),
+      message: "Each budget item needs a string or content `description`.")
+    assert("unit-cost" in item, message: "Each budget item needs `unit-cost` in integer cents.")
     let cost = item.unit-cost
     let quantity = item.at("quantity", default: 1)
     assert(type(cost) == int and cost >= 0, message: "unit-cost must be nonnegative integer cents.")

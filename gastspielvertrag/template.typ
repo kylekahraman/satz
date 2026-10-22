@@ -102,6 +102,33 @@
   // Extra content
   body,
 ) = {
+  assert(dokument in ("vertrag", "angebot", "rechnung"),
+    message: "Gastspielvertrag dokument must be vertrag, angebot or rechnung.")
+  assert(gage_typ in ("fest", "prozent"), message: "Gastspielvertrag gage_typ must be fest or prozent.")
+  for (field, value) in (
+    ("kuenstler", kuenstler), ("kuenstler_vertreter", kuenstler_vertreter),
+    ("kuenstler_anschrift", kuenstler_anschrift), ("veranstaltung", veranstaltung),
+    ("location", location), ("datum", datum), ("auftrittszeit", auftrittszeit),
+    ("auftrittsdauer", auftrittsdauer), ("einlass", einlass), ("curfew", curfew),
+    ("sonstiges_text", sonstiges_text), ("font", font),
+  ) {
+    assert(type(value) == str, message: "Gastspielvertrag field `" + field + "` must be a string.")
+  }
+  for (field, value) in (
+    ("musiker", musiker), ("festgage", festgage), ("prozentsatz", prozentsatz),
+    ("mindestgage", mindestgage), ("transport_km", transport_km),
+    ("techniker_honorar", techniker_honorar), ("uebernachtung", uebernachtung),
+    ("sonstiges_betrag", sonstiges_betrag), ("buyout_pro_person", buyout_pro_person),
+  ) {
+    assert(type(value) == int and value >= 0,
+      message: "Gastspielvertrag field `" + field + "` must be a nonnegative integer.")
+  }
+  assert(type(transport_satz) == int or type(transport_satz) == float,
+    message: "Gastspielvertrag `transport_satz` must be a nonnegative number.")
+  assert(transport_satz >= 0, message: "Gastspielvertrag `transport_satz` must be a nonnegative number.")
+  assert(prozentsatz <= 100, message: "Gastspielvertrag `prozentsatz` must not exceed 100.")
+  assert(type(techniker) == bool and type(fotograf) == bool and type(kleinunternehmer) == bool,
+    message: "Gastspielvertrag `techniker`, `fotograf` and `kleinunternehmer` must be booleans.")
   let zeilenabstand = 0.75em
 
   // Build default gig dict for components (filled from params)

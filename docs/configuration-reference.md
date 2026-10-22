@@ -132,10 +132,7 @@ Body text.
 release check. For ordinary use, import the published package version. The
 0.2.0 candidate has not been published.
 
-The versioned reference is in progress. Before release, add the remaining
-template-specific function arguments and nested input records, check each
-listed default against executable template defaults, and compile the examples
-against both the candidate and any published version they declare.
+The versioned reference covers exported entry points and their Satz-specific input contracts. The isolated candidate and published-package checks compile examples against the versions they declare.
 
 Journal entry dates have a separate value contract: empty strings are allowed
 for drafts; otherwise use ISO `YYYY-MM-DD`, `DD/MM/YY`, or `DD/MM/YYYY`, with an
@@ -161,3 +158,496 @@ form remains supported.
 alias is `language:`). DFG proposals accept `form-date` as a display string and
 `check-pages` as a boolean. NWO profiles currently require the integer year
 `2026`; an equal-looking floating-point value is rejected.
+
+## Exported entry points and input contracts
+
+The following public entry points are re-exported by lib.typ. Content means ordinary Typst content; native Typst options retain Typst's own validation. Optional arguments default to the values shown here or in the executable signatures. See the linked guides and source doc comments for detailed field semantics.
+
+| API | Input contract |
+| --- | --- |
+| personal | kind defaults to report; config, optional header/footer, required body. Shared configuration is listed above. |
+| report | required body, config, theme (neutral by default; none retains its legacy palette). |
+| article | optional title, authors, affiliations, abstract and date; config/theme; required body. Authors are records with required string/content name and optional one-based affiliation indices. Affiliations are strings/content. |
+| brief / letter | German and English aliases for sender, recipient, date, reference line, subject, enclosures, attachments, signature addition and postal mark. Optional lang/language is de or en. Sender/recipient are records with string address fields; optional logo is content/none. Appearance flags are booleans; appearance settings and direct options are described in the template defaults table. |
+| rechnung / invoice | German and English aliases for sender, recipient, date, invoice number, service date, subject and items. Sender/recipient follow the letter record contract. Items are records or three-value tuples: description (string/content), positive numeric quantity, nonnegative numeric unit price. Output is German. |
+| journal-entry | title/date/keywords strings, required body, config/theme. Date is blank or a valid YYYY-MM-DD, DD/MM/YY, or DD/MM/YYYY date, optionally prefixed with weekday. |
+| journal-index | config/theme; queries journal entries and groups blank dates under Undated. remember and question are content blocks. |
+| cover-page | config, logos/body/footer/footer-left, layout, theme and generated title fields. Layout is classic/research/minimal; theme is neutral/soft-jade/soft-slate/warm-editorial/plum/soft-rose. Classic requires custom body; generated layouts require title. |
+| book (experimental) | required body; title/subtitle/author/eyebrow/note/date, accent/ink/theme, page, font and binding options, config. Compose with book-contents(title, depth), book-mainmatter(numbering), book-appendix(body), and book-backmatter(body). Educational components exercise, worked-example, analysis-note and answer-grid accept content and optional layout settings. |
+| research-proposal / project-proposal | title/applicants/institution, optional date/summary/short-title, English/German language, config, required body. proposal-budget takes item records with description, nonnegative integer-cent unit-cost, and optional positive integer quantity (default 1). |
+| proposal-gantt | nonempty rows, periods (positive integer), unit (month/quarter), optional start-year, resource labels, widths, size/color, English/German language. Task/group rows have label and inclusive spans; milestones have label and integer at-period. Work-package accepts title/objective, lead/period, arrays of tasks/deliverables/milestones, risk, language and body. |
+| dfg-proposal | applicant/project content, English/German language, positive integer max-pages, string form-date, boolean check-pages, config and required doc content. dfg-supplement has no arguments; dfg-publications accepts one optional bibliography source and size of at least 9pt. DFG config additionally accepts page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing. See proposals.md for supported form scope. |
+| nwo-proposal | scheme/domain/stage/year profile, applicant/title, config and required body. Only source-checked 2026 combinations are supported; see nwo-proposals.md. nwo-text takes a field and plain string. nwo-key-output allows up to three string/content indicators, two URL strings, and boolean/none open-access. nwo-page-budget takes a unique nonempty key and positive page limit. |
+| klageschrift | string court/party/address/value fields, anlagen array of strings, optional PDF path and positive page limit, font and required body. |
+| gastspielvertrag | document mode (vertrag/angebot/rechnung), fee mode (fest/prozent), string artist/event fields, nonnegative integer costs and counts, percentage 0–100, booleans for technician/photographer/small-business, nonnegative transport rate, font and required body. |
+| scientific-table / scientific-tables | table columns, nonempty header, config and remaining native table arguments; show-rule body, breakable flag and config. |
+| callout | required body, optional title/config and fill/stroke overrides. |
+| placeholder | width, height, label and config; wrap in a native figure for caption and numbering. |
+| satz-figure | required body, optional full/short captions and remaining native figure arguments. |
+| chapter-numbering | required body, chapter number and appendix flag. |
+| citepre | citation key and optional prefix content. |
+| proposal-citations / proposal-publications | BibTeX text, highlight-key array, optional CSL style and body; bibliography size and highlight limit. Highlight keys must exist in the bibliography. |
+| theme-config / document-themes | palette selection and optional config. Available palettes are neutral, soft-jade, soft-slate, warm-editorial, plum and soft-rose. |
+| merge / defaults | generic deep dictionary merge and root defaults. Unknown keys remain permitted for caller extensions and may be unused. |
+
+Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, links, tables, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
+
+The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
+
+## Exact candidate signatures
+These signatures are taken from the current source; they show every optional argument and default. Aliases share the signature of their target: `letter` is `brief`, `invoice` is `rechnung`, `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+
+### `brief` ([`letter/template.typ`](../letter/template.typ))
+
+```text
+#let brief(
+  absender: none,
+  empfaenger: none,
+  datum: none,
+  geschaeftszeile: none,
+  betreff: none,
+  anlagenverzeichnis: none,
+  anlagen: none,
+  signatur_zusatz: none,
+  signatur: true,
+  postvermerk: none,
+  lang: none,
+  sender: none,
+  recipient: none,
+  date: none,
+  reference-line: none,
+  subject: none,
+  enclosure-list: none,
+  attachments: none,
+  signature-addition: none,
+  postal-mark: none,
+  language: none,
+  theme: none,
+  config: (:),
+  font: "Inter",
+  falzmarken: true,
+  adressfenster: true,
+  seitenzahlen: true,
+  digitaler_absender: false,
+  datum_rechts: false,
+  blocksatz: true,
+  absender_anzeigen: true,
+  empfaenger_anzeigen: true,
+  datum_anzeigen: true,
+  betreff_anzeigen: true,
+  papier: "a4",
+  seitenraender: (:),
+  schriftgroesse: 11pt,
+  zeilenabstand: 0.65em,
+  abstaende: (:),
+  betreff_groesse: 11.5pt,
+  digitaler_absender_hoehe: 19mm,
+  body
+)
+```
+
+### `rechnung` ([`invoice/rechnung.typ`](../invoice/rechnung.typ))
+
+```text
+#let rechnung(
+  absender: none,
+  empfaenger: none,
+  datum: none,
+  rechnungsnummer: none,
+  leistungsdatum: none,
+  betreff: none,
+  posten: none,
+  sender: none,
+  recipient: none,
+  date: none,
+  invoice-number: none,
+  service-date: none,
+  subject: none,
+  items: none,
+  qr: true,
+  qr-betrag: none,
+  qr-amount: none,
+  qr-verwendungszweck: "",
+  qr-purpose: none,
+  font: "Inter",
+  kleinunternehmer: none,
+  small-business: none,
+  theme: none,
+  config: (:),
+  body
+)
+```
+
+### `dfg-proposal` ([`dfg-proposal/dfg.typ`](../dfg-proposal/dfg.typ))
+
+```text
+#let dfg-proposal(
+  applicant: [], project: [], language: "english", max-pages: 17,
+  form-date: "09/26", check-pages: true, config: (:), doc,
+)
+```
+
+### `dfg-supplement` ([`dfg-proposal/dfg.typ`](../dfg-proposal/dfg.typ))
+
+```text
+#let dfg-supplement()
+```
+
+### `dfg-publications` ([`dfg-proposal/dfg.typ`](../dfg-proposal/dfg.typ))
+
+```text
+#let dfg-publications(source: none, size: 9pt, style: "apa", ..args)
+```
+
+### `research-proposal` ([`proposal/template.typ`](../proposal/template.typ))
+
+```text
+#let research-proposal(
+  title: [], applicants: [], institution: [], date: none, summary: none,
+  short-title: none, language: "english", config: (:), body,
+)
+```
+
+### `proposal-budget` ([`proposal/components.typ`](../proposal/components.typ))
+
+```text
+#let proposal-budget(items, language: "english", total-label: none)
+```
+
+### `proposal-gantt` ([`proposal/planning.typ`](../proposal/planning.typ))
+
+```text
+#let proposal-gantt(
+  rows, periods: 24, unit: "month", start-year: none,
+  resources: (), label-width: 40mm, resource-width: 10mm,
+  size: 11pt, color: rgb("314158"), language: "english",
+)
+```
+
+### `work-package` ([`proposal/planning.typ`](../proposal/planning.typ))
+
+```text
+#let work-package(
+  title: [], objective: [], lead: none, period: none,
+  tasks: (), deliverables: (), milestones: (), risk: none,
+  language: "english", body: [],
+)
+```
+
+### `proposal-citations` ([`proposal/citations.typ`](../proposal/citations.typ))
+
+```text
+#let proposal-citations(bib, highlight: (), style: none, body)
+```
+
+### `proposal-publications` ([`proposal/citations.typ`](../proposal/citations.typ))
+
+```text
+#let proposal-publications(size: 11pt, max-highlight: none)
+```
+
+### `klageschrift` ([`legal-complaint/template.typ`](../legal-complaint/template.typ))
+
+```text
+#let klageschrift(
+  gericht: "Amtsgericht",
+  gericht_ort: "",
+  klagername: "",
+  klagerin_str: "",
+  klagerin_plz: "",
+  beklagter: "",
+  beklagter_str: "",
+  beklagter_plz: "",
+  streitwert: "",
+  anlagen: (),
+  anlagen_pdf_path: none,
+  anlagen_max_pages: 30,
+  font: "Inter",
+  body,
+)
+```
+
+### `gastspielvertrag` ([`gastspielvertrag/template.typ`](../gastspielvertrag/template.typ))
+
+```text
+#let gastspielvertrag(
+  // Document type
+  dokument: "vertrag",
+
+  // Artist info
+  kuenstler: "Max Mustermann",
+  kuenstler_vertreter: "Max Mustermann",
+  kuenstler_anschrift: "Musterstraße 1, 12345 Musterstadt",
+
+  // Event
+  veranstaltung: "",
+  location: "",
+  datum: "",
+  auftrittszeit: "",
+  auftrittsdauer: "",
+  einlass: "",
+  curfew: "",
+
+  // Personnel
+  musiker: 4,
+  techniker: true,
+  fotograf: false,
+
+  // Fee
+  gage_typ: "fest",
+  festgage: 0,
+  prozentsatz: 80,
+  mindestgage: 0,
+  kleinunternehmer: true,
+
+  // Transport
+  transport_km: 0,
+  transport_satz: 0.30,
+
+  // Optional costs
+  techniker_honorar: 0,
+  uebernachtung: 0,
+  sonstiges_text: "",
+  sonstiges_betrag: 0,
+
+  // Hospitality
+  buyout_pro_person: 15,
+
+  // Styling
+  font: "Inter",
+
+  // Extra content
+  body,
+)
+```
+
+### `journal-entry` ([`journal/template.typ`](../journal/template.typ))
+
+```text
+#let journal-entry(
+  title: "",
+  date: "",
+  keywords: "",
+  body,
+  config: (:),
+  theme: none,
+)
+```
+
+### `journal-index` ([`journal/template.typ`](../journal/template.typ))
+
+```text
+#let journal-index(config: (:), theme: none)
+```
+
+### `remember` ([`journal/components.typ`](../journal/components.typ))
+
+```text
+#let remember(body)
+```
+
+### `question` ([`journal/components.typ`](../journal/components.typ))
+
+```text
+#let question(body)
+```
+
+### `report` ([`report/template.typ`](../report/template.typ))
+
+```text
+#let report(body, config: (:), theme: report-defaults.theme)
+```
+
+### `article` ([`article/template.typ`](../article/template.typ))
+
+```text
+#let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: none, body)
+```
+
+### `book` ([`book/template.typ`](../book/template.typ))
+
+```text
+#let book(
+  body,
+  title: none,
+  subtitle: none,
+  author: none,
+  eyebrow: none,
+  note: none,
+  date: none,
+  accent: none,
+  ink: none,
+  theme: none,
+  paper: none,
+  margin: none,
+  math-font: none,
+  font: none,
+  font-size: none,
+  leading: none,
+  paragraph-spacing: none,
+  binding: auto,
+  binding-correction: none,
+  config: (:),
+)
+```
+
+### `book-contents` ([`book/template.typ`](../book/template.typ))
+
+```text
+#let book-contents(title: [Contents], depth: 1)
+```
+
+### `book-mainmatter` ([`book/template.typ`](../book/template.typ))
+
+```text
+#let book-mainmatter(body, numbering: none)
+```
+
+### `book-appendix` ([`book/template.typ`](../book/template.typ))
+
+```text
+#let book-appendix(body)
+```
+
+### `book-backmatter` ([`book/template.typ`](../book/template.typ))
+
+```text
+#let book-backmatter(body)
+```
+
+### `exercise` ([`book/components.typ`](../book/components.typ))
+
+```text
+#let exercise(body, kind: "Core", grid: none)
+```
+
+### `worked-example` ([`book/components.typ`](../book/components.typ))
+
+```text
+#let worked-example(body, above: none, below: none, inset: none)
+```
+
+### `analysis-note` ([`book/components.typ`](../book/components.typ))
+
+```text
+#let analysis-note(body, title: [In your analysis])
+```
+
+### `answer-grid` ([`book/components.typ`](../book/components.typ))
+
+```text
+#let answer-grid(height: 25mm, cell: 5mm, color: none, width: none)
+```
+
+### `cover-page` ([`cover.typ`](../cover.typ))
+
+```text
+#let cover-page(
+  config: (:),
+  logos: none,
+  body: none,
+  footer: none,
+  footer-left: none,
+  layout: "classic",
+  theme: "neutral",
+  title: none,
+  subtitle: none,
+  author: none,
+  date: none,
+  keywords: none,
+  supervisors: none,
+)
+```
+
+### `personal` ([`class.typ`](../class.typ))
+
+```text
+#let personal(
+  kind: "report",
+  config: (:),
+  header: none,
+  footer: none,
+  body,
+)
+```
+
+### `satz-figure` ([`class.typ`](../class.typ))
+
+```text
+#let satz-figure(body, caption: none, short-caption: none, ..args)
+```
+
+### `citepre` ([`citation.typ`](../citation.typ))
+
+```text
+#let citepre(key, pre: none)
+```
+
+### `placeholder` ([`figures.typ`](../figures.typ))
+
+```text
+#let placeholder(width: 100%, height: 4cm, label: [Placeholder], config: (:))
+```
+
+### `scientific-table` ([`tables.typ`](../tables.typ))
+
+```text
+#let scientific-table(columns: 1, header: (), config: (:), ..args)
+```
+
+### `scientific-tables` ([`tables.typ`](../tables.typ))
+
+```text
+#let scientific-tables(body, breakable: false, config: (:))
+```
+
+### `callout` ([`callouts.typ`](../callouts.typ))
+
+```text
+#let callout(body, title: none, config: (:), fill: auto, stroke: auto)
+```
+
+### `chapter-numbering` ([`chapter-numbering.typ`](../chapter-numbering.typ))
+
+```text
+#let chapter-numbering(body, chapter: 1, appendix: false)
+```
+
+### `nwo-proposal` ([`nwo-proposal/template.typ`](../nwo-proposal/template.typ))
+
+```text
+#let nwo-proposal(
+  scheme: "veni", domain: "science", stage: "pre", year: 2026,
+  applicant: [], title: [], config: (:), body,
+)
+```
+
+### `nwo-profile` ([`nwo-proposal/profiles.typ`](../nwo-proposal/profiles.typ))
+
+```text
+#let nwo-profile(scheme: "veni", domain: "science", stage: "pre", year: 2026)
+```
+
+### `nwo-text` ([`nwo-proposal/components.typ`](../nwo-proposal/components.typ))
+
+```text
+#let nwo-text(field, response)
+```
+
+### `nwo-key-output` ([`nwo-proposal/components.typ`](../nwo-proposal/components.typ))
+
+```text
+#let nwo-key-output(reference: [], output-type: [], contribution: [], indicators: (), urls: (), open-access: none)
+```
+
+### `nwo-page-budget` ([`nwo-proposal/components.typ`](../nwo-proposal/components.typ))
+
+```text
+#let nwo-page-budget(key, max-pages: 14, body)
+```
+
+### `theme-config` ([`themes.typ`](../themes.typ))
+
+```text
+#let theme-config(name, config: (:))
+```

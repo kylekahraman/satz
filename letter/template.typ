@@ -101,6 +101,7 @@
   digitaler_absender_hoehe: 19mm,
   body
 ) = {
+  assert(type(config) == dictionary, message: "Letter config must be a dictionary.")
   let absender = normalize-record(
     absender,
     sender,
@@ -126,6 +127,19 @@
   let postvermerk = select-alias(postvermerk, postal-mark, "postvermerk", "postal-mark", "")
   let lang = select-alias(lang, language, "lang", "language", "de")
   assert(lang in ("de", "en"), message: "Letter language must be `de` or `en`.")
+  for (field, value) in (("date", datum), ("subject", betreff), ("signature-addition", signatur_zusatz), ("postal-mark", postvermerk)) {
+    assert(type(value) == str, message: "Letter field `" + field + "` must be a string.")
+  }
+  assert(type(geschaeftszeile) == array and geschaeftszeile.all(row =>
+    type(row) == array and row.len() == 2 and row.all(v => type(v) == str)),
+    message: "Letter reference-line must be an array of two-string pairs.")
+  assert(type(anlagenverzeichnis) == array and anlagenverzeichnis.all(item => type(item) == str),
+    message: "Letter enclosure-list must be an array of strings.")
+  assert(type(anlagen) == array and anlagen.all(path => type(path) == str),
+    message: "Letter attachments must be an array of PDF path strings.")
+  for (field, value) in (("signature", signatur), ("fold marks", falzmarken), ("address window", adressfenster), ("page numbers", seitenzahlen), ("digital sender", digitaler_absender), ("right-aligned date", datum_rechts), ("justify", blocksatz), ("show sender", absender_anzeigen), ("show recipient", empfaenger_anzeigen), ("show date", datum_anzeigen), ("show subject", betreff_anzeigen)) {
+    assert(type(value) == bool, message: "Letter `" + field + "` option must be a boolean.")
+  }
   let seitenraender = (
     left: 25mm,
     right: 20mm,

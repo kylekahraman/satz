@@ -10,6 +10,9 @@
   resources: (), label-width: 40mm, resource-width: 10mm,
   size: 11pt, color: rgb("314158"), language: "english",
 ) = {
+  assert(type(rows) == array and rows.len() > 0, message: "Gantt rows must be a nonempty array of records.")
+  assert(type(resources) == array and resources.all(r => type(r) == content or type(r) == str),
+    message: "Gantt resources must be an array of labels.")
   assert(type(periods) == int and periods > 0, message: "Gantt periods must be a positive integer.")
   assert(unit in ("month", "quarter"), message: "Gantt unit must be month or quarter.")
   assert(language in ("english", "german"), message: "Gantt language must be english or german.")
@@ -30,19 +33,31 @@
     cells.push(table.cell(inset: (x: 0pt, y: 3pt))[#if unit == "quarter" [Q#index] else { index }])
   }
   for row in rows {
+    assert(type(row) == dictionary, message: "Each Gantt row must be a record.")
+    assert("label" in row and (type(row.label) == content or type(row.label) == str),
+      message: "Each Gantt row needs a string or content `label`.")
     let kind = row.at("kind", default: "task")
     assert(kind in ("task", "group", "milestone"), message: "Unknown Gantt row kind.")
     cells.push(table.cell(align: left, inset: (right: 4pt, y: 4pt))[
       #if kind == "group" { strong(row.label) } else { row.label }
     ])
     let values = row.at("resources", default: resources.map(_ => []))
+    assert(type(values) == array and values.all(v => type(v) == content or type(v) == str),
+      message: "Gantt row resources must be an array of labels.")
     assert(values.len() == resources.len(), message: "Gantt resource values must match resource headings.")
     cells += values
+    if kind == "milestone" {
+      assert("at" in row and type(row.at) == int, message: "A Gantt milestone needs an integer `at` period.")
+    } else {
+      assert("spans" in row and type(row.spans) == array,
+        message: "Each Gantt task or group needs a `spans` array.")
+    }
     let spans = if kind == "milestone" { ((row.at, row.at),) } else { row.spans }
     assert(spans.len() > 0, message: "A Gantt row needs at least one interval.")
     let cursor = 1
     for span in spans.sorted(key: s => s.first()) {
-      assert(span.len() == 2 and span.all(n => type(n) == int), message: "Gantt intervals must contain two integer period numbers.")
+      assert(type(span) == array and span.len() == 2 and span.all(n => type(n) == int),
+        message: "Gantt intervals must contain two integer period numbers.")
       let (first, last) = span
       assert(first >= 1 and last >= first and last <= periods, message: "Gantt interval is outside the chart.")
       assert(first >= cursor, message: "Gantt intervals in one row must not overlap.")

@@ -125,6 +125,9 @@
   keywords: none,
   supervisors: none,
 ) = {
+  assert(type(config) == dictionary, message: "Cover config must be a dictionary.")
+  assert(type(layout) == str, message: "Cover layout must be a string: classic, research or minimal.")
+  assert(type(theme) == str, message: "Cover theme must be a string naming a built-in cover palette.")
   if not ("classic", "research", "minimal").contains(layout) {
     panic("Unknown cover layout '" + layout + "'. Use classic, research, or minimal.")
   }

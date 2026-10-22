@@ -76,6 +76,7 @@
   config: (:),
   body
 ) = {
+  assert(type(config) == dictionary, message: "Invoice config must be a dictionary.")
   let absender = normalize-record(
     absender,
     sender,
@@ -100,6 +101,13 @@
   let qr-betrag = select-alias(qr-betrag, qr-amount, "qr-betrag", "qr-amount", none)
   let qr-verwendungszweck = select-alias(qr-verwendungszweck, qr-purpose, "qr-verwendungszweck", "qr-purpose", "")
   let kleinunternehmer = select-alias(kleinunternehmer, small-business, "kleinunternehmer", "small-business", false)
+  assert(type(datum) == str and type(rechnungsnummer) == str and type(leistungsdatum) == str and type(betreff) == str,
+    message: "Invoice date, invoice-number, service-date and subject fields must be strings.")
+  assert(type(qr) == bool, message: "Invoice qr option must be a boolean.")
+  assert(type(kleinunternehmer) == bool, message: "Invoice small-business option must be a boolean.")
+  assert(qr-betrag == none or ((type(qr-betrag) == int or type(qr-betrag) == float) and qr-betrag >= 0),
+    message: "Invoice qr-amount must be a nonnegative number or none.")
+  assert(type(qr-verwendungszweck) == str, message: "Invoice qr-purpose must be a string.")
   let appearance-defaults = merge(shared-defaults, (
     page: (paper: "a4", margin: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)),
     typography: (font: "Inter", size: 11pt, leading: 0.65em, justify: true, hyphenate: false),

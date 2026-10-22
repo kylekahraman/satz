@@ -92,7 +92,22 @@ Body.
         assert result.returncode != 0
         assert "headings.spacing must be koma or native" in result.stderr
 
-    print("Passed: themes apply across letter, invoice and book; nested config wins, and unsupported postal settings and heading policies fail clearly.")
+        invalid_shared_key = f'''#import "{IMPORT}": personal
+#show: personal.with(config: (typography: (leadng: 0.7em)))
+Body.
+'''
+        result, _ = compile_pdf(folder, "invalid-shared-key", invalid_shared_key)
+        assert result.returncode != 0
+        assert "Unknown Satz config key `typography.leadng`" in result.stderr
+
+        extension_group = f'''#import "{IMPORT}": personal
+#show: personal.with(config: (caller-extension: (custom: true)))
+Body.
+'''
+        result, _ = compile_pdf(folder, "extension-group", extension_group)
+        assert result.returncode == 0, result.stderr
+
+    print("Passed: themes apply across letter, invoice and book; nested config wins, shared typos fail, caller extension groups remain open, and invalid postal/heading settings fail clearly.")
 
 
 if __name__ == "__main__":

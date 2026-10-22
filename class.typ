@@ -1,6 +1,6 @@
 // Unified document class — kind: "journal" | "report" | "thesis" | "letter"
 
-#import "defaults.typ": defaults, merge
+#import "defaults.typ": defaults, merge, validate-config
 #import "heading-layout.typ": koma-headings
 #import "@preview/hydra:0.6.3": hydra, selectors
 
@@ -58,6 +58,7 @@
   footer: none,
   body,
 ) = {
+  let config = validate-config(config)
   let c = merge(defaults, config)
 
   // --- Build page arguments ---

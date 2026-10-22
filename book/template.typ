@@ -273,6 +273,7 @@
 /// - title (content): contents heading
 /// - depth (int): heading depth to include; 1 lists chapters only
 #let book-contents(title: [Contents], depth: 1) = context {
+  assert(type(depth) == int and depth >= 0, message: "book-contents depth must be a nonnegative integer.")
   let style = book-style.get()
   let toc = style.contents
   [

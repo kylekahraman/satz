@@ -79,9 +79,13 @@ Invoice text body.\n'''
             "sender-field-type": '''sender: (street: 12),''',
             "invoice-item-quantity": '''items: ((description: "Consulting", quantity: 0, unit-price: 80),),''',
             "invoice-item-tuple": '''items: (("Consulting", 2),),''',
+            "letter-flag": '''signatur: "yes",''',
+            "letter-reference-line": '''reference-line: (("Ref", 1),),''',
+            "invoice-qr-flag": '''qr: "yes",''',
+            "invoice-qr-amount": '''qr-amount: -1,''',
         }
         for name, arguments in conflicts.items():
-            template = "rechnung" if name.startswith("invoice-item") else "brief"
+            template = "rechnung" if name.startswith(("invoice-item", "invoice-qr")) else "brief"
             source = f'''#import "{IMPORT}": {template}\n#show: {template}.with({arguments})\nBody.\n'''
             result, _ = compile_pdf(folder, name, source)
             assert result.returncode != 0, f"{name} should fail validation"
@@ -97,6 +101,14 @@ Invoice text body.\n'''
                 assert "`quantity` must be a positive number" in result.stderr
             elif name == "invoice-item-tuple":
                 assert "must be a three-value tuple" in result.stderr
+            elif name == "letter-flag":
+                assert "Letter `signature` option must be a boolean" in result.stderr
+            elif name == "letter-reference-line":
+                assert "reference-line must be an array of two-string pairs" in result.stderr
+            elif name == "invoice-qr-flag":
+                assert "Invoice qr option must be a boolean" in result.stderr
+            elif name == "invoice-qr-amount":
+                assert "qr-amount must be a nonnegative number" in result.stderr
             else:
                 assert "unit-price" in result.stderr
     print("Passed: equivalent German/English inputs render the same text; alias conflicts, malformed addresses, and invalid invoice items fail clearly.")

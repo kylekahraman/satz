@@ -87,13 +87,16 @@ consistently, and themes apply predictably across representative templates.
 
 ## 4. Configuration reference with actual value contracts
 
-Status: shared `personal(config:)` defaults, candidate value contracts, and
-major template-specific appearance differences are drafted in
-`docs/configuration-reference.md`. Template-specific argument, record, and
-exhaustive public API contracts remain to be audited.
+Status: complete for the exported API and shared configuration surface.
+`docs/configuration-reference.md` lists shared defaults, template-specific
+appearance differences, exported entry points, defaults, enums, record/array
+shapes, validation boundaries, and extension behavior. Candidate and published
+version checks compile examples against the versions they declare.
 
-The current public reference names groups but does not fully describe the
-interface. Each public field needs:
+The release reference gives the Satz-specific contracts for each public entry
+point. Native Typst arguments forwarded by a helper retain Typst semantics; the
+reference links the relevant Typst contract where appropriate. The reference
+includes:
 
 - Full key path or function argument.
 - Type, including unions such as `none | alignment`.
@@ -131,36 +134,38 @@ default values alone cannot describe enum choices, semantics or constraints.
 Validate documentation metadata against the supported fields to detect drift.
 A large runtime schema framework is not a prerequisite.
 
-Acceptance: every stable public option has a documented value contract;
-versioned examples compile against the version they name.
+Acceptance met: every stable exported entry point has a documented Satz input
+contract, and versioned examples compile against the candidate or published
+package version they name.
 
 ## 5. Helpful validation, proportionate to compatibility
 
-Status: started with journal date parsing/calendar validation, article
-author/affiliation records, postal-address types, and invoice-item shapes. The
-letter language, DFG option, and NWO year contracts are also checked. The
-shared heading-spacing enum has a release regression test. The broader enum
-and nested-record audit remains open.
+Status: complete for Satz-owned enums, configuration groups, and high-impact
+public record/array inputs. Regression coverage now includes journal dates,
+authors/affiliations, postal records, invoice items/options, proposal budgets
+and Gantt rows, DFG options, NWO profiles/components, legal exhibits, guest
+contracts, cover choices, and shared heading policies.
 
 Validate high-impact values and record shapes at public entry points: palette
 names, heading policy, cover layout, proposal language, author/affiliation
 records, addresses, and supported journal date formats. Errors should name the
 field and explain accepted values.
 
-The generic deep-merge helper currently accepts unknown keys, so a typo such as
-`typography.leadng` can be silently unused. Keep `merge` generic. Add validation
-at the configuration interface, with a documented compatibility policy for old
-configs and extension dictionaries; do not abruptly reject all custom keys.
-Do not duplicate upstream Typst validation for every native option.
+The generic deep-merge helper remains open-ended. `personal` now validates keys
+in known shared configuration groups, including typo detection, while preserving
+unknown top-level groups and documented template-specific extensions. Postal
+appearance groups remain closed. Typst-native values retain Typst validation;
+Satz-owned choices and records fail early with field-specific diagnostics.
 
-Acceptance: common malformed inputs produce actionable diagnostics, while
-existing supported configurations continue to work.
+Acceptance met: common malformed Satz inputs produce actionable diagnostics,
+while the existing DFG/NWO, book, proposal, postal, journal and extension
+configurations compile in the regression suite.
 
 ## 6. Verify the exact package that will ship
 
 Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
 `examples/latex-parity/check_staged_package.py` stages the current manifest
-tree and compiles seven representative starters. GitHub Actions runs that
+tree and compiles eight representative starters. GitHub Actions runs that
 check plus focused API/PDF regressions with pinned inspection dependencies.
 The regression workflow includes shared outlines, tables, callouts,
 placeholders, paragraph rhythm, article layout, and proposal forms.

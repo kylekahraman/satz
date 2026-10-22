@@ -159,6 +159,36 @@
   ),
 )
 
+// Validate known shared namespaces while leaving template-specific and caller
+// extension groups open. This catches common misspellings without making the
+// generic merge helper or custom config metadata closed-world.
+#let validate-config(config) = {
+  assert(type(config) == dictionary, message: "Satz config must be a dictionary.")
+  for (group, values) in config {
+    if group in defaults {
+      assert(type(values) == dictionary,
+        message: "Satz config group `" + group + "` must be a dictionary.")
+      let allowed = if group == "page" {
+        (..defaults.page.keys(), "header-ascent")
+      } else if group == "headings" {
+        (..defaults.headings.keys(), "h1-number-size")
+      } else if group == "decorative" {
+        (..defaults.decorative.keys(), "list-indent", "list-body-indent", "list-block-spacing")
+      } else {
+        defaults.at(group).keys()
+      }
+      if group == "page" {
+        allowed += ("inside", "outside", "x", "y")
+      }
+      for key in values.keys() {
+        assert(key in allowed,
+          message: "Unknown Satz config key `" + group + "." + key + "`. Check the configuration reference for supported keys.")
+      }
+    }
+  }
+  config
+}
+
 /// Merge two dicts — your overrides win.
 ///
 /// It runs deep: nested dicts keep keys you didn't touch.

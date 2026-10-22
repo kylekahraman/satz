@@ -58,6 +58,20 @@
   font: "Inter",
   body,
 ) = {
+  for (field, value) in (
+    ("gericht", gericht), ("gericht_ort", gericht_ort), ("klagername", klagername),
+    ("klagerin_str", klagerin_str), ("klagerin_plz", klagerin_plz),
+    ("beklagter", beklagter), ("beklagter_str", beklagter_str),
+    ("beklagter_plz", beklagter_plz), ("streitwert", streitwert), ("font", font),
+  ) {
+    assert(type(value) == str, message: "Klageschrift field `" + field + "` must be a string.")
+  }
+  assert(type(anlagen) == array and anlagen.all(a => type(a) == str),
+    message: "Klageschrift `anlagen` must be an array of strings.")
+  assert(anlagen_pdf_path == none or type(anlagen_pdf_path) == str,
+    message: "Klageschrift `anlagen_pdf_path` must be a string or none.")
+  assert(type(anlagen_max_pages) == int and anlagen_max_pages > 0,
+    message: "Klageschrift `anlagen_max_pages` must be a positive integer.")
   let zeilenabstand = 0.75em
 
   // --- Global styles ---

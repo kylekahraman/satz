@@ -42,5 +42,6 @@ jobs:
           python examples/latex-parity/check_nwo.py
           python examples/latex-parity/check_outlines.py
           python examples/latex-parity/check_proposals.py
+          python examples/latex-parity/check_public_input_validation.py
           python examples/latex-parity/check_scientific_tables.py
           python examples/latex-parity/check_tables.py
