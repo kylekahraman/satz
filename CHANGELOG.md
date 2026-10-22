@@ -92,6 +92,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   item tuples/records and numeric ranges, without rejecting extension keys.
 - Validate letter language values, DFG form-date/page-check types, and require
   an integer source-checked NWO year.
+- Add a PDF regression for the existing `headings.spacing` enum check so only
+  `koma` and `native` policies pass.
 
 ### Verification and remaining release work
 

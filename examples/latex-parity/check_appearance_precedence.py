@@ -84,7 +84,15 @@ Body.
         assert result.returncode != 0
         assert "typography.mystery-size" in result.stderr
 
-    print("Passed: themes apply across letter, invoice and book; nested config wins, and unsupported postal options fail clearly.")
+        invalid_heading = f'''#import "{IMPORT}": personal
+#show: personal.with(config: (headings: (spacing: "koma-ish")))
+Body.
+'''
+        result, _ = compile_pdf(folder, "invalid-heading-policy", invalid_heading)
+        assert result.returncode != 0
+        assert "headings.spacing must be koma or native" in result.stderr
+
+    print("Passed: themes apply across letter, invoice and book; nested config wins, and unsupported postal settings and heading policies fail clearly.")
 
 
 if __name__ == "__main__":

@@ -129,7 +129,8 @@ versioned examples compile against the version they name.
 Status: started with journal date parsing/calendar validation, article
 author/affiliation records, postal-address types, and invoice-item shapes. The
 letter language, DFG option, and NWO year contracts are also checked. The
-broader enum and nested-record audit remains open.
+shared heading-spacing enum has a release regression test. The broader enum
+and nested-record audit remains open.
 
 Validate high-impact values and record shapes at public entry points: palette
 names, heading policy, cover layout, proposal language, author/affiliation
