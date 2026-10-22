@@ -87,6 +87,14 @@ Invoice body.
             "cover": f'''#import "@local/{manifest['name']}:{version}": cover-page
 #cover-page(layout: "minimal", title: "Candidate cover")
 ''',
+            "configuration": f'''#import "@local/{manifest['name']}:{version}": personal
+#show: personal.with(config: (
+  typography: (font: "Libertinus Serif", size: 12pt),
+  colors: (brand-primary: rgb("#355D50")),
+))
+= Candidate configuration
+Configuration marker.
+''',
             "proposal": f'''#import "@local/{manifest['name']}:{version}": research-proposal
 #show: research-proposal.with(title: "Candidate proposal", applicants: ("Researcher",), institution: ("Institute",))
 = Aims
@@ -104,7 +112,7 @@ Proposal body.
             )
             assert result.returncode == 0, f"{name} starter failed from staged package:\n{result.stderr}"
 
-    print(f"Passed: staged {len(files)} files from source manifest {source_version} as isolated Satz {version}; report, article, journal, letter, invoice, cover, and proposal starters compile.")
+    print(f"Passed: staged {len(files)} files from source manifest {source_version} as isolated Satz {version}; report, article, journal, letter, invoice, cover, proposal, and configuration starters compile.")
 
 
 if __name__ == "__main__":

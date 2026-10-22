@@ -88,6 +88,30 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `bibliography.style` | CSL style name | `"apa"` | Citation style where bibliography support is enabled. |
 | `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted` | Typst color | `#f8fafc`, `#f1f5f9`, `#1d293d`, `#0f172b`, `#020618`, `#90a1b9` | Paper, panel, accent, and text colors. Templates can provide their own palette. |
 
+## Template-specific appearance defaults
+
+These values override the shared baseline when the named template is used.
+They are appearance defaults only; the wrappers also expose content-specific
+arguments described in their source API comments and guides.
+
+| Template | Defaults or notable differences |
+| --- | --- |
+| `personal` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
+| `report` | `theme: "neutral"`; all remaining appearance defaults come from `personal`. `theme: none` leaves the shared palette in place. |
+| `article` | `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1em`, body gap `1.5em`. |
+| `journal-entry` / `journal-index` | `page.paper: "iso-b5"`; margins `(x: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; neutral gray palette. Journal block and running-header gaps are in `journal.*` above. |
+| `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Direct options include `font`, `papier`, `seitenraender`, `schriftgroesse`, `zeilenabstand`, and `blocksatz`; nested config only accepts the documented page, typography, color, and link keys. |
+| `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Direct `font` is supported. Nested config accepts the same limited appearance keys as letters. |
+| `book` (experimental) | A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; default teal accent and dark slate ink. `theme: none` selects these defaults. |
+| `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, neutral cover palette; `theme` defaults to `"neutral"`, and layout defaults to `"classic"`. Generated title content requires `layout: "research"` or `"minimal"`; classic remains the composable slot-based layout. |
+| `research-proposal` / `project-proposal` | No contents/lists; margins `(x: 25mm, y: 25mm)`; white paper, black text and links; paragraph gap `0.7em`; heading numbering `"1.1"`. |
+| `dfg-proposal` | DFG form 53.01 (09/26), A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 15mm)`; Arial `11pt`, form-specific leading, four-level numbering `"1.1.1.1"`; no contents/lists; black text/links; left captions. |
+| `nwo-proposal` | Only source-checked 2026 profiles; A4 with `25mm` margins; Arial, 9.5pt pre-proposal or 10pt Vici full form; no contents/lists; black text/links. Form profile controls remaining typography and page budget. |
+
+These wrappers intentionally do not share identical layouts. Their appearance
+inputs follow the documented per-template contract; omitted values use the
+template-specific defaults in this table.
+
 ## Candidate examples
 
 This compiles with the candidate `personal` API and illustrates a minimal
@@ -95,7 +119,7 @@ override. A report or other template may expose its own wrapper around
 `personal`:
 
 ```typst
-#import "@local/satz:0.1.1": personal
+#import "@local/satz:0.2.0": personal
 #show: personal.with(config: (
   typography: (font: "EB Garamond", size: 12pt),
   colors: (brand-primary: rgb("#355D50")),
@@ -104,9 +128,9 @@ override. A report or other template may expose its own wrapper around
 Body text.
 ```
 
-`@local/satz:0.1.1` is a local development-package example only. Replace it
-with the intended pinned package when compiling a published-version document.
-The 0.2.0 candidate has not been published.
+`@local/satz:0.2.0` refers to the isolated candidate package tree used by the
+release check. For ordinary use, import the published package version. The
+0.2.0 candidate has not been published.
 
 The versioned reference is in progress. Before release, add the remaining
 template-specific function arguments and nested input records, check each

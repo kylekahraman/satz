@@ -94,6 +94,8 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   an integer source-checked NWO year.
 - Add a PDF regression for the existing `headings.spacing` enum check so only
   `koma` and `native` policies pass.
+- Expand the candidate configuration reference with template-specific
+  appearance defaults and compile its starter against the isolated 0.2.0 tree.
 
 ### Verification and remaining release work
 
