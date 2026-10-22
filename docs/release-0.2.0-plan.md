@@ -153,6 +153,8 @@ Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
 `examples/latex-parity/check_staged_package.py` stages the current manifest
 tree and compiles seven representative starters. GitHub Actions runs that
 check plus focused API/PDF regressions with pinned inspection dependencies.
+The regression workflow includes shared outlines, tables, callouts,
+placeholders, paragraph rhythm, article layout, and proposal forms.
 An isolated download of published 0.1.1 also compiles the stable letter,
 invoice, report, journal, and cover starters. The staged source tree is also
 installed under an isolated `0.2.0` package name and compiled. Direct package

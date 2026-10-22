@@ -32,10 +32,15 @@ jobs:
         run: |
           python examples/latex-parity/check_appearance_precedence.py
           python examples/latex-parity/check_article.py
+          python examples/latex-parity/check_callouts.py
           python examples/latex-parity/check_english_inputs.py
+          python examples/latex-parity/check_paragraph_rhythm.py
+          python examples/latex-parity/check_placeholders.py
           python examples/latex-parity/check_journal_dates.py
           python examples/latex-parity/check_journal_header.py
           python examples/latex-parity/check_journal_themes.py
           python examples/latex-parity/check_nwo.py
           python examples/latex-parity/check_outlines.py
           python examples/latex-parity/check_proposals.py
+          python examples/latex-parity/check_scientific_tables.py
+          python examples/latex-parity/check_tables.py
