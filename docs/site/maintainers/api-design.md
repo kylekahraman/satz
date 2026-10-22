@@ -1,4 +1,6 @@
-# API design and maintenance
+---
+title: "API design and maintenance"
+---
 
 Satz aims to make common document decisions coherent across templates while leaving Typst's native elements and upstream packages available. It is inspired by KOMA-Script; it does not promise a copy of every KOMA class or option.
 

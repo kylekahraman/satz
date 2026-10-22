@@ -1,4 +1,6 @@
-# Figures, tables, and captions
+---
+title: "Figures, tables, and captions"
+---
 
 Use native Typst `figure` and `table` for ordinary content. A captioned figure is numbered, referenceable, and included in the relevant list.
 
@@ -44,4 +46,4 @@ See @summary-table for the values.
 
 For images, replace `results.png` in the earlier examples with a real file in your project. Import `satz-figure` alongside `report` if you use that helper.
 
-**Development:** `scientific-table` and `scientific-tables` add scientific rule and header conventions. They are not available in `@preview/satz:0.1.1`; follow [the development setup](development.md) and [scientific table guide](https://github.com/kylekahraman/satz/blob/main/docs/scientific-tables.md) to try them.
+**Development:** `scientific-table` and `scientific-tables` add scientific rule and header conventions. They are not available in `@preview/satz:0.1.1`; follow [the development setup](/satz/guides/development/) and [scientific table guide](https://github.com/kylekahraman/satz/blob/main/docs/scientific-tables.md) to try them.

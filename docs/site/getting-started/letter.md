@@ -1,4 +1,6 @@
-# Write a letter
+---
+title: "Write a letter"
+---
 
 Create `main.typ` and paste this complete example. The English alias `letter` currently uses German field names for sender, recipient, and subject.
 
@@ -30,4 +32,4 @@ Alex Example
 
 Replace the example addresses and subject. Write the salutation, paragraphs, and closing below the show rule. Satz supplies the address layout, date, and subject. `lang: "de"` switches the document labels to German; it does not translate your text.
 
-[Preview or export the letter](setup.md) in the same way as a report. The template follows a DIN-style business-letter layout, including space for a window envelope; the top of the page is intentionally different from a report.
+[Preview or export the letter](/satz/getting-started/setup/) in the same way as a report. The template follows a DIN-style business-letter layout, including space for a window envelope; the top of the page is intentionally different from a report.

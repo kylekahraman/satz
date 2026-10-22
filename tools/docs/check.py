@@ -2,7 +2,7 @@
 """Compile complete published examples and check a built documentation site.
 
 Use --package-path with an isolated published package directory when local
-@preview overrides are present. Build the site with zensical first.
+@preview overrides are present. Build the site with npm run build first.
 """
 import argparse
 from html.parser import HTMLParser

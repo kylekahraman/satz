@@ -1,4 +1,6 @@
-# Choose a template
+---
+title: "Choose a template"
+---
 
 Use a document-level function for the overall structure, and native Typst elements for content inside it.
 
@@ -24,7 +26,7 @@ Import the function you need:
 #show: report.with()
 ```
 
-Template functions are not all configured in the same way yet. Reports and journals use shared `config`; letters and invoices retain German field names for compatibility. The [API design notes](../maintainers/api-design.md) describe how future interfaces can become more uniform without breaking existing documents.
+Template functions are not all configured in the same way yet. Reports and journals use shared `config`; letters and invoices retain German field names for compatibility. The [API design notes](/satz/maintainers/api-design/) describe how future interfaces can become more uniform without breaking existing documents.
 
 For the complete proposal API and bilingual DFG starters, see the
 [proposal guide](https://github.com/kylekahraman/satz/blob/main/docs/proposals.md).

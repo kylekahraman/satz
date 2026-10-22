@@ -1,4 +1,6 @@
-# Start a research journal
+---
+title: "Start a research journal"
+---
 
 A journal keeps your questions, decisions, results, and next steps together. Start with one file. You can add a cover and separate entry files later.
 
@@ -63,7 +65,7 @@ Satz separates the entries and generates an index. Keep entries in the order you
 
 ## Adjust the appearance
 
-Pass a small `config` dictionary to each entry. For example, add `config: (page: (paper: "b5"))` alongside its title and date. [Configuration](../reference/configuration.md) explains fonts and line spacing. If several entries share settings, define one `#let config = (...)` at the top and pass `config: config` to each entry and the index.
+Pass a small `config` dictionary to each entry. For example, add `config: (page: (paper: "b5"))` alongside its title and date. [Configuration](/satz/reference/configuration/) explains fonts and line spacing. If several entries share settings, define one `#let config = (...)` at the top and pass `config: config` to each entry and the index.
 
 ## Add a cover or separate entry files later
 

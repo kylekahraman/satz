@@ -1,8 +1,10 @@
-# Write your first report
+---
+title: "Write your first report"
+---
 
 Satz's report template is a starting point for assignments, protocols, and longer reports. It adds numbered headings, a contents page, page layout, and shared typography defaults while leaving the document content in ordinary Typst.
 
-If you have not chosen an editor yet, follow [Set up and write](setup.md) first.
+If you have not chosen an editor yet, follow [Set up and write](/satz/getting-started/setup/) first.
 
 ## 1. Create a file
 
@@ -48,11 +50,11 @@ For example, choose a body font and shorter figure-list entries:
 ))
 ```
 
-You can use the same settings in several documents by placing them in `config.typ` and importing that dictionary. A separate configuration file is optional. See [Configuration](../reference/configuration.md) for available settings and examples.
+You can use the same settings in several documents by placing them in `config.typ` and importing that dictionary. A separate configuration file is optional. See [Configuration](/satz/reference/configuration/) for available settings and examples.
 
 ## Add figures, tables, and references
 
-Use Typst's built-in `figure`, `table`, `bibliography`, and `@label` references. Satz styles them as part of the report. The [figures and tables guide](../guides/figures-and-tables.md) covers captions, cross-references, and optional scientific table helpers.
+Use Typst's built-in `figure`, `table`, `bibliography`, and `@label` references. Satz styles them as part of the report. The [figures and tables guide](/satz/guides/figures-and-tables/) covers captions, cross-references, and optional scientific table helpers.
 
 ## When the report grows
 

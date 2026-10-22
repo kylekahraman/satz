@@ -1,4 +1,6 @@
-# Development versions and updates
+---
+title: "Development versions and updates"
+---
 
 The published package and the development checkout serve different needs. Beginner examples on this site use the published `@preview/satz:0.1.1` package. A page marked **development** requires the source version containing that feature.
 

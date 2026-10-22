@@ -1,6 +1,8 @@
-# Research and grant proposals
+---
+title: "Research and grant proposals"
+---
 
-**Development features:** the current proposal implementations require the [source checkout](development.md). The published `0.1.1` DFG template is an older work in progress.
+**Development features:** the current proposal implementations require the [source checkout](/satz/guides/development/). The published `0.1.1` DFG template is an older work in progress.
 
 ## Choose the right starting point
 

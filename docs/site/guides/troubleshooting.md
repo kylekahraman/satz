@@ -1,4 +1,6 @@
-# Troubleshooting
+---
+title: "Troubleshooting"
+---
 
 ## The package cannot be downloaded
 
@@ -6,7 +8,7 @@ Check your internet connection and the import spelling: `@preview/satz:0.1.1`. T
 
 ## Unknown argument or unknown variable
 
-Check the version in your import. A feature labelled **development** on this site may not exist in the published `0.1.1` package. Use the matching published example or follow [the development setup](development.md).
+Check the version in your import. A feature labelled **development** on this site may not exist in the published `0.1.1` package. Use the matching published example or follow [the development setup](/satz/guides/development/).
 
 ## A font looks different or is missing
 
@@ -18,15 +20,15 @@ Save the file and confirm that Tinymist is previewing your project's `main.typ`.
 
 ## The text is too tight or too loose
 
-Body line spacing, paragraph spacing, and heading spacing are separate settings. Adjust `typography.leading` for body lines and native `#set par(spacing: 1em)` after the show rule for paragraphs. The development version also offers `typography.paragraph-spacing`. Start with a small change and compare the PDF. See [Configuration](../reference/configuration.md#line-and-paragraph-spacing).
+Body line spacing, paragraph spacing, and heading spacing are separate settings. Adjust `typography.leading` for body lines and native `#set par(spacing: 1em)` after the show rule for paragraphs. The development version also offers `typography.paragraph-spacing`. Start with a small change and compare the PDF. See [Configuration](/satz/reference/configuration/#line-and-paragraph-spacing).
 
 ## An image or bibliography cannot be found
 
-Put the file inside the project folder and use a path relative to the Typst file that reads it. Check capitalization, especially when sharing between operating systems. If a local source import goes above the project boundary, compile with an appropriate `--root`; see [Development versions](development.md).
+Put the file inside the project folder and use a path relative to the Typst file that reads it. Check capitalization, especially when sharing between operating systems. If a local source import goes above the project boundary, compile with an appropriate `--root`; see [Development versions](/satz/guides/development/).
 
 ## Should I update Satz to get a fix?
 
-Published imports are versioned. A local source checkout can change as you edit or update it; a copied `_satz` folder stays unchanged until you replace it. See [Development versions and updates](development.md) for the tradeoff.
+Published imports are versioned. A local source checkout can change as you edit or update it; a copied `_satz` folder stays unchanged until you replace it. See [Development versions and updates](/satz/guides/development/) for the tradeoff.
 
 ## I am still stuck
 

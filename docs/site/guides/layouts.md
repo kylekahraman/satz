@@ -1,4 +1,6 @@
-# Page layout and columns
+---
+title: "Page layout and columns"
+---
 
 Satz templates use native Typst page and layout behavior. Choose a template for the document structure, then use shared configuration for common page settings.
 
@@ -14,4 +16,4 @@ The article entry point provides a title, author/affiliation block, abstract, an
 
 Set a binding edge to use inside/outside margins and alternating page furniture. Check the print preview as a facing-page spread before binding a book or report.
 
-For current configuration keys, see [Configuration](../reference/configuration.md).
+For current configuration keys, see [Configuration](/satz/reference/configuration/).

@@ -1,11 +1,13 @@
-# Set up and write
+---
+title: "Set up and write"
+---
 
 You can use Satz in a browser or on your own computer. Both routes produce a PDF. You do not need LaTeX, Python, Go, or a command line to try the published templates.
 
 ## Try it in your browser
 
 1. Open the [Typst web app](https://typst.app/) and create a blank project.
-2. Paste the example from [Write your first report](report.md) into its main file.
+2. Paste the example from [Write your first report](/satz/getting-started/report/) into its main file.
 3. Change a heading or paragraph and watch the preview update.
 4. Export the PDF when you are ready to share it.
 
@@ -16,7 +18,7 @@ The package downloads on the first compile. Your source stays editable; the PDF 
 1. Install [Visual Studio Code](https://code.visualstudio.com/).
 2. Install the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist). It supplies the editor integration and preview; a separate Typst CLI is optional for this route.
 3. Create a folder for your document and open that folder in VS Code.
-4. Create `main.typ`, then paste in the [report example](report.md).
+4. Create `main.typ`, then paste in the [report example](/satz/getting-started/report/).
 5. Open the Command Palette and search for **Typst Preview** to open the preview provided by Tinymist.
 
 Save your source files as you work. Keep any images or bibliography files inside your project folder so the document is easy to move or share.

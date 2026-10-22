@@ -2,16 +2,17 @@
 
 Public site: https://kylekahraman.github.io/satz/
 
-Install `zensical==0.0.71` in a virtual environment, then run:
+The site uses Astro Starlight. With Node.js 24 installed, run:
 
 ```sh
-zensical build --clean
+npm ci
+npm run build
 python3 tools/docs/check.py
 ```
 
 The check compiles complete published-package examples and checks internal page
 links, anchors, document language, and top-level headings. It requires the Typst
-CLI. This is maintainer tooling; readers need neither Python nor Zensical.
+CLI. This is maintainer tooling; readers need neither Python nor Node.js.
 
 If your machine overrides `@preview/satz:0.1.1` with a development symlink,
 extract the official package archive from
