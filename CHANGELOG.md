@@ -105,8 +105,12 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Compile stable letter, invoice, report, journal, and cover starters against
   an isolated download of the published 0.1.1 package; this avoids a local
   package alias masking the actual published source.
+- Install the staged source tree in isolation as `@local/satz:0.2.0` and
+  compile its representative starters without changing the repository version.
 - Declare Typst 0.15.0 as the candidate minimum compiler version; all release
   checks currently run with that version.
+- Replace the email-like contact in the letter example with an `example.com`
+  placeholder; the tracked-example privacy scan is clean.
 
 The [research report audit](docs/report-parity-audit.md) distinguishes shared
 package fixes from document settings and records remaining conversion/layout

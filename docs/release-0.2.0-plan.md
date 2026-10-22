@@ -152,10 +152,12 @@ Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
 tree and compiles seven representative starters. GitHub Actions runs that
 check plus focused API/PDF regressions with pinned inspection dependencies.
 An isolated download of published 0.1.1 also compiles the stable letter,
-invoice, report, journal, and cover starters. The manifest still says 0.1.1,
-so installing a distinct 0.2.0 candidate and checking its final dependencies
-remain open. The candidate manifest declares compiler minimum 0.15.0, which is
-the version used for the local and CI release checks.
+invoice, report, journal, and cover starters. The staged source tree is also
+installed under an isolated `0.2.0` package name and compiled. Direct package
+imports are version-pinned; the manifest declares compiler minimum 0.15.0, the
+version used for local and CI checks. The tracked examples use placeholders,
+and the MIT manifest has a root license file. The repository manifest remains
+0.1.1 until the separate release-versioning step.
 
 - Compile documented starters against both their declared published version
   and the candidate where appropriate. A local `@preview` symlink must not

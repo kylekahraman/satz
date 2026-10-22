@@ -7,6 +7,7 @@ import tomllib
 
 
 ROOT = Path(__file__).resolve().parents[2]
+CANDIDATE_VERSION = "0.2.0"
 
 
 def included(path, patterns):
@@ -24,7 +25,8 @@ def included(path, patterns):
 
 def main():
     manifest = tomllib.loads((ROOT / "typst.toml").read_text())["package"]
-    version = manifest["version"]
+    source_version = manifest["version"]
+    version = CANDIDATE_VERSION
     patterns = manifest.get("exclude", [])
     files = subprocess.run(
         ["git", "ls-files", "-co", "--exclude-standard", "-z"],
@@ -47,7 +49,15 @@ def main():
             if source.is_file():
                 destination = package_dir / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, destination)
+                if relative == "typst.toml":
+                    package_manifest = source.read_text().replace(
+                        f'version = "{source_version}"',
+                        f'version = "{version}"',
+                        1,
+                    )
+                    destination.write_text(package_manifest)
+                else:
+                    shutil.copy2(source, destination)
 
         project = stage / "project"
         project.mkdir()
@@ -94,7 +104,7 @@ Proposal body.
             )
             assert result.returncode == 0, f"{name} starter failed from staged package:\n{result.stderr}"
 
-    print(f"Passed: staged {len(files)} package files from Satz {version}; report, article, journal, letter, invoice, cover, and proposal starters compile.")
+    print(f"Passed: staged {len(files)} files from source manifest {source_version} as isolated Satz {version}; report, article, journal, letter, invoice, cover, and proposal starters compile.")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@
     strasse: "Musterstraße 1",
     plz_ort: "12345 Musterstadt",
     telefon: "+49 123 4567890",
-    email: "max.mustermann@gmail.com"),
+    email: "max.mustermann@example.com"),
   empfaenger: (
     name: "Musterfirma GmbH",
     zusatz: "z.Hd. Frau Erika Beispiel",
