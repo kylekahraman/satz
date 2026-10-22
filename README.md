@@ -1,5 +1,7 @@
 # satz
 
+**[Read the Satz documentation](https://kylekahraman.github.io/satz/)** · [Start a journal](https://kylekahraman.github.io/satz/guides/journals/) · [Write your first report](https://kylekahraman.github.io/satz/getting-started/report/)
+
 A Typst document class for everyday documents — letters, invoices, reports, journals, and grant proposals.
 
 Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `class.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.

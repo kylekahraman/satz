@@ -1,13 +1,22 @@
-# Write the document. Satz handles the layout.
+# Your next document starts here
 
-Satz is a Typst toolkit for reports, journals, letters, invoices, proposals, and
-other structured documents. It gives common documents a coordinated starting
-point, then lets you adjust the parts that matter.
+Satz gives your reports, research journals, letters, and proposals a consistent starting point in [Typst](https://typst.app/). You write the content; Satz supplies the document layout. Start with one file and change the settings when you need to.
 
-## Start with a report
+**New to Typst?** Follow [Set up and write](getting-started/setup.md). You can try Satz in your browser without installing anything.
 
-Create a `main.typ`, import `report`, and begin writing. You do not need to copy
-Satz's implementation into your project.
+## What would you like to write?
+
+| Your document | Start here |
+| --- | --- |
+| Report, assignment, or research protocol | [Write your first report](getting-started/report.md) |
+| Research diary or meeting notes | [Start a journal](guides/journals.md) |
+| Letter | [Write a letter](getting-started/letter.md) |
+| Grant or project proposal | [Proposal templates and coverage](guides/proposals.md) |
+| Something else | [Choose a template](reference/templates.md) |
+
+## A complete first document
+
+Create a file called `main.typ` and paste this in:
 
 ```typst
 #import "@preview/satz:0.1.1": report
@@ -15,34 +24,25 @@ Satz's implementation into your project.
 
 = Introduction
 
-Write your report here.
+This is my first report with Satz.
 
-== A section
+== Next steps
 
-Add headings, paragraphs, figures, tables, and citations as you normally would
-in Typst.
+- Describe the question.
+- Add the findings.
+- Share the PDF.
 ```
 
-For a full working example and next steps, follow [Write a report](getting-started/report.md).
+The first line loads Satz. The second applies the report layout to everything below it. Lines starting with `=` are headings. You can keep writing in this same file: a separate setup or configuration file is optional.
 
-## Find your path
+## Make it yours
 
-- **Report, thesis, or assignment:** start with the report template and add configuration only when you need it.
-- **Research notes:** create entries with a title, date, keywords, and body.
-- **Scientific figures and tables:** use native Typst elements, with optional Satz helpers for captions and scientific rules.
-- **Two-column article:** use the article entry point for a title, authors, abstract, and column layout.
-- **Letter or invoice:** use the structured sender and recipient fields.
+[Change fonts, spacing, and colors](reference/configuration.md), [add figures and tables](guides/figures-and-tables.md), or [split a growing document into sections](getting-started/report.md#when-the-report-grows). If something goes wrong, start with [Troubleshooting](guides/troubleshooting.md).
 
-The [template guide](reference/templates.md) shows which entry point fits each document. The [configuration guide](reference/configuration.md) explains what you can change.
+## Which version am I using?
 
-## How Satz is designed
+Copyable beginner examples use **Satz 0.1.1**, the published package. An import containing `@preview/satz:0.1.1` keeps that version, so a future release will not silently change your document.
 
-Satz aims to make usual document work easy and keep advanced Typst features available when you need them. It is inspired by KOMA-Script; it does not attempt to reproduce every KOMA class or option.
+**Development features** are labelled explicitly. New palettes, cover presets, proposal improvements, and the journal launcher are being developed in the repository. They are not all available in the published package yet. See [Development versions and updates](guides/development.md) before using them.
 
-Common appearance settings live in a shared configuration. A template adds document-specific fields such as a report title, journal date, or letter recipient. Components such as callouts and scientific tables expose options to fit them into a document.
-
-The [API design notes](maintainers/api-design.md) explain the conventions we are working toward and where older interfaces still differ.
-
-## Current release
-
-The examples on this site target the published `0.1.1` API unless marked as development features. Unreleased improvements for the planned `0.2.0` release are not available from `@preview/satz:0.1.1` yet. See the [changelog](https://github.com/kylekahraman/satz/blob/main/CHANGELOG.md) for current status.
+Have a question or a confusing example? [Open an issue on GitHub](https://github.com/kylekahraman/satz/issues). Describe what you wanted to do and include a small example without private information.

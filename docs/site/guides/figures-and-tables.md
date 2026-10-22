@@ -21,23 +21,27 @@ Use `satz-figure` when the printed caption needs more detail than its entry in t
 ) <response-plot>
 ```
 
-The development API adds explicit header and rule conventions for scientific tables while retaining native cells and references:
+## A complete table example
 
 ```typst
-#import "@preview/satz:0.2.0": scientific-table
+#import "@preview/satz:0.1.1": report
+#show: report.with()
+
+= Results
 
 #figure(
-  scientific-table(
+  table(
     columns: (1fr, auto),
-    header: ([Measure], [Value]),
+    table.header([Measure], [Value]),
     [Baseline], [0.12],
     [Treatment], [0.38],
   ),
-  kind: table,
   caption: [Summary measurements.],
 ) <summary-table>
+
+See @summary-table for the values.
 ```
 
-`scientific-table` and `scientific-tables` are planned for the next release; they are not in `@preview/satz:0.1.1`. Check the changelog before using development examples. Ordinary tables need no Satz helper.
+For images, replace `results.png` in the earlier examples with a real file in your project. Import `satz-figure` alongside `report` if you use that helper.
 
-Caption alignment, caption label weight, and caption text weight are separate controls in the development API. This allows a bold figure/table label with regular caption text.
+**Development:** `scientific-table` and `scientific-tables` add scientific rule and header conventions. They are not available in `@preview/satz:0.1.1`; follow [the development setup](development.md) and [scientific table guide](https://github.com/kylekahraman/satz/blob/main/docs/scientific-tables.md) to try them.

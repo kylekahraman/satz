@@ -9,17 +9,24 @@ site_dir = "site"
 
 nav = [
   { "Start here" = "index.md" },
-  { "Write a report" = "getting-started/report.md" },
+  { "Get started" = [
+    "getting-started/setup.md",
+    "getting-started/report.md",
+    "getting-started/letter.md",
+  ] },
   { "Guides" = [
     "guides/journals.md",
     "guides/figures-and-tables.md",
+    "guides/proposals.md",
     "guides/layouts.md",
+    "guides/troubleshooting.md",
+    "guides/development.md",
   ] },
   { "Reference" = [
     "reference/templates.md",
     "reference/configuration.md",
   ] },
-  { "Designing the API" = "maintainers/api-design.md" },
+  { "Contributing" = "maintainers/api-design.md" },
   { "GitHub" = "https://github.com/kylekahraman/satz" },
 ]
 

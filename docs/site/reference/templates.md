@@ -15,7 +15,7 @@ Use a document-level function for the overall structure, and native Typst elemen
 | NWO Talent Programme | `nwo-proposal`, `nwo-profile` | Veni/Vidi/Vici 2026 profiles and starters; see coverage and limitations (unreleased) |
 | Legal complaint | `klageschrift` | Published |
 | Guest performance contract | `gastspielvertrag` | Published |
-| Cover page | `cover-page`, `research-cover`, `minimal-cover` | Published |
+| Cover page | `cover-page` | Published; research/minimal presets: development |
 
 Import the function you need:
 

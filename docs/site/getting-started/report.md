@@ -2,6 +2,8 @@
 
 Satz's report template is a starting point for assignments, protocols, and longer reports. It adds numbered headings, a contents page, page layout, and shared typography defaults while leaving the document content in ordinary Typst.
 
+If you have not chosen an editor yet, follow [Set up and write](setup.md) first.
+
 ## 1. Create a file
 
 In a new `main.typ`, write:
