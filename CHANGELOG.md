@@ -92,24 +92,34 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
   item tuples/records and numeric ranges, without rejecting extension keys.
 - Validate letter language values, DFG form-date/page-check types, and require
   an integer source-checked NWO year.
-- Add a PDF regression for the existing `headings.spacing` enum check so only
-  `koma` and `native` policies pass.
-- Expand the candidate configuration reference with template-specific
-  appearance defaults and compile its starter against the isolated 0.2.0 tree.
+- Validate known shared config groups at the class boundary so common typos
+  such as `typography.leadng` fail clearly. Caller extension groups and the
+  documented DFG/book-specific keys remain accepted.
+- Validate proposal budget records and Gantt row/span shapes, NWO key-output
+  fields and page-budget limits, Klageschrift attachments/page limits, guest
+  contract enums/types/ranges, direct letter/invoice options, cover layout/theme
+  types, and book contents depth.
+- Add regressions for `headings.spacing`, shared-config typo detection,
+  preserved extension groups and the audited public records/options.
+- Complete the candidate configuration reference with shared and
+  template-specific defaults, exported argument signatures, record/array
+  shapes, enum contracts, extension policy and version availability. Compile
+  its starter against the isolated 0.2.0 tree.
 
 ### Verification and remaining release work
 
 - Exclude `tools/**` and local workbook conversions from the Typst package.
   A staged-package check now compiles report, article, journal, letter, invoice,
-  cover, and proposal starters from the manifest-filtered tree. This verifies
-  the current source tree only; published-version comparison remains open.
-- Add a GitHub Actions workflow for the staged-package check and focused public
-  API/PDF regressions on pushes and pull requests, including tables, callouts,
-  placeholders, paragraph rhythm, and proposal forms. Pin the Python PDF
-  inspection tools and use the current `pymupdf` module import.
+  cover, proposal, and configuration starters from the manifest-filtered tree. The isolated
+  0.2.0 candidate check passes against the current source tree.
+- GitHub Actions runs the staged-package check and focused public API/PDF
+  regressions on pushes and pull requests, including tables, callouts,
+  placeholders, paragraph rhythm, proposal forms, and the input-validation
+  audit. Python PDF inspection dependencies are pinned.
 - Compile stable letter, invoice, report, journal, and cover starters against
   an isolated download of the published 0.1.1 package; this avoids a local
-  package alias masking the actual published source.
+  package alias masking the actual published source. This compatibility check
+  passes locally.
 - Install the staged source tree in isolation as `@local/satz:0.2.0` and
   compile its representative starters without changing the repository version.
 - Declare Typst 0.15.0 as the candidate minimum compiler version; all release
@@ -123,10 +133,11 @@ gaps. Focused PDF checks cover heading flow, callout fragmentation, scientific
 rules, table configuration and repeated table headings. A successful compile
 does not establish visual or content parity.
 
-The research report's missing verdict macros, grouped table captions, chapter
-references and math/code typefaces are now corrected. All pages were rendered
-and visually reviewed against LaTeX. Before a release: refine float distribution
-and sparse chapter endings, broaden two-column/journal visual coverage, review
-the final integrated package and update supported API documentation. The outline
+The configuration-reference and input-validation gates are complete and
+committed. The research report's missing verdict macros, grouped table captions,
+chapter references and math/code typefaces are now corrected. All pages were
+rendered and visually reviewed against LaTeX. Before a release: refine float
+distribution and sparse chapter endings, broaden two-column/journal visual
+coverage, and perform the final integrated package review. The outline
 example compiles and its extracted text contains the expected contents and lists;
 the PyMuPDF geometry assertions are in `examples/latex-parity/check_outlines.py`.
