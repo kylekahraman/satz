@@ -146,6 +146,12 @@ existing supported configurations continue to work.
 
 ## 6. Verify the exact package that will ship
 
+Status: `typst.toml` now excludes `tools/**` and local workbook conversions;
+`examples/latex-parity/check_staged_package.py` stages the current manifest
+tree and compiles seven representative starters. The manifest still says
+0.1.1, so this is not yet a comparison against a distinct 0.2.0 candidate or
+the published 0.1.1 package.
+
 - Compile documented starters against both their declared published version
   and the candidate where appropriate. A local `@preview` symlink must not
   substitute development source during a published-package check.

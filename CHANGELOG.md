@@ -93,6 +93,12 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 
 ### Verification and remaining release work
 
+- Exclude `tools/**` and local workbook conversions from the Typst package.
+  A staged-package check now compiles report, article, journal, letter, invoice,
+  cover, and proposal starters from the manifest-filtered tree. This verifies
+  the current source tree only; published-version comparison and CI wiring
+  remain open.
+
 The [research report audit](docs/report-parity-audit.md) distinguishes shared
 package fixes from document settings and records remaining conversion/layout
 gaps. Focused PDF checks cover heading flow, callout fragmentation, scientific
