@@ -126,6 +126,9 @@ versioned examples compile against the version they name.
 
 ## 5. Helpful validation, proportionate to compatibility
 
+Status: started with journal date parsing and calendar validation; the broader
+enum and nested-record audit remains open.
+
 Validate high-impact values and record shapes at public entry points: palette
 names, heading policy, cover layout, proposal language, author/affiliation
 records, addresses, and supported journal date formats. Errors should name the

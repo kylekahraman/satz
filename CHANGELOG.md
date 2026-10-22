@@ -81,6 +81,10 @@ release announcement or a claim of complete LaTeX/KOMA-Script parity.
 - Reject unsupported letter/invoice appearance groups and keys with a
   field-specific error. `examples/latex-parity/check_appearance_precedence.py`
   checks palette application, nested overrides, and rejection behavior.
+- Validate journal dates as real calendar dates and support ISO `YYYY-MM-DD`,
+  `DD/MM/YY`, and `DD/MM/YYYY` for month grouping. Optional weekday prefixes
+  are accepted; blank dates remain valid for drafts and group under “Undated”.
+  See `examples/latex-parity/check_journal_dates.py`.
 
 ### Verification and remaining release work
 

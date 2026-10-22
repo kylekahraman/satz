@@ -26,7 +26,7 @@ def main():
                 documents = []
                 for gap in [18, 36]:
                     source = f'''#import "/lib.typ": journal-entry
-#show: journal-entry.with(title: "ENTRYTITLE", date: "DATEVALUE", keywords: "KEYWORD", config: (
+#show: journal-entry.with(title: "ENTRYTITLE", date: "18/10/26", keywords: "KEYWORD", config: (
  journal: (header-below: {gap}pt),
  headings: (spacing: "{mode}", h2-size: 14pt, h2-above: 1.5em, h2-below: 0.65em),
 ))
@@ -43,7 +43,7 @@ CONTINUATION
                     with compile_doc(f'{mode}-{gap}-{len(opening)}', source) as pdf:
                         assert len(pdf.pages) == 2
                         assert 'CONTINUATION' in pdf.pages[1].extract_text()
-                        date_page, date = locate(pdf, 'DATEVALUE')
+                        date_page, date = locate(pdf, '18/10/26')
                         token = 'FIRSTHEADING' if 'FIRSTHEADING' in opening else 'FIRSTPROSE' if 'FIRSTPROSE' in opening else 'FIRSTITEM'
                         first_page, first = locate(pdf, token)
                         assert date_page == first_page, 'Header must stay with first content.'

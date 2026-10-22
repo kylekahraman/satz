@@ -28,7 +28,7 @@ def main():
 #assert(theme-config("{name}").colors.brand-primary == document-themes.at("{name}").brand-primary)
 #journal-index(theme: "{name}")
 #pagebreak()
-#journal-entry(title: "ENTRYTITLE", date: "DATE", theme: "{name}")[
+#journal-entry(title: "ENTRYTITLE", date: "21/10/2026", theme: "{name}")[
   == SECTION
   BODYTEXT
 ]

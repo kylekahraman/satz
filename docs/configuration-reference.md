@@ -111,3 +111,9 @@ The versioned reference is in progress. Before release, add the remaining
 template-specific function arguments and nested input records, check each
 listed default against executable template defaults, and compile the examples
 against both the candidate and any published version they declare.
+
+Journal entry dates have a separate value contract: empty strings are allowed
+for drafts; otherwise use ISO `YYYY-MM-DD`, `DD/MM/YY`, or `DD/MM/YYYY`, with an
+optional weekday prefix separated by a comma or one space. Calendar values are
+validated, and an empty date is grouped as “Undated” in the monthly index. See
+the [journal guide](site/guides/journals.md).

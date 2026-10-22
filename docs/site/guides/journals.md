@@ -31,7 +31,7 @@ Record what I tried and why.
 - [ ] Discuss the plan with a colleague.
 ```
 
-The title and date belong to the entry. Use `==` for sections inside it. Checkboxes use `- [ ]` and `- [x]`. For the monthly index, use `DD/MM/YY` dates, optionally preceded by a weekday and comma as shown. Dates are text you supply; this basic example does not insert today's date automatically.
+The title and date belong to the entry. Use `==` for sections inside it. Checkboxes use `- [ ]` and `- [x]`. The monthly index accepts `DD/MM/YY`, `DD/MM/YYYY`, or ISO `YYYY-MM-DD`, optionally preceded by a weekday (with a comma or space). Empty dates are allowed for drafts and appear under “Undated”. Invalid calendar dates fail with a field-specific error. Dates are text you supply; this basic example does not insert today's date automatically.
 
 ## Keep several entries in one file
 

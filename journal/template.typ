@@ -3,6 +3,7 @@
 #import "../defaults.typ": defaults, merge
 #import "../themes.typ": theme-config
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
+#import "dates.typ": journal-date-parts
 
 /// Has an entry started? We check this for page breaks.
 #let journal-entry-state = state("entry-start", true)
@@ -23,7 +24,7 @@
 /// Checklists work: `- [ ] todo` and `- [x] done`.
 ///
 /// - title (str): what this entry is about
-/// - date (str): e.g. "Mon 03/03/2026"
+/// - date (str): `YYYY-MM-DD` or `DD/MM/YY` / `DD/MM/YYYY`, optionally preceded by a weekday; empty is allowed for drafts
 /// - keywords (str): comma-separated, e.g. "MEG, ICA"
 /// - body (content): your notes
 /// - config (dictionary): tweak colors, fonts ...
@@ -36,6 +37,7 @@
   config: (:),
   theme: none,
 ) = {
+  let validated-date = journal-date-parts(date)
   let config = theme-config(theme, config: config)
   let c = merge(defaults, config)
 
@@ -124,14 +126,10 @@
   let years = ()
   for entry in entries {
     let data = entry.value
-    let date-parts = data.date.split(", ")
-    let clean-date = if date-parts.len() > 1 { date-parts.at(1) } else { data.date }
-    let clean-date-parts = clean-date.split("/")
-    if clean-date-parts.len() > 2 {
-      let y = clean-date-parts.at(2)
-      if not years.contains(y) {
-        years.push(y)
-      }
+    let parsed = journal-date-parts(data.date)
+    if parsed != none {
+      let y = str(parsed.year)
+      if not years.contains(y) { years.push(y) }
     }
   }
   let multi-year = years.len() > 1
@@ -142,19 +140,16 @@
   for entry in entries {
     let data = entry.value
     let page-num = entry.location().page()
-
-    let date-parts = data.date.split(", ")
-    let clean-date = if date-parts.len() > 1 { date-parts.at(1) } else { data.date }
-
-    let clean-date-parts = clean-date.split("/")
-    let year = if clean-date-parts.len() > 2 {
-      let y = clean-date-parts.at(2)
-      if y.len() == 2 { "20" + y } else { y }
-    } else {
-      ""
+    let parsed = journal-date-parts(data.date)
+    let year = if parsed == none { "" } else { str(parsed.year) }
+    let month-code = if parsed == none { "" } else if parsed.month < 10 { "0" + str(parsed.month) } else { str(parsed.month) }
+    let month-name = if parsed == none { "Undated" } else { month-names.at(month-code) }
+    let clean-date = if parsed == none { "" } else {
+      let date-parts = data.date.split(", ")
+      let without-comma-prefix = if date-parts.len() == 2 { date-parts.last() } else { data.date }
+      let word-parts = without-comma-prefix.split(" ")
+      if word-parts.len() == 2 { word-parts.last() } else { without-comma-prefix }
     }
-    let month-code = if clean-date-parts.len() > 1 { clean-date-parts.at(1) } else { "" }
-    let month-name = month-names.at(month-code, default: "Unknown Month")
 
     if month-name != current-month or year != current-year {
       current-month = month-name
