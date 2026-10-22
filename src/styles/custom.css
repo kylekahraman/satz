@@ -1,0 +1,12 @@
+/* Shared sage accents with the Neurona documentation. */
+:root {
+  --sl-color-accent-low: #122f2a;
+  --sl-color-accent: #76b8a2;
+  --sl-color-accent-high: #cde9dd;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #e4eee8;
+  --sl-color-accent: #265b4d;
+  --sl-color-accent-high: #193d38;
+}

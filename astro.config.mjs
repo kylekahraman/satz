@@ -8,6 +8,7 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [starlight({
     title: 'satz',
+    customCss: ['./src/styles/custom.css'],
     description: 'Start writing with Satz: Typst templates for reports, journals, letters, and proposals.',
     social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/kylekahraman/satz' }],
     sidebar: [
