@@ -54,6 +54,8 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **colors:** [`colors.bg-paper`](#colors-bg-paper), [`colors.bg-subtle`](#colors-bg-subtle), [`colors.brand-primary`](#colors-brand-primary), [`colors.brand-accent`](#colors-brand-accent), [`colors.text-main`](#colors-text-main), [`colors.text-muted`](#colors-text-muted)
 
+**template-specific:** [`page.header-ascent`](#page-header-ascent), [`decorative.list-indent`](#decorative-list-indent), [`decorative.list-body-indent`](#decorative-list-body-indent), [`decorative.list-block-spacing`](#decorative-list-block-spacing), [`headings.h1-number-size`](#headings-h1-number-size), [article settings](#article-specific-settings), [book settings](#book-specific-settings)
+
 ## Shared defaults
 
 Values below come from `defaults.typ`. Lengths use Typst units. Colors are
@@ -69,6 +71,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="page-headers"></span>`page.headers` | boolean | `false` | Enables a running header in templates that implement it. |
 | <span id="page-columns"></span>`page.columns` | positive integer | `1` | Number of page columns where the template supports columns. |
 | <span id="page-column-gutter"></span>`page.column-gutter` | length | `5mm` | Gap between columns. |
+| <span id="page-header-ascent"></span>`page.header-ascent` | length | `24.442pt` in DFG | Extra ascent reserved for the DFG running header. Only used by `dfg-proposal`. |
 | <span id="typography-font"></span>`typography.font` | font family name | `"Libertinus Serif"` | Main text family. Font must be installed or embedded by the runtime. |
 | <span id="typography-math-font"></span>`typography.math-font` | font family name or `auto` | `auto` | Math typeface; `auto` retains Typst's native selection. |
 | <span id="typography-mono-font"></span>`typography.mono-font` | font family name or `auto` | `auto` | Monospaced typeface; `auto` retains Typst's native raw-text style. |
@@ -83,6 +86,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="headings-hyphenate"></span>`headings.hyphenate` | boolean | `false` | Hyphenation within headings. |
 | <span id="headings-h1-pagebreak"></span>`headings.h1-pagebreak` | boolean | `false` | Starts level-one headings on a new page where supported. |
 | <span id="headings-spacing"></span>`headings.spacing` | `"koma"` or `"native"` | `"koma"` | Uses translated KOMA baseline skips or leaves native Typst spacing. |
+| <span id="headings-h1-number-size"></span>`headings.h1-number-size` | length | `25pt` in book | Size of the level-one chapter number in the experimental book template. |
 | <span id="headings-h1-size"></span><span id="headings-h2-size"></span><span id="headings-h3-size"></span><span id="headings-h4-size"></span>`headings.h1-size` … `headings.h4-size` | length | `14pt`, `12pt`, `11pt`, `11pt` | Size for heading levels one through four. Templates may override these. |
 | <span id="headings-h1-above"></span><span id="headings-h2-above"></span><span id="headings-h3-above"></span><span id="headings-h4-above"></span>`headings.h1-above` … `headings.h4-above` | `auto` or length | `auto` | Space before each level. `auto` follows `headings.spacing`; an explicit length overrides the policy. |
 | <span id="headings-h1-below"></span><span id="headings-h2-below"></span><span id="headings-h3-below"></span><span id="headings-h4-below"></span>`headings.h1-below` … `headings.h4-below` | `auto` or length | `auto` | Space after each level. `auto` follows native/template policy. |
@@ -95,6 +99,9 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="decorative-keywords-size"></span>`decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
 | <span id="decorative-list-tight"></span>`decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true`. |
 | <span id="decorative-list-spacing"></span>`decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false`. |
+| <span id="decorative-list-indent"></span>`decorative.list-indent` | length | `17.9669pt` in DFG | Indentation of list and enumeration markers in the DFG template. |
+| <span id="decorative-list-body-indent"></span>`decorative.list-body-indent` | length | `5.475 × 72 ÷ 72.27 pt` in DFG | Gap from each list or enumeration marker to its body text. |
+| <span id="decorative-list-block-spacing"></span>`decorative.list-block-spacing` | length | `baseline + paragraph-skip - cap + 3 × 72 ÷ 72.27 pt` in DFG | Space above and below list and enumeration blocks; uses the DFG font metrics. |
 | <span id="page-footer-format"></span>`page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | <span id="page-footer-size"></span>`page-footer.size` | length | `10pt` | Page-number size. |
 | <span id="page-footer-weight"></span>`page-footer.weight` | Typst font-weight value | `"bold"` | Page-number weight. |
@@ -158,6 +165,7 @@ The experimental `book` template accepts common shared settings through `config`
 
 | Field | Type | Default | Effect |
 | --- | --- | --- | --- |
+| <span id="book-ink"></span>`book.ink` | Typst color | `#24313B` | Color for the book cover title and chapter headings; the direct `ink:` argument can override it. |
 | <span id="book-contents-title-before"></span>`book.contents.title-before` | length | `24.5pt` | Space before the contents title. |
 | <span id="book-contents-title-after"></span>`book.contents.title-after` | length | `26pt` | Gap after the contents title. |
 | <span id="book-contents-title-size"></span>`book.contents.title-size` | length | `17pt` | Contents title size. |
