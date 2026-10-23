@@ -72,11 +72,17 @@ def main():
         compile_doc('fractional-fail', base + '#nwo-page-budget("test", max-pages: 0.5)[#rect(width: 1cm, height: 140mm)]', error='exceeds 0.5 pages')
         compile_doc('duplicate-budget-key', base + '#nwo-page-budget("test")[A]\n#nwo-page-budget("test")[B]', error='must be unique')
         compile_doc('page-overflow', base + '#nwo-page-budget("test", max-pages: 1)[A\n#pagebreak()\nB\n#pagebreak()\nC]', error='exceeds 1 pages')
-        custom = compile_doc('custom-leading', base.replace('.with()', '.with(config: (typography: (leading: 0.65em)))') + 'BODYONE \\ BODYTWO')
-        with pdfplumber.open(custom) as pdf:
-            words = pdf.pages[0].extract_words()
-            a,b = [next(w for w in words if w['text'] == t) for t in ['BODYONE','BODYTWO']]
-            assert abs(b['top'] - a['top'] - 9.5 * (1.3663)) < .02
+        default_leading = compile_doc('default-leading', base + 'BODYONE \\ BODYTWO')
+        custom_leading = compile_doc('custom-leading', base.replace('.with()', '.with(config: (typography: (leading: 0.65em)))') + 'BODYONE \\ BODYTWO')
+        def line_gap(path):
+            with pdfplumber.open(path) as pdf:
+                words = pdf.pages[0].extract_words()
+                a, b = [next(w for w in words if w['text'] == t) for t in ['BODYONE', 'BODYTWO']]
+                return b['top'] - a['top']
+
+        # Compare the override against the package default instead of hard-coding
+        # an absolute Arial baseline that varies across operating systems.
+        assert abs(line_gap(custom_leading) - line_gap(default_leading) - 9.5 * 0.15) < .02
 
         for name in ['veni', 'vidi', 'vici', 'vici-full']:
             # Included starter files keep relative paths, so compile at their
