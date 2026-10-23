@@ -6,7 +6,7 @@ The starter is a normal Typst project: a cover, editable identity and style sett
 
 Install [Visual Studio Code](https://code.visualstudio.com/) and the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist). Unzip the journal starter, open its folder in VS Code, then open `main.typ` and run **Typst: Preview** from the command palette. The project recommends Tinymist when VS Code opens it.
 
-Edit `config.typ` to change the cover title, subtitle, author, theme, cover layout, and paper size. Available themes include `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. Add entries under `entries/` and include them in `main.typ` between the entry markers. Each journal lives in its own folder; you can make as many independent journals as you need.
+Edit `config.typ` to change the cover title, subtitle, author, theme, cover layout, and paper size. The default `neutral` theme is black on white; optional palettes include `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. Add entries under `entries/` and include them in `main.typ` between the entry markers. Each journal lives in its own folder; you can make as many independent journals as you need.
 
 The `_satz/` folder contains the Satz source bundled with the starter, so the project does not need a published package or local package cache. To keep the full journal visible while editing an individual entry, open `main.typ` and use Tinymist's **Typst: Pin Main** command. See the [Tinymist VS Code guide](https://myriad-dreamin.github.io/tinymist/frontend/vscode.html).
 

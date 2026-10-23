@@ -4,6 +4,9 @@ The development package exposes six palettes: `neutral`, `soft-jade`,
 `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. Covers accept `theme:`;
 journals and indexes now accept the same names:
 
+The neutral palette is the default for new journal starters and uses only black
+and white. Choose one of the other palettes in `config.typ` to opt into color.
+
 ```typst
 #import "@local/satz:0.2.0": journal-entry, journal-index
 #journal-index(theme: "soft-jade")

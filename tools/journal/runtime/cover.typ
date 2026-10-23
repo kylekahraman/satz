@@ -9,10 +9,10 @@
 #let cover-themes = (
   neutral: (
     bg-paper: rgb("#FFFFFF"),
-    brand-primary: rgb("#202124"),
-    brand-accent: rgb("#9AA0A6"),
-    text-main: rgb("#202124"),
-    text-muted: rgb("#5F6368"),
+    brand-primary: black,
+    brand-accent: black,
+    text-main: black,
+    text-muted: black,
   ),
   soft-jade: (
     bg-paper: rgb("#FBFAF7"),
@@ -150,7 +150,7 @@
   } else if layout == "research" {
     [
       #block(width: 100%)[
-        #v(2.6cm)
+        #v(4.5cm)
         #grid(
           columns: (3pt, 1fr),
           column-gutter: 0.7cm,

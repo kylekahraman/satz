@@ -8,11 +8,11 @@
   if name == "neutral" {
     (
       bg-paper: white,
-      bg-subtle: luma(96%),
+      bg-subtle: white,
       brand-primary: black,
-      brand-accent: luma(60%),
+      brand-accent: black,
       text-main: black,
-      text-muted: luma(40%),
+      text-muted: black,
     )
   } else {
     (: ..colors, bg-paper: white, bg-subtle: colors.brand-primary.lighten(94%))

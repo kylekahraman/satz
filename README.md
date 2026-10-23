@@ -281,7 +281,9 @@ use `@preview/satz:0.2.0`:
 Use `minimal-cover` for a centered title page, or `cover-page(layout: "classic", body: [...])`
 to keep composing the original logo/body/footer slots. Built-in themes are
 `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
-`soft-rose`. You can still override individual colors with
+`soft-rose`. `neutral` is the default and uses black text and accents on white;
+the research layout leaves 4.5 cm between the top logo area and its title block.
+You can still override individual colors with
 `config: (colors: (brand-primary: ...))`.
 
 ## Structure

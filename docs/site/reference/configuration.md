@@ -64,6 +64,6 @@ An `em` follows the current font size. The rendered rhythm also depends on the f
 
 ## Named palettes and cover styles
 
-**Development:** the source version provides `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. Journals accept a `theme` argument directly. For other templates accepting `config`, pass `theme-config("plum")` as their configuration; explicit overrides can be supplied to that helper. These shared palettes are not limited to cover pages.
+**Development:** the source version provides `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. `neutral` is black on white and is the new-journal starter default. Journals accept a `theme` argument directly. For other templates accepting `config`, pass `theme-config("plum")` as their configuration; explicit overrides can be supplied to that helper. These shared palettes are not limited to cover pages.
 
 Development cover pages also offer `classic`, `minimal`, and `research` layouts. A preset is a starting point: you can supply your own cover content, logos, or footer. See [the source cover API](https://github.com/kylekahraman/satz/blob/main/cover.typ) and [development setup](/satz/guides/development/).

@@ -10,7 +10,7 @@
 )
 
 #let journal-style = (
-  theme: "soft-slate", // neutral, soft-jade, soft-slate, warm-editorial, plum, soft-rose
+  theme: "neutral", // black and white; choose a named color palette if desired
   cover-layout: "research", // research or minimal
   paper: "a4",
 )
