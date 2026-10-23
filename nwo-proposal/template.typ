@@ -1,4 +1,4 @@
-#import "../class.typ": personal
+#import "../class.typ": document-class
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as nwo-defaults
 #import "profiles.typ": nwo-profile
@@ -34,7 +34,7 @@
       #h(1fr) Page #here().page() / #counter(page).final().first()
     ]
   }
-  personal(kind: "proposal", config: c, header: furniture)[
+  document-class(kind: "proposal", config: c, header: furniture)[
     #set text(lang: "en")
     #set page(numbering: none, footer: none)
     #show heading: set heading(bookmarked: false)

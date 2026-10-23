@@ -2,7 +2,7 @@
 
 The development version of Satz provides a DFG 53.01 project-description layout
 and a separate general research/project proposal layout. Both use the shared
-`personal()` class and deep configuration merge. These changes are included in
+`document-class()` shared foundation and deep configuration merge. These changes are included in
 the unpublished 0.2.0 candidate.
 
 ## DFG 53.01: start with the complete form

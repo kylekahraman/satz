@@ -17,7 +17,7 @@
 #import "book/components.typ": exercise, worked-example, analysis-note, answer-grid
 #import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
 #import "themes.typ": document-themes, theme-config
-#import "class.typ": personal, satz-figure
+#import "class.typ": document-class, personal, satz-figure
 #import "citation.typ": citepre
 #import "figures.typ": placeholder
 // Optional author-facing glossary API; setup stays explicit in the document.

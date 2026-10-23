@@ -150,7 +150,7 @@ names, heading policy, cover layout, proposal language, author/affiliation
 records, addresses, and supported journal date formats. Errors should name the
 field and explain accepted values.
 
-The generic deep-merge helper remains open-ended. `personal` now validates keys
+The generic deep-merge helper remains open-ended. `document-class` now validates keys
 in known shared configuration groups, including typo detection, while preserving
 unknown top-level groups and documented template-specific extensions. Postal
 appearance groups remain closed. Typst-native values retain Typst validation;

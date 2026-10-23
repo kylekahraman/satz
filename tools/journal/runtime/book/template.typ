@@ -1,6 +1,6 @@
 // Book entry point — a KOMA-inspired authoring path over satz's shared class.
 
-#import "../class.typ": personal
+#import "../class.typ": document-class
 #import "../defaults.typ": defaults, merge
 #import "components.typ": book-style
 
@@ -153,7 +153,7 @@
   ))
   let c = merge(book-defaults, config)
 
-  personal(kind: "book", config: c, [
+  document-class(kind: "book", config: c, [
     #book-style.update((
       accent: c.colors.brand-primary,
       ink: c.book.ink,

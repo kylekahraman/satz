@@ -87,13 +87,18 @@ Invoice body.
             "cover": f'''#import "@local/{manifest['name']}:{version}": cover-page
 #cover-page(layout: "minimal", title: "Candidate cover")
 ''',
-            "configuration": f'''#import "@local/{manifest['name']}:{version}": personal
-#show: personal.with(config: (
+            "configuration": f'''#import "@local/{manifest['name']}:{version}": document-class
+#show: document-class.with(config: (
   typography: (font: "Libertinus Serif", size: 12pt),
   colors: (brand-primary: rgb("#355D50")),
 ))
 = Candidate configuration
 Configuration marker.
+''',
+            "legacy-personal-alias": f'''#import "@local/{manifest['name']}:{version}": personal
+#show: personal.with(config: (page: (paper: "a5")))
+= Compatibility check
+The original public name remains usable.
 ''',
             "proposal": f'''#import "@local/{manifest['name']}:{version}": research-proposal
 #show: research-proposal.with(title: "Candidate proposal", applicants: ("Researcher",), institution: ("Institute",))

@@ -1,5 +1,5 @@
 #import "@preview/cheq:0.4.0": checklist
-#import "../class.typ": personal
+#import "../class.typ": document-class
 #import "../defaults.typ": defaults, merge, validate-config
 #import "../themes.typ": theme-config
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
@@ -52,7 +52,7 @@
 
   show: checklist.with(extras: true)
 
-  personal(
+  document-class(
     kind: "journal",
     config: config,
     header: context {

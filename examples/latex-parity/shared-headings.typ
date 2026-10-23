@@ -1,5 +1,5 @@
-#import "../../lib.typ": personal
-#show: personal.with(kind: "proposal", config: (
+#import "../../lib.typ": document-class
+#show: document-class.with(kind: "proposal", config: (
  typography: (font: "Arial"), toc: (depth: 0),
  colors: (bg-paper: white, brand-primary: black),
 ))

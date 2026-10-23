@@ -1,5 +1,5 @@
 // DFG 53.01 (Sachbeihilfe) — shared Satz class with form-specific defaults.
-#import "../class.typ": personal
+#import "../class.typ": document-class
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as dfg-defaults
 #import "../proposal/citations.typ": proposal-publications
@@ -54,7 +54,7 @@
     let part-page = if supplementary { here().page() - parts.first().location().page() + 1 } else { here().page() }
     text(size: c.decorative.header-size, weight: "regular")[#if de [DFG-Vordruck] else [DFG form] 53.01 – #form-date #h(1fr) #if de [Seite] else [page] #part-page #if de [von max.] else [of max.] #limit]
   }
-  personal(kind: "proposal", config: c, header: furniture)[
+  document-class(kind: "proposal", config: c, header: furniture)[
     #set text(lang: if de { "de" } else { "en" }, top-edge: 1467 / 2048 * 1em, bottom-edge: 0pt)
     #set page(numbering: none, footer: none, header-ascent: c.page.header-ascent)
     #set list(indent: c.decorative.list-indent, body-indent: c.decorative.list-body-indent, spacing: c.decorative.list-spacing)

@@ -1,6 +1,6 @@
 # Satz configuration reference — 0.2.0 candidate
 
-This is the candidate reference for the shared `personal(config:)` interface.
+This is the candidate reference for the shared `document-class(config:)` interface.
 It documents the executable baseline in `defaults.typ`; it does not claim that
 every template consumes every key. `report`, `article`, `book`, `journal`,
 `cover-page`, `letter`, `invoice`, and proposal templates add or override
@@ -97,8 +97,8 @@ arguments described in their source API comments and guides.
 
 | Template | Defaults or notable differences |
 | --- | --- |
-| `personal` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
-| `report` | `theme: "neutral"`; all remaining appearance defaults come from `personal`. `theme: none` leaves the shared palette in place. |
+| `document-class` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
+| `report` | `theme: "neutral"`; all remaining appearance defaults come from `document-class`. `theme: none` leaves the shared palette in place. |
 | `article` | `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1em`, body gap `1.5em`. |
 | `journal-entry` / `journal-index` | `page.paper: "iso-b5"`; margins `(x: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; neutral gray palette. Journal block and running-header gaps are in `journal.*` above. |
 | `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Direct options include `font`, `papier`, `seitenraender`, `schriftgroesse`, `zeilenabstand`, and `blocksatz`; nested config only accepts the documented page, typography, color, and link keys. |
@@ -115,13 +115,14 @@ template-specific defaults in this table.
 
 ## Candidate examples
 
-This compiles with the candidate `personal` API and illustrates a minimal
-override. A report or other template may expose its own wrapper around
-`personal`:
+This compiles with the candidate `document-class` API and illustrates a minimal
+override for a custom document structure. Usually start with a named template
+such as `report`, `article`, `journal-entry`, or `book`; call `document-class`
+directly when you want to supply your own structure:
 
 ```typst
-#import "@local/satz:0.2.0": personal
-#show: personal.with(config: (
+#import "@local/satz:0.2.0": document-class
+#show: document-class.with(config: (
   typography: (font: "EB Garamond", size: 12pt),
   colors: (brand-primary: rgb("#355D50")),
 ))
@@ -166,7 +167,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 
 | API | Input contract |
 | --- | --- |
-| personal | kind defaults to report; config, optional header/footer, required body. Shared configuration is listed above. |
+| document-class | kind defaults to report; config, optional header/footer, required body. Shared configuration is listed above. `personal` remains a compatibility alias. |
 | report | required body, config, theme (neutral by default; none retains its legacy palette). |
 | article | optional title, authors, affiliations, abstract and date; config/theme; required body. Authors are records with required string/content name and optional one-based affiliation indices. Affiliations are strings/content. |
 | brief / letter | German and English aliases for sender, recipient, date, reference line, subject, enclosures, attachments, signature addition and postal mark. Optional lang/language is de or en. Sender/recipient are records with string address fields; optional logo is content/none. Appearance flags are booleans; appearance settings and direct options are described in the template defaults table. |
@@ -560,10 +561,12 @@ These signatures are taken from the current source; they show every optional arg
 )
 ```
 
-### `personal` ([`class.typ`](../class.typ))
+### `document-class` ([`class.typ`](../class.typ))
 
 ```text
-#let personal(
+// Use a named template for its ready-made document structure. Use
+// document-class when you want to write your own structure with Satz styling.
+#let document-class(
   kind: "report",
   config: (:),
   header: none,
@@ -571,6 +574,9 @@ These signatures are taken from the current source; they show every optional arg
   body,
 )
 ```
+
+`personal` is retained as a compatibility alias; new documents should use
+`document-class`.
 
 ### `satz-figure` ([`class.typ`](../class.typ))
 

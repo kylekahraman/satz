@@ -19,7 +19,7 @@ lib.typ ── exports the package's public functions
     │         └── shared config + selected theme
     │                    │
     │                    ▼
-    └────────────── personal() in class.typ
+    └────────────── document-class() in class.typ
                            │
                            ▼
                     Typst content and show rules
@@ -36,14 +36,14 @@ lib.typ ── exports the package's public functions
 | --- | --- |
 | `lib.typ` | Public exports and English aliases. |
 | `defaults.typ` | Shared config defaults, recursive `merge()`, and validation of known shared settings. |
-| `class.typ` | `personal()` applies page geometry, fonts, paragraph rhythm, heading rules, links, outlines, lists, tables, captions, and optional running headers. |
+| `class.typ` | `document-class()` applies page geometry, fonts, paragraph rhythm, heading rules, links, outlines, lists, tables, captions, and optional running headers. |
 | `heading-layout.typ` | Shared KOMA-inspired heading spacing calculations used by document classes. |
 | `themes.typ`, `cover.typ` | Named palettes and reusable cover layouts. |
 | `letter/`, `invoice/`, `journal/`, `report/`, `proposal/`, etc. | Public template functions, local defaults, examples, and template-specific components. |
 | `examples/latex-parity/` | Small compiled checks for layout behavior, public inputs, date parsing, and selected output details. |
 | `docs/site/` | Beginner guides, public reference, and maintainer guidance. |
 
-The `journal/` folder is a compact example of the package model. `journal-entry` validates and presents one entry, records metadata for the index, and delegates shared document styling to `personal(kind: "journal")`. `journal-index` queries the metadata labels and links to entry locations. The date parser is separate so accepted formats and calendar errors can be checked in one place.
+The `journal/` folder is a compact example of the package model. `journal-entry` validates and presents one entry, records metadata for the index, and delegates shared document styling to `document-class(kind: "journal")`. `journal-index` queries the metadata labels and links to entry locations. The date parser is separate so accepted formats and calendar errors can be checked in one place.
 
 ## Configuration flow
 
@@ -59,7 +59,7 @@ Shared validation catches misspelled keys in known groups while allowing templat
 
 ## Document-wide behavior
 
-`personal()` centralizes behavior that should remain consistent within a document: page setup, typography, paragraph spacing, heading styles, links, and lists. It also owns optional table, caption, table-of-contents, and running-header rules. Templates supply their semantic fields and can provide local headers or footers where needed.
+`document-class()` centralizes behavior that should remain consistent within a document: page setup, typography, paragraph spacing, heading styles, links, and lists. It also owns optional table, caption, table-of-contents, and running-header rules. Templates supply their semantic fields and can provide local headers or footers where needed. Named templates are the simplest starting point when their document structure fits; `document-class()` is the flexible base for a custom structure.
 
 Typst evaluates many style rules in document context. Page headers and footers also depend on counters, locations, and document state. The implementation therefore uses `context`, `query`, labels, and counter updates where the result depends on compiled layout. For example, the journal index can link to each entry's final page because Typst resolves the entry label and location during compilation.
 
@@ -67,7 +67,7 @@ These rules make compile checks essential. A source-level change may be valid Ty
 
 ## Design choices and tradeoffs
 
-The shared class is intentionally the central place for document-wide styles; changing it has a wide effect, so keep a representative report or journal compile in the check set. Template folders own their document-specific choices instead of forcing every form into one identical wrapper.
+The shared class is intentionally the central place for document-wide styles; changing it has a wide effect, so keep a representative report or journal compile in the check set. Template folders own their document-specific choices instead of forcing every form into one identical wrapper. The old public name `personal()` remains as a compatibility alias for `document-class()`.
 
 The public surface grew while the package added different kinds of documents. Some functions take body content directly, some are show rules, and some expose German source-compatible argument names alongside English aliases. Those differences are documented and may be reviewed for a major/minor API transition, but a broad rename would break existing documents. The package has no promise of full KOMA-Script compatibility.
 

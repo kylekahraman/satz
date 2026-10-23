@@ -8,7 +8,8 @@ This page documents every public name exported by `lib.typ`. Use the jump list b
 
 | API | Inputs accepted | Returns |
 | --- | --- | --- |
-| [personal](#personal) | kind defaults to report; config dictionary, optional header/footer content, required body content. Shared configuration is listed [field by field](/satz/reference/configuration/). | Returns document content with the requested shared page setup and document class. |
+| [document-class](#document-class) | kind defaults to report; config dictionary, optional header/footer content, required body content. Shared configuration is listed [field by field](/satz/reference/configuration/). | Applies Satz's shared document-wide styling to a custom document structure. Named templates are the usual starting point when their structure fits. |
+| [personal](#personal) | Compatibility alias for `document-class`, with the same inputs and behavior. | Applies the same shared document-wide styling as `document-class`. |
 | [report](#report) | required content body, optional config dictionary, theme name or none (default neutral). | Returns report content with headings, page setup and report front matter. |
 | [article](#article) | optional title, authors, affiliations, abstract and date; config/theme; required body. Authors are records with required string/content name and optional one-based affiliation indices. Affiliations are strings/content. | Returns article content with full-width metadata and a column-based body. |
 | [brief](#brief) / [letter](#letter) | German and English aliases for sender, recipient, date, reference line, subject, enclosures, attachments, signature addition and postal mark. Optional `lang`/`language` is `"de"` or `"en"`. Sender/recipient are records with string address fields; optional logo is content/none. Appearance flags are booleans; see the signature and [letter defaults](/satz/reference/configuration/#template-specific-appearance-defaults). | Returns a complete letter layout around the supplied body content. |
@@ -40,7 +41,7 @@ The staged candidate check compiles the quick-start and representative template 
 
 ## Browse functions
 
-[`brief`](#brief) · [`rechnung`](#rechnung) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`klageschrift`](#klageschrift) · [`gastspielvertrag`](#gastspielvertrag) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`personal`](#personal) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
+[`brief`](#brief) · [`rechnung`](#rechnung) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`klageschrift`](#klageschrift) · [`gastspielvertrag`](#gastspielvertrag) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`document-class`](#document-class) · [`personal`](#personal) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
 
 ## Exact candidate signatures
 These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. Aliases share the signature of their target: `letter` is `brief`, `invoice` is `rechnung`, `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
@@ -436,11 +437,11 @@ These signatures are taken from the current source; they show every optional arg
 )
 ```
 
-<a id="personal"></a>
-### `personal` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))
+<a id="document-class"></a>
+### `document-class` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))
 
 ```text
-#let personal(
+#let document-class(
   kind: "report",
   config: (:),
   header: none,
@@ -448,6 +449,15 @@ These signatures are taken from the current source; they show every optional arg
   body,
 )
 ```
+
+Use this shared base for a custom document structure. For a ready-made
+structure, start with `report`, `article`, `journal-entry`, or `book`.
+
+<a id="personal"></a>
+### `personal` — compatibility alias
+
+Existing documents may continue to use `personal` with the same signature and
+behavior. New documents should use `document-class`.
 
 <a id="satz-figure"></a>
 ### `satz-figure` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))

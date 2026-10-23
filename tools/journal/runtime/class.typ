@@ -9,7 +9,7 @@
 /// Typst doesn't do short captions — LoF always shows the full text.
 /// This works around it: LoF gets the short text,
 /// the long one hides as `<satz-long>` metadata.
-/// `personal` puts the long one back when it draws the figure.
+/// `document-class` puts the long one back when it draws the figure.
 /// No `short-caption`? It just acts like a normal `figure`.
 ///
 /// - body (content): what you show (image, rect ...)
@@ -38,20 +38,20 @@
 
 /// The heart of satz — page, fonts, headings, the lot.
 ///
-/// Every template calls this. You can also call it yourself
-/// if you need a custom doc type.
+/// Named templates use this shared page and typography foundation.
+/// Call it directly when you want to design a custom document structure.
 ///
 /// ```example
-/// #show: personal.with(kind: "thesis", config: (page: (paper: "a5")))
+/// #show: document-class.with(kind: "thesis", config: (page: (paper: "a5")))
 /// = My Thesis
 /// ```
 ///
-/// - kind (str): what you build — "journal", "report", "thesis", or "letter"
+/// - kind (str): document behavior — commonly "article", "book", "journal", "proposal", "report", or "thesis"
 /// - config (dictionary): tweak the defaults
 /// - header (none, content): your own header, if you want one
 /// - footer (none, content): your own footer, if you want one
 /// - body (content): your content
-#let personal(
+#let document-class(
   kind: "report",
   config: (:),
   header: none,
@@ -409,3 +409,6 @@
   assert(c.headings.spacing in ("koma", "native"), message: "headings.spacing must be koma or native.")
   if c.headings.spacing == "koma" { koma-headings(c, kind, body) } else { body }
 }
+
+// Compatibility alias for documents using the original public name.
+#let personal = document-class

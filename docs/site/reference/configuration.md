@@ -2,7 +2,7 @@
 title: "Configuration reference"
 ---
 
-This is the candidate reference for the shared `personal(config:)` interface.
+This is the candidate reference for the shared `document-class(config:)` interface.
 It documents the executable baseline in `defaults.typ`; it does not claim that
 every template consumes every key. `report`, `article`, `book`, `journal`,
 `cover-page`, `letter`, `invoice`, and proposal templates add or override
@@ -206,8 +206,8 @@ arguments described in their source API comments and guides.
 
 | Template | Defaults or notable differences |
 | --- | --- |
-| `personal` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
-| `report` | `theme: "neutral"`; all remaining appearance defaults come from `personal`. `theme: none` leaves the shared palette in place. |
+| `document-class` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
+| `report` | `theme: "neutral"`; all remaining appearance defaults come from `document-class`. `theme: none` leaves the shared palette in place. |
 | `article` | `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1em`, body gap `1.5em`. |
 | `journal-entry` / `journal-index` | `page.paper: "iso-b5"`; margins `(x: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; neutral gray palette. Journal block and running-header gaps are in `journal.*` above. |
 | `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Direct options include `font`, `papier`, `seitenraender`, `schriftgroesse`, `zeilenabstand`, and `blocksatz`; nested config only accepts the documented page, typography, color, and link keys. |
