@@ -19,7 +19,7 @@ converted text editable as Typst.
   title: [Book title],
   author: [Author],
   cover-image: "assets/cover.jpg",
-  font: "Charter",
+  font: "XCharter",
   running-headers: "bottom",
 )
 ```
@@ -52,8 +52,11 @@ local repository work, import its `lib.typ` instead of the published package.
    back-matter sections on fresh pages and Arabic folios continuous.
 5. **Choose a restrained design.** Start with the original trim size when
    available; otherwise choose a conventional book size suited to the text.
-   Charter is a good starting serif for academic books when installed; use
-   Libertinus Serif or another available readable serif as a fallback. Keep
+   XCharter is a good starting serif for academic books when installed; use
+   Libertinus Serif or another available readable serif as a fallback. The
+   `font` option takes a Typst-resolvable family name: use the exact name
+   reported by `typst fonts` (for example, `XCharter` and `Charter` are distinct
+   families), and confirm the compiled PDF embeds the intended family. Keep
    body type, line spacing, paragraph spacing, heading rhythm, and contents
    row spacing comfortable. Bottom running titles alternate chapter labels,
    chapter titles, and folios by page parity; use `running-headers: "top"` or `"none"`
