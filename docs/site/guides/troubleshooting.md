@@ -1,35 +1,45 @@
 ---
-title: "Troubleshooting"
+title: "Troubleshoot a Satz document"
 ---
+
+When a document fails, begin with the first error reported by Typst. Later errors often follow from the first one. Check the import version, file path, and value named in that error before changing layout settings.
 
 ## The package cannot be downloaded
 
-Check your internet connection and the import spelling: `@preview/satz:0.1.1`. The first compile needs to download Satz and its dependencies. On a restricted university network, try the browser editor or ask whether package downloads are blocked.
+For a published example, check that the import is spelled exactly as shown, for example `@preview/satz:0.1.1`. The first compile needs an internet connection to fetch Satz and its dependencies. If your network blocks package downloads, try the [Typst web app](https://typst.app/) or ask your network administrator whether Typst package downloads are allowed.
 
-## Unknown argument or unknown variable
+Candidate code in the repository is imported from a local checkout, not from the published package. See [Development versions](/satz/guides/development/) for that setup.
 
-Check the version in your import. A feature labelled **development** on this site may not exist in the published `0.1.1` package. Use the matching published example or follow [the development setup](/satz/guides/development/).
+## Typst says an argument is unknown
+
+First compare the imported package version with the page's version label. A feature marked **development** may only exist in the 0.2.0 candidate source. Published imports are fixed to the version in the import line, so installing a newer editor does not add missing package functions.
+
+Then check spelling and punctuation in the argument name. Use the [API reference](/satz/reference/api/) to confirm the exact name, whether it is required, and its default. For example, the letter API uses the established German field names even though `letter` is its English alias.
+
+## Typst rejects a setting value
+
+Check the type and accepted values in the [configuration reference](/satz/reference/configuration/). Typst values include units: write `12pt`, `5mm`, or `1.2em`, not a bare number when the setting expects a length. Strings require quotes (`"A4"` or `"Libertinus Serif"`); booleans are `true` and `false`; `none` is a special value, not the string `"none"`.
+
+Nested settings must be dictionaries, for example `typography: (font: "Libertinus Serif")`. Satz merges nested dictionaries with defaults, so change only the field you need. Misspelled fields in known groups are rejected; a custom top-level group may be accepted but have no effect if the template does not use it.
 
 ## A font looks different or is missing
 
-The document can only use fonts available to its compiler. A font installed on your computer may not exist in the browser editor, or on a colleague's computer. Begin with the starter's defaults; if you choose another font, make it available wherever you compile.
+The compiler can use only fonts available to its runtime. A font installed on your computer may be unavailable in the browser editor or on a colleague's machine. Start with the template defaults. If you choose a different font, check it in the same environment that produces the PDF and share or install the font as its license permits.
 
 ## The preview does not update
 
-Save the file and confirm that Tinymist is previewing your project's `main.typ`. If you opened an individual chapter or entry, open the main document instead. Read the first error in VS Code's Problems panel; later errors may be caused by it.
+Save the source file and make sure Tinymist is previewing the document's main file, usually `main.typ`, rather than an included chapter or journal entry. Look at the first message in VS Code's Problems panel. If an include or image path is wrong, fix that path before investigating later layout symptoms.
 
-## The text is too tight or too loose
+## An image, section, or bibliography cannot be found
 
-Body line spacing, paragraph spacing, and heading spacing are separate settings. Adjust `typography.leading` for body lines and native `#set par(spacing: 1em)` after the show rule for paragraphs. The development version also offers `typography.paragraph-spacing`. Start with a small change and compare the PDF. See [Configuration](/satz/reference/configuration/#line-and-paragraph-spacing).
+Place the file in the project folder and use a path relative to the `.typ` file that refers to it. Check capitalization: paths that work on one operating system can fail on another if the letter case differs. For an included source that imports files above its directory, compile with an appropriate project root; the development guide explains `typst compile --root .` for local source checkouts.
 
-## An image or bibliography cannot be found
+## Text spacing or page layout looks wrong
 
-Put the file inside the project folder and use a path relative to the Typst file that reads it. Check capitalization, especially when sharing between operating systems. If a local source import goes above the project boundary, compile with an appropriate `--root`; see [Development versions](/satz/guides/development/).
+Line spacing, paragraph spacing, and heading spacing are separate controls. `typography.line-spacing` sets baseline distance as a multiple of font size in the candidate; `typography.leading` sets Typst's line gap directly. Paragraph spacing controls the gap between paragraphs. See each field's type and default in [Configuration](/satz/reference/configuration/#typography-line-spacing).
 
-## Should I update Satz to get a fix?
+For a layout that looks wrong, inspect the compiled PDF at normal zoom and as a full page. Check whether the problem appears throughout the document or only around one figure, heading, or page break. A local float-placement issue usually calls for adjusting nearby content or image width, while a repeated text-width problem may need a page-margin change.
 
-Published imports are versioned. A local source checkout can change as you edit or update it; a copied `_satz` folder stays unchanged until you replace it. See [Development versions and updates](/satz/guides/development/) for the tradeoff.
+## I need help reproducing the problem
 
-## I am still stuck
-
-[Open a GitHub issue](https://github.com/kylekahraman/satz/issues) with the smallest example that reproduces the problem, the import version, and what you expected. Include a screenshot for a layout problem, and remove names, addresses, grant details, and private research data from the example.
+If the issue remains, [open a GitHub issue](https://github.com/kylekahraman/satz/issues) with a minimal source file, the exact import version, the first compiler error, what you expected, and what happened instead. For a visual issue, attach a screenshot or PDF page. Remove real names, addresses, grant details, and private research data before sharing.

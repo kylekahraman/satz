@@ -39,7 +39,7 @@ The first line loads Satz. The second applies the report layout to everything be
 
 ## Make it yours
 
-[Change fonts, spacing, and colors](/satz/reference/configuration/), [add figures and tables](/satz/guides/figures-and-tables/), or [split a growing document into sections](/satz/getting-started/report/#when-the-report-grows). If something goes wrong, start with [Troubleshooting](/satz/guides/troubleshooting/).
+[Change fonts, spacing, and colors](/satz/reference/configuration/), [add figures and tables](/satz/guides/figures-and-tables/), or [split a growing document into sections](/satz/getting-started/report/#5-split-a-longer-report-into-files). If something goes wrong, start with [Troubleshooting](/satz/guides/troubleshooting/).
 
 ## Which version am I using?
 

@@ -28,6 +28,7 @@ export default defineConfig({
       ] },
       { label: 'Reference', items: [
         { slug: 'reference/templates' },
+        { slug: 'reference/api' },
         { slug: 'reference/configuration' },
       ] },
       { label: 'Contributing', slug: 'maintainers/api-design' },

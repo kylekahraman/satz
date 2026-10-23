@@ -2,46 +2,52 @@
 title: "Set up and write"
 ---
 
-You can use Satz in a browser or on your own computer. Both routes produce a PDF. You do not need LaTeX, Python, Go, or a command line to try the published templates.
+This guide gets a first Satz document compiling. You can try the published package in a browser without installing software, or write locally with an editor. In either case, the source is a plain-text `.typ` file and Typst produces the PDF.
 
-## Try it in your browser
+## Fastest route: the Typst web app
 
-1. Open the [Typst web app](https://typst.app/) and create a blank project.
-2. Paste the example from [Write your first report](/satz/getting-started/report/) into its main file.
-3. Change a heading or paragraph and watch the preview update.
-4. Export the PDF when you are ready to share it.
+1. Open [Typst](https://typst.app/) and create a blank project.
+2. Open the [first report tutorial](/satz/getting-started/report/) and copy its complete example into the main file.
+3. Wait for the live preview. Change a heading or sentence to see the preview update.
+4. Export the PDF from the project when it is ready to share.
 
-The package downloads on the first compile. Your source stays editable; the PDF is the copy you share with readers.
+The first compile downloads the package and its dependencies. Your source remains editable in the project; the PDF is the fixed copy you can send to someone else.
 
-## Use VS Code on Windows, macOS, or Linux
+## Local route: VS Code and Tinymist
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/).
-2. Install the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist). It supplies the editor integration and preview; a separate Typst CLI is optional for this route.
-3. Create a folder for your document and open that folder in VS Code.
-4. Create `main.typ`, then paste in the [report example](/satz/getting-started/report/).
-5. Open the Command Palette and search for **Typst Preview** to open the preview provided by Tinymist.
+1. Install [Visual Studio Code](https://code.visualstudio.com/) and the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist).
+2. Create a folder for the document and open that folder in VS Code.
+3. Create `main.typ` and paste in the [report example](/satz/getting-started/report/).
+4. Open the Command Palette, choose **Typst Preview**, and select `main.typ` if asked.
+5. Save the file as you write. Tinymist updates the preview and reports compile errors in VS Code.
 
-Save your source files as you work. Keep any images or bibliography files inside your project folder so the document is easy to move or share.
+Keep images, bibliography files, and included section files in the project folder. That makes their relative paths work when you move or share the project. A separate Typst CLI is optional if you use the editor preview.
 
-## What do I have to learn?
+## What to learn first
 
-Start with these four conventions:
+Typst is a markup language with commands prefixed by `#`. Start with these conventions:
 
-| Write | Meaning |
+| Syntax | Meaning |
 | --- | --- |
-| `= Heading` | A heading; add another `=` for a subsection |
-| A blank line | Start a new paragraph |
-| `*important*` | Bold text |
-| `- An item` | A list item |
+| `= Main heading` | Creates a level-one heading. Use more `=` signs for lower levels. |
+| A blank line | Starts a new paragraph. |
+| `*important*` | Bold text. |
+| `_emphasis_` | Emphasized text. |
+| `- An item` | A bulleted list item. |
+| `#strong[important]` | Calls a Typst function in the text. |
 
-Commands start with `#`. Leave the import and show rule at the top of the starter while you learn. The [Typst writing tutorial](https://typst.app/docs/tutorial/writing-in-typst/) explains the rest as you need it.
+For now, leave the import and `#show` line in place; the show rule applies Satz's document layout to the content that follows. Learn more in the official [Typst writing tutorial](https://typst.app/docs/tutorial/writing-in-typst/).
 
-## Prefer the terminal?
+## Compile from a terminal
 
-With the [Typst CLI](https://github.com/typst/typst#installation) installed, run this from your document folder:
+Install the [Typst CLI](https://github.com/typst/typst#installation), open a terminal in the project folder, then run:
 
 ```sh
 typst compile main.typ
 ```
 
-It creates `main.pdf`. For automatic rebuilding while you write, use `typst watch main.typ`.
+This creates `main.pdf`. During writing, `typst watch main.typ` recompiles when the source changes. If compilation fails, start with the first reported error; later errors can be consequences of that one. See [Troubleshooting](/satz/guides/troubleshooting/) for common package, font, and file-path problems.
+
+## Choose a document
+
+Start with [a report](/satz/getting-started/report/), [a letter](/satz/getting-started/letter/), or [a research journal](/satz/guides/journals/). The [template index](/satz/reference/templates/) lists the other document types and marks features that are still development-only.
