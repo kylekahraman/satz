@@ -49,7 +49,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 
 ### Work items
 
-- [x] **Clearer shared document-class entry point** — expose `document-class()` as the descriptive name for custom documents that need Satz's shared page and typography rules; keep `personal()` as a compatibility alias. Named templates remain the usual starting point when their structure fits.
+- [x] **Clearer custom-document entry point** — expose `custom()` for author-defined structures that need Satz's shared page and typography rules. Named templates use the internal `document-class()` integration layer and remain the usual starting point when their structure fits; `personal()` is not carried into 0.2.0.
 - [x] **Report outlines and palettes** — native section/figure/table numbering, hanging indents, consistent line/item/section gaps, independently enabled LoF/LoT, compact lists respecting custom numbers and page formats, and the existing named palettes for reports (black on white by default; colored accents opt-in). PDF assertions are in `examples/latex-parity/check_outlines.py`.
 - [x] **English letter and invoice inputs** — accept English top-level and nested sender, recipient, and invoice-item fields while preserving all German calls; English invoice input retains German output. Paired documents produce identical extracted text; the PyMuPDF regression script is in `examples/latex-parity/check_english_inputs.py`.
 - [x] **Appearance precedence** — resolve defaults, template defaults, theme, direct options, and nested config consistently; shared theme application and postal-option validation are checked in `examples/latex-parity/check_appearance_precedence.py`.

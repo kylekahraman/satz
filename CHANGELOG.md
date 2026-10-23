@@ -56,8 +56,9 @@ LaTeX/KOMA-Script parity.
 
 ### Other development work already committed
 
-- Expose `document-class()` as the shared styling entry point for custom
-  document structures; retain `personal()` as a compatibility alias.
+- Expose `custom()` for author-defined document structures. Named templates
+  share the internal `document-class()` integration layer; `personal()` is not
+  part of the 0.2.0 API.
 - Hydra running headers and an optional Glossarium namespace.
 - Native placeholder figures and composable cover presets.
 - An article entry point with native columns, author affiliations and abstract.

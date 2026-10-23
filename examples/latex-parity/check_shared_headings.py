@@ -47,7 +47,7 @@ def main():
                 assert delta < .05, (marker, delta)
                 errors.append(delta)
             print(f'Shared KOMA reference: maximum relative vertical error {max(errors):.4f} pt')
-        base = '#import "/lib.typ": document-class\n#show: document-class.with(kind: "proposal", config: (toc: (depth: 0), page: (paper: "a6", margin: 12mm), '
+        base = '#import "/lib.typ": custom\n#show: custom.with(kind: "proposal", config: (toc: (depth: 0), page: (paper: "a6", margin: 12mm), '
         for level in range(1, 5):
             for height in (104, 112):
                 path = compile_source(f'edge-{level}-{height}', base + '))\n' + f'#v({height}mm)\n' + '=' * level + ' EDGEHEADING <edge>\nFOLLOWINGBODY\nReference @edge.\n')

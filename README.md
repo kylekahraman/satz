@@ -288,18 +288,18 @@ You can still override individual colors with
 
 ## Structure
 
-Satz is built around the shared document class `document-class()` in `class.typ`. Named templates such as `report()`, `article()`, `journal-entry()`, and `book()` use it internally. Use `document-class()` directly when you want Satz's page and typography foundation but want to design the document structure yourself. It reads defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary (deep merge — nested dictionaries are merged, not overwritten). `personal()` remains available as a compatibility alias.
+Satz's named templates such as `report()`, `article()`, `journal-entry()`, and `book()` share an internal document class. Use these ready-made templates when their structure fits. Use the public `custom()` function when you want to design your own document structure while reusing Satz's page and typography foundation. It reads defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary (deep merge — nested dictionaries are merged, not overwritten).
 
 ```
 lib.typ              ← public API
 defaults.typ         ← unified defaults + merge()
-class.typ            ← document-class() + satz-figure (`personal()` compatibility alias)
+class.typ            ← internal document class + public `custom()` + satz-figure
 citation.typ         ← citepre() — author-year cite without parens
 cover.typ            ← cover-page() — logos/body/footer slots
 letter/              ← brief() — DIN 5008 letter, i18n (de/en)
 invoice/             ← rechnung() — German invoice, EPC QR code
 journal/             ← journal-entry / journal-index + remember/question
-report/              ← report() — thin wrapper around document-class(kind: "report")
+report/              ← report() — thin wrapper around the internal document class
 dfg-proposal/        ← dfg-proposal — 53.01 (WIP)
 legal-complaint/     ← klageschrift — ZPO
 gastspielvertrag/    ← gastspielvertrag — guest performance contract
@@ -376,7 +376,7 @@ and `soft-rose`. Cover backgrounds retain their previous colors.
 Pass `theme: none` for the legacy shared palette. Explicit `config.colors` and
 `config.links` overrides win over the selected theme. The public
 `document-themes` dictionary also makes the same palettes available for custom
-`document-class(config: (colors: document-themes.plum))` layouts. Report-specific
+`custom(config: (colors: document-themes.plum))` layouts. Report-specific
 defaults now contain only the report theme; font and layout defaults come from
 the shared configuration. These changes are local and not yet published.
 
@@ -473,7 +473,7 @@ section, falling back to the chapter, at the right. Headers use the last relevan
 heading on the page, including a section introduced on that page. Chapter-opening
 pages have no running header. Unnumbered, outlined chapters participate;
 headings with `outlined: false` do not. Headers remain disabled by default.
-Custom `document-class(header: ...)` content takes precedence.
+Custom header content takes precedence over the generated header.
 
 The existing report page-number offset and counter-based alignment are retained.
 See the [paired KOMA-Script comparison](examples/latex-parity/README.md) for

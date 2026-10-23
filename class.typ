@@ -36,13 +36,12 @@
   }
 }
 
-/// The heart of satz — page, fonts, headings, the lot.
+/// Shared document-wide styling used internally by Satz's named templates.
 ///
-/// Named templates use this shared page and typography foundation.
-/// Call it directly when you want to design a custom document structure.
+/// User-authored document structures should use `custom()` below.
 ///
 /// ```example
-/// #show: document-class.with(kind: "thesis", config: (page: (paper: "a5")))
+/// #show: custom.with(kind: "thesis", config: (page: (paper: "a5")))
 /// = My Thesis
 /// ```
 ///
@@ -407,5 +406,34 @@
   }
 }
 
-// Compatibility alias for documents using the original public name.
-#let personal = document-class
+/// Apply Satz's shared document styling to a document structure you write.
+///
+/// Prefer a named template when its structure fits: `report`, `article`,
+/// `book`, or the journal and proposal templates. Use `custom` when you want
+/// to write the structure yourself while reusing Satz's page, typography,
+/// heading, link, and outline settings.
+///
+/// ```example
+/// #show: custom.with(config: (page: (paper: "a5")))
+/// = My document
+/// I choose the structure and content.
+/// ```
+///
+/// - kind (str): shared behavior preset, commonly "report", "thesis", "journal", or "proposal"
+/// - config (dictionary): shared settings and overrides
+/// - header (none, content): optional custom header
+/// - footer (none, content): optional custom footer
+/// - body (content): your document structure
+#let custom(
+  kind: "report",
+  config: (:),
+  header: none,
+  footer: none,
+  body,
+) = document-class(
+  kind: kind,
+  config: config,
+  header: header,
+  footer: footer,
+  body,
+)

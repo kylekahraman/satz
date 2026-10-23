@@ -64,7 +64,7 @@ def main():
             assert 'AP 1' in text and 'Ziel: OBJ' in text
         for periods in [1, 14, 36]:
             compile_doc(f'partial-{periods}', base + f'#proposal-gantt(((label: [TASK], spans: ((1, {periods}),)),), periods: {periods}, size: 9pt)')
-        long = '#import "/lib.typ": document-class, work-package\n#show: document-class.with(kind: "proposal", config: (toc: (depth: 0), page: (paper: "a6", margin: 12mm)))\n#work-package(title: [Long summary], objective: [Objective], body: lorem(500)) <wp>\nReference @wp.'
+        long = '#import "/lib.typ": custom, work-package\n#show: custom.with(kind: "proposal", config: (toc: (depth: 0), page: (paper: "a6", margin: 12mm)))\n#work-package(title: [Long summary], objective: [Objective], body: lorem(500)) <wp>\nReference @wp.'
         with pdfplumber.open(compile_doc('long-summary', long)) as pdf:
             assert len(pdf.pages) > 2
             for page in pdf.pages:

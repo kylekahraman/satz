@@ -1,4 +1,4 @@
-#import "../class.typ": document-class
+#import "../class.typ": personal
 #import "../defaults.typ": defaults, merge
 #import "defaults.typ": defaults as article-defaults
 
@@ -51,7 +51,7 @@
       ]
     }
   ]
-  document-class(
+  personal(
     kind: "article",
     // Article outlines are inline, rather than report front matter/counter reset.
     config: merge(c, (toc: (depth: 0))),

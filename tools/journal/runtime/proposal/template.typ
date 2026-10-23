@@ -1,4 +1,4 @@
-#import "../class.typ": document-class
+#import "../class.typ": personal
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as proposal-defaults
 
@@ -20,7 +20,7 @@
       #if de [Seite] else [Page] #counter(page).display("1 / 1", both: true)
     ]
   }
-  document-class(kind: "proposal", config: c, header: furniture)[
+  personal(kind: "proposal", config: c, header: furniture)[
     #set text(lang: if de { "de" } else { "en" })
     #set page(numbering: none, footer: none)
     #align(left)[

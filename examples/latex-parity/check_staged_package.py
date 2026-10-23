@@ -87,18 +87,13 @@ Invoice body.
             "cover": f'''#import "@local/{manifest['name']}:{version}": cover-page
 #cover-page(layout: "minimal", title: "Candidate cover")
 ''',
-            "configuration": f'''#import "@local/{manifest['name']}:{version}": document-class
-#show: document-class.with(config: (
+            "configuration": f'''#import "@local/{manifest['name']}:{version}": custom
+#show: custom.with(config: (
   typography: (font: "Libertinus Serif", size: 12pt),
   colors: (brand-primary: rgb("#355D50")),
 ))
 = Candidate configuration
 Configuration marker.
-''',
-            "legacy-personal-alias": f'''#import "@local/{manifest['name']}:{version}": personal
-#show: personal.with(config: (page: (paper: "a5")))
-= Compatibility check
-The original public name remains usable.
 ''',
             "proposal": f'''#import "@local/{manifest['name']}:{version}": research-proposal
 #show: research-proposal.with(title: "Candidate proposal", applicants: ("Researcher",), institution: ("Institute",))
@@ -116,6 +111,17 @@ Proposal body.
                 capture_output=True,
             )
             assert result.returncode == 0, f"{name} starter failed from staged package:\n{result.stderr}"
+
+        removed_name = project / "removed-personal.typ"
+        removed_name.write_text(f'''#import "@local/{manifest['name']}:{version}": personal
+= Removed API
+''')
+        result = subprocess.run(
+            ["typst", "compile", "--package-path", str(packages), "--root", str(project), str(removed_name), str(stage / "removed-personal.pdf")],
+            text=True,
+            capture_output=True,
+        )
+        assert result.returncode != 0, "personal unexpectedly remains in the 0.2.0 public API"
 
     print(f"Passed: staged {len(files)} files from source manifest {source_version} as isolated Satz {version}; report, article, journal, letter, invoice, cover, proposal, and configuration starters compile.")
 

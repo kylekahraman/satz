@@ -1,11 +1,11 @@
 # The satz book API
 
-`document-class()` is the shared page and typography foundation used by the
-named templates. Choose `report()`, `article()`, `journal-entry()`, or `book()`
-when one matches the document you want to write. Use `document-class()` for a
-custom document structure that should reuse Satz's page and typography rules.
-The old `personal()` name remains as a compatibility alias, but new documents
-should use `document-class()`.
+Named templates share an internal document class for page and typography
+behavior. Choose `report()`, `article()`, `journal-entry()`, or `book()` when one
+matches the document you want to write. Use the public `custom()` function when
+you want to write your own structure while reusing Satz's page and typography
+rules. `custom()` accepts a `kind` behavior preset such as `"report"` or
+`"thesis"`; it does not impose a ready-made document structure.
 generic `kind`, `config`, `header`, and `footer` arguments are too low-level for
 the ordinary book-writing path. `book(...)` wraps that foundation in a
 KOMA-Script-like entry point: choose the title, typeface, and accent once, then

@@ -1,8 +1,8 @@
 // Original comparison fixture, MIT, satz contributors (2026).
 // Explicit page breaks make header selection independent of line breaking.
-#import "../../lib.typ": document-class
+#import "../../lib.typ": custom
 
-#show: document-class.with(kind: "thesis", config: (
+#show: custom.with(kind: "thesis", config: (
   page: (
     binding: if sys.inputs.at("single-sided", default: "false") == "true" { none } else { left },
     headers: sys.inputs.at("headers", default: "true") == "true",

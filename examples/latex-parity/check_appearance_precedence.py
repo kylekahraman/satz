@@ -84,24 +84,24 @@ Body.
         assert result.returncode != 0
         assert "typography.mystery-size" in result.stderr
 
-        invalid_heading = f'''#import "{IMPORT}": document-class
-#show: document-class.with(config: (headings: (spacing: "koma-ish")))
+        invalid_heading = f'''#import "{IMPORT}": custom
+#show: custom.with(config: (headings: (spacing: "koma-ish")))
 Body.
 '''
         result, _ = compile_pdf(folder, "invalid-heading-policy", invalid_heading)
         assert result.returncode != 0
         assert "headings.spacing must be koma or native" in result.stderr
 
-        invalid_shared_key = f'''#import "{IMPORT}": document-class
-#show: document-class.with(config: (typography: (leadng: 0.7em)))
+        invalid_shared_key = f'''#import "{IMPORT}": custom
+#show: custom.with(config: (typography: (leadng: 0.7em)))
 Body.
 '''
         result, _ = compile_pdf(folder, "invalid-shared-key", invalid_shared_key)
         assert result.returncode != 0
         assert "Unknown Satz config key `typography.leadng`" in result.stderr
 
-        extension_group = f'''#import "{IMPORT}": document-class
-#show: document-class.with(config: (caller-extension: (custom: true)))
+        extension_group = f'''#import "{IMPORT}": custom
+#show: custom.with(config: (caller-extension: (custom: true)))
 Body.
 '''
         result, _ = compile_pdf(folder, "extension-group", extension_group)
