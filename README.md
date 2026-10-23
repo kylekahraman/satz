@@ -602,6 +602,14 @@ from other chapters. `appendix: true` selects letter prefixes. This leaves
 heading numbering and page breaks to the document; see the
 [numbering guide](docs/chapter-numbering.md).
 
+Use `unnumbered-heading(level: 1)[References]` for a heading that keeps Satz's
+normal style but has no number. It remains in the table of contents by
+default; pass `outlined: false` to omit it. For multiple appendices, use an
+unnumbered `Appendices` heading, then scope `#set heading(numbering: "A.1")`
+around the appendix headings and reset the heading counter to zero. The
+appendix titles then display A, B, C, with subsections A.1, A.2, B.1, etc.
+Keep appendix titles themselves free of repeated “Appendix A” wording.
+
 Configuration adds `typography.math-font` and `typography.mono-font`
 (both default to `auto`), `captions.alignment`, `captions.label-weight`,
 and opt-in `headings.h1-pagebreak`. Callouts accept an attached `title:`.

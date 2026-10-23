@@ -25,6 +25,7 @@
 #import "tables.typ": scientific-table, scientific-tables
 #import "callouts.typ": callout
 #import "chapter-numbering.typ": chapter-numbering
+#import "headings.typ": unnumbered-heading
 
 #import "nwo-proposal/template.typ": nwo-proposal
 #import "nwo-proposal/profiles.typ": nwo-profile
