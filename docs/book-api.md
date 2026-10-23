@@ -39,18 +39,29 @@ Write front matter as ordinary Typst content.
 ]
 ```
 
-The book entry point supplies a cover, two-sided page layout with binding
-correction, front-matter Roman folios, Arabic main-matter folios, colored
-chapter furniture, and a native linked contents page. The `accent` parameter
-sets the heading and component color; links use a darker mix of that accent.
-Pass any Typst color.
+The book entry point supplies a designed cover or a full-page `cover-image`,
+two-sided page layout with binding correction, front-matter Roman folios,
+Arabic main-matter folios, and a native linked contents page. Bottom running
+footers alternate between the chapter title and chapter label;
+chapter-opening pages keep the folio but omit the title. Set
+`running-headers: "top"` for Satz's Hydra-based top headers, or `"none"` to
+show folios only. The `accent` parameter sets the heading and component color;
+links use a darker mix of that accent. Pass any Typst color.
+
+For an EPUB conversion, pass the extracted cover image as a project-relative
+path. When `cover-image` is omitted, Satz keeps its configurable typographic
+cover.
 
 ## Structure and components
 
 Use `book-appendix[...]` to switch chapter numbering to letters while keeping
-Arabic page numbers. Use `book-backmatter[...]` for unnumbered chapters after
-the appendices. `book-contents(title:, depth:)` controls the contents heading
-and the deepest heading level listed.
+Arabic page numbers. Each `book-backmatter[...]` section begins on a fresh page
+and retains continuous Arabic folios. Use a separate call for references, notes,
+and other back-matter sections. `book-index[...]` starts a fresh two-column index
+with hanging entries. Its `column-count:`, `gutter:`, `indent:`, and `spacing:`
+arguments tune the index layout. `book-contents(title:, depth:)` controls the
+contents heading and the deepest heading level listed; row spacing is
+configurable through `config.book.contents.entry-spacing`.
 
 Educational components are optional. `worked-example[...]` adds a compact
 indented calculation; `analysis-note[...]` adds a highlighted interpretation
@@ -72,13 +83,29 @@ Common choices are direct `book.with(...)` parameters: `title`, `subtitle`,
 ```typst
 #show: book.with(
   title: [A different book],
+  cover-image: "assets/cover.jpg",
   accent: teal,
+  running-headers: "bottom",
   config: (
     book: (cover-top: 35mm, cover-title-size: 30pt),
     headings: (h1-below: 28pt, h2-above: 18pt),
     page: (margin: (left: 30mm, right: 24mm, top: 22mm, bottom: 26mm)),
   ),
 )
+```
+
+An index can follow the references without resetting the page counter:
+
+```typst
+#book-backmatter[
+  = References
+  // Add a bibliography or formatted reference entries.
+]
+
+#book-index[
+  Mechanisms, 12–18
+  Models, 23–27
+]
 ```
 
 The config dictionary uses satz's recursive `merge()` behavior: changing one

@@ -1,9 +1,14 @@
 // Book entry point — a KOMA-inspired authoring path over satz's shared class.
 
-#import "../class.typ": personal
+#import "../class.typ": document-class
 #import "../defaults.typ": defaults, merge
 #import "../themes.typ": theme-config
 #import "components.typ": book-style
+
+#let book-running-heading = state("satz-book-running-heading", (
+  number: none,
+  chapter: [],
+))
 
 /// A configurable book with a title page, front matter, contents, and main matter.
 ///
@@ -30,6 +35,7 @@
 /// ```
 ///
 /// - title (content): title shown on the cover
+/// - cover-image (str, none): optional full-page image for an existing book cover
 /// - subtitle (content, none): optional subtitle
 /// - author (content, none): author or recipient line
 /// - eyebrow (content, none): small line above the title
@@ -47,15 +53,19 @@
 /// - margin (dictionary): page margins
 /// - binding (alignment, none): inside edge for two-sided pages
 /// - binding-correction (length): extra room at the binding edge
+/// - running-headers (str): placement of alternating chapter titles and labels (`"bottom"`, `"top"`, or `"none"`)
 /// - config (dictionary): advanced shared satz overrides
 /// - config.book.contents: contents title position, size, entry size, and row spacing
 /// - config.book.worked-example: default spacing, inset, and type sizes
 /// - config.book.exercise: spacing between each prompt and its grid, and between exercise groups
 /// - config.book.footer-dy: vertical position of the page number
+/// - config.book.contents.entry-spacing: vertical gap before each contents entry
+/// - config.book.running-headers: running-title placement (`"bottom"`, `"top"`, or `"none"`)
 /// - body (content): preliminary pages and book structure
 #let book(
   body,
   title: none,
+  cover-image: none,
   subtitle: none,
   author: none,
   eyebrow: none,
@@ -73,6 +83,7 @@
   paragraph-spacing: none,
   binding: auto,
   binding-correction: none,
+  running-headers: "bottom",
   config: (:),
 ) = {
   let default-accent = rgb("#23616B")
@@ -133,6 +144,7 @@
         grid-gap: 11pt,
         group-gap: 20pt,
       ),
+      running-headers: running-headers,
       footer-dy: 5pt,
       cover-top: 28mm,
       cover-eyebrow-size: 14.3pt,
@@ -179,14 +191,20 @@
     ),
   )
   let c = merge(merge(themed-defaults, direct-config), config)
+  assert(
+    c.book.running-headers in ("bottom", "top", "none"),
+    message: "book running-headers must be \"bottom\", \"top\", or \"none\".",
+  )
+  let class-config = merge(c, (page: (headers: c.book.running-headers == "top")))
 
-  personal(kind: "book", config: c, [
+  document-class(kind: "book", config: class-config, [
     #book-style.update((
       accent: c.colors.brand-primary,
       ink: c.book.ink,
       contents: c.book.contents,
       worked-example: c.book.worked-example,
       exercise: c.book.exercise,
+      running-headers: c.book.running-headers,
       footer-dy: c.book.footer-dy,
       footer: c.colors.text-main,
       grid: rgb("#D2D2D2"),
@@ -201,6 +219,7 @@
     #show heading.where(level: 1): it => context {
       let style = book-style.get()
       let number = if it.numbering == none { none } else { counter(heading).display(it.numbering) }
+      book-running-heading.update((number: number, chapter: it.body))
       [
         #pagebreak(weak: true)
         #v(19pt)
@@ -223,32 +242,39 @@
     #show heading.where(level: 2): set heading(numbering: none)
     #show heading.where(level: 3): set text(size: c.headings.h3-size, fill: c.colors.text-main, weight: "bold")
     #show heading.where(level: 4): set text(size: c.headings.h4-size, fill: c.colors.text-main, weight: "bold")
-    #set page(footer: none)
-    #block(width: 100%, height: 100%)[
-      #v(c.book.cover-top)
-      #if eyebrow != none { block(below: c.book.cover-eyebrow-below, text(size: c.book.cover-eyebrow-size, fill: c.colors.brand-primary)[#eyebrow]) }
-      #block(below: c.book.cover-title-below)[
-        #set par(leading: c.book.cover-title-leading)
-        #text(size: c.book.cover-title-size, weight: "bold", fill: c.book.ink)[#title]
+    #if cover-image != none {
+      {
+        set page(margin: 0pt, footer: none)
+        image(cover-image, width: 100%, height: 100%, fit: "cover")
+      }
+    } else {
+      set page(footer: none)
+      block(width: 100%, height: 100%)[
+        #v(c.book.cover-top)
+        #if eyebrow != none { block(below: c.book.cover-eyebrow-below, text(size: c.book.cover-eyebrow-size, fill: c.colors.brand-primary)[#eyebrow]) }
+        #block(below: c.book.cover-title-below)[
+          #set par(leading: c.book.cover-title-leading)
+          #text(size: c.book.cover-title-size, weight: "bold", fill: c.book.ink)[#title]
+        ]
+        #if subtitle != none {
+          block(below: c.book.cover-subtitle-below)[
+            #set par(leading: c.book.cover-subtitle-leading)
+            #text(size: c.book.cover-subtitle-size)[#subtitle]
+          ]
+        }
+        #line(length: 100%, stroke: c.book.cover-rule-width)
+        #v(6mm)
+        #if author != none {
+          block(below: c.book.cover-author-below)[
+            #set par(leading: 0.5em)
+            #text(size: c.book.cover-author-size)[#author]
+          ]
+        }
+        #v(1fr)
+        #if note != none { block(below: c.book.cover-note-below, text(size: c.book.cover-note-size)[#note]) }
+        #if date != none { move(dy: c.book.cover-date-dy, text(size: 10pt)[#date]) }
       ]
-      #if subtitle != none {
-        block(below: c.book.cover-subtitle-below)[
-          #set par(leading: c.book.cover-subtitle-leading)
-          #text(size: c.book.cover-subtitle-size)[#subtitle]
-        ]
-      }
-      #line(length: 100%, stroke: c.book.cover-rule-width)
-      #v(6mm)
-      #if author != none {
-        block(below: c.book.cover-author-below)[
-          #set par(leading: 0.5em)
-          #text(size: c.book.cover-author-size)[#author]
-        ]
-      }
-      #v(1fr)
-      #if note != none { block(below: c.book.cover-note-below, text(size: c.book.cover-note-size)[#note]) }
-      #if date != none { move(dy: c.book.cover-date-dy, text(size: 10pt)[#date]) }
-    ]
+    }
     #pagebreak(to: "odd")
     #counter(page).update(1)
     #set page(numbering: "i")
@@ -262,6 +288,40 @@
     })
     #body
   ])
+}
+
+// Shared footer for Arabic main matter, appendices, and back matter.
+#let book-page-footer(style) = context {
+  let n = counter(page).get().first()
+  if n > 0 {
+    let d = counter(page).display()
+    let folio = text(size: style.footer-size, weight: style.footer-weight, fill: style.footer, d)
+    let opening = query(heading.where(level: 1)).any(h => h.location().page() == here().page())
+    if style.running-headers == "bottom" and not opening {
+      let is-even = calc.rem(n, 2) == 0
+      let current = book-running-heading.get()
+      let title = if is-even {
+        if current.number == none { smallcaps(current.chapter) } else { [CHAPTER #current.number] }
+      } else {
+        smallcaps(current.chapter)
+      }
+      let running-line = if is-even {
+        grid(columns: (1fr, 1fr),
+          align(left)[#text(size: 8pt, fill: rgb("#666666"))[#d #h(0.8em) #title]],
+          [],
+        )
+      } else {
+        grid(columns: (1fr, 1fr),
+          [],
+          align(right)[#text(size: 8pt, fill: rgb("#666666"))[#title #h(0.8em) #d]],
+        )
+      }
+      move(dy: style.footer-dy, running-line)
+    } else {
+      let positioned = move(dy: style.footer-dy, folio)
+      if calc.rem(n, 2) == 0 { align(left, positioned) } else { align(right, positioned) }
+    }
+  }
 }
 
 /// Insert a styled contents page at the current location.
@@ -307,6 +367,7 @@
       contents: style.contents,
       worked-example: style.worked-example,
       exercise: style.exercise,
+      running-headers: style.running-headers,
       footer-dy: style.footer-dy,
       footer: style.footer,
       grid: style.grid,
@@ -322,15 +383,7 @@
     #counter(page).update(1)
     #counter(heading).update(0)
     #set page(numbering: "1")
-    #set page(footer: context {
-      let n = counter(page).get().first()
-      if n > 0 {
-        let d = counter(page).display()
-        let folio = text(size: style.footer-size, weight: style.footer-weight, fill: style.footer, d)
-        let positioned = move(dy: style.footer-dy, folio)
-        if calc.rem(n, 2) == 0 { align(left, positioned) } else { align(right, positioned) }
-      }
-    })
+    #set page(footer: book-page-footer(style))
     #body
   ]
 }
@@ -345,6 +398,7 @@
       contents: style.contents,
       worked-example: style.worked-example,
       exercise: style.exercise,
+      running-headers: style.running-headers,
       footer-dy: style.footer-dy,
       footer: style.footer,
       grid: style.grid,
@@ -355,16 +409,57 @@
     ))
     #set heading(numbering: "A")
     #set page(numbering: "1")
+    #set page(footer: book-page-footer(style))
     #counter(heading).update(0)
     #body
   ]
 }
 
 /// Add unnumbered back-matter chapters after appendices or solutions.
-#let book-backmatter(body) = {
+#let book-backmatter(body) = context {
+  let style = book-style.get()
   [
+    #pagebreak(weak: true)
     #set heading(numbering: none)
     #set page(numbering: "1")
+    #set page(footer: book-page-footer(style))
     #body
+  ]
+}
+
+/// Start a fresh, two-column index with hanging entries.
+///
+/// Use one `book-index` call after the references and supply index entries as
+/// paragraphs. The page counter continues from the preceding back-matter page.
+///
+/// - body (content): index entries
+/// - title (content): index heading
+/// - column-count (int): number of index columns
+/// - gutter (length): space between columns
+/// - indent (length): continuation-line indent for each entry
+/// - spacing (length): space between entries
+#let book-index(
+  body,
+  title: [Index],
+  column-count: 2,
+  gutter: 18pt,
+  indent: 10pt,
+  spacing: 3pt,
+) = context {
+  assert(type(column-count) == int and column-count >= 1, message: "book-index column-count must be a positive integer.")
+  assert(indent >= 0pt, message: "book-index indent must be nonnegative.")
+  assert(spacing >= 0pt, message: "book-index spacing must be nonnegative.")
+  [
+    #set page(numbering: "1")
+    #set page(columns: column-count)
+    #set columns(gutter: gutter)
+    #set heading(numbering: none)
+    #set page(footer: book-page-footer(book-style.get()))
+    #pagebreak(weak: true)
+    #heading(level: 1, numbering: none)[#title]
+    #block(inset: (left: indent))[
+      #set par(first-line-indent: -indent, spacing: spacing)
+      #body
+    ]
   ]
 }

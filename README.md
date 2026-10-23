@@ -128,7 +128,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **invoice** | `rechnung(absender, empfaenger, datum, posten, qr:, qr-betrag:, qr-verwendungszweck:, body)` | German invoice adapted from the letter template. Optional EPC QR code (GiroCode) — banking apps auto-fill transfer details. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
 | **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis — numbered headings, auto TOC/LoF/LoT, two-sided layout, bibliography |
-| **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]` | KOMA-Script-inspired book layout with adjustable cover, page furniture, appendices, and optional exercise components |
+| **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]`, `book-index[...]` | KOMA-Script-inspired book layout with adjustable or image cover, alternating running titles, back-matter pages, two-column index, and optional exercise components |
 | **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), complete German/English starters, separate page limits and counters (unreleased) |
 | **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers and exact budget totals (unreleased) |
 | **NWO proposal (experimental)** | `nwo-proposal(...)`, `nwo-profile(...)` | 15 represented Veni/Vidi/Vici 2026 scheme/domain/stage profiles; not full NWO form coverage (unreleased) |
@@ -526,7 +526,9 @@ KOMA-Script-like book authoring: set the title, typeface, and accent once, then
 write with ordinary headings. `book-contents`, `book-mainmatter`,
 `book-appendix`, and `book-backmatter` mark the document parts. Optional
 components add worked examples, analysis prompts, and exercises with answer
-grids. See [the complete example](examples/book.typ) and
+grids. Books can use alternating running titles at the bottom, continuous
+page numbering through back matter, an optional EPUB cover image, and a fresh
+two-column index via `book-index`. See [the complete example](examples/book.typ) and
 [the API and layout guide](docs/book-api.md). Its source-PDF measurements and
 remaining parity gaps are in [the workbook comparison](docs/book-workbook-parity.md).
 The RSA workbook specimen and rebuild instructions are saved in the ignored local

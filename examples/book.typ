@@ -1,4 +1,4 @@
-#import "../lib.typ": book, book-contents, book-mainmatter, book-appendix, book-backmatter
+#import "../lib.typ": book, book-contents, book-mainmatter, book-appendix, book-backmatter, book-index
 #import "../lib.typ": worked-example, analysis-note, exercise
 
 #show: book.with(
@@ -11,6 +11,7 @@
   accent: rgb("#23616B"),
   font: "Libertinus Serif",
   math-font: "New Computer Modern Math",
+  running-headers: "bottom",
 )
 
 = How to use this book
@@ -56,5 +57,15 @@ and chapter structure remain ordinary Typst.
 #book-backmatter[
   = Further reading
 
-  Add references, notes, or an index here.
+  Add references or notes here.
+]
+
+#book-index[
+  Abstraction, levels of, 14, 19
+
+  Analysis: worked example, 5; interpreting results, 7
+
+  Equations, 4–6
+
+  Mean, arithmetic, 5
 ]

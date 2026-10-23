@@ -22,6 +22,7 @@
     grid-gap: 11pt,
     group-gap: 20pt,
   ),
+  running-headers: "bottom",
   footer-dy: 5pt,
   footer: black,
   grid: rgb("#D2D2D2"),
