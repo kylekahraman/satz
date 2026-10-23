@@ -147,7 +147,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 
 `article` accepts these additional keys when using `article`. They control the
 full-width title block and abstract; headings, page columns and typography still
-use the shared settings above. See the [`article` API](api/#article) for the
+use the shared settings above. See the [`article` API](/satz/reference/api/#article) for the
 function inputs such as authors, affiliations, and date.
 
 | Field | Type | Default | Effect |

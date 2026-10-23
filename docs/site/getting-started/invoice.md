@@ -10,27 +10,27 @@ This tutorial starts with a blank file and builds a German invoice. It explains 
 Paste this complete example into a new Typst project:
 
 ```typst
-#import "@preview/satz:0.1.1": invoice
-#invoice(
-  sender: (
+#import "@preview/satz:0.1.1": rechnung
+#rechnung(
+  absender: (
     name: "Example Studio",
-    street: "Sample Street 1",
-    postal-code-city: "12345 Sample City",
-    tax-number: "000/000/00000",
+    strasse: "Sample Street 1",
+    plz_ort: "12345 Sample City",
+    steuernummer: "000/000/00000",
     iban: "DE00 0000 0000 0000 0000 00",
     bank: "Example Bank",
-    account-holder: "Example Studio",
+    kontoinhaber: "Example Studio",
   ),
-  recipient: (
+  empfaenger: (
     name: "Example Client",
-    street: "Market Street 2",
-    postal-code-city: "54321 Example Town",
+    strasse: "Market Street 2",
+    plz_ort: "54321 Example Town",
   ),
-  date: "23.10.2026",
-  invoice-number: "2026-001",
-  service-date: "21.10.2026",
-  subject: "Design services",
-  items: (
+  datum: "23.10.2026",
+  rechnungsnummer: "2026-001",
+  leistungsdatum: "21.10.2026",
+  betreff: "Design services",
+  posten: (
     ("Design consultation", 2, 85.00),
     ("Preparation of materials", 1, 120.00),
   ),
@@ -41,13 +41,13 @@ Paste this complete example into a new Typst project:
 ]
 ```
 
-The import loads the published English alias `invoice`. `#invoice(...)` creates one invoice from the structured fields, and the square-bracket content at the end is the message body. This function call is different from the report and letter show rules. The template's labels and output remain German; English field names are aliases for the established German names.
+The import loads `rechnung` from the published package. `#rechnung(...)` creates one invoice from the structured fields, and the square-bracket content at the end is the message body. This function call is different from the report and letter show rules. The template's labels and output are German, and this published version uses German argument names such as `absender` and `rechnungsnummer`. The candidate API reference describes English argument aliases available in the development source.
 
 ## 2. Replace the example values
 
-The `sender` and `recipient` values are dictionaries. Each contains the name, street, and postal-code/city. The sender also supplies the tax number, IBAN, and bank name. The optional account holder defaults to the sender name. `date`, `invoice-number`, `service-date`, and `subject` provide the corresponding invoice fields; they are strings in this interface.
+The `absender` and `empfaenger` values are dictionaries. Each contains the name, street, and postal-code/city (`strasse` and `plz_ort`). The sender also supplies the tax number, IBAN, and bank name. The optional account holder defaults to the sender name. `datum`, `rechnungsnummer`, `leistungsdatum`, and `betreff` provide the corresponding invoice fields; they are strings in this interface.
 
-Each item is a three-value tuple: description, quantity, unit price. Descriptions may be strings or Typst content. Quantity must be a positive number; unit price must be a nonnegative number. You can also write an item as a record with `description`, `quantity`, and `unit-price` keys. See the [`rechnung` API entry](/satz/reference/api/#rechnung) for required record fields, aliases, defaults, and validation rules.
+Each item in `posten` is a three-value tuple: description, quantity, unit price. Descriptions may be strings or Typst content. Quantity must be a positive number; unit price must be a nonnegative number. The development version also accepts item records; see the [`rechnung` API entry](/satz/reference/api/#rechnung) for the candidate's full input contract.
 
 ## 3. Decide whether to include payment details
 

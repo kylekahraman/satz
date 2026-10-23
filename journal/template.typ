@@ -1,6 +1,6 @@
 #import "@preview/cheq:0.4.0": checklist
 #import "../class.typ": personal
-#import "../defaults.typ": defaults, merge
+#import "../defaults.typ": defaults, merge, validate-config
 #import "../themes.typ": theme-config
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
 #import "dates.typ": journal-date-parts
@@ -106,6 +106,7 @@
 /// - config (dictionary): tweak defaults
 #let journal-index(config: (:), theme: none) = context {
   let config = theme-config(theme, config: config)
+  let config = validate-config(config)
   let c = merge(defaults, config)
 
   set page(
@@ -119,7 +120,10 @@
   heading(level: 1, numbering: none)[#text(fill: c.colors.brand-primary, weight: "bold")[Index]]
   v(1.5em)
 
-  let entries = query(<journal-item>)
+  let entries = query(<journal-item>).sorted(key: entry => {
+    let parsed = journal-date-parts(entry.value.date)
+    if parsed == none { 99999999 } else { parsed.year * 10000 + parsed.month * 100 + parsed.day }
+  })
 
   // Detect whether entries span multiple years.
   // If yes, append the year to month group headings.

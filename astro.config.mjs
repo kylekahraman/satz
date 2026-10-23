@@ -33,7 +33,11 @@ export default defineConfig({
         { slug: 'reference/api' },
         { slug: 'reference/configuration' },
       ] },
-      { label: 'Contributing', slug: 'maintainers/api-design' },
+      { label: 'Contributing', items: [
+        { slug: 'maintainers/architecture' },
+        { slug: 'maintainers/contributing' },
+        { slug: 'maintainers/api-design' },
+      ] },
     ],
   })],
 });
