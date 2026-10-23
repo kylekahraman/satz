@@ -2,8 +2,9 @@
 
 Satz now defaults to `headings.spacing: "koma"` in the shared class. Reports,
 articles and general proposals inherit this policy. Existing template-specific
-lengths and document overrides take precedence; book chapter designs and the
-DFG form retain their own rendering.
+lengths and document overrides take precedence. The book keeps its custom
+chapter opener, while subsection levels use the shared measured policy; the DFG
+form retains its form-specific rendering.
 
 KOMA's before/after skips are measured between baselines. Typst's block gaps
 sit between line boxes. `heading-layout.typ` measures cap height, x-height,
@@ -30,8 +31,10 @@ The independent `check_shared_headings.py` needs LuaLaTeX, Typst, Arial,
 normalizes physical font sizes and baseline distances to match the specimen,
 and compares relative positions to exclude page-top conventions. It covers
 mixed heading sizes and consecutive headings within 0.05pt, page attachment,
-explicit gaps, equations, cross-references and bookmarks. This is a heading
-rhythm comparison, not a claim of identical full-document pagination.
+explicit gaps, equations, cross-references and bookmarks. It also measures the
+rendered book subsection gaps and requires each heading to sit closer to its
+following text than to the preceding paragraph. This is a heading rhythm
+comparison, not a claim of identical full-document pagination.
 
 ## Journal opening
 

@@ -13,6 +13,8 @@ LaTeX/KOMA-Script parity.
 - Expose `h1-above` through `h4-above`; `auto` preserves native spacing by
   omitting the override. Below-spacing and paragraph indentation remain
   configurable. See [the typography guide](docs/typography.md).
+- Route book subsection headings through the shared measured spacing policy;
+  retain the distinct chapter opener and check visible gaps in the book fixture.
 - Honor `tables.font-size` and `tables.inset`, which previously existed in
   configuration but were ignored.
 - Add `scientific-table`: explicit header cells, stronger top/bottom rules,

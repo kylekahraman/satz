@@ -73,7 +73,37 @@ def main():
                 if 'ITEM' in between:
                     token = 'LISTITEM' if 'LIST' in between else 'ENUMITEM'
                     assert find(pdf, 'SECOND')[1]['top'] - find(pdf, token)[1]['bottom'] > 10
-        print('Passed: shared KOMA rhythm, stacked headings, all-level page attachment, overrides, display interruption and bookmarks.')
+        book = compile_source('book-rhythm', '''
+#import "/lib.typ": book, book-mainmatter
+#show: book.with(title: [Spacing specimen], author: [Satz], config: (page: (paper: "a6", margin: (left: 12mm, right: 12mm, top: 12mm, bottom: 12mm))))
+#book-mainmatter[
+= Chapter heading
+Chapter opening paragraph.
+
+== Subsection heading
+Subsection following paragraph.
+
+=== Lower heading
+Lower following paragraph.
+
+==== Small heading
+Small following paragraph.
+]
+''')
+        with pdfplumber.open(book) as pdf:
+            for heading, preceding, following in [
+                ('Subsection heading', 'Chapter opening paragraph.', 'Subsection following paragraph.'),
+                ('Lower heading', 'Subsection following paragraph.', 'Lower following paragraph.'),
+                ('Small heading', 'Lower following paragraph.', 'Small following paragraph.'),
+            ]:
+                page, h = find(pdf, heading)
+                previous_page, before = find(pdf, preceding)
+                following_page, after = find(pdf, following)
+                assert page == previous_page == following_page
+                above_gap = h['top'] - before['bottom']
+                below_gap = after['top'] - h['bottom']
+                assert above_gap > below_gap, (heading, above_gap, below_gap)
+        print('Passed: shared KOMA rhythm, book subsection hierarchy, stacked headings, all-level page attachment, overrides, display interruption and bookmarks.')
 
 
 if __name__ == '__main__':

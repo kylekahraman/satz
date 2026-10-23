@@ -101,11 +101,8 @@
       h1-size: 18pt,
       h1-number-size: 25pt,
       h1-below: 33pt,
-      h2-above: 22pt,
       h2-size: 12pt,
-      h2-below: 13pt,
       h3-size: 11pt,
-      h3-below: 9pt,
     ),
     colors: (
       bg-paper: white,
@@ -220,7 +217,8 @@
         ]
       ]
     }
-    #show heading.where(level: 2): set block(above: c.headings.h2-above, below: c.headings.h2-below)
+    // Subsection gaps come from the shared KOMA spacing policy. Keep the
+    // chapter opener custom, but don't give level two a competing block rule.
     #show heading.where(level: 2): set text(size: c.headings.h2-size, fill: c.colors.brand-primary, weight: "bold")
     #show heading.where(level: 2): set heading(numbering: none)
     #show heading.where(level: 3): set text(size: c.headings.h3-size, fill: c.colors.text-main, weight: "bold")
