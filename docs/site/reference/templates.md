@@ -12,9 +12,9 @@ Choose the template that matches the document's structure. Satz controls the pag
 | Research journal | [`journal-entry`](/satz/reference/api/#journal-entry), [`journal-index`](/satz/reference/api/#journal-index) | Dated notes, decisions, observations, and next steps. Follow [Keep a research journal](/satz/guides/journals/). |
 | DIN-style letter | [`brief`](/satz/reference/api/#brief) / `letter` | German or English template labels with a window-envelope address block. Start with [Write a letter](/satz/getting-started/letter/). |
 | Invoice | [`rechnung`](/satz/reference/api/#rechnung) / `invoice` | German invoice layout and item table. |
-| Legal complaint | [`klageschrift`](/satz/reference/api/#klageschrift) | German civil complaint document structure. |
-| Guest performance contract | [`gastspielvertrag`](/satz/reference/api/#gastspielvertrag) | Contract, offer, or invoice document for a performance. |
-| Cover page | [`cover-page`](/satz/reference/api/#cover-page) | A composable cover page with body and footer slots. |
+| Legal complaint | [`klageschrift`](/satz/reference/api/#klageschrift) | German civil complaint document structure. Start with [Prepare a legal complaint document](/satz/getting-started/legal-complaint/). |
+| Guest performance contract | [`gastspielvertrag`](/satz/reference/api/#gastspielvertrag) | Contract, offer, or invoice document for a performance. Follow [Create a guest performance contract](/satz/getting-started/guest-contract/). |
+| Cover page | [`cover-page`](/satz/reference/api/#cover-page) | A composable cover page with body and footer slots. Start with [Add a cover page](/satz/getting-started/cover-page/). |
 
 The English names `letter` and `invoice` are aliases of `brief` and `rechnung`, so they use the same fields and output. Read the [API reference](/satz/reference/api/) for their exact signatures and the [configuration reference](/satz/reference/configuration/) for settings and defaults.
 
@@ -24,8 +24,8 @@ These interfaces are in the 0.2.0 candidate source and are not available from th
 
 | Document or component | Entry points | Status and notes |
 | --- | --- | --- |
-| Research article | [`article`](/satz/reference/api/#article) | Two-column scholarly layout with title, author and affiliation block, and abstract. Development. |
-| Book | [`book`](/satz/reference/api/#book) and [`book-contents`](/satz/reference/api/#book-contents) | Experimental structure with front matter, main matter, appendices, and back matter. |
+| Research article | [`article`](/satz/reference/api/#article) | Two-column scholarly layout with title, author and affiliation block, and abstract. Try [Write a research article](/satz/getting-started/article/). |
+| Book | [`book`](/satz/reference/api/#book) and [`book-contents`](/satz/reference/api/#book-contents) | Experimental structure with front matter, main matter, appendices, and back matter. Follow [Typeset a thesis or book](/satz/getting-started/thesis-book/). |
 | Teaching material | [`exercise`](/satz/reference/api/#exercise), [`worked-example`](/satz/reference/api/#worked-example), [`analysis-note`](/satz/reference/api/#analysis-note), [`answer-grid`](/satz/reference/api/#answer-grid) | Reusable components for instructional documents. |
 | Research proposal | [`research-proposal`](/satz/reference/api/#research-proposal), [`proposal-budget`](/satz/reference/api/#proposal-budget), [`proposal-gantt`](/satz/reference/api/#proposal-gantt) | Flexible proposal cover and planning helpers. See [Proposal guide](/satz/guides/proposals/). |
 | DFG proposal | [`dfg-proposal`](/satz/reference/api/#dfg-proposal), [`dfg-supplement`](/satz/reference/api/#dfg-supplement), [`dfg-publications`](/satz/reference/api/#dfg-publications) | Candidate for DFG form 53.01 (09/26), with limited documented scope. |

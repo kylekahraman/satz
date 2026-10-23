@@ -5,14 +5,14 @@ description: "Start a useful research journal in Typst, write entries you can re
 
 A research journal is a record of how your work changes over time. It helps you return to the question you were investigating, remember what you tried, and see why you made a decision. An entry does not need to be polished. It needs enough context that future-you can understand it.
 
-This guide takes you from an empty file to a small, organized journal. It uses the published Satz `0.1.1` package and ordinary Typst files. You can write entries manually; the optional starter and launcher are described at the end.
+This guide takes you from an empty file to a small, organized journal. It uses the Satz `0.2.0` API from the local package and ordinary Typst files. You can write entries manually; the optional starter and launcher are described at the end.
 
 ## 1. Start with one entry
 
 Create `main.typ` and write one entry with a question, a record of the work, and a next step. Replace the example text with your own.
 
 ```typst
-#import "@preview/satz:0.1.1": journal-entry, remember, question
+#import "@local/satz:0.2.0": journal-entry, remember, question
 
 #show: journal-entry.with(
   title: "Pilot recording: first equipment check",
@@ -67,7 +67,7 @@ Use one date convention throughout a journal so entries are easy to scan. The da
 When you want several entries in one document, use `journal-entry` as a content function and put `journal-index()` first:
 
 ```typst
-#import "@preview/satz:0.1.1": journal-entry, journal-index
+#import "@local/satz:0.2.0": journal-entry, journal-index
 
 #journal-index()
 
@@ -132,7 +132,7 @@ my-journal/
 `main.typ` imports the functions, generates the index, then includes the entry files in chronological order:
 
 ```typst
-#import "@preview/satz:0.1.1": journal-entry, journal-index
+#import "@local/satz:0.2.0": journal-entry, journal-index
 
 #journal-index()
 #include "entries/2026-10-21-equipment-check.typ"
@@ -156,6 +156,6 @@ Keep your journal folder in your normal backup or version-control routine. A com
 
 ## 6. Optional project starter and launcher
 
-The package API above is enough to start and maintain a journal. The repository also has a ready-made project starter with a cover, separate entry files, and a bundled copy of Satz. A small optional `journal` command can create projects and add dated entry files. Neither is required to use the published package. See the [journal starter guide in the repository](https://github.com/kylekahraman/satz/blob/main/docs/journal-starter.md) for setup and current launcher limits.
+The package API above is enough to start and maintain a journal. The repository also has a ready-made project starter with a cover, separate entry files, and a bundled copy of Satz. A small optional `journal` command can create projects and add dated entry files. Neither is required to use the package API. See the [journal starter guide in the repository](https://github.com/kylekahraman/satz/blob/main/docs/journal-starter.md) for setup and current launcher limits.
 
-If you use features from the repository source that are newer than `0.1.1`, follow [Development versions and updates](/satz/guides/development/). The examples in this tutorial use the published package.
+This tutorial uses the same 0.2.0 API that is under usability review. While it is not yet published, compile with your local Satz 0.2.0 package; after release, change the import namespace from `@local` to `@preview`.

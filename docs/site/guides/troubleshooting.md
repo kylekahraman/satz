@@ -6,9 +6,9 @@ When a document fails, begin with the first error reported by Typst. Later error
 
 ## The package cannot be downloaded
 
-For a published example, check that the import is spelled exactly as shown, for example `@preview/satz:0.1.1`. The first compile needs an internet connection to fetch Satz and its dependencies. If your network blocks package downloads, try the [Typst web app](https://typst.app/) or ask your network administrator whether Typst package downloads are allowed.
+For a 0.2.0 tutorial, check that the local package import is spelled exactly as shown: `@local/satz:0.2.0`. Pass the package directory with `typst compile --package-path packages main.typ`. After 0.2.0 is published, use `@preview/satz:0.2.0` and compile without the local package path.
 
-Candidate code in the repository is imported from a local checkout, not from the published package. See [Development versions](/satz/guides/development/) for that setup.
+The current tutorials use a local checkout because 0.2.0 is being usability-tested before publication. See [Set up the local 0.2.0 package](/satz/getting-started/setup/) for the package path.
 
 ## Typst says an argument is unknown
 

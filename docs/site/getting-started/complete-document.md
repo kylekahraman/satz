@@ -3,11 +3,11 @@ title: "From a blank file to a finished document"
 description: "A beginner's step-by-step course for planning, writing, formatting, compiling, and finishing a Satz document."
 ---
 
-This is the full beginner path. You will choose a document type, create a project, write and organize real content, add a table and references, adjust the design, compile a PDF, and check the result. You do not need to know Typst first. The example builds a short research report; the final section shows how the same steps lead into a letter, journal, invoice, or proposal.
+This is the full report-writing path. It uses the same Satz 0.2.0 API as the focused tutorials and assumes the [local package setup](/satz/getting-started/setup/). You will choose a document type, create a project, write and organize real content, add a table and references, adjust the design, compile a PDF, and check the result. The example builds a short research report; the final section shows how the same steps lead into a letter, journal, invoice, or proposal.
 
 ## What you need
 
-You can follow this course in the [Typst web app](https://typst.app/) with no local installation, or install [Visual Studio Code](https://code.visualstudio.com/) and the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist). Both routes give you a live preview. If you prefer the terminal, install the [Typst CLI](https://github.com/typst/typst#installation).
+Install the [Typst CLI](https://github.com/typst/typst#installation) and make sure the local Satz 0.2.0 package is available. You can also install [Visual Studio Code](https://code.visualstudio.com/) and the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist) for a live preview.
 
 Create a new folder or blank Typst project named `field-notes`. Keep the main file, images, bibliography, and included sections in this project. We will create `main.typ` and, later, `references.bib`.
 
@@ -19,9 +19,10 @@ Choose a full document template when you want Satz to set page layout and docume
 
 | If you are making… | Start with… | Follow this focused guide |
 | --- | --- | --- |
-| Report, assignment, or research protocol | `report` | Continue this course, or use [Write your first report](/satz/getting-started/report/). |
 | Business letter | `letter` / `brief` | [Write a letter](/satz/getting-started/letter/). |
+| Report, assignment, or research protocol | `report` | Continue this course, or use [Write your first report](/satz/getting-started/report/). |
 | Research diary | `journal-entry`, `journal-index` | [Keep a research journal](/satz/guides/journals/). |
+| Thesis or book | `custom(kind: "thesis")`, `book` | [Typeset a thesis or book](/satz/getting-started/thesis-book/). |
 | Invoice | `invoice` / `rechnung` | [Create an invoice](/satz/getting-started/invoice/). |
 | DFG, NWO, or project proposal | Proposal-specific template | Check current scope in [Proposal templates](/satz/guides/proposals/). |
 
@@ -30,7 +31,7 @@ Choose a full document template when you want Satz to set page layout and docume
 Put this in `main.typ`. This is a complete report that compiles as-is:
 
 ```typst
-#import "@preview/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 #show: report.with()
 
 = Purpose
@@ -71,10 +72,10 @@ Change the headings and replace the placeholder statements with your own content
 
 ## 3. Preview your work as you write
 
-In the web app, wait for the preview to compile after pasting the example. In VS Code, save `main.typ` and open Tinymist's Typst preview. With the CLI, run this command in the project folder:
+With the local package directory from [setup](/satz/getting-started/setup/) available, compile this document from the project folder:
 
 ```sh
-typst compile main.typ
+typst compile --package-path packages main.typ
 ```
 
 Typst writes `main.pdf`. The preview is useful for checking what each edit changes, but still inspect the exported PDF: that is the file another person will read or print. If compilation fails, read the first reported error. It usually points to a misspelled name, a missing bracket, or a file path that cannot be found.
@@ -133,9 +134,9 @@ Start with a small override. Replace the show rule at the top with:
 ))
 ```
 
-Each setting is inside the group it belongs to. `leading: 0.65em` is a length and controls the gap between lines. The shared configuration is deep-merged, so this override leaves other defaults in place. The selected font must exist in the environment that compiles the PDF. Look up each field's type and effect in the [configuration reference](/satz/reference/configuration/); check the exact function signature in the [API reference](/satz/reference/api/#report). The unreleased candidate also supports `line-spacing: 1.25`, which requests a baseline distance 1.25 times the font size; it is a different option from `leading` and is documented separately in the reference.
+Each setting is inside the group it belongs to. `leading: 0.65em` is a length and controls the gap between lines. The shared configuration is deep-merged, so this override leaves other defaults in place. The selected font must exist in the environment that compiles the PDF. Look up each field's type and effect in the [configuration reference](/satz/reference/configuration/); check the exact function signature in the [API reference](/satz/reference/api/#report). Satz 0.2.0 also supports `line-spacing: 1.25`, which requests a baseline distance 1.25 times the font size; it is a different option from `leading` and is documented separately in the reference.
 
-When a value does not change the output, check whether the chosen template supports it. A setting listed for one template may not apply to another. The reference marks candidate-only settings because the published `0.1.1` package cannot read features that have not yet been released.
+When a value does not change the output, check whether the chosen template supports it. A setting listed for one template may not apply to another. The configuration reference lists the settings accepted by the 0.2.0 implementation.
 
 ## 7. Finish and check the PDF
 
@@ -148,7 +149,7 @@ Compile again after your final edit. Read the PDF from the first page through th
 5. Names, dates, units, spelling, links, and page numbers are correct.
 6. The PDF contains no placeholder text from this tutorial.
 
-Share `main.pdf` as the reading copy. Keep `main.typ`, `references.bib`, and any images or included sections as the editable project. To rebuild later, open the project folder and run `typst compile main.typ` again. For a repeatable build, keep the same explicit package version and make sure the needed fonts are available.
+Share `main.pdf` as the reading copy. Keep `main.typ`, `references.bib`, and any images or included sections as the editable project. To rebuild later, open the project folder and run `typst compile --package-path packages main.typ` again. For a repeatable build, keep the same explicit package version and make sure the needed fonts are available.
 
 ## Continue with another document type
 

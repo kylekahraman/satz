@@ -9,7 +9,7 @@ This walkthrough starts with one file and ends with a compiled report. It assume
 Create `main.typ` in a new folder, then paste this complete example:
 
 ```typst
-#import "@preview/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 #show: report.with()
 
 = Introduction
@@ -35,13 +35,13 @@ The import makes the `report` function available in this file. `#show: report.wi
 
 ## 2. Compile and read the result
 
-In the Typst web app, paste the example into a blank project and wait for the preview. In VS Code with Tinymist, open the preview for `main.typ`. With the Typst command-line program installed, run this from the folder containing the file:
+With the local package directory from [setup](/satz/getting-started/setup/) available, compile from the folder containing `main.typ`:
 
 ```sh
-typst compile main.typ
+typst compile --package-path packages main.typ
 ```
 
-Typst writes `main.pdf` next to the source. The first compile may download Satz. If the document has multiple pages, the report can generate a contents page from your headings. Add enough content to see how page breaks and the contents respond.
+Typst writes `main.pdf` next to the source. If the document has multiple pages, the report can generate a contents page from your headings. Add enough content to see how page breaks and the contents respond.
 
 ## 3. Change one setting
 

@@ -1,53 +1,93 @@
 ---
-title: "Write a letter"
+title: "Write your first letter"
+description: "Create, format, and compile a complete DIN-style letter with Satz, starting from one file."
 ---
 
-This example creates a DIN-style business letter using the published package. It fills in the sender, recipient, subject, and language, then leaves the letter body for you to write.
+This is the first tutorial to try when you need a letter. You will fill in the sender, recipient, date, and subject, write the message, and compile a PDF. You do not need to configure fonts or margins to get started.
 
-## 1. Create the document
+## 1. Create a file and paste this letter
 
-Create `main.typ` and paste this complete example:
+Create a blank Typst file named `main.typ`. Make sure your Typst setup can find the local Satz 0.2.0 package as described in [Set up the local 0.2.0 package](/satz/getting-started/setup/). Copy the complete example below. The names and addresses are fictional; replace them with your own.
 
 ```typst
-#import "@preview/satz:0.1.1": letter
+#import "@local/satz:0.2.0": letter
 #show: letter.with(
-  absender: (
+  sender: (
     name: "Alex Example",
-    strasse: "Example Street 1",
-    plz_ort: "12345 Example City",
+    street: "Example Street 1",
+    postal-code-city: "12345 Example City",
+    email: "alex@example.org",
   ),
-  empfaenger: (
+  recipient: (
     name: "Research Office",
-    strasse: "Sample Road 2",
-    plz_ort: "54321 Sample City",
+    street: "Sample Road 2",
+    postal-code-city: "54321 Sample City",
   ),
-  betreff: "Appointment request",
-  lang: "en",
+  date: "23 October 2026",
+  subject: "Appointment request",
+  language: "en",
 )
 
 Dear Research Office,
 
-Could we arrange an appointment to discuss the project?
+Could we arrange an appointment to discuss the project? I am available next
+week and can adapt to a time that works for your team.
+
+Please let me know what dates would suit you.
 
 Kind regards,
 
 Alex Example
 ```
 
-The import makes `letter` available. The show rule applies the letter layout to the content below it. `absender` and `empfaenger` are dictionaries: each contains the person's or organization's name, street, and postal code/city. Replace the example values with your own. `betreff` is the subject line. The content after the closing parenthesis is the letter body.
+`letter` is the English name for Satz's letter template. The `#show` line applies the letter layout to the content below it. The text after the show rule is the message itself: write normal paragraphs, lists, emphasis, and links there.
 
-## 2. Compile and check the page
+## 2. Replace the address and letter details
 
-Preview the file in the Typst web app or Tinymist, or run `typst compile main.typ` from the document folder. Check the address block and subject in the PDF, especially when the recipient address must show through a window envelope. The layout reserves space for the address and follows a DIN-style business-letter structure, so the top of the page intentionally differs from a report.
+The `sender` dictionary contains your details; `recipient` contains the recipient's details. Both need a name, street, and postal code/city. Keep the exact field names shown above. Add optional contact information such as `phone` or `email` to the sender if you want it printed.
 
-## 3. Choose the label language
+Change `date` to the date you want on the letter, and replace `subject` with a short description of its purpose. These values go in the `letter.with(...)` settings above the message. Keep the message, greeting, and closing below the settings block.
 
-Set `lang: "de"` for German labels or `lang: "en"` for English labels. This changes labels supplied by the template; it does not translate your own salutation, body, or closing. The English alias still accepts the established German field names for compatibility. See the [API reference](/satz/reference/api/#brief) for every argument and [configuration reference](/satz/reference/configuration/#template-specific-appearance-defaults) for supported appearance settings.
+## 3. Compile the letter
 
-## 4. Add optional fields
+From a terminal in the folder containing `main.typ`, run:
 
-The letter can include a date, reference line, enclosures, attachments, signature addition, and postal mark. Only add fields that belong in this letter. For example, place `datum: "23 October 2026"` inside the `letter.with(...)` call to provide a date. The accepted arguments and their defaults are listed in the [letter API entry](/satz/reference/api/#brief).
+```sh
+typst compile --package-path packages main.typ
+```
 
-## If you need a different page design
+Typst creates `main.pdf`. Read the page and check the spelling, addresses, date, subject, and signature. The default layout reserves space for a window-envelope address and includes fold and punch marks. Those are expected on a postal letter.
 
-Use the report template for a report or assignment, and native Typst content for the letter's paragraphs and lists. If you need to alter margins, text size, or line spacing, first check the precise value type in [Configuration](/satz/reference/configuration/). The [template index](/satz/reference/templates/) shows which templates are published and which are still under development.
+## 4. Add the details you need
+
+Put optional fields inside `letter.with(...)`, after `subject`. For example, this adds a reference line and a list of enclosures:
+
+```typst
+  reference-line: (("Your reference", "ABC-123"),),
+  enclosure-list: ("Project outline", "Budget"),
+```
+
+The names before each colon are settings; keep the trailing commas when adding more than one setting. To remove the physical signature area from a digitally signed PDF, add `signatur: false`. To see every accepted argument, open the [`letter` API entry](/satz/reference/api/#brief).
+
+## 5. Make a digital PDF letter
+
+For a PDF that will be read on screen rather than put in a window envelope, use the digital sender block and turn off the address window and postal marks:
+
+```typst
+#show: letter.with(
+  // Keep your sender, recipient, date, and subject fields here.
+  digitaler_absender: true,
+  adressfenster: false,
+  falzmarken: false,
+)
+```
+
+Copy only these three settings into the existing `letter.with(...)` call; do not add a second show rule. Add a logo with `logo: image("logo.png", width: 3cm)` inside the `sender` dictionary, and keep `logo.png` beside `main.typ`.
+
+## Language and version
+
+`language: "de"` selects German template labels and `language: "en"` selects English labels. This setting does not translate the message you write. The postal switches in step 5 keep their German names because those are the argument names currently exposed by the letter API.
+
+All examples on this site use the Satz 0.2.0 API. While 0.2.0 is under usability review, import it from the local package as shown. After the release is published to Typst Universe, change only the package namespace from `@local` to `@preview`; keep version `0.2.0`.
+
+You can write this letter without opening the [configuration reference](/satz/reference/configuration/). For an assignment or research report, continue with [Write your first report](/satz/getting-started/report/). For a dated research diary, follow [Keep a research journal](/satz/guides/journals/). For a longer thesis or book, see [Typeset a thesis or book](/satz/getting-started/thesis-book/).

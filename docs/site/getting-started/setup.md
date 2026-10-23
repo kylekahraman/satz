@@ -2,26 +2,28 @@
 title: "Set up and write"
 ---
 
-This guide gets a first Satz document compiling. You can try the published package in a browser without installing software, or write locally with an editor. In either case, the source is a plain-text `.typ` file and Typst produces the PDF.
+Every tutorial in this release check targets Satz 0.2.0. Since the package has not been published yet, compile against a local checkout with the Typst CLI. After 0.2.0 is published, the same imports can use `@preview` and the Typst web app.
 
-## Fastest route: the Typst web app
+## Make the local package available
 
-1. Open [Typst](https://typst.app/) and create a blank project.
-2. Open the [first report tutorial](/satz/getting-started/report/) and copy its complete example into the main file.
-3. Wait for the live preview. Change a heading or sentence to see the preview update.
-4. Export the PDF from the project when it is ready to share.
+1. Install the [Typst CLI](https://github.com/typst/typst#installation) and clone or locate the Satz repository. The checkout's `typst.toml` identifies it as version `0.2.0`.
+2. Create a document project folder and a local package directory inside it:
 
-The first compile downloads the package and its dependencies. Your source remains editable in the project; the PDF is the fixed copy you can send to someone else.
+   ```sh
+   mkdir -p packages/local/satz
+   ln -s /absolute/path/to/satz packages/local/satz/0.2.0
+   ```
 
-## Local route: VS Code and Tinymist
+   Replace `/absolute/path/to/satz` with the path to the repository checkout. On Windows, create a directory symlink to the checkout with the equivalent command for your shell.
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/) and the [Tinymist Typst extension](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist).
-2. Create a folder for the document and open that folder in VS Code.
-3. Create `main.typ` and paste in the [report example](/satz/getting-started/report/).
-4. Open the Command Palette, choose **Typst Preview**, and select `main.typ` if asked.
-5. Save the file as you write. Tinymist updates the preview and reports compile errors in VS Code.
+3. Create `main.typ` in the project folder. Tutorials import the package as `@local/satz:0.2.0`.
+4. Compile from the project folder and pass the package directory:
 
-Keep images, bibliography files, and included section files in the project folder. That makes their relative paths work when you move or share the project. A separate Typst CLI is optional if you use the editor preview.
+   ```sh
+   typst compile --package-path packages main.typ
+   ```
+
+Keep images, bibliography files, and included section files in the project folder so their relative paths work when you move or share the project. You can also open the project in VS Code with Tinymist and use its preview; make sure its package path points to `packages`.
 
 ## What to learn first
 
@@ -40,14 +42,14 @@ For now, leave the import and `#show` line in place; the show rule applies Satz'
 
 ## Compile from a terminal
 
-Install the [Typst CLI](https://github.com/typst/typst#installation), open a terminal in the project folder, then run:
+After setting up the local package directory, open a terminal in the project folder and run:
 
 ```sh
-typst compile main.typ
+typst compile --package-path packages main.typ
 ```
 
-This creates `main.pdf`. During writing, `typst watch main.typ` recompiles when the source changes. If compilation fails, start with the first reported error; later errors can be consequences of that one. See [Troubleshooting](/satz/guides/troubleshooting/) for common package, font, and file-path problems.
+This creates `main.pdf`. During writing, `typst watch --package-path packages main.typ` recompiles when the source changes. If compilation fails, start with the first reported error; later errors can be consequences of that one. See [Troubleshooting](/satz/guides/troubleshooting/) for common package, font, and file-path problems.
 
 ## Choose a document
 
-Start with the full [blank file to finished document course](/satz/getting-started/complete-document/), or go straight to [a report](/satz/getting-started/report/), [a letter](/satz/getting-started/letter/), [an invoice](/satz/getting-started/invoice/), or [a research journal](/satz/guides/journals/). The [template index](/satz/reference/templates/) lists the other document types and marks features that are still development-only.
+Follow the tutorials in order: [write a letter](/satz/getting-started/letter/), [write a report](/satz/getting-started/report/), [keep a research journal](/satz/guides/journals/), then [typeset a thesis or book](/satz/getting-started/thesis-book/). The [complete-document course](/satz/getting-started/complete-document/) covers longer report writing; the [template index](/satz/reference/templates/) lists other document types.

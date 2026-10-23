@@ -13,17 +13,22 @@ export default defineConfig({
     social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/kylekahraman/satz' }],
     sidebar: [
       { label: 'Start here', link: '/' },
-      { label: 'Get started', items: [
-        { slug: 'getting-started/setup' },
-        { slug: 'getting-started/complete-document' },
-        { slug: 'getting-started/report' },
+      { label: 'Set up the local 0.2.0 package', link: '/getting-started/setup/' },
+      { label: 'Tutorials — follow this order', items: [
         { slug: 'getting-started/letter' },
+        { slug: 'getting-started/report' },
+        { slug: 'guides/journals' },
+        { slug: 'getting-started/thesis-book' },
         { slug: 'getting-started/invoice' },
+        { slug: 'getting-started/article' },
+        { slug: 'guides/proposals' },
+        { slug: 'getting-started/cover-page' },
+        { slug: 'getting-started/legal-complaint' },
+        { slug: 'getting-started/guest-contract' },
+        { slug: 'getting-started/complete-document' },
       ] },
       { label: 'Guides', items: [
-        { slug: 'guides/journals' },
         { slug: 'guides/figures-and-tables' },
-        { slug: 'guides/proposals' },
         { slug: 'guides/layouts' },
         { slug: 'guides/troubleshooting' },
         { slug: 'guides/development' },

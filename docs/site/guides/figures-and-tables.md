@@ -24,7 +24,7 @@ The `caption` is content in square brackets. The label in angle brackets must be
 For long captions, `satz-figure` lets the page show the full caption while a short version appears in the List of Figures:
 
 ```typst
-#import "@preview/satz:0.1.1": report, satz-figure
+#import "@local/satz:0.2.0": report, satz-figure
 #show: report.with()
 
 = Results
@@ -45,7 +45,7 @@ Use this helper when the detailed caption would make the list hard to scan. Stan
 Here is a complete report section with a native table:
 
 ```typst
-#import "@preview/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 #show: report.with()
 
 = Results
@@ -67,7 +67,7 @@ The column tuple gives the first column flexible width and lets the second fit i
 
 ## Add a captioned table with the development helper
 
-`scientific-table` and the `scientific-tables` show rule provide extra scientific-table conventions. They are development features and are not in the published `0.1.1` package. Follow [Development versions](/satz/guides/development/) to use them. See the [candidate API reference](/satz/reference/api/#scientific-table) for their arguments and the source [scientific tables guide](https://github.com/kylekahraman/satz/blob/main/docs/scientific-tables.md) for complete candidate examples.
+`scientific-table` and the `scientific-tables` show rule provide extra scientific-table conventions in Satz 0.2.0. See the [API reference](/satz/reference/api/#scientific-table) for their arguments and the source [scientific tables guide](https://github.com/kylekahraman/satz/blob/main/docs/scientific-tables.md) for complete examples.
 
 ## Troubleshoot figure placement
 

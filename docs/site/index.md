@@ -10,33 +10,41 @@ Satz gives your reports, research journals, letters, and proposals a consistent 
 
 | Your document | Start here |
 | --- | --- |
+| Letter | [Write a letter](/satz/getting-started/letter/) |
 | Report, assignment, or research protocol | [Write your first report](/satz/getting-started/report/) |
 | Research diary or meeting notes | [Start a journal](/satz/guides/journals/) |
-| Letter | [Write a letter](/satz/getting-started/letter/) |
+| Thesis or book | [Typeset a thesis or book](/satz/getting-started/thesis-book/) |
 | Invoice | [Create an invoice](/satz/getting-started/invoice/) |
+| Research article | [Write a research article](/satz/getting-started/article/) |
 | Grant or project proposal | [Proposal templates and coverage](/satz/guides/proposals/) |
+| Cover page | [Add a cover page](/satz/getting-started/cover-page/) |
+| Legal complaint | [Prepare a legal complaint document](/satz/getting-started/legal-complaint/) |
+| Guest performance contract | [Create a guest performance contract](/satz/getting-started/guest-contract/) |
 | Something else | [Choose a template](/satz/reference/templates/) |
 
-## A quick first document
+## A quick first letter
 
 Create a file called `main.typ` and paste this in:
 
 ```typst
-#import "@preview/satz:0.1.1": report
-#show: report.with()
+#import "@local/satz:0.2.0": letter
+#show: letter.with(
+  sender: (name: "Alex Example", street: "One Street", postal-code-city: "12345 Example City"),
+  recipient: (name: "Research Office", street: "Sample Road", postal-code-city: "54321 Sample City"),
+  subject: "A first letter",
+  language: "en",
+)
 
-= Introduction
+Dear Research Office,
 
-This is my first report with Satz.
+This is my first letter with Satz.
 
-== Next steps
+Kind regards,
 
-- Describe the question.
-- Add the findings.
-- Share the PDF.
+Alex Example
 ```
 
-The first line loads Satz. The second applies the report layout to everything below it. Lines starting with `=` are headings. You can keep writing in this same file: a separate setup or configuration file is optional.
+The import loads the letter template; the show rule places the sender, recipient, and subject above your message. Edit the details and the message, then compile the PDF. The [letter tutorial](/satz/getting-started/letter/) explains postal letters, digital PDFs, and optional fields.
 
 ## Make it yours
 
@@ -44,8 +52,6 @@ The first line loads Satz. The second applies the report layout to everything be
 
 ## Which version am I using?
 
-Copyable beginner examples use **Satz 0.1.1**, the published package. An import containing `@preview/satz:0.1.1` keeps that version, so a future release will not silently change your document.
-
-**Development features** are labelled explicitly. New palettes, cover presets, proposal improvements, and the journal launcher are being developed in the repository. They are not all available in the published package yet. See [Development versions and updates](/satz/guides/development/) before using them.
+Every tutorial on this site targets **Satz 0.2.0**. The package is being usability-tested from a local checkout, so the examples import `@local/satz:0.2.0`. After 0.2.0 is published, change `@local` to `@preview`; the version stays `0.2.0`.
 
 Have a question or a confusing example? [Open an issue on GitHub](https://github.com/kylekahraman/satz/issues). Describe what you wanted to do and include a small example without private information.

@@ -37,7 +37,7 @@ When a supported template has a binding edge, configure the inside and outside m
 
 ## Choose an article layout
 
-The development `article` template supplies article front matter and two columns. Its column count and gutter are controlled through configuration; a two-column article may need narrower images or a figure that spans the page. Mixed-width floats can affect page flow, so review the compiled PDF rather than relying only on the editor's source view. The article is not in the published `0.1.1` package; use [Development versions](/satz/guides/development/) to try it, and see the [`article` API](/satz/reference/api/#article) for its metadata arguments.
+The `article` template supplies article front matter and two columns in Satz 0.2.0. Its column count and gutter are controlled through configuration; a two-column article may need narrower images or a figure that spans the page. Mixed-width floats can affect page flow, so review the compiled PDF rather than relying only on the editor's source view. See the [`article` API](/satz/reference/api/#article) for its metadata arguments and compile it with the local 0.2.0 package as described in [setup](/satz/getting-started/setup/).
 
 ## Control body line spacing
 

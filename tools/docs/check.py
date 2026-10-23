@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compile complete published examples and check a built documentation site.
 
-Use --package-path with an isolated published package directory when local
-@preview overrides are present. Build the site with npm run build first.
+The documentation tutorials compile against the current local 0.2.0 source.
+Build the site with npm run build first.
 """
 import argparse
 from html.parser import HTMLParser
@@ -40,13 +40,16 @@ class Page(HTMLParser):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--package-path', type=Path)
-    args = parser.parse_args()
+    parser.parse_args()
     count = 0
     with tempfile.TemporaryDirectory(prefix='satz-docs-') as temporary:
+        package_path = Path(temporary) / 'packages'
+        local_package = package_path / 'local' / 'satz' / '0.2.0'
+        local_package.parent.mkdir(parents=True)
+        local_package.symlink_to(ROOT, target_is_directory=True)
         for source in sorted((ROOT / 'docs/site').rglob('*.md')):
             for number, code in enumerate(re.findall(r'```typst\n(.*?)```', source.read_text(), re.S)):
-                if '#import "@preview/satz:0.1.1"' not in code or len(code.splitlines()) <= 3:
+                if '#import "@local/satz:0.2.0"' not in code or len(code.splitlines()) <= 3:
                     continue
                 path = Path(temporary) / f'{source.stem}-{number}.typ'
                 path.write_text(code)
@@ -80,9 +83,7 @@ def main():
                     if include_path.is_relative_to(Path(temporary).resolve()):
                         include_path.parent.mkdir(parents=True, exist_ok=True)
                         include_path.touch(exist_ok=True)
-                command = ['typst', 'compile']
-                if args.package_path:
-                    command += ['--package-path', str(args.package_path.resolve())]
+                command = ['typst', 'compile', '--package-path', str(package_path)]
                 subprocess.run(command + [str(path), str(path.with_suffix('.pdf'))], check=True)
                 count += 1
     site = ROOT / 'site'
