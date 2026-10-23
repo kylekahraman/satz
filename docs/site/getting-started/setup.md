@@ -50,4 +50,4 @@ This creates `main.pdf`. During writing, `typst watch main.typ` recompiles when 
 
 ## Choose a document
 
-Start with [a report](/satz/getting-started/report/), [a letter](/satz/getting-started/letter/), or [a research journal](/satz/guides/journals/). The [template index](/satz/reference/templates/) lists the other document types and marks features that are still development-only.
+Start with the full [blank file to finished document course](/satz/getting-started/complete-document/), or go straight to [a report](/satz/getting-started/report/), [a letter](/satz/getting-started/letter/), [an invoice](/satz/getting-started/invoice/), or [a research journal](/satz/guides/journals/). The [template index](/satz/reference/templates/) lists the other document types and marks features that are still development-only.

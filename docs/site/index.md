@@ -4,7 +4,7 @@ title: "Your next document starts here"
 
 Satz gives your reports, research journals, letters, and proposals a consistent starting point in [Typst](https://typst.app/). You write the content; Satz supplies the document layout. Start with one file and change the settings when you need to.
 
-**New to Typst?** Follow [Set up and write](/satz/getting-started/setup/). You can try Satz in your browser without installing anything.
+**New to Typst?** Follow the full [blank file to finished document course](/satz/getting-started/complete-document/). It teaches the writing and compiling steps from the beginning. Use [Set up and write](/satz/getting-started/setup/) if you first need to choose an editor.
 
 ## What would you like to write?
 
@@ -13,10 +13,11 @@ Satz gives your reports, research journals, letters, and proposals a consistent 
 | Report, assignment, or research protocol | [Write your first report](/satz/getting-started/report/) |
 | Research diary or meeting notes | [Start a journal](/satz/guides/journals/) |
 | Letter | [Write a letter](/satz/getting-started/letter/) |
+| Invoice | [Create an invoice](/satz/getting-started/invoice/) |
 | Grant or project proposal | [Proposal templates and coverage](/satz/guides/proposals/) |
 | Something else | [Choose a template](/satz/reference/templates/) |
 
-## A complete first document
+## A quick first document
 
 Create a file called `main.typ` and paste this in:
 

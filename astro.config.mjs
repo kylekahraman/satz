@@ -15,8 +15,10 @@ export default defineConfig({
       { label: 'Start here', link: '/' },
       { label: 'Get started', items: [
         { slug: 'getting-started/setup' },
+        { slug: 'getting-started/complete-document' },
         { slug: 'getting-started/report' },
         { slug: 'getting-started/letter' },
+        { slug: 'getting-started/invoice' },
       ] },
       { label: 'Guides', items: [
         { slug: 'guides/journals' },

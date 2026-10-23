@@ -2,7 +2,7 @@
 title: "Write your first report"
 ---
 
-This walkthrough starts with one file and ends with a compiled report. It assumes no prior Typst experience. You will learn what the import and show rule do, how to write headings and paragraphs, and how to change one setting without replacing the rest of the template configuration.
+This walkthrough starts with one file and ends with a compiled report. It assumes no prior Typst experience. You will learn what the import and show rule do, how to write headings and paragraphs, and how to change one setting without replacing the rest of the template configuration. For the complete beginner course—including citations, tables, final PDF checks, and paths to other document types—start with [From a blank file to a finished document](/satz/getting-started/complete-document/).
 
 ## 1. Start with a blank file
 
