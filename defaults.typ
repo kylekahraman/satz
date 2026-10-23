@@ -8,7 +8,7 @@
 /// Nested dicts merge deep, so `config: (colors: (brand-primary: blue))` just changes that one color.
 ///
 /// - page (dictionary): paper, margins, binding
-/// - typography (dictionary): font, size, leading, paragraph spacing/indent, hyphenation, justification
+/// - typography (dictionary): font, size, line-spacing or leading, paragraph spacing/indent, hyphenation, justification
 /// - headings (dictionary): numbering, sizes, spacing per level
 /// - decorative (dictionary): header, footer, date, keyword, and list sizes
 /// - page-footer (dictionary): how page numbers look
@@ -33,6 +33,10 @@
     math-font: auto,
     mono-font: auto,
     size: 11pt,
+    // Optional baseline-to-baseline multiple of the body font size.
+    // When set, this is translated to Typst leading using the selected font's metrics.
+    line-spacing: none,
+    // Backward-compatible Typst gap between adjacent line boxes.
     leading: 0.65em,
     paragraph-spacing: 1.2em,
     first-line-indent: 0pt,

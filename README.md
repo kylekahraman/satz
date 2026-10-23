@@ -418,6 +418,21 @@ and wrapped headings. Explicit per-level gaps remain available; set
 [shared spacing guide](docs/heading-spacing.md). Existing documents can reflow.
 
 Paragraphs default to `paragraph-spacing: 1.2em` and `first-line-indent: 0pt`.
+For an explicit baseline-to-baseline line-spacing multiple, use
+`typography.line-spacing`. For example, `1.5` means each line baseline is 1.5
+times the body font size below the previous one. Satz measures the selected
+font's cap-height and calculates the required Typst leading. This option
+overrides `typography.leading`; leave it as `none` to keep using the direct
+Typst line-box gap. Paragraph spacing remains independent:
+
+```typst
+#show: report.with(config: (typography: (
+  size: 12pt,
+  line-spacing: 1.5,
+  paragraph-spacing: 0.85em,
+)))
+```
+
 For indented prose with the same line rhythm between paragraphs:
 
 ```typst

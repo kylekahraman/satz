@@ -371,5 +371,38 @@
   }
 
   assert(c.headings.spacing in ("koma", "native"), message: "headings.spacing must be koma or native.")
-  if c.headings.spacing == "koma" { koma-headings(c, kind, body) } else { body }
+  let styled-body = if c.headings.spacing == "koma" { koma-headings(c, kind, body) } else { body }
+  let line-spacing = c.typography.line-spacing
+  assert(
+    line-spacing == none or
+      ((type(line-spacing) == int or type(line-spacing) == float) and line-spacing > 0),
+    message: "typography.line-spacing must be none or a positive number such as 1.5.",
+  )
+  if line-spacing == none {
+    styled-body
+  } else {
+    context {
+      let font-size = c.typography.size
+      let sample = text(
+        font: c.typography.font,
+        size: font-size,
+        top-edge: "cap-height",
+        bottom-edge: "baseline",
+      )[H]
+      let text-height = measure(sample).height
+      let target-baseline-gap = font-size * line-spacing
+      let calculated-leading = target-baseline-gap - text-height
+      assert(
+        calculated-leading >= 0pt,
+        message: "typography.line-spacing is too small for the selected font and size.",
+      )
+      {
+        // Fix the text frame edges used in the measurement so the configured
+        // multiple means the same baseline-to-baseline distance in the body.
+        set text(top-edge: "cap-height", bottom-edge: "baseline")
+        set par(leading: calculated-leading)
+        styled-body
+      }
+    }
+  }
 }

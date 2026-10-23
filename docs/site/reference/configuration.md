@@ -25,7 +25,7 @@ This keeps the rest of the report defaults. A separate `config.typ` is optional.
 | Group | Controls |
 | --- | --- |
 | `page` | Paper, margins, and binding (columns and gutter: development) |
-| `typography` | Body font, size, leading, justification, and hyphenation (paragraph spacing and indentation: development) |
+| `typography` | Body font, size, line-spacing or leading, justification, and hyphenation (paragraph spacing and indentation: development) |
 | `headings` | Numbering, size, and spacing for four levels |
 | `page-footer` | Page number format, size, and weight |
 | `links` | Link colors |
@@ -44,7 +44,7 @@ Features marked development-only in the changelog may appear in the repository b
 
 ## Line and paragraph spacing
 
-`typography.leading` is the space between the bottom of one text line and the top of the next. It is not a LaTeX line-spacing multiplier. For paragraph spacing in the published package, use native Typst `set par(spacing: ...)` after the show rule. The development version also exposes `typography.paragraph-spacing` in its configuration. Change these independently:
+`typography.leading` is the space between the bottom of one text line and the top of the next. It is not a line-spacing multiplier. The development version also accepts `typography.line-spacing`, a positive multiple of the body font size: `1.5` means a baseline-to-baseline distance of 1.5 times that size. Satz measures the selected font and calculates the needed Typst leading. When set, it takes precedence over `typography.leading`. Paragraph spacing remains a separate setting:
 
 ```typst
 #import "@preview/satz:0.1.1": report
@@ -58,6 +58,16 @@ Features marked development-only in the changelog may appear in the repository b
 The first paragraph of the report.
 
 A second paragraph, separated by the paragraph spacing.
+```
+
+For example, a 12pt body with 1.5 line spacing:
+
+```typst
+#show: report.with(config: (typography: (
+  size: 12pt,
+  line-spacing: 1.5,
+  paragraph-spacing: 0.85em,
+)))
 ```
 
 An `em` follows the current font size. The rendered rhythm also depends on the font's metrics, so inspect the PDF when changing fonts. Keep the default heading spacing first; adding blank lines in the source does not create extra heading gaps.

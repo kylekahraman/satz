@@ -35,6 +35,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `typography.math-font` | font family name or `auto` | `auto` | Math typeface; `auto` retains Typst's native selection. |
 | `typography.mono-font` | font family name or `auto` | `auto` | Monospaced typeface; `auto` retains Typst's native raw-text style. |
 | `typography.size` | length | `11pt` | Main text size. |
+| `typography.line-spacing` | positive number or `none` | `none` | Optional baseline-to-baseline distance as a multiple of the body font size (for example `1.5`). Uses the selected font metrics and overrides `typography.leading`. |
 | `typography.leading` | length | `0.65em` | Distance between line bounds, not a multiplier. |
 | `typography.paragraph-spacing` | length | `1.2em` | Space between paragraphs. |
 | `typography.first-line-indent` | length | `0pt` | First-line indentation for paragraphs. |
