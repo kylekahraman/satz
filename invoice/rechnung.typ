@@ -45,7 +45,8 @@
 /// - recipient (dictionary): English alias for `empfaenger`; includes `street`, `postal-code-city`, and `country`
 /// - date, invoice-number, service-date, subject, items, qr-amount, qr-purpose, small-business: English aliases for the corresponding German fields
 /// - items (array): tuples `(description, quantity, unit-price)` or records with those three keys
-/// - theme (str, none): shared palette; defaults to neutral invoice colors
+/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; defaults to neutral invoice colors
 /// - config (dictionary): appearance overrides for `page.paper`, `page.margin`, core `typography`, `colors`, and `links`
 ///
 /// English field names only change the input spelling. Invoice output remains German.

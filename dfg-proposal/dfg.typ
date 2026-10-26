@@ -35,7 +35,8 @@
 /// `dfg-supplement()` starts the separately counted eight-page second part.
 /// By default compilation fails when either part exceeds its page allowance.
 /// `max-pages` preserves the legacy first-part limit parameter.
-/// `check-pages: false` permits an overlength working draft.
+/// `language` is `"english"` or `"german"`; `check-pages: false` permits an
+/// overlength working draft.
 /// Config overrides are available, but authors must retain DFG formatting.
 #let dfg-proposal(
   applicant: [], project: [], language: "english", max-pages: 17,

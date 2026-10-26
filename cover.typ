@@ -2,9 +2,11 @@
 
 // Shared cover page — a composable layout plus ready-to-use title-page styles.
 
-/// Small, paper-friendly palettes for cover pages.
+/// Built-in cover palettes: `neutral`, `soft-jade`, `soft-slate`,
+/// `warm-editorial`, `plum`, and `soft-rose`.
 ///
-/// Each theme keeps the page light and the main text dark. The accent is used
+/// Each keeps the page light and text dark. Their accents are grayscale,
+/// jade, slate, warm brown, plum, and rose, respectively. The accent is used
 /// sparingly for rules and the optional research-cover illustration.
 #let cover-themes = (
   neutral: (
@@ -103,7 +105,8 @@
 /// - footer (none, content): custom content at the bottom center
 /// - footer-left (none, content): custom content at the bottom left
 /// - layout (str): `"classic"`, `"research"`, or `"minimal"`
-/// - theme (str): one of the built-in cover themes
+/// - theme (str): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`
 /// - title (none, str, content): title for a ready-made cover; use `box` to keep a word together
 /// - subtitle (none, str): optional subtitle
 /// - author (none, str): optional author line

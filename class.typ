@@ -45,7 +45,7 @@
 /// = My Thesis
 /// ```
 ///
-/// - kind (str): document behavior — commonly "article", "book", "journal", "proposal", "report", or "thesis"
+/// - kind (str): document behavior: `article`, `book`, `journal`, `proposal`, `report`, or `thesis`
 /// - config (dictionary): tweak the defaults
 /// - header (none, content): your own header, if you want one
 /// - footer (none, content): your own footer, if you want one
@@ -419,7 +419,7 @@
 /// I choose the structure and content.
 /// ```
 ///
-/// - kind (str): shared behavior preset, commonly "report", "thesis", "journal", or "proposal"
+/// - kind (str): shared behavior preset: `article`, `book`, `journal`, `proposal`, `report`, or `thesis`
 /// - config (dictionary): shared settings and overrides
 /// - header (none, content): optional custom header
 /// - footer (none, content): optional custom footer

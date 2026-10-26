@@ -15,7 +15,8 @@
 /// - abstract (content, none): full-width abstract
 /// - date (str, content, none): optional date beneath the authors
 /// - config (dictionary): shared satz and article style overrides
-/// - theme (str, none): optional shared document palette; explicit config overrides it
+/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; explicit config overrides it
 /// - body (content): the article
 #let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: none, body) = {
   assert(type(authors) == array, message: "article authors must be an array of records.")

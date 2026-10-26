@@ -28,7 +28,8 @@
 /// - keywords (str): comma-separated, e.g. "MEG, ICA"
 /// - body (content): your notes
 /// - config (dictionary): tweak colors, fonts ...
-/// - theme (str, none): optional shared palette; explicit config overrides win.
+/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; explicit config overrides win.
 #let journal-entry(
   title: "",
   date: "",

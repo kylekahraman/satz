@@ -54,7 +54,8 @@
 /// - sender (dictionary): English alias for `absender`; keys include `name`, `care-of`, `street`, `postal-code-city`, `phone`, `email`, and `logo`
 /// - recipient (dictionary): English alias for `empfaenger`; keys include `name`, `care-of`, `street`, `postal-code-city`, and `country`
 /// - date, reference-line, subject, enclosure-list, attachments, signature-addition, postal-mark, language (content): English aliases for the corresponding German arguments
-/// - theme (str, none): shared palette; defaults to the template's neutral letter colors
+/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; defaults to neutral letter colors
 /// - config (dictionary): appearance overrides for `page.paper`, `page.margin`, core `typography`, `colors`, and `links`
 /// - body (content): your letter text
 #let brief(

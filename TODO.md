@@ -98,6 +98,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 
 ## 🧪 Later / Maybe
 
+- [ ] **EPUB-to-book PDF workflow (1.0 candidate)** — make it straightforward to turn an EPUB into a well-typeset book PDF, using Satz's book layout and options for print size, typography, and book structure. Scope the import/conversion path and handling of EPUBs with inconsistent metadata or markup before implementation.
 - [ ] **Margin notes** — likely its own package
 - [ ] **`\typearea`-style auto-margins** — compute page margins from font size
 - [ ] **Signature helper for letters** — `signature(name, rolle: none)` composable block: underline for signing + name + optional role beneath. Support multiple stacked signatures. Currently users must define this themselves with `signatur: false` on brief().

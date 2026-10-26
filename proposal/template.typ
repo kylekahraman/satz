@@ -5,7 +5,7 @@
 /// A general research or project proposal, with an inline title and summary.
 /// No funder-specific headings or page limits are imposed. Use ordinary markup.
 /// The header shows the short title and current/total page numbers from page 1.
-/// `config` accepts the shared Satz settings; `language` is english or german.
+/// `config` accepts the shared Satz settings; `language` is `"english"` or `"german"`.
 #let research-proposal(
   title: [], applicants: [], institution: [], date: none, summary: none,
   short-title: none, language: "english", config: (:), body,

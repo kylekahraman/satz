@@ -1,8 +1,10 @@
 #import "cover.typ": cover-themes
 #import "defaults.typ": merge
 
-/// The cover palettes adapted for document pages: white paper, subtle panels,
-/// dark body text, and optional heading accents. Neutral is strictly grayscale.
+/// Built-in palettes for document pages. Available names are `neutral`,
+/// `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`.
+/// `neutral` is strictly grayscale; the other palettes use muted jade, slate,
+/// warm brown, plum, and rose accents. Use `theme-config(name)` to apply one.
 #let document-themes = cover-themes.pairs().map(((name, colors)) => (
   name,
   if name == "neutral" {
@@ -19,8 +21,14 @@
   },
 )).to-dict()
 
-/// Select a document palette for any Satz template accepting config.
-/// Explicit nested config overrides win; none retains the template's defaults.
+/// Select a document palette for any Satz template accepting `config`.
+/// `name` must be `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+/// `plum`, or `soft-rose`; pass `none` to retain the template defaults.
+/// Explicit nested config overrides win over the selected palette.
+///
+/// ```typst
+/// #let config = theme-config("soft-jade", config: (typography: (size: 11pt)))
+/// ```
 #let theme-config(name, config: (:)) = {
   if name == none { return config }
   let colors = document-themes.at(name, default: none)

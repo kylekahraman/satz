@@ -13,7 +13,8 @@
 ///
 /// - body (content): your text
 /// - config (dictionary): tweak fonts, colors, margins ...
-/// - theme (str, none): named document palette; none preserves the legacy palette
+/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; `none` preserves the legacy palette
 ///
 /// ```example
 /// #show: report.with(

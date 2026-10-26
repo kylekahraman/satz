@@ -17,6 +17,9 @@
 /// Ordinary headings continue to work. No cover, contents or counter reset.
 /// Pages have a stable current/total header, from the first page onwards.
 /// See the source/coverage guide: this is not universal submission certification.
+/// `scheme` is `"veni"`, `"vidi"`, or `"vici"`; `domain` is `"science"`,
+/// `"ssh"`, `"aes"`, or `"zonmw"`; `stage` is `"pre"` or `"full"`.
+/// Only source-checked 2026 form combinations are supported.
 #let nwo-proposal(
   scheme: "veni", domain: "science", stage: "pre", year: 2026,
   applicant: [], title: [], config: (:), body,

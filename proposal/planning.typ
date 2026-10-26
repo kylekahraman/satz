@@ -1,8 +1,9 @@
 // Native vector planning tools. No TikZ, external renderer or package dependency.
 
 /// A Gantt chart with inclusive, one-based month or quarter intervals.
+/// `unit` is `"month"` or `"quarter"`; `language` is `"english"` or `"german"`.
 /// Rows: (label: content, spans: ((start, end), ...), kind: "task" | "group").
-/// Milestones: (label: content, kind: "milestone", at: period).
+/// Row `kind` is `"task"`, `"group"`, or `"milestone"` (with `at: period`).
 /// Optional resource headings and per-row resources have matching array lengths.
 /// Wrap in an ordinary figure for a caption, numbering and cross-reference.
 #let proposal-gantt(
