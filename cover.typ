@@ -1,13 +1,15 @@
-#import "defaults.typ": merge
+#import "defaults.typ": merge, validate-config
 
 // Shared cover page — a composable layout plus ready-to-use title-page styles.
 
-/// Built-in cover palettes: `neutral`, `soft-jade`, `soft-slate`,
-/// `warm-editorial`, `plum`, and `soft-rose`.
+/// Built-in cover palettes as a dictionary keyed by palette name:
+/// `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
+/// `soft-rose`.
 ///
-/// Each keeps the page light and text dark. Their accents are grayscale,
-/// jade, slate, warm brown, plum, and rose, respectively. The accent is used
-/// sparingly for rules and the optional research-cover illustration.
+/// Each value contains `bg-paper`, `brand-primary`, `brand-accent`, `text-main`,
+/// and `text-muted`. Covers keep tinted paper in every palette except neutral.
+/// Accents are grayscale, jade, slate, warm brown, plum, and rose. The accent is
+/// used sparingly for rules and the optional research-cover illustration.
 #let cover-themes = (
   neutral: (
     bg-paper: rgb("#FFFFFF"),
@@ -92,27 +94,54 @@
   )
 }
 
-/// Build a cover page, either from custom content or from common title fields.
+/// Build an optional cover page, either from custom content or title fields.
 ///
-/// The default `classic` layout preserves the original slot-based cover.
-/// Set `layout` to `"research"` or `"minimal"` and provide `title` to use a
-/// ready-made title page. `theme` can be `"neutral"`, `"soft-jade"`,
-/// `"soft-slate"`, `"warm-editorial"`, `"plum"`, or `"soft-rose"`.
+/// This is a component, not a document template: place it before `report`, or
+/// anywhere else a cover is wanted. It has no implicit connection to another
+/// template's `config` or `theme`; pass those values explicitly when the cover
+/// should share the document appearance.
 ///
-/// - config (dictionary): page, typography, and color overrides
+/// Appearance precedence is cover defaults, then the selected cover `theme`,
+/// then `config`. `config` may contain normal shared Satz settings, but the
+/// cover consumes only `page.paper`, `page.margin`, `typography.font`,
+/// `typography.size`, and `colors.bg-paper`, `brand-primary`, `brand-accent`,
+/// `text-main`, and `text-muted`. Other valid shared settings are accepted and
+/// ignored. Known config groups are validated for misspelled keys.
+///
+/// The default `classic` layout preserves the slot-based cover. Set `layout` to
+/// `"research"` or `"minimal"` and provide `title` to use a ready-made title page.
+/// The generated title sizes are intentionally part of each preset.
+///
+/// ```typst
+/// #let theme = "soft-jade"
+/// #let shared = (typography: (font: "EB Garamond"),)
+/// #cover-page(layout: "research", title: [Field notes], theme: theme, config: shared)
+/// #show: report.with(theme: theme, config: shared)
+/// = Introduction
+/// ```
+///
+/// - config (dictionary): shared page, typography, and color overrides
 /// - logos (none, content): optional logos at the top left
 /// - body (none, content): custom cover body; overrides generated title content
 /// - footer (none, content): custom content at the bottom center
 /// - footer-left (none, content): custom content at the bottom left
-/// - layout (str): `"classic"`, `"research"`, or `"minimal"`
+/// - layout (str): `"classic"` (default), `"research"`, or `"minimal"`.
+///   Classic requires `body`; the generated layouts require `title`.
 /// - theme (str): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`
-/// - title (none, str, content): title for a ready-made cover; use `box` to keep a word together
-/// - subtitle (none, str): optional subtitle
-/// - author (none, str): optional author line
-/// - date (none, str): optional date line
-/// - keywords (none, str): optional keywords line
-/// - supervisors (none, array): optional supervisor names
+///   `plum`, or `soft-rose`; defaults to `neutral`
+/// - title (none, str, content): generated-cover title; use `box` to keep a word
+///   together. Ignored by classic covers.
+/// - subtitle (none, str, content): optional generated-cover subtitle
+/// - author (none, str, content): optional generated-cover author line
+/// - date (none, str, content): date in the research title block, or at the
+///   bottom of a minimal cover when `footer` is absent
+/// - keywords (none, str, content): optional keywords in the research title block
+/// - supervisors (none, array of str): names printed bottom-left when
+///   `footer-left` is absent
+/// - body (content, none): classic custom cover body. Supplying it for any
+///   layout suppresses all generated title fields.
+/// - footer (none, content): bottom-center content; replaces the minimal date
+/// - footer-left (none, content): bottom-left content; replaces `supervisors`
 #let cover-page(
   config: (:),
   logos: none,
@@ -129,6 +158,7 @@
   supervisors: none,
 ) = {
   assert(type(config) == dictionary, message: "Cover config must be a dictionary.")
+  let _ = validate-config(config)
   assert(type(layout) == str, message: "Cover layout must be a string: classic, research or minimal.")
   assert(type(theme) == str, message: "Cover theme must be a string naming a built-in cover palette.")
   if not ("classic", "research", "minimal").contains(layout) {
@@ -240,7 +270,14 @@
 }
 
 /// A ready-made research notebook cover with a small neural-connectivity motif.
+///
+/// Accepts the same arguments as `cover-page`; `title` is mandatory.
+/// `#research-cover(title: [Field notes], author: [Alex Example])`
 #let research-cover = cover-page.with(layout: "research")
 
 /// A spare, centered title page for reports, notes, and other short documents.
+///
+/// Accepts the same arguments as `cover-page`; `title` is mandatory. The optional
+/// `date` is printed at the bottom.
+/// `#minimal-cover(title: [Project notes], date: "2026")`
 #let minimal-cover = cover-page.with(layout: "minimal")
