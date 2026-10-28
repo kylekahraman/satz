@@ -68,7 +68,7 @@
   let c = merge(defaults, config)
 
   // --- Build page arguments ---
-  let numbering = if kind == "report" or kind == "thesis" {
+  let page-numbering = if kind == "report" or kind == "thesis" {
     (n) => { if n > 1 { str(n - 1) } else { none } }
   } else {
     none
@@ -95,7 +95,7 @@
     fill: c.colors.bg-paper,
     header: if header != none { header } else { none },
     footer: if footer != none { footer } else { none },
-    numbering: numbering,
+    numbering: page-numbering,
     columns: c.page.columns,
   )
   if two-sided {
@@ -179,6 +179,18 @@
     leading: c.typography.leading,
     spacing: c.typography.paragraph-spacing,
     first-line-indent: c.typography.first-line-indent,
+  )
+  let line-numbering = if c.line-numbers.enabled {
+    n => text(size: c.line-numbers.size, fill: c.line-numbers.color)[
+      #numbering(c.line-numbers.format, n)
+    ]
+  } else {
+    none
+  }
+  set par.line(
+    numbering: line-numbering,
+    numbering-scope: c.line-numbers.scope,
+    number-clearance: c.line-numbers.clearance,
   )
 
   // --- List spacing ---
@@ -442,7 +454,9 @@
 ///   `page: (paper: "a4", margin: (x: 2.5cm, y: 2.5cm))`; you can also set
 ///   `headings`, `toc`, `lof`, `lot`, `links`, `tables`, `captions`,
 ///   `bibliography`, and `colors`. These are the shared defaults; consult the
-///   `defaults` documentation for the complete key list and values.
+///   `line-numbers` group controls draft line numbering (`enabled`, `format`,
+///   `scope`, `size`, `color`, `clearance`). See the `defaults` documentation
+///   for the complete key list and values.
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and
 ///   `config.links` values override the selected palette.

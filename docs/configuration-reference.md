@@ -58,6 +58,12 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | `page-footer.size` | length | `10pt` | Page-number size. |
 | `page-footer.weight` | Typst font-weight value | `"bold"` | Page-number weight. |
+| `line-numbers.enabled` | boolean | `false` | Shows line numbers for document lines when enabled; uses Typst's native paragraph line numbering. |
+| `line-numbers.format` | Typst numbering pattern | `"1"` | Format for line numbers. |
+| `line-numbers.scope` | `"document"` or `"page"` | `"document"` | Keep numbering continuous or reset at each page. |
+| `line-numbers.size` | length | `8pt` | Text size of line numbers. |
+| `line-numbers.color` | Typst color | `#64748B` | Line-number color. |
+| `line-numbers.clearance` | `auto` or length | `auto` | Gap between line numbers and text. |
 | `links.color`, `links.url-color` | color | `#0563C1`, `#0563C1` | Internal-reference and external-URL colors in the default neutral palette. |
 | `tables.stroke` | length | `0.5pt` | Default table rule thickness for shared table helpers. |
 | `tables.inset` | length or dictionary such as `(x: 8pt, y: 4pt)` | `(x: 8pt, y: 4pt)` | Cell padding for shared table helpers. |
@@ -122,6 +128,7 @@ directly when you want to supply your own structure:
 #import "@local/satz:0.2.0": custom
 #show: custom.with(config: (
   typography: (font: "EB Garamond", size: 12pt),
+  line-numbers: (enabled: true, scope: "document"),
   colors: (brand-primary: rgb("#355D50")),
 ))
 = A heading
@@ -191,7 +198,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 | theme-config / document-themes | palette selection and optional config. Available palettes are neutral, slate, soft-jade, soft-slate, warm-editorial, plum and soft-rose. |
 | merge / defaults | generic deep dictionary merge and root defaults. Unknown keys remain permitted for caller extensions and may be unused. |
 
-Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, links, tables, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
+Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, line-numbers, links, tables, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
 
 The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
 

@@ -24,6 +24,7 @@
 ///   - `decorative`: `header-size`, `footer-size`, `date-size`, `keywords-size`,
 ///     `list-tight`, `list-spacing`.
 ///   - `page-footer`: `format`, `size`, `weight`.
+///   - `line-numbers`: `enabled`, `format`, `scope`, `size`, `color`, `clearance`.
 ///   - `links`: `color`, `url-color`.
 ///   - `tables`: `stroke`, `inset`, `font-size`, `caption-position`, `caption-gap`.
 ///   - `callouts`: `inset`, `radius`, `stroke`, `title-below`,

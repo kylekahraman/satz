@@ -31,12 +31,15 @@
 /// - date (str, content, none): optional date beneath the authors
 /// - config (dictionary): nested overrides for shared Satz settings and
 ///   article-specific settings. Shared sections are `page`, `typography`,
-///   `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`,
+///   `headings`, `journal`, `decorative`, `page-footer`, `line-numbers`, `links`, `tables`,
 ///   `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
 ///   For example, set
 ///   `typography: (font: "STIX Two Text", math-font: "STIX Two Math")` to
 ///   choose separate text and math fonts. If you omit `math-font`, Typst uses
 ///   New Computer Modern Math by default; it is embedded in the Typst CLI.
+///   Set `line-numbers: (enabled: true)` for a draft; line numbering is off by
+///   default. Its `format`, `scope`, `size`, `color`, and `clearance` are also
+///   configurable.
 ///   Shared defaults are in `defaults.typ`;
 ///   article defaults are two columns, 10pt text, unnumbered headings, and no
 ///   automatic contents. Article-specific keys are `article.title-size`

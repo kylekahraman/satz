@@ -32,6 +32,7 @@
 /// - journal: `header-below`, `running-gutter`, `running-leading`
 /// - decorative: header/footer/date/keyword sizes, `list-tight`, `list-spacing`
 /// - page-footer: `format`, `size`, `weight`; links: `color`, `url-color`
+/// - line-numbers: `enabled`, `format`, `scope`, `size`, `color`, `clearance`
 /// - tables: `stroke`, `inset`, `font-size`, `caption-position`, `caption-gap`
 /// - callouts: `inset`, `radius`, `stroke`, `title-below`, paragraph/list spacing
 /// - captions: `size`, `weight`, `alignment`, `label-weight`
@@ -94,6 +95,15 @@
     format: "1",
     size: 10pt,
     weight: "regular",
+  ),
+  // Enable for manuscripts sent for review or preprint drafts.
+  line-numbers: (
+    enabled: false,
+    format: "1",
+    scope: "document",
+    size: 8pt,
+    color: rgb("#64748b"),
+    clearance: auto,
   ),
   links: (
     color: rgb("#0563C1"),
