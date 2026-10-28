@@ -5,27 +5,56 @@
 #import "../themes.typ": theme-config
 #import "defaults.typ": defaults as report-defaults
 
-/// A simple report — protocols, lab notes, analyses, and similar documents.
-///
-/// You get numbered headings, a table of contents, and a pre-styled
-/// bibliography. Call `#bibliography("refs.bib")` yourself where it belongs.
-/// Need binding correction for a thesis? Use `custom(kind: "thesis", ...)`
-/// instead.
+/// A report document class.
 ///
 /// - body (content): your text
-/// - config (dictionary): shared settings, deep-merged over the defaults.
-///   Common choices are `page: (paper: "a4", columns: 1)` and
-///   `typography: (font: "Libertinus Serif", math-font: auto, size: 11pt)`;
-///   `math-font: auto` keeps Typst's native math font selection, New Computer
-///   Modern Math (embedded in the Typst CLI). You can also
-///   set `headings`, `toc`, `lof`, `lot`, `bibliography`, `links`, `tables`,
-///   and `colors`. Shared defaults and every key are listed in `defaults.typ`.
-/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`; `none` preserves the template palette
+/// - config (dictionary): partial overrides, deep-merged over the shared
+///   defaults. The report defaults to A4, 2.5cm margins, Libertinus Serif at
+///   11pt, automatic Typst math and monospace fonts, numbered headings, and a
+///   black-on-white palette. Set `typography.math-font` to a font name to
+///   override Typst's default math font.
+///
+///   Supported shared settings:
+///   - `page`: `paper`, `margin` (`top`, `bottom`, `left`, `right`, or `x`/`y`),
+///     `binding`, `binding-correction`, `headers`, `columns`, `column-gutter`.
+///   - `typography`: `font`, `math-font`, `mono-font`, `size`, `line-spacing`,
+///     `leading`, `paragraph-spacing`, `first-line-indent`, `hyphenate`, `justify`.
+///   - `headings`: `numbering`, `hyphenate`, `h1-pagebreak`, `spacing`, and
+///     `h1-size`/`h1-above`/`h1-below` through the corresponding `h4` settings.
+///   - `decorative`: `header-size`, `footer-size`, `date-size`, `keywords-size`,
+///     `list-tight`, `list-spacing`.
+///   - `page-footer`: `format`, `size`, `weight`.
+///   - `links`: `color`, `url-color`.
+///   - `tables`: `stroke`, `inset`, `font-size`, `caption-position`, `caption-gap`.
+///   - `callouts`: `inset`, `radius`, `stroke`, `title-below`,
+///     `paragraph-spacing`, `list-spacing`.
+///   - `captions`: `size`, `weight`, `alignment`, `label-weight`.
+///   - `toc`, `lof`, `lot`: `depth`, `title`, `indent`, `entry-size`, `leading`,
+///     `entry-above`, `title-below`, `below`; `toc` also has `main-entry-above`,
+///     and `lof`/`lot` also have `compact`.
+///   - `bibliography`: `style`.
+///   - `colors`: `bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted`.
+///
+///   `journal` (`header-below`, `running-gutter`, `running-leading`) is accepted
+///   by the shared config but only affects journal templates. Other templates
+///   can add their own config groups.
+/// - theme (str): palette applied before `config`, so explicit `config.colors`
+///   values take precedence. Choices: `neutral` (default), `slate`, `soft-jade`,
+///   `soft-slate`, `warm-editorial`, `plum`, `soft-rose`; `none` skips the
+///   named palette.
 ///
 /// ```example
 /// #show: report.with(
-///   config: (typography: (font: "EB Garamond"), colors: (brand-primary: blue))
+///   theme: "neutral",
+///   config: (
+///     page: (paper: "a4", margin: (x: 2.5cm, y: 2.5cm)),
+///     typography: (font: "Libertinus Serif", math-font: auto, size: 11pt),
+///     headings: (h1-size: 14pt),
+///     page-footer: (weight: "regular"),
+///     links: (url-color: blue),
+///     colors: (brand-primary: navy),
+///   ),
 /// )
 /// = Introduction
 /// #lorem(100)
