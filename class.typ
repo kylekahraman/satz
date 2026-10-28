@@ -104,24 +104,27 @@
   set page(..page-args)
   set columns(gutter: c.page.column-gutter)
 
-  // Two-sided: alternating page numbers (only when no custom footer provided).
+  // Reports and theses show page numbers in the footer. Bound documents
+  // alternate them toward the outer edge; one-sided documents center them.
   // Set rules are block-scoped in Typst, so a `set page` inside an `if` block
   // would not apply to the body — compute the footer value, then set it once.
-  let page-footer = if two-sided and footer == none {
+  let page-footer = if footer != none {
+    footer
+  } else if kind == "report" or kind == "thesis" {
     context {
       let d = counter(page).display()
       if d != none {
-        let n = counter(page).get().first()
         let displayed = text(size: c.page-footer.size, weight: c.page-footer.weight, fill: c.colors.brand-primary, d)
-        if calc.rem(n, 2) == 0 {
-          align(left, displayed)
+        if two-sided {
+          let n = counter(page).get().first()
+          if calc.rem(n, 2) == 0 { align(left, displayed) } else { align(right, displayed) }
         } else {
-          align(right, displayed)
+          align(center, displayed)
         }
       }
     }
   } else {
-    if footer != none { footer } else { none }
+    none
   }
   set page(footer: page-footer)
 
