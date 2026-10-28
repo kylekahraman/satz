@@ -144,18 +144,22 @@
   ]
 }
 
-/// The ref line above the subject.
+/// The reference line above the subject.
 ///
-/// Each column is a (label, value) pair. We tack the
-/// date on as the last column, right-aligned.
+/// Each column is a (label, value) pair. When supplied, the date is appended
+/// as the final, right-aligned column.
 ///
 /// - geschaeftszeile (array): your columns as (("Label", "Value"), ...)
-/// - datum (str): date — lands in the last column
+/// - datum (str, none): date for the final column; `none` omits that column
 /// - zeilenabstand (length): line spacing
 /// - strings (dictionary): translated "Datum"
 #let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings) = {
   block(width: 100%)[
-    #let alle_posten = geschaeftszeile + ((strings.datum, datum),)
+    #let alle_posten = if datum == none {
+      geschaeftszeile
+    } else {
+      geschaeftszeile + ((strings.datum, datum),)
+    }
     #let spalten_anzahl = alle_posten.len()
     
     #let bloecke = alle_posten.enumerate().map(((i, pair)) => {

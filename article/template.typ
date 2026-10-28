@@ -5,21 +5,52 @@
 
 /// An article with a full-width title/author/abstract block and native columns.
 ///
-/// Defaults to two columns, ordinary page numbering, and no automatic front matter.
-/// Set `config: (page: (columns: 1))` for a one-column assignment or article.
-/// Figures can span both columns with `scope: "parent", placement: top`.
+/// Defaults to two columns, ordinary page numbering, and no automatic front
+/// matter. Set `config: (page: (columns: 1))` for a one-column assignment or
+/// article. Figures can span both columns with `scope: "parent", placement: top`.
+///
+/// ```example
+/// #show: article.with(
+///   title: [A short article],
+///   authors: ((name: "Alex Example", affiliations: (1,)),),
+///   affiliations: ("Example Institute",),
+///   abstract: [We test a small example.],
+/// )
+/// = Introduction
+/// #lorem(80)
+/// ```
 ///
 /// - title (str, content, none): article title
-/// - authors (array): dictionaries with `name` and optional `affiliations` indices
-/// - affiliations (array): affiliation strings or content, indexed from 1
+/// - authors (dictionary or array): one author record may be passed directly,
+///   e.g. `authors: (name: "Alex Example")`; multiple authors use an array of
+///   records, e.g. `authors: ((name: "Alex Example"), (name: "Sam Example"))`.
+///   Each record has a `name` and optional `affiliations`.
+/// - affiliations (array of str, content): displayed in order. Author records
+///   reference them with one-based indices, e.g. `affiliations: (1, 2)`.
 /// - abstract (content, none): full-width abstract
 /// - date (str, content, none): optional date beneath the authors
-/// - config (dictionary): shared satz and article style overrides
-/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`; explicit config overrides it
+/// - config (dictionary): nested overrides for shared Satz settings and
+///   article-specific settings. Shared sections are `page`, `typography`,
+///   `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`,
+///   `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
+///   For example, set
+///   `typography: (font: "STIX Two Text", math-font: "STIX Two Math")` to
+///   choose separate text and math fonts. If you omit `math-font`, Typst uses
+///   New Computer Modern Math by default; it is embedded in the Typst CLI.
+///   Shared defaults are in `defaults.typ`;
+///   article defaults are two columns, 10pt text, unnumbered headings, and no
+///   automatic contents. Article-specific keys are `article.title-size`
+///   (18pt), `author-size` (11pt), `author-gap` (0.8em),
+///   `affiliation-size` (8.5pt), `abstract-size` (9pt), `title-gap` (1.2em),
+///   and `body-gap` (2.2em). Override them under `article:`, for example
+///   `article: (title-size: 16pt)`. Set `toc.depth` above 0 (or to `none`) to
+///   insert inline contents after the front matter.
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`; explicit `config.colors` wins
 /// - body (content): the article
-#let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: none, body) = {
-  assert(type(authors) == array, message: "article authors must be an array of records.")
+#let article(title: none, authors: (), affiliations: (), abstract: none, date: none, config: (:), theme: "neutral", body) = {
+  let authors = if type(authors) == dictionary { (authors,) } else { authors }
+  assert(type(authors) == array, message: "article authors must be a record or an array of records.")
   assert(type(affiliations) == array, message: "article affiliations must be an array of strings or content.")
   for (index, affiliation) in affiliations.enumerate() {
     assert(type(affiliation) == str or type(affiliation) == content,
@@ -46,23 +77,23 @@
       #set text(hyphenate: false)
       #if title != none { block(below: c.article.title-gap, text(size: c.article.title-size, weight: "bold", title)) }
       #if authors.len() > 0 {
-        text(size: c.article.author-size,
+        block(below: c.article.at("author-gap", default: 0.8em), text(size: c.article.author-size,
           authors.map(author => [
             #author.name#if author.at("affiliations", default: ()) != () {
               super(author.affiliations.map(str).join(","))
             }
-          ]).join(h(1em)))
+          ]).join(h(1em))))
       }
       #for (index, affiliation) in affiliations.enumerate() {
-        block(above: 0.3em, text(size: c.article.affiliation-size)[#super(str(index + 1)) #affiliation])
+        block(above: 0.35em, text(size: c.article.affiliation-size)[#super(str(index + 1)) #affiliation])
       }
-      #if date != none { block(above: 0.5em, date) }
+      #if date != none { block(above: 0.6em, date) }
     ]
     #if abstract != none {
       block(above: c.article.title-gap, inset: (x: 5%))[
         #set text(size: c.article.abstract-size)
         #set par(justify: true)
-        #strong[Abstract]
+        #block(below: 0.5em, text(size: 1.15em, weight: "bold")[Abstract])
 
         #abstract
       ]

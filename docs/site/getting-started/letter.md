@@ -36,11 +36,11 @@ week and can adapt to a time that works for your team.
 Please let me know what dates would suit you.
 
 Kind regards,
-
-Alex Example
 ```
 
 `letter` is the English name for Satz's letter template. The `#show` line applies the letter layout to the content below it. The text after the show rule is the message itself: write normal paragraphs, lists, emphasis, and links there.
+
+The default layout adds a signing rule and your sender name after the body. That is why the example ends at “Kind regards,” instead of typing the name twice. If you prefer a plain typed closing, set `signature: false` and include your name in the body.
 
 ## 2. Replace the address and letter details
 
@@ -67,7 +67,7 @@ Put optional fields inside `letter.with(...)`, after `subject`. For example, thi
   enclosure-list: ("Project outline", "Budget"),
 ```
 
-The names before each colon are settings; keep the trailing commas when adding more than one setting. To remove the physical signature area from a digitally signed PDF, add `signatur: false`. To see every accepted argument, open the [`letter` API entry](/satz/reference/api/#brief).
+The names before each colon are settings; keep the trailing commas when adding more than one setting. To remove the signing rule and sender name from a digitally signed PDF, add `signature: false`. To see every accepted argument, open the [`letter` API entry](/satz/reference/api/#letter).
 
 ## 5. Make a digital PDF letter
 
@@ -76,9 +76,10 @@ For a PDF that will be read on screen rather than put in a window envelope, use 
 ```typst
 #show: letter.with(
   // Keep your sender, recipient, date, and subject fields here.
-  digitaler_absender: true,
-  adressfenster: false,
-  falzmarken: false,
+  digital-sender: true,
+  address-window: false,
+  fold-marks: false,
+  signature: false,
 )
 ```
 
@@ -86,7 +87,7 @@ Copy only these three settings into the existing `letter.with(...)` call; do not
 
 ## Language and version
 
-`language: "de"` selects German template labels and `language: "en"` selects English labels. This setting does not translate the message you write. The postal switches in step 5 keep their German names because those are the argument names currently exposed by the letter API.
+`language: "de"` selects German template labels and `language: "en"` selects English labels. This setting does not translate the message you write. The English option names are documented above; the German names from 0.1.1 remain compatibility aliases.
 
 All examples on this site use the Satz 0.2.0 API. While 0.2.0 is under usability review, import it from the local package as shown. After the release is published to Typst Universe, change only the package namespace from `@local` to `@preview`; keep version `0.2.0`.
 

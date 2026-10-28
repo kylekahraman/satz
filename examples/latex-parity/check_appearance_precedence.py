@@ -76,6 +76,25 @@ Equation: $x^2$
             target = {"letter": "LETTER_OVERRIDE", "invoice": "INVOICE_OVERRIDE", "book": "BOOK_OVERRIDE"}[name]
             assert text_color(pdf, target) == 0x336699, f"{name} nested config did not override its theme/direct setting"
 
+        cover = f'''#import "{IMPORT}": cover-page
+#cover-page(
+  layout: "research",
+  title: [COVER_OVERRIDE],
+  theme: "soft-jade",
+  config: (colors: (brand-primary: rgb("{OVERRIDE}"),)),
+)
+'''
+        result, pdf = compile_pdf(folder, "cover", cover)
+        assert result.returncode == 0, result.stderr
+        assert text_color(pdf, "COVER_OVERRIDE") == 0x336699, "cover config did not override its theme"
+
+        invalid_cover = f'''#import "{IMPORT}": cover-page
+#cover-page(title: [Invalid], config: (typography: (leadng: 0.7em)))
+'''
+        result, _ = compile_pdf(folder, "invalid-cover", invalid_cover)
+        assert result.returncode != 0
+        assert "Unknown Satz config key `typography.leadng`" in result.stderr
+
         invalid = f'''#import "{IMPORT}": letter
 #show: letter.with(config: (typography: (mystery-size: 12pt)))
 Body.
@@ -107,7 +126,7 @@ Body.
         result, _ = compile_pdf(folder, "extension-group", extension_group)
         assert result.returncode == 0, result.stderr
 
-    print("Passed: themes apply across letter, invoice and book; nested config wins, shared typos fail, caller extension groups remain open, and invalid postal/heading settings fail clearly.")
+    print("Passed: themes and config precedence work for letter, invoice, book, and cover; nested config wins, and shared typos fail clearly.")
 
 
 if __name__ == "__main__":

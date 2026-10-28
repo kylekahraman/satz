@@ -6,10 +6,14 @@
 /// Use inside `figure` or `satz-figure` for a caption, numbering, and references.
 /// The box itself does not create a figure or a List of Figures entry.
 ///
-/// - width (relative): box width, defaults to the available width
-/// - height (length): box height, defaults to 4cm
-/// - label (content, str): centered text, defaults to "Placeholder"
-/// - config (dictionary): optional satz color/caption-style overrides
+/// - width (relative, length): box width; defaults to 100%
+/// - height (length): box height; defaults to 4cm
+/// - label (content, str): centered text; defaults to "Placeholder"
+/// - config (dictionary): shared Satz config. The box reads
+///   `colors.bg-subtle`, `colors.text-muted`, `colors.brand-primary`, and
+///   `captions.size`. For example, use
+///   `config: (colors: (brand-primary: blue), captions: (size: 9pt))`.
+///   Shared defaults are in `defaults.typ`; the inner inset is fixed at 8pt.
 ///
 /// ```example
 /// #figure(

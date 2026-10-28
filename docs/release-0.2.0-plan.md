@@ -31,13 +31,15 @@ Acceptance: a clean, identified candidate commit with a truthful changelog.
 ## 2. English interfaces without breaking German documents
 
 Status: implemented and checked by `examples/latex-parity/check_english_inputs.py`.
-German and English spellings render equivalent letter/invoice text, and
-conflicting aliases, malformed records, and invalid item values fail clearly.
+German and English spellings render equivalent letter, invoice, complaint, and
+guest-contract content, and conflicting aliases, malformed records, and invalid
+item values fail clearly.
 
-`letter` and `invoice` are currently aliases of `brief` and `rechnung`; their
-fields are still German. Add English input support to the familiar public
-entry points, while continuing to accept existing German calls. Preserve the
-German entry points as well.
+`letter`, `invoice`, `complaint`, and `guest-contract` are the documented English
+entry points; `brief`, `rechnung`, `klageschrift`, and `gastspielvertrag` remain
+compatibility aliases. Add English input support to the familiar public entry
+points while continuing to accept existing German calls. Preserve the German
+entry points as well.
 
 Normalize both spellings once into one representation before rendering.
 Translate nested records too: adding `sender` without English street/address
@@ -119,7 +121,7 @@ Examples of the level of detail needed for the development API:
 | `theme` | `none` or one of six named palettes | Template-specific | Palette selection; availability differs by entry point |
 
 These rows describe development behavior, not a claim that all options exist
-in the published 0.1.1 release. Theme names are `neutral`, `soft-jade`,
+in the published 0.1.1 release. Theme names are `neutral`, `slate`, `soft-jade`,
 `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`.
 
 Provide a short, annotated starter config containing only useful overrides, plus

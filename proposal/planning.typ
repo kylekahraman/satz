@@ -1,11 +1,33 @@
 // Native vector planning tools. No TikZ, external renderer or package dependency.
 
 /// A Gantt chart with inclusive, one-based month or quarter intervals.
-/// `unit` is `"month"` or `"quarter"`; `language` is `"english"` or `"german"`.
-/// Rows: (label: content, spans: ((start, end), ...), kind: "task" | "group").
-/// Row `kind` is `"task"`, `"group"`, or `"milestone"` (with `at: period`).
-/// Optional resource headings and per-row resources have matching array lengths.
-/// Wrap in an ordinary figure for a caption, numbering and cross-reference.
+///
+/// Wrap it in an ordinary `figure` for a caption, numbering, and reference.
+/// Intervals must not overlap and must stay within `periods`. With
+/// `start-year`, year headings use plain years instead of `Year 1`, `Year 2`.
+///
+/// ```example
+/// #figure(
+///   proposal-gantt((
+///     (label: [Recruitment], spans: ((1, 6),)),
+///     (label: [Analysis], spans: ((7, 12),)),
+///   )),
+///   caption: [Example timeline],
+/// )
+/// ```
+///
+/// - rows (array): records with `label` (str or content), `kind`
+///   (`"task"` default, `"group"`, or `"milestone"`), `spans` for tasks/groups,
+///   `at` for milestones, and optional `resources`
+/// - periods (int): number of month or quarter columns; defaults to 24
+/// - unit (str): `"month"` (default) or `"quarter"`
+/// - start-year (int, none): first calendar year; `none` labels years relatively
+/// - resources (array of str, content): optional resource headings
+/// - label-width (length): row-label column width; defaults to 40mm
+/// - resource-width (length): each resource column width; defaults to 10mm
+/// - size (length): chart text size; defaults to 11pt
+/// - color (color): bar and milestone color; defaults to `#314158`
+/// - language (str): `"english"` (default) or `"german"`
 #let proposal-gantt(
   rows, periods: 24, unit: "month", start-year: none,
   resources: (), label-width: 40mm, resource-width: 10mm,
@@ -94,9 +116,30 @@
   ]
 }
 
-/// Numbered, referenceable work-package summary, independent of section numbers.
-/// Use <wp:label> after the call and @wp:label to refer to its native WP counter.
-/// Tasks, deliverables and milestones are arrays of content. No manual WP IDs.
+/// A numbered, referenceable work-package summary, independent of section numbers.
+///
+/// ```example
+/// #work-package(
+///   title: [Data collection],
+///   objective: [Collect the pilot sample.],
+///   tasks: ([Recruit participants], [Acquire data]),
+/// ) <wp:data>
+/// // Refer with @wp:data.
+/// ```
+///
+/// - title (content, str): work-package title; defaults to empty
+/// - objective (content, str): objective text; defaults to empty
+/// - lead (content, str, none): optional lead partner
+/// - period (content, str, none): optional period text
+/// - tasks (array of content): task list; strings are not accepted
+/// - deliverables (array of content): deliverable list
+/// - milestones (array of content): milestone list
+/// - risk (content, str, none): optional risk and contingency paragraph
+/// - language (str): `"english"` (default) or `"german"`
+/// - body (content): additional content inside the box; defaults to empty
+///
+/// The `work-package` figure kind has its own WP numbering. Attach a label after
+/// the call and reference it with `@wp:label`; no manual WP IDs are needed.
 #let work-package(
   title: [], objective: [], lead: none, period: none,
   tasks: (), deliverables: (), milestones: (), risk: none,

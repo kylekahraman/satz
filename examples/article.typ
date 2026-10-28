@@ -1,7 +1,7 @@
 #import "../lib.typ": article, placeholder
 #show: article.with(
   title: [Two-column writing with satz],
-  authors: ((name: "Example Author", affiliations: (1,)),),
+  authors: (name: "Example Author", affiliations: (1,)),
   affiliations: ([Example Research Institute],),
   abstract: [This example exercises a full-width title and abstract above native
     two-column text, with a footnote, ordinary figure, and full-width figure.],

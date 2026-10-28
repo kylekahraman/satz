@@ -1,7 +1,15 @@
 /// Check a plain-text response against the chosen form's word limits.
+///
 /// Counts whitespace-separated words, then prints the response and its count.
-/// For rich content with figures/citations use ordinary markup and verify the
-/// full official word count, including all counted material, externally.
+/// For rich content with figures or citations, use ordinary markup and verify
+/// the full official word count, including all counted material, externally.
+/// Must be called inside `nwo-proposal`.
+///
+/// - field (str): a limit key from the active profile. Pre-proposals use
+///   `academic-profile`, `key-output`, `research-culture`, `research-idea`, or
+///   `special-circumstances`; Vici full proposals use `scientific-summary`,
+///   `public-summary-nl`, or `public-summary-en`
+/// - response (str): plain-text response; rich content is rejected
 #let nwo-text(field, response) = context {
   let profile = state("satz-nwo-profile").get()
   assert(type(profile) == dictionary, message: "Use nwo-text inside nwo-proposal.")
@@ -18,9 +26,27 @@
   text(size: profile.size, style: "italic")[Word count: #count]
 }
 
-/// A narrative-CV key output, with explicit contribution and up to 3 indicators.
-/// Bibliographic reference/URL/type/indicators are separated from the narrative
-/// so authors can apply the form's exclusions when counting key-output words.
+/// A narrative-CV key output with explicit contribution.
+///
+/// Bibliographic reference, URL, type, and indicators are separated from the
+/// narrative so authors can apply the form's exclusions when counting key-output
+/// words. Must be used inside `nwo-proposal`; at most ten key outputs per document.
+///
+/// ```example
+/// #nwo-key-output(
+///   reference: [Example et al. (2026). Example paper.],
+///   output-type: [Journal article],
+///   contribution: [Designed the study and analysed the data.],
+///   urls: ("https://example.org/paper",),
+/// )
+/// ```
+///
+/// - reference (content, str): bibliographic reference; defaults to empty
+/// - output-type (content, str): output type; defaults to empty
+/// - contribution (content, str): explicit contribution; defaults to empty
+/// - indicators (array of content, str): up to three indicators
+/// - urls (array of str): up to two URLs (output and open-access copy)
+/// - open-access (bool, none): open-access status; `none` prints "Yes / No"
 #let nwo-key-output(reference: [], output-type: [], contribution: [], indicators: (), urls: (), open-access: none) = {
   for (field, value) in (("reference", reference), ("output-type", output-type), ("contribution", contribution)) {
     assert(type(value) == content or type(value) == str,
@@ -51,9 +77,15 @@
 }
 
 /// Check a bounded section's vertical extent, including its own headings.
-/// Use a unique key and include every figure/table inside this scope. Page-wide
-/// floats or placed content escaping the scope need separate visual review.
-/// Fractional limits (e.g. Vici impact 2.5 pages) use the configured text height.
+///
+/// Use a unique key and include every figure or table inside the scope.
+/// Page-wide floats or placed content escaping the scope need separate visual
+/// review. Fractional limits (e.g. Vici impact 2.5 pages) use the configured
+/// text height. Must be called inside `nwo-proposal`.
+///
+/// - key (str): unique, non-empty section key used for the internal labels
+/// - max-pages (int, float): allowed extent; defaults to 14
+/// - body (content): the bounded section, including headings
 #let nwo-page-budget(key, max-pages: 14, body) = {
   assert(type(key) == str and key.len() > 0, message: "NWO page-budget key must be a nonempty string.")
   assert((type(max-pages) == int or type(max-pages) == float) and max-pages > 0,

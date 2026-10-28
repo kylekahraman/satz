@@ -7,49 +7,78 @@
 // Import invoice-specific components
 #import "components.typ": posten_table, bank_qr_block, kleinunternehmer_notice, build_epc_string
 
-/// A German invoice — with a QR code for tap-to-pay.
+/// A German invoice with an optional EPC QR code for bank transfers.
 ///
-/// It tallies your line items, shows your bank details,
-/// and adds a scannable QR code if you want. Banking apps
-/// pick up the IBAN, amount, and reference straight from it.
-/// Reuses the letter's address block and ref line.
+/// English names are the canonical interface; German argument names remain as
+/// compatibility aliases. The rendered invoice stays German.
 ///
-/// - absender (dictionary): your billing details
+/// It totals line items, prints your bank details, and optionally adds a
+/// scannable EPC QR code. Banking apps read the IBAN, amount, and payment
+/// reference from that code. The letter's postal address components and
+/// reference-line layout are reused.
+///
+/// ```example
+/// #show: invoice.with(
+///   sender: (
+///     name: "Example Studio",
+///     street: "Example Street 1",
+///     postal-code-city: "12345 Example City",
+///     tax-number: "000/000/00000",
+///     iban: "DE00 0000 0000 0000 0000 00",
+///     bank: "Example Bank",
+///   ),
+///   recipient: (
+///     name: "Sample Client",
+///     street: "Sample Road 2",
+///     postal-code-city: "54321 Sample City",
+///   ),
+///   date: "2026-10-27",
+///   invoice-number: "2026-001",
+///   service-date: "2026-10-20",
+///   items: (("Example service", 1, 500)),
+///   qr-purpose: "Invoice 2026-001",
+/// )
+/// ```
+///
+/// - sender (dictionary): billing details
 ///   - name (str): your name or company
-///   - zusatz (str, none): extra line (e.g. c/o)
-///   - strasse (str): street and number
-///   - plz_ort (str): zip and city
-///   - steuernummer (str): tax number
-///   - iban (str): your IBAN
-///   - bic (str): BIC (optional)
+///   - care-of (str, none): extra line such as c/o
+///   - street (str): street and number
+///   - postal-code-city (str): postal code and city
+///   - tax-number (str): German tax number (`steuernummer`)
+///   - iban (str): account IBAN
+///   - bic (str): BIC; optional, defaults to empty
 ///   - bank (str): bank name
-///   - kontoinhaber (str): account holder — defaults to your name
-/// - empfaenger (dictionary): who pays
-///   - name (str): name or company
-///   - zusatz (str, none): extra line (e.g. c/o)
-///   - strasse (str): street and number
-///   - plz_ort (str): zip and city
-///   - land (str): country (optional)
-/// - datum (str): invoice date — defaults to today
-/// - rechnungsnummer (str): invoice number
-/// - leistungsdatum (str): when you did the work
-/// - betreff (str): subject — defaults to "Rechnung"
-/// - posten (array): line items as (("What you did", qty, price), ...)
-/// - qr (bool): add the QR code?
-/// - qr-betrag (none, float): force a QR amount. None = add up the items
-/// - qr-verwendungszweck (str): payment note in the QR code
-/// - font (str): body font — "Inter" by default
-/// - kleinunternehmer (bool): show the § 19 VAT-free note?
-/// - body (content): your letter text
-/// - sender (dictionary): English alias for `absender`; includes `street`, `postal-code-city`, `tax-number`, and `account-holder`
-/// - recipient (dictionary): English alias for `empfaenger`; includes `street`, `postal-code-city`, and `country`
-/// - date, invoice-number, service-date, subject, items, qr-amount, qr-purpose, small-business: English aliases for the corresponding German fields
-/// - items (array): tuples `(description, quantity, unit-price)` or records with those three keys
-/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`; defaults to neutral invoice colors
-/// - config (dictionary): appearance overrides for `page.paper`, `page.margin`, core `typography`, `colors`, and `links`
+///   - account-holder (str, none): account holder; defaults to `name`
+/// - recipient (dictionary): who pays; accepts `name`, `care-of`, `street`,
+///   `postal-code-city`, and the optional `country`
+/// - date (str, none): invoice date. Omitting it uses the compilation date as
+///   `DD.MM.YYYY`; set an explicit date for reproducible invoices
+/// - invoice-number (str): invoice number; defaults to empty
+/// - service-date (str): date the service was performed; defaults to empty
+/// - subject (str): subject line; defaults to `"Rechnung"`
+/// - items (array): tuples `(description, quantity, unit-price)` or records
+///   with `description`, `quantity`, and `unit-price` keys
+/// - qr (bool): show the EPC QR code; defaults to true
+/// - qr-amount (int, float, none): override the QR amount; `none` totals the items
+/// - qr-purpose (str): payment reference shown in the QR code; defaults to empty
+/// - small-business (bool): show the § 19 small-business VAT note; defaults to false
+/// - font (str): body font family; defaults to `"Inter"`
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`
+/// - config (dictionary): appearance overrides for `page.paper`, `page.margin`,
+///   core `typography`, `colors`, and `links`; unknown groups or keys are rejected.
+///   For example, `config: (typography: (font: "STIX Two Text", size: 10pt),
+///   colors: (brand-primary: blue))`. Defaults are A4, Inter 11pt, and the
+///   neutral invoice palette. Use `typography.font` for text; math-font is not
+///   supported by this postal template's restricted appearance config.
+/// - body (content): introductory invoice text before the line-item table
 ///
-/// English field names only change the input spelling. Invoice output remains German.
+/// German aliases: `absender`, `empfaenger`, `datum`, `rechnungsnummer`,
+/// `leistungsdatum`, `betreff`, `posten`, `qr-betrag`, `qr-verwendungszweck`,
+/// and `kleinunternehmer`. German nested sender fields are `zusatz`, `strasse`,
+/// `plz_ort`, `steuernummer`, and `kontoinhaber`. Supplying both spellings of
+/// the same value produces a field-specific conflict error.
 #let rechnung(
   absender: none,
   empfaenger: none,
@@ -73,7 +102,7 @@
   font: "Inter",
   kleinunternehmer: none,
   small-business: none,
-  theme: none,
+  theme: "neutral",
   config: (:),
   body
 ) = {

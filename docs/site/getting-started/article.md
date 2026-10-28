@@ -13,7 +13,7 @@ Create `article.typ` and paste this complete starter:
 #import "@local/satz:0.2.0": article
 #show: article.with(
   title: "A Small Example Study",
-  authors: ((name: "Alex Example", affiliations: (1,)),),
+  authors: (name: "Alex Example", affiliations: (1,)),
   affiliations: ("Example Research Group, Sample University",),
   abstract: [
     This example explains how to structure an article with Satz. Replace this
@@ -45,7 +45,14 @@ The `#show` rule formats the title block and applies the article layout to the b
 
 ## 2. Add more authors or affiliations
 
-Each author is a record with a `name`. Add one-based affiliation numbers when an author belongs to one or more affiliations:
+For one author, pass a record directly, with no singleton-array comma:
+
+```typst
+authors: (name: "Alex Example"),
+```
+
+For multiple authors, pass an array of records. Add one-based affiliation
+numbers when authors belong to one or more affiliations:
 
 ```typst
 authors: (

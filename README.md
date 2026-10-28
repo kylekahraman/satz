@@ -2,9 +2,9 @@
 
 **[Read the Satz documentation](https://kylekahraman.github.io/satz/)** · [Start a journal](https://kylekahraman.github.io/satz/guides/journals/) · [Write your first report](https://kylekahraman.github.io/satz/getting-started/report/)
 
-A Typst document class for everyday documents — letters, invoices, reports, journals, and grant proposals.
+A Typst package for everyday documents — letters, invoices, reports, journals, and grant proposals.
 
-Inspired by KOMA-Script, **satz** provides a unified configuration system (`defaults.typ` + `class.typ`) with per-template wrapper functions, so all your documents share a consistent look without repeating yourself.
+Satz is a package, not a LaTeX-style class. Inside it, a collection of optional templates and components sits on a shared document layer (`class.typ` + `defaults.typ`). The wrappers give you ready-made structures; the shared layer supplies page setup, headings, links, outlines, and deep-merged configuration. Use `custom()` when you want the shared styling without a fixed structure.
 
 ## Quick start: a report
 
@@ -12,7 +12,7 @@ Create `main.typ`, import Satz, and start writing. You do not need to copy a
 template file or create a separate configuration file:
 
 ```typst
-#import "@preview/satz:0.1.1": report
+#import "@preview/satz:0.2.0": report
 #show: report.with()
 
 = Introduction
@@ -44,10 +44,11 @@ unpublished improvements described below:
 ```typst
 #import "@local/satz:0.2.0": letter
 #show: letter.with(
-  absender: (name: "Example Author", strasse: "Example Street 1", plz_ort: "12345 Example City"),
-  empfaenger: (name: "Example Recipient", strasse: "Sample Road 2", plz_ort: "54321 Sample City"),
-  betreff: "Appointment request",
-  lang: "en",
+  sender: (name: "Example Author", street: "Example Street 1", postal-code-city: "12345 Example City"),
+  recipient: (name: "Example Recipient", street: "Sample Road 2", postal-code-city: "54321 Sample City"),
+  date: "2026-10-27",
+  subject: "Appointment request",
+  language: "en",
 )
 
 Dear Example Recipient,
@@ -57,10 +58,12 @@ Could we arrange an appointment next week?
 Kind regards,
 ```
 
-`letter` is an alias for `brief`; both currently use German parameter names.
-The package supplies the page layout, sender/recipient blocks, date, subject,
-and signature line. Write the salutation and closing in the body. For a digital
-letter, see the options below; a concise digital preset is still a usability gap.
+`letter` is the English name for the letter template; `brief` remains an alias.
+The package supplies the page layout, sender/recipient blocks, date, subject, and
+signature line. Write the salutation and closing in the body. Argument and record
+names are English; the German names from 0.1.1 remain aliases. The date is explicit
+here so recompiling later does not silently change the letter; omit it to use the
+compilation date. For a digital letter, see the options below.
 
 ### Two-column articles
 
@@ -71,7 +74,7 @@ immediately after the show rule; a separate template or config file is optional:
 #import "@local/satz:0.2.0": article
 #show: article.with(
   title: [My paper],
-  authors: ((name: "Example Author", affiliations: (1,)),),
+  authors: (name: "Example Author", affiliations: (1,)),
   affiliations: ([Example Institute],),
   abstract: [A short account of the question and findings.],
 )
@@ -88,6 +91,15 @@ these column settings; their generated front matter stays single-column.
 An article's optional `toc.depth` inserts contents inline; automatic figure and
 table lists remain a report feature.
 
+The `config` argument accepts the shared Satz sections (`page`, `typography`,
+`headings`, `colors`, `toc`, and others) plus `article` settings. For example,
+set text and math fonts independently with
+`typography: (font: "STIX Two Text", math-font: "STIX Two Math")`. Shared
+defaults are listed in [the configuration reference](docs/configuration-reference.md)
+and defined in `defaults.typ`; article-specific defaults are in
+`article/defaults.typ` (two columns, 10pt text, unnumbered headings, and no
+automatic contents by default).
+
 Use ordinary `figure` for a column-width figure, with `image(..., width: 100%)`
 to fit the column. Add `scope: "parent", placement: top` to span both columns.
 Mixed column/page floats can appear out of numerical order; where order matters,
@@ -99,7 +111,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 ### Reports and journals
 
 ```typst
-#import "@preview/satz:0.1.1": report
+#import "@preview/satz:0.2.0": report
 #show: report.with(config: (
   typography: (font: "Libertinus Serif"),
   lof: (compact: true), // List of Figures shows only "Figure 1 .... 5"
@@ -110,7 +122,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 ```
 
 ```typst
-#import "@preview/satz:0.1.1": journal-entry
+#import "@preview/satz:0.2.0": journal-entry
 #show: journal-entry.with(
   title: "Experiment 42",
   date: "2025-03-15",
@@ -124,32 +136,32 @@ sufficient for this layout; Meander remains an option for custom text flow.
 
 | Template | Function | Description |
 |---|---|---|
-| **letter** | `brief(absender, empfaenger, datum, betreff, lang:, body)` | DIN 5008-style postal letter with fold/punch marks; envelope geometry still needs verification. Supports `lang: "de"` / `"en"` for localized labels. Structured recipient fields: `name`, `zusatz`, `strasse`, `plz_ort`, `land`. |
-| **invoice** | `rechnung(absender, empfaenger, datum, posten, qr:, qr-betrag:, qr-verwendungszweck:, body)` | German invoice adapted from the letter template. Optional EPC QR code (GiroCode) — banking apps auto-fill transfer details. |
-| **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary with entries, keywords, and auto-generated monthly index |
-| **report** | `report(body, config: (:))` | Scientific articles, protocols, thesis — numbered headings, auto TOC/LoF/LoT, two-sided layout, bibliography |
+| **letter** | `letter(...)` / `brief(...)` | DIN 5008-style postal letter with fold/punch marks. Canonical fields: `sender`, `recipient`, `date`, `subject`, `language`, `reference-line`, `enclosure-list`. `language` is `"de"` / `"en"`; German argument and record names remain aliases. |
+| **invoice** | `invoice(...)` / `rechnung(...)` | German invoice adapted from the letter template. Canonical fields: `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, `qr-purpose`. Optional EPC QR code; output remains German. |
+| **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary on ISO B5 with entries, keywords, and auto-generated monthly index |
+| **report** | `report(body, config: (:), theme: "neutral")` | Reports, protocols, and theses — numbered headings, auto TOC/LoF/LoT, two-sided layout, pre-styled bibliography |
 | **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]`, `book-index[...]` | KOMA-Script-inspired book layout with adjustable or image cover, alternating running titles, back-matter pages, two-column index, and optional exercise components |
-| **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), complete German/English starters, separate page limits and counters (unreleased) |
-| **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers and exact budget totals (unreleased) |
-| **NWO proposal (experimental)** | `nwo-proposal(...)`, `nwo-profile(...)` | 15 represented Veni/Vidi/Vici 2026 scheme/domain/stage profiles; not full NWO form coverage (unreleased) |
-| **legal-complaint** | `klageschrift(...)` | Formal complaint for submission to German courts (ZPO) — Rubrum, Streitwert, Anlagen |
-| **gastspielvertrag** | `gastspielvertrag(...)` | Guest performance contract (§1–8, transport, buy-out, 3 doc modes) |
-| **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Ready-made research/minimal title pages or composable logo/body/footer slots |
+| **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), German/English starters, separate page limits and counters |
+| **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers, and exact budget totals |
+| **NWO proposal (experimental)** | `nwo-proposal(...)`, `nwo-profile(...)` | 15 represented Veni/Vidi/Vici 2026 scheme/domain/stage profiles; not full NWO form coverage |
+| **legal-complaint** | `complaint(...)` / `klageschrift(...)` | German civil complaint (ZPO) — Rubrum, Streitwert, Anlagen. Output remains German. |
+| **guest contract** | `guest-contract(...)` / `gastspielvertrag(...)` | German guest performance contract (§1–8, transport, buy-out, 3 document modes). Output remains German. |
+| **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Optional ready-made title pages or composable logo/body/footer slots. No implicit inheritance from the document. |
 
-The manifest now identifies 0.2.0 as the release candidate; it has not been
-published yet. The published package is still 0.1.1. This README describes both
-that version and the candidate APIs. The candidate requires Typst 0.15.0 or newer.
-The 0.2.0 candidate states each template's support level explicitly: DFG
+The manifest identifies 0.2.0 as the release candidate. It requires Typst 0.15.0
+or newer. Examples target 0.2.0; before that version reaches Typst Universe,
+substitute `@local/satz:0.2.0` for local testing. Each template states its support
+level explicitly: DFG
 support is limited to form 53.01 (09/26), NWO support covers only the
 represented profiles, and book support remains experimental. None of these
 imply support for every proposal form or complete LaTeX/KOMA-Script parity.
 See the [release plan](docs/release-0.2.0-plan.md).
 
-### English input names for letters and invoices
+### Canonical English names and compatibility aliases
 
-The 0.2.0 development API accepts English names alongside the existing German
-arguments. Both spellings normalize to the same templates. Nested sender and
-recipient fields are translated too:
+English names are the documented interface throughout 0.2.0. Existing German
+argument names still normalize to the same templates, so documents written for
+0.1.1 keep working. Nested sender and recipient fields are translated too:
 
 ```typst
 #show: letter.with(
@@ -163,19 +175,20 @@ recipient fields are translated too:
 English field spelling does not select the output language; `language:` controls
 letter labels and hyphenation. Invoices accept English `items:` records with
 `description`, `quantity`, and `unit-price`; invoice output remains German.
-Supplying both spellings of a field produces an error that names the conflict.
-These aliases are included in the 0.2.0 candidate and are not in the published
-0.1.1 package.
+The guest contract and civil complaint also accept English content fields, but
+their legal output remains German. Supplying both spellings of a field produces
+an error that names the conflict.
 
 ### Shared appearance options
 
-Reports, articles, books, letters, and invoices accept the shared document
-palettes: `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
-`soft-rose`. Journal entries and indexes already support these palettes. The
-appearance order is shared defaults, template defaults, selected `theme:`,
-explicit direct appearance arguments, then nested `config:` overrides. Nested
+All document templates default to the `neutral` black-on-white palette. The
+former dark blue-gray base palette is now the opt-in `slate` theme. Other
+available themes are `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
+`soft-rose`. The appearance order is shared defaults, template defaults,
+selected `theme:`, explicit direct appearance arguments, then nested `config:` overrides. Nested
 dictionaries merge by key, so an override can change one color without
-replacing the other palette values. `theme: none` keeps the template defaults.
+replacing the other palette values. `theme: none` skips the theme and keeps
+the template's own defaults.
 
 Letters and invoices retain their DIN page geometry and accept `config:` keys
 in these groups: `page.paper` and `page.margin`; `typography.font`, `size`,
@@ -191,38 +204,39 @@ while keeping the selected palette's other colors:
 )
 ```
 
-These appearance options are in the 0.2.0 candidate and are not in the
-published 0.1.1 package. The book also resolves `accent`, `math-font`, and the
-nested config through this precedence order, so a raw argument cannot bypass
-an explicit nested override. See the in-progress
-[0.2.0 configuration reference](docs/configuration-reference.md) for the
-shared defaults and their candidate value contracts.
+These appearance options are new in 0.2.0. The book also resolves `accent`,
+`math-font`, and the nested config through this precedence order, so a raw
+argument cannot bypass an explicit nested override. See the
+[0.2.0 configuration reference](docs/configuration-reference.md) for the shared
+defaults and their value contracts.
 
-### Letter — Internationalization and PDF applications
+### Letters — language and PDF applications
 
-The `brief()` function accepts `lang: "de"` (default) or `"en"`:
-- Labels for phone, email, date, attachments, page numbers switch language
-- Text language is set accordingly for hyphenation rules
+`letter()` (German alias `brief()`) accepts `language: "de"` (default) or `"en"`.
+This changes labels for phone, email, date, attachments, and page numbers, and
+sets the Typst text language for hyphenation. It does not change argument names.
+English argument and record names are canonical; the German names remain aliases.
 
-The postal layout remains the default. For an application sent as a PDF, the
-same `brief()` template can hide envelope-specific components:
+The postal layout remains the default. For an application sent as a PDF, hide
+the envelope-specific components:
 
 ```typst
-#import "@local/satz:0.2.0": brief
+#import "@local/satz:0.2.0": letter
 
-#show: brief.with(
-  absender: (name: "Your Name", email: "you@example.org", website: "example.org"),
-  empfaenger: (name: "Recipient", zusatz: "University"),
-  betreff: "Application for a PhD position",
-  lang: "en",
-  falzmarken: false,
-  adressfenster: false,
-  seitenzahlen: false,
-  digitaler_absender: true,
-  datum_rechts: true,
-  blocksatz: false,
-  abstaende: (absender_empfaenger: 0.65em),
-  signatur: false,
+#show: letter.with(
+  sender: (name: "Your Name", email: "you@example.org", website: "example.org"),
+  recipient: (name: "Recipient", care-of: "University"),
+  date: "2026-10-27",
+  subject: "Application for a PhD position",
+  language: "en",
+  fold-marks: false,
+  address-window: false,
+  page-numbers: false,
+  digital-sender: true,
+  date-right: true,
+  justify: false,
+  block-spacing: ("sender-recipient": 0.65em),
+  signature: false,
 )
 
 Dear Recipient,
@@ -230,32 +244,35 @@ Dear Recipient,
 Your letter text.
 ```
 
-`postvermerk: ""` already hides the postal note. `signatur: false` omits the
-printed signature line; include a closing in the body when using it. The new
-options default to the previous postal behaviour, so existing letters render
-as before. The digital options are currently in the local development version;
-switch back to `@preview` after publishing a new package version.
+`postal-mark: ""` already hides the postal note. `signature: false` omits the
+printed signing rule and sender name; include a closing in the body. These
+options default to the postal behaviour, so existing letters render as before.
 
-The page format, margins, and body text size are configurable with `papier`,
-`seitenraender`, and `schriftgroesse`. `zeilenabstand` controls body leading and
-the default gaps. `abstaende` accepts partial overrides for
-`absender_empfaenger`, `empfaenger_datum`, `datum_betreff`, `betreff_text`,
-`datum_text`, and the corresponding `absender_*` / `empfaenger_*` gaps when
-earlier blocks are hidden, plus `signatur`. Set
-`absender_anzeigen`, `empfaenger_anzeigen`, `datum_anzeigen`, or
-`betreff_anzeigen` to `false` to omit those blocks; `betreff_groesse` and
-`digitaler_absender_hoehe` adjust the subject size and digital header height.
+Page format, margins, and text size are configurable with `paper`, `margins`,
+and `font-size`; `line-spacing` controls body leading and default gaps.
+`block-spacing` accepts partial overrides for `sender-recipient`, `sender-date`,
+`sender-subject`, `sender-body`, `recipient-date`, `recipient-subject`,
+`recipient-body`, `date-subject`, `subject-body`, `date-body`, and `signature`.
+Set `show-sender`, `show-recipient`, `show-date`, or `show-subject` to `false`
+to omit those blocks. Hiding the date keeps separately supplied reference fields.
+`subject-size` and `digital-sender-height` adjust the subject size and digital
+header height.
 
-Use `anlagenverzeichnis: ("Protocol copy", "Schedule copy")` to print an
-enclosure list without embedding files. If `anlagen` also contains file paths,
-the named list supplies their display labels; without it, the existing path
-labels remain the fallback.
+Use `enclosure-list: ("Protocol copy", "Schedule copy")` to print an enclosure
+list without embedding files. If `attachments` also contains file paths, the
+named list supplies their display labels; without it, the paths are the fallback.
 
-### Invoice — EPC QR Code
+The German names from 0.1.1 remain aliases: `absender`, `empfaenger`, `datum`,
+`betreff`, `lang`, `falzmarken`, `adressfenster`, `seitenzahlen`,
+`digitaler_absender`, `datum_rechts`, `blocksatz`, `abstaende`, and `signatur`.
+
+### Invoice — EPC QR code
 
 Set `qr: true` (default) to embed a scannable GiroCode:
-- Encodes IBAN, BIC, amount (auto-calculated from line items or overridden via `qr-betrag`), and purpose (`qr-verwendungszweck`)
-- Banking apps (e.g. N26, Sparkasse) auto-fill transfer details when scanned
+- Encodes IBAN, BIC, amount (totalled from items or overridden with `qr-amount`), and purpose (`qr-purpose`)
+- Banking apps such as N26 or Sparkasse auto-fill transfer details when scanned
+
+Invoice output remains German. The 0.1.1 German argument names remain aliases.
 
 ### Cover pages — ready-made layouts or full control
 
@@ -278,28 +295,52 @@ use `@preview/satz:0.2.0`:
 )
 ```
 
-Use `minimal-cover` for a centered title page, or `cover-page(layout: "classic", body: [...])`
-to keep composing the original logo/body/footer slots. Built-in themes are
-`neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
-`soft-rose`. `neutral` is the default and uses black text and accents on white;
-the research layout leaves 4.5 cm between the top logo area and its title block.
-You can still override individual colors with
+Use `minimal-cover` for a centered title page, or
+`cover-page(layout: "classic", body: [...])` to compose the logo/body/footer
+slots yourself. Built-in themes are `neutral`, `slate`, `soft-jade`, `soft-slate`,
+`warm-editorial`, `plum`, and `soft-rose`. `neutral` is the default and uses
+black text and accents on white; the research layout leaves 4.5 cm between the
+top logo area and its title block. Override individual colors with
 `config: (colors: (brand-primary: ...))`.
+
+A cover is deliberately optional and standalone. It does not inherit the
+following report's `theme` or `config`, and it should not: many documents have a
+designed cover that differs from the body, and replacing a cover image should
+not restyle the document. When you do want a shared look, pass the same values
+explicitly:
+
+```typst
+#let shared-theme = "soft-jade"
+#let shared-config = (typography: (font: "EB Garamond"),)
+
+#cover-page(
+  layout: "research",
+  title: [Field notes],
+  theme: shared-theme,
+  config: shared-config,
+)
+#show: report.with(theme: shared-theme, config: shared-config)
+= Introduction
+```
+
+The cover consumes page paper/margins, font family and size, and the cover color
+keys. Other valid shared settings are accepted but ignored. Invalid known keys
+fail, so a typo does not silently do nothing.
 
 ## Structure
 
-Satz's named templates such as `report()`, `article()`, `journal-entry()`, and `book()` share an internal document class. Use these ready-made templates when their structure fits. Use the public `custom()` function when you want to design your own document structure while reusing Satz's page and typography foundation. It reads defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary (deep merge — nested dictionaries are merged, not overwritten).
+Satz's named templates such as `report()`, `article()`, `journal-entry()`, and `book()` share one internal document layer. Use a ready-made template when its structure fits. Use the public `custom()` function when you want to design your own structure while reusing Satz's page and typography foundation. It reads defaults from `defaults.typ` and accepts per-document overrides through a `config` dictionary (deep merge — nested dictionaries are merged, not overwritten). This is why Satz is best described as a package of templates plus shared components, not as a Typst "class".
 
 ```
 lib.typ              ← public API
 defaults.typ         ← unified defaults + merge()
-class.typ            ← internal document class + public `custom()` + satz-figure
+class.typ            ← shared document layer + public `custom()` + satz-figure
 citation.typ         ← citepre() — author-year cite without parens
 cover.typ            ← cover-page() — logos/body/footer slots
 letter/              ← brief() — DIN 5008 letter, i18n (de/en)
 invoice/             ← rechnung() — German invoice, EPC QR code
 journal/             ← journal-entry / journal-index + remember/question
-report/              ← report() — thin wrapper around the internal document class
+report/              ← report() — thin wrapper around the shared document layer
 dfg-proposal/        ← dfg-proposal — 53.01 (WIP)
 legal-complaint/     ← klageschrift — ZPO
 gastspielvertrag/    ← gastspielvertrag — guest performance contract
@@ -310,9 +351,10 @@ gastspielvertrag/    ← gastspielvertrag — guest performance contract
 Override only what you need — everything else keeps its default:
 
 Pass small overrides directly in the show rule. A reusable `config.typ` is
-optional and useful when several documents should share settings. Letters and
-invoices currently take direct named options; reports and journals take the
-nested `config` dictionary shown here.
+optional and useful when several documents should share settings. Named
+templates accept the nested `config` dictionary; letters and invoices also keep
+their direct appearance options for compatibility. A direct option is applied
+before `config`, so the nested override wins.
 
 ```typst
 #show: report.with(config: (
@@ -322,7 +364,7 @@ nested `config` dictionary shown here.
 ))
 ```
 
-Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `decorative`, `page-footer`, `links`, `tables`, `captions`, `toc`, `lof`, `lot`, `bibliography`, `colors`.
+Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`, `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
 
 ### Contents, figure lists, and table lists
 
@@ -362,18 +404,18 @@ items instead; native local list rules still override the package defaults.
 
 ### Report palettes
 
-Reports default to `neutral`: white paper, black body text, headings, and links,
-with gray secondary text and panels. Colored accents are opt-in. The six
-existing cover themes are also available as
-document palettes: `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`,
-and `soft-rose`. Cover backgrounds retain their previous colors.
+Reports default to `neutral`: white paper, black body text and headings, blue
+links, and gray secondary text and panels. Colored heading accents are opt-in.
+The cover themes are also available as document palettes: `neutral`, `slate`,
+`soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. The
+`slate` theme preserves the former blue-gray shared palette.
 
 ```typst
 #import "@local/satz:0.2.0": report
 #show: report.with(theme: "soft-jade")
 ```
 
-Pass `theme: none` for the legacy shared palette. Explicit `config.colors` and
+Pass `theme: "slate"` for the former shared blue-gray palette. Explicit `config.colors` and
 `config.links` overrides win over the selected theme. The public
 `document-themes` dictionary also makes the same palettes available for custom
 `custom(config: (colors: document-themes.plum))` layouts. Report-specific
@@ -387,9 +429,9 @@ options. Pass the same color config to the report and callout to share an accent
 
 #### Migrating existing report appearance
 
-The 0.2.0 development defaults intentionally change report colors to neutral
-black on white, and improve contents/list spacing. Existing documents that rely
-on the previous report palette or tighter list gaps can set only those values:
+The 0.2.0 development defaults use neutral black on white across document
+templates, and improve contents/list spacing. Documents that rely on the former
+dark blue-gray palette can now set `theme: "slate"`.
 
 ```typst
 #show: report.with(config: (
@@ -515,7 +557,7 @@ using Glossarium: it uses a special figure kind internally.
 For long captions use `satz-figure` — long text under the figure, short title in the List of Figures (or `short-caption: []` for compact):
 
 ```typst
-#import "@preview/satz:0.1.1": satz-figure
+#import "@preview/satz:0.2.0": satz-figure
 #satz-figure(image("plot.png"), caption: [Very long ...], short-caption: [Short title])
 ```
 
@@ -661,5 +703,5 @@ no Python, Node, Go, Bash or Make. Cover identity, layout, paper and palette liv
 
 Use `theme:` on journal entries and indexes, or the reusable `theme-config`
 helper for other templates. The [journal theme guide](docs/journal-themes.md)
-explains the six palettes and keeping config as minimal overrides so updated
+explains the seven palettes and keeping config as minimal overrides so updated
 Satz defaults can take effect.

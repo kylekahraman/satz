@@ -1,10 +1,18 @@
 // Optional CSL processor. Imported only when the opt-in authoring API is used.
 
-/// Initialize citations from BibTeX text (pass read("references.bib")).
-/// Selected keys are rendered in bold in proposal-publications().
-/// Ordinary @key citations remain available; the .bib file is never rewritten.
-/// Supply CSL XML text with style: read("custom.csl") to replace the bundled
-/// author-date style. This is an opt-in alternative to native bibliography().
+/// Initialize citations from BibTeX text.
+///
+/// This is an opt-in alternative to native `bibliography()`. Selected keys are
+/// rendered in bold by `proposal-publications()`. Ordinary `@key` citations stay
+/// available, and the BibTeX file is never rewritten.
+///
+/// - bib (str): BibTeX **text**, normally `read("references.bib")`, not a path
+/// - highlight (array of str): unique BibTeX keys to emphasize; defaults to empty
+/// - style (str, none): CSL **XML text**, usually `read("custom.csl")`; `none`
+///   uses the bundled author-date style
+/// - body (content): document body using this citation backend
+///
+/// Use exactly one `proposal-citations` show rule per document.
 #let proposal-citations(bib, highlight: (), style: none, body) = {
   import "@preview/citrus:0.2.1": init-csl
   import "@preview/citegeist:0.2.1": load-bibliography
@@ -22,9 +30,16 @@
 }
 
 /// Print the opt-in CSL bibliography, automatically bolding selected entries.
+///
 /// Preserves processor-generated bibliography labels and citation hyperlinks.
-/// max-highlight limits the number of highlighted entries actually printed.
-/// Use citrus.nocite to include uncited entries when using the CSL backend.
+/// `max-highlight` is a compilation limit, not truncation: too many highlighted
+/// entries abort compilation. A missing or duplicate `proposal-citations` setup
+/// also fails. NWO Vici full proposals reject any highlighted own publication.
+/// Use `citrus.nocite` to include uncited entries with the CSL backend.
+///
+/// - size (length): bibliography text size; defaults to 11pt
+/// - max-highlight (none, int): maximum highlighted entries printed; `none`
+///   leaves the count unrestricted
 #let proposal-publications(size: 11pt, max-highlight: none) = context {
   import "@preview/citrus:0.2.1": csl-bibliography
   let selections = query(<satz-publication-highlights>)

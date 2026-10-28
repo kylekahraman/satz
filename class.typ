@@ -2,24 +2,26 @@
 
 #import "defaults.typ": defaults, merge, validate-config
 #import "heading-layout.typ": koma-headings
+#import "themes.typ": theme-config
 #import "@preview/hydra:0.6.3": hydra, selectors
 
 /// Show a long caption under the figure, a short one in the List of Figures.
 ///
-/// Typst doesn't do short captions — LoF always shows the full text.
-/// This works around it: LoF gets the short text,
-/// the long one hides as `<satz-long>` metadata.
-/// `document-class` puts the long one back when it draws the figure.
-/// No `short-caption`? It just acts like a normal `figure`.
+/// Typst's List of Figures normally repeats the full caption. This component
+/// stores the long text as `<satz-long>` metadata and gives the figure the short
+/// caption, so the list stays compact. Satz's document class restores the long
+/// caption when it draws the figure. Without `short-caption`, it behaves like a
+/// normal `figure`.
 ///
-/// - body (content): what you show (image, rect ...)
-/// - caption (content): the long text under the figure
-/// - short-caption (content): the short title for the LoF
-/// - ..args: pass to `figure` (e.g. `placement`, `kind`)
+/// - body (content): visible figure content
+/// - caption (content, none): long caption shown below the figure
+/// - short-caption (content, none): compact title for the List of Figures
+/// - ..args: native `figure` arguments, including `placement` and `kind`. Pass
+///   `kind: table` when the body is a table so it enters the List of Tables.
 ///
 /// ```example
 /// #satz-figure(
-///   image("plot.png"),
+///   rect(width: 8cm, height: 4cm, fill: luma(230)),
 ///   caption: [Full description spanning several lines.],
 ///   short-caption: [Empirical verification of Picard ICA],
 /// ) <fig:results>
@@ -46,7 +48,12 @@
 /// ```
 ///
 /// - kind (str): document behavior: `article`, `book`, `journal`, `proposal`, `report`, or `thesis`
-/// - config (dictionary): tweak the defaults
+/// - config (dictionary): deep-merged overrides for shared Satz settings.
+///   Common keys are `page: (paper: "a4", margin: (x: 2.5cm, y: 2.5cm))`,
+///   `typography: (font: "Libertinus Serif", math-font: auto, size: 11pt)`,
+///   `headings`, `toc`, `links`, `tables`, `captions`, `bibliography`, and
+///   `colors`. These are the shared defaults; a named template can add its own
+///   defaults or settings. See the `defaults` documentation for all keys.
 /// - header (none, content): your own header, if you want one
 /// - footer (none, content): your own footer, if you want one
 /// - body (content): your content
@@ -414,26 +421,45 @@
 /// heading, link, and outline settings.
 ///
 /// ```example
-/// #show: custom.with(config: (page: (paper: "a5")))
+/// #show: custom.with(kind: "thesis", config: (page: (paper: "a5")))
 /// = My document
 /// I choose the structure and content.
 /// ```
 ///
-/// - kind (str): shared behavior preset: `article`, `book`, `journal`, `proposal`, `report`, or `thesis`
-/// - config (dictionary): shared settings and overrides
-/// - header (none, content): optional custom header
-/// - footer (none, content): optional custom footer
+/// - kind (str): behavior preset. `"report"` and `"thesis"` add front-matter
+///   page numbering and automatic contents/LoF/LoT; `"thesis"` is currently
+///   otherwise identical to `"report"`. `"journal"` disables heading numbering
+///   and colored internal links. `"article"`, `"book"`, and `"proposal"` add no
+///   front matter. Defaults to `"report"`.
+/// - config (dictionary): shared settings deep-merged over `defaults`. Known
+///   groups are validated, so misspellings such as `typography.leadng` fail
+///   instead of being silently ignored. Unknown top-level groups remain
+///   available to caller extensions. Common keys are
+///   `typography: (font: "Libertinus Serif", math-font: auto, size: 11pt)` and
+///   `page: (paper: "a4", margin: (x: 2.5cm, y: 2.5cm))`; you can also set
+///   `headings`, `toc`, `lof`, `lot`, `links`, `tables`, `captions`,
+///   `bibliography`, and `colors`. These are the shared defaults; consult the
+///   `defaults` documentation for the complete key list and values.
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and
+///   `config.links` values override the selected palette.
+/// - header (none, content): replaces Satz's automatic running header
+/// - footer (none, content): replaces Satz's automatic alternating page footer
 /// - body (content): your document structure
 #let custom(
   kind: "report",
+  theme: "neutral",
   config: (:),
   header: none,
   footer: none,
   body,
-) = document-class(
-  kind: kind,
-  config: config,
-  header: header,
-  footer: footer,
-  body,
-)
+) = {
+  let config = theme-config(theme, config: config)
+  document-class(
+    kind: kind,
+    config: config,
+    header: header,
+    footer: footer,
+    body,
+  )
+}

@@ -4,7 +4,7 @@
 #let defaults = (
   page: (
     paper: "iso-b5",
-    margin: (x: 2cm, top: 2.5cm, bottom: 2.5cm),
+    margin: (left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm),
   ),
   typography: (
     font: "Libertinus Serif",

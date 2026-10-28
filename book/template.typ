@@ -17,7 +17,7 @@
 /// numbered chapters inside `book-mainmatter[...]`.
 ///
 /// ```example
-/// #import "@local/satz:0.1.1": book, book-contents, book-mainmatter
+/// #import "@local/satz:0.2.0": book, book-contents, book-mainmatter
 /// #show: book.with(
 ///   title: [The Maths Behind Your Analysis],
 ///   author: [Your Name],
@@ -34,8 +34,9 @@
 /// ]
 /// ```
 ///
-/// - title (content): title shown on the cover
-/// - cover-image (str, none): optional full-page image for an existing book cover
+/// - title (content, none): title shown on the typographic cover; required
+///   unless `cover-image` supplies a complete cover
+/// - cover-image (str, none): full-page image replacing the typographic cover
 /// - subtitle (content, none): optional subtitle
 /// - author (content, none): author or recipient line
 /// - eyebrow (content, none): small line above the title
@@ -43,7 +44,8 @@
 /// - date (content, none): date near the bottom of the cover
 /// - accent (color, none): heading and component accent; defaults to the book palette
 /// - ink (color, none): cover title and chapter-heading color; defaults to the book palette
-/// - theme (str, none): optional shared document palette; explicit arguments and config still win
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`; direct arguments and `config` win
 /// - font (str): body text family
 /// - math-font (str): equation font family
 /// - font-size (length): main text size
@@ -51,16 +53,18 @@
 /// - paragraph-spacing (length): space between paragraphs
 /// - paper (str): page format
 /// - margin (dictionary): page margins
-/// - binding (alignment, none): inside edge for two-sided pages
-/// - binding-correction (length): extra room at the binding edge
-/// - running-headers (str): placement of alternating chapter titles and labels (`"bottom"`, `"top"`, or `"none"`)
-/// - config (dictionary): advanced shared satz overrides
-/// - config.book.contents: contents title position, size, entry size, and row spacing
-/// - config.book.worked-example: default spacing, inset, and type sizes
-/// - config.book.exercise: spacing between each prompt and its grid, and between exercise groups
-/// - config.book.footer-dy: vertical position of the page number
-/// - config.book.contents.entry-spacing: vertical gap before each contents entry
-/// - config.book.running-headers: running-title placement (`"bottom"`, `"top"`, or `"none"`)
+/// - binding (auto, alignment, none): inside edge for two-sided pages. `auto`
+///   keeps the book's left binding; `none` disables two-sided layout
+/// - binding-correction (length): extra room at the binding edge; defaults to 5mm
+/// - running-headers (str): `"bottom"` (default), `"top"`, or `"none"`.
+///   `config.book.running-headers` takes precedence over this direct argument
+/// - config (dictionary): shared Satz settings plus book-specific `book.*`
+///   settings. Common overrides include `typography: (font: "Georgia",
+///   math-font: "New Computer Modern Math", size: 11pt)` and
+///   `page: (paper: "a4", binding: left)`. `book.*` contains cover geometry
+///   and type sizes, contents layout, worked-example and exercise spacing,
+///   `running-headers`, and `footer-dy`. Shared defaults are in `defaults.typ`;
+///   book defaults are in `book/defaults.typ`.
 /// - body (content): preliminary pages and book structure
 #let book(
   body,
@@ -73,7 +77,7 @@
   date: none,
   accent: none,
   ink: none,
-  theme: none,
+  theme: "neutral",
   paper: none,
   margin: none,
   math-font: none,
@@ -86,6 +90,10 @@
   running-headers: "bottom",
   config: (:),
 ) = {
+  assert(title != none or cover-image != none,
+    message: "Book requires either `title` or `cover-image`.")
+  assert(cover-image == none or type(cover-image) == str,
+    message: "Book `cover-image` must be a file path string or none.")
   let default-accent = rgb("#23616B")
   let default-link = color.mix((default-accent, 60%), (black, 40%), space: rgb)
   let book-defaults = merge(defaults, (
@@ -165,6 +173,7 @@
     toc: (depth: 0),
   ))
   let themed-defaults = merge(book-defaults, theme-config(theme))
+  let themed-defaults = merge(themed-defaults, (book: (ink: themed-defaults.colors.text-main)))
   let accent-link = if accent != none { color.mix((accent, 60%), (black, 40%), space: rgb) } else { none }
   let direct-config = (
     page: (:
@@ -328,8 +337,10 @@
 ///
 /// The outline is native Typst, so its links and page numbers update on compile.
 ///
-/// - title (content): contents heading
-/// - depth (int): heading depth to include; 1 lists chapters only
+/// - title (content, none): contents heading; `none` hides it but still reserves
+///   the configured title spacing
+/// - depth (int): heading depth to include; defaults to 1 (chapters only).
+///   `0` renders an empty outline below the heading, not no page.
 #let book-contents(title: [Contents], depth: 1) = context {
   assert(type(depth) == int and depth >= 0, message: "book-contents depth must be a nonnegative integer.")
   let style = book-style.get()
@@ -356,7 +367,9 @@
 
 /// Start numbered chapters on a recto page with Arabic folios beginning at 1.
 ///
-/// - numbering (str, none): optional chapter numbering pattern; defaults to `"1"`
+/// - body (content): numbered chapter content
+/// - numbering (str, none): optional chapter numbering pattern; defaults to the
+///   document's `headings.numbering` (the book default is `"1"`)
 #let book-mainmatter(body, numbering: none) = context {
   let style = book-style.get()
   let number-format = if numbering == none { style.numbering } else { numbering }
@@ -389,6 +402,13 @@
 }
 
 /// Start lettered appendices while keeping Arabic page numbers.
+///
+/// Resets the heading counter and forces heading numbering to `"A"`. Figure,
+/// table, and equation counters are not reset automatically; use
+/// `chapter-numbering(appendix: true)` inside an appendix when those should be
+/// lettered too.
+///
+/// - body (content): appendix chapters
 #let book-appendix(body) = context {
   let style = book-style.get()
   [
@@ -416,6 +436,11 @@
 }
 
 /// Add unnumbered back-matter chapters after appendices or solutions.
+///
+/// Inserts a weak page break, disables heading numbering, and keeps Arabic page
+/// numbers with the book footer.
+///
+/// - body (content): back-matter chapters
 #let book-backmatter(body) = context {
   let style = book-style.get()
   [
@@ -432,12 +457,13 @@
 /// Use one `book-index` call after the references and supply index entries as
 /// paragraphs. The page counter continues from the preceding back-matter page.
 ///
-/// - body (content): index entries
-/// - title (content): index heading
-/// - column-count (int): number of index columns
-/// - gutter (length): space between columns
-/// - indent (length): continuation-line indent for each entry
-/// - spacing (length): space between entries
+/// - body (content): index entries as paragraphs
+/// - title (content): index heading; defaults to `[Index]`
+/// - column-count (int): number of index columns; defaults to 2
+/// - gutter (length): space between columns; defaults to 18pt
+/// - indent (length): continuation-line indent for each entry; defaults to 10pt
+/// - spacing (length): space between index entries; also sets paragraph
+///   spacing inside each hanging-indent entry; defaults to 3pt
 #let book-index(
   body,
   title: [Index],

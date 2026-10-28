@@ -3,25 +3,27 @@ title: "Prepare a legal complaint document"
 description: "Use the Satz Klageschrift structure, fill in its party and court fields, and compile a draft for review."
 ---
 
-`klageschrift()` provides a German civil-complaint document structure with fields for the court, parties, amount in dispute, claims, reasoning, and exhibits. This tutorial shows how to populate the layout. It does not determine whether a claim is legally sound or whether the document meets court requirements; have the contents checked by a qualified person before filing.
+`complaint()` provides a German civil-complaint document structure with fields for the court, parties, amount in dispute, claims, reasoning, and exhibits. This tutorial shows how to populate the layout. The output remains German; `klageschrift` and the German field names remain compatibility aliases. The template does not determine whether a claim is legally sound or whether the document meets court requirements; have the contents checked by a qualified person before filing.
 
 ## 1. Create a draft
 
 Create `klage.typ` and start with fictional placeholder details:
 
 ```typst
-#import "@local/satz:0.2.0": klageschrift
-#show: klageschrift.with(
-  gericht: "Amtsgericht Musterstadt",
-  gericht_ort: "Gerichtsstraße 1, 12345 Musterstadt",
-  klagername: "Max Mustermann",
-  klagerin_str: "Musterstraße 1",
-  klagerin_plz: "12345 Musterstadt",
-  beklagter: "Erika Beispiel",
-  beklagter_str: "Beispielweg 2",
-  beklagter_plz: "54321 Beispielstadt",
-  streitwert: "1.000,00 EUR",
-  anlagen: (
+#import "@local/satz:0.2.0": complaint
+#show: complaint.with(
+  court: "Amtsgericht Musterstadt",
+  court-address: "Gerichtsstraße 1, 12345 Musterstadt",
+  plaintiff: "Alex Example",
+  plaintiff-street: "Example Street 1",
+  plaintiff-postal-code-city: "12345 Example City",
+  defendant: "Robin Sample",
+  defendant-street: "Sample Road 2",
+  defendant-postal-code-city: "54321 Sample City",
+  amount-in-dispute: "1.000,00 EUR",
+  date: "27.10.2026",
+  plaintiff-designation: "Kläger",
+  exhibits: (
     "Anlage K 1: Vereinbarung",
     "Anlage K 2: Schriftwechsel",
   ),
@@ -41,11 +43,11 @@ documents.
 Add the reasoning for each claim and refer to the relevant exhibits.
 ```
 
-The settings in `klageschrift.with(...)` populate the court and party blocks. The headings and text below the show rule form the body. Replace every fictional value and placeholder before using the document.
+The settings in `complaint.with(...)` populate the court and party blocks. The headings and text below the show rule form the body. `date` is explicit in the example; omit it and the compilation date is used. `plaintiff-designation` sets the role under the signature. Replace every fictional value and placeholder before using the document.
 
 ## 2. Attach exhibits
 
-List each exhibit in `anlagen` using the label you use in the document, for example `"Anlage K 1: Vereinbarung"`. The template displays the list; it does not verify that each exhibit supports the statement beside it. If you need to include pages from a PDF, the API also accepts `anlagen_pdf_path` and `anlagen_max_pages`. Keep any file path relative to the project and verify the resulting PDF.
+List each exhibit in `exhibits` using the label you use in the document, for example `"Anlage K 1: Vereinbarung"`. The template displays the list; it does not verify that each exhibit supports the statement beside it. If you need to append pages from a PDF, the API also accepts `exhibits-pdf` and `exhibit-page-limit`. The page limit is not a truncation setting: it must not exceed the PDF's actual page count, or compilation fails. Keep any file path relative to the project and verify the resulting PDF.
 
 ## 3. Compile and check
 

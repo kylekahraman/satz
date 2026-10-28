@@ -8,10 +8,24 @@
   whole + (if de { "," } else { "." }) + fraction + " €"
 }
 
-/// Itemized budget with exact totals. All prices are nonnegative integer cents.
-/// Items: (description: content, unit-cost: int, quantity: int = 1).
-/// Each row shows quantity × unit cost, subtotal, and a final grand total.
-/// A total label and German/English number formatting are configurable.
+/// Itemized budget with exact totals.
+///
+/// ```example
+/// #proposal-budget((
+///   (description: [Participant payments], unit-cost: 5000, quantity: 40),
+///   (description: [Travel], unit-cost: 120000),
+/// ))
+/// ```
+///
+/// Each row shows quantity × unit cost, subtotal, and a final grand total. All
+/// prices are nonnegative integer cents.
+///
+/// - items (array): records with `description` (str or content), `unit-cost`
+///   (nonnegative int cents), and optional `quantity` (positive int, default 1)
+/// - language (str): `"english"` (default) or `"german"`; controls labels and
+///   decimal separator
+/// - total-label (content, str, none): final total label; `none` uses `"Total"`
+///   or `"Summe"`
 #let proposal-budget(items, language: "english", total-label: none) = {
   assert(type(items) == array, message: "Budget items must be an array of records.")
   assert(language in ("english", "german"), message: "Budget language must be english or german.")

@@ -1,11 +1,12 @@
 # Journal themes and inherited defaults
 
-The development package exposes six palettes: `neutral`, `soft-jade`,
+The development package exposes seven palettes: `neutral`, `slate`, `soft-jade`,
 `soft-slate`, `warm-editorial`, `plum`, and `soft-rose`. Covers accept `theme:`;
 journals and indexes now accept the same names:
 
-The neutral palette is the default for new journal starters and uses only black
-and white. Choose one of the other palettes in `config.typ` to opt into color.
+The neutral palette is the default for all document templates and uses only
+black and white. `slate` preserves the former dark blue-gray base palette.
+Choose another palette in `config.typ` to opt into color.
 
 ```typst
 #import "@local/satz:0.2.0": journal-entry, journal-index
@@ -18,7 +19,7 @@ and white. Choose one of the other palettes in `config.typ` to opt into color.
 ```
 
 Keep the theme name in one project settings file and pass it to the cover,
-index and entries. `theme: none` preserves the existing journal appearance.
+index and entries. `theme: none` skips the theme and uses template defaults.
 Explicit nested `config:` values take precedence over the selected palette.
 
 For **any** Satz template or component with a `config:` parameter, use the

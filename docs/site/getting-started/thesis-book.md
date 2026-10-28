@@ -62,7 +62,7 @@ Move each chapter into its own file when the source becomes difficult to navigat
 Create `book.typ`. This smaller example gives you a title page, contents, numbered main matter, and an appendix:
 
 ```typst
-#import "@local/satz:0.2.0": book, book-contents, book-mainmatter, book-appendix, book-backmatter
+#import "@local/satz:0.2.0": book, book-contents, book-mainmatter, book-appendix, book-backmatter, book-index
 
 #show: book.with(
   title: [A Short Guide to Field Notes],
@@ -71,6 +71,7 @@ Create `book.typ`. This smaller example gives you a title page, contents, number
   date: [2026],
   font: "Libertinus Serif",
   binding: left,
+  running-headers: "bottom",
 )
 
 = Preface
@@ -104,9 +105,17 @@ Explain who the book is for and how to use it.
 
   List books and articles for readers who want to continue.
 ]
+
+#book-index[
+  Field notes, 12
+
+  Pilot study, 18
+]
 ```
 
-Text before `#book-contents()` is front matter. Put numbered chapters inside `book-mainmatter[...]`; put unnumbered supporting material in `book-appendix[...]`. Add `book-backmatter[...]` after the appendix for references or further reading. The book API and its remaining options are documented in the [book API reference](/satz/reference/api/#book).
+Text before `#book-contents()` is front matter. Put numbered chapters inside `book-mainmatter[...]`; put unnumbered supporting material in `book-appendix[...]`. Add `book-backmatter[...]` after the appendix for references or further reading, then `book-index[...]` for an index. `book-index` starts a new page and uses hanging-indent entries by default.
+
+The book title page is generated from `title` and the other metadata. Use `cover-image: image("cover.pdf", width: 100%)` instead when you have a designed cover; a title is not required in that case. `running-headers` accepts `"top"`, `"bottom"`, or `"none"`; a nested `config.book.running-headers` value takes precedence. The book API and its remaining options are documented in the [book API reference](/satz/reference/api/#book).
 
 ## Compile and review the long document
 

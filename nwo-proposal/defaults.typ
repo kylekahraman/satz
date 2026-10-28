@@ -6,7 +6,7 @@
   // Single-spaced Arial uses about 1.22 × type size between baselines here;
   // Typst's added leading is not a LaTeX/Word line-spacing multiplier.
   typography: (font: "Arial", leading: 0.5em),
-  colors: (bg-paper: white, text-main: black, brand-primary: rgb("18657c")),
+  colors: (bg-paper: white, text-main: black, brand-primary: black),
   links: (color: black, url-color: black),
   captions: (alignment: left),
 )

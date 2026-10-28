@@ -14,12 +14,37 @@
 }
 
 /// NWO Talent Programme application layout using an explicit checked profile.
-/// Ordinary headings continue to work. No cover, contents or counter reset.
-/// Pages have a stable current/total header, from the first page onwards.
-/// See the source/coverage guide: this is not universal submission certification.
-/// `scheme` is `"veni"`, `"vidi"`, or `"vici"`; `domain` is `"science"`,
-/// `"ssh"`, `"aes"`, or `"zonmw"`; `stage` is `"pre"` or `"full"`.
-/// Only source-checked 2026 form combinations are supported.
+///
+/// Ordinary headings continue to work. There is no cover, contents, or page
+/// counter reset. Pages have a stable current/total header from page 1. This is
+/// a source-checked authoring aid, not universal submission certification.
+///
+/// ```example
+/// #show: nwo-proposal.with(
+///   scheme: "veni",
+///   domain: "science",
+///   stage: "pre",
+///   applicant: [Alex Example],
+///   title: [Example research idea],
+/// )
+/// = Key output
+/// #nwo-text("key-output", "A short plain-text response.")
+/// ```
+///
+/// - scheme (str): `"veni"` (default), `"vidi"`, or `"vici"`
+/// - domain (str): `"science"` (default), `"ssh"`, `"aes"`, or `"zonmw"`
+/// - stage (str): `"pre"` (default) or `"full"`. In 2026, only Vici full
+///   proposals are represented; other full-proposal forms fail explicitly
+/// - year (int): source-checked form year; must be 2026
+/// - applicant (content, str): applicant block; defaults to empty
+/// - title (content, str): proposal title; defaults to empty
+/// - config (dictionary): shared Satz overrides. For example,
+///   `config: (typography: (font: "Arial", size: 10pt),
+///   colors: (brand-primary: blue))`. The NWO profile uses black by default;
+///   its supported year and form still determine page limits and layout.
+///   See `nwo-proposal/defaults.typ` and `defaults.typ` for those values and
+///   all shared keys.
+/// - body (content): the application sections
 #let nwo-proposal(
   scheme: "veni", domain: "science", stage: "pre", year: 2026,
   applicant: [], title: [], config: (:), body,
@@ -55,7 +80,7 @@
     ]
     #body
     #context {
-      assert(query(<satz-nwo-key-output>).len() <= 10, message: "NWO pre-proposals allow at most ten key output items.")
+      assert(query(<satz-nwo-key-output>).len() <= 10, message: "NWO allows at most ten key output items.")
     }
   ]
 }

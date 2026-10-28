@@ -45,7 +45,26 @@ Use `layout: "minimal"` for a compact title page:
 
 Both generated layouts use the built-in theme by default. To choose another palette, add a theme such as `theme: "plum"` or `theme: "soft-slate"`. You can also override shared colors through `config`.
 
-## 3. Compile and check the cover
+## 3. Share a look deliberately
+
+A cover does not inherit the following document's `theme` or `config`. Pass the same values to both when they should match:
+
+```typst
+#let theme = "soft-jade"
+#let shared = (typography: (font: "EB Garamond"),)
+
+#cover-page(
+  layout: "research",
+  title: [Field Notes from a Pilot Study],
+  theme: theme,
+  config: shared,
+)
+#show: report.with(theme: theme, config: shared)
+```
+
+The cover reads only `page.paper`, `page.margin`, `typography.font`, `typography.size`, and the cover color keys. Other valid shared keys are accepted but ignored. A typo in a known key fails compilation instead of being silently ignored.
+
+## 4. Compile and check the cover
 
 Compile with `typst compile --package-path packages main.typ`. Check that the title, author, and other details fit without awkward line breaks and that the first report page follows the cover. For a hand-designed cover, use `layout: "classic"` and pass your own `body: [...]`; the [`cover-page` API entry](/satz/reference/api/#cover-page) documents the available slots and theme names.
 

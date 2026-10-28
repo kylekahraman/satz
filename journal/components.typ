@@ -15,8 +15,13 @@
 
 /// A blue box for things you want to keep in mind.
 ///
-/// Drop it right in your entry text.
-/// Usage: ` #remember[Picard ICA needs raw, non-interpolated data.] `
+/// The label and colors are fixed for now, so the box is not theme-aware.
+///
+/// ```example
+/// #remember[ICA needs raw, non-interpolated data.]
+/// ```
+///
+/// - body (content): the note to retain
 #let remember(body) = block(
   fill: rgb("e1f5fe"),
   stroke: 0.5pt + rgb("0288d1"),
@@ -29,8 +34,14 @@
 
 /// An orange box for open questions.
 ///
-/// Stays visible when you review — answer it later.
-/// Usage: ` #question[Why did find_bads_eog flag component 3?] `
+/// The label and colors are fixed for now, so the box is not theme-aware. Use it
+/// to keep unresolved questions visible during review.
+///
+/// ```example
+/// #question[Why did the EOG check flag component 3?]
+/// ```
+///
+/// - body (content): the unresolved question
 #let question(body) = block(
   fill: rgb("fff3e0"),
   stroke: 0.5pt + rgb("f57c00"),

@@ -2,20 +2,18 @@
 title: "Configuration reference"
 ---
 
-This is the candidate reference for the shared styling interface; custom documents use `custom(config:)`.
+This is the 0.2.0 reference for the shared styling interface; custom documents use `custom(config:)`.
 It documents the executable baseline in `defaults.typ`; it does not claim that
 every template consumes every key. `report`, `article`, `book`, `journal`,
 `cover-page`, `letter`, `invoice`, and proposal templates add or override
 settings in their own APIs. Their documented differences take precedence over
-the shared baseline. The package is the unpublished 0.2.0 candidate, so these
-contracts are not available from the published package.
-The candidate's declared minimum compiler version is Typst 0.15.0.
+the shared baseline. The declared minimum compiler version is Typst 0.15.0.
 
 Pass only values to change. Satz deep-merges dictionaries: an override such as
 `(colors: (brand-primary: blue))` preserves the other color defaults. Arrays,
 scalars, and non-dictionary values replace the old value. The generic `merge`
 helper does not validate unknown keys. Validation is performed by individual
-public APIs where supported; in particular, letters and invoices reject
+public APIs where supported; in particular, letters, invoices, and covers reject
 unsupported keys in their documented appearance groups.
 
 ## Find a setting
@@ -105,7 +103,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="page-footer-format"></span>`page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | <span id="page-footer-size"></span>`page-footer.size` | length | `10pt` | Page-number size. |
 | <span id="page-footer-weight"></span>`page-footer.weight` | Typst font-weight value | `"bold"` | Page-number weight. |
-| <span id="links-color"></span><span id="links-url-color"></span>`links.color`, `links.url-color` | color | `#B4313F`, `#45556c` | Internal-reference and external-URL colors respectively. |
+| <span id="links-color"></span><span id="links-url-color"></span>`links.color`, `links.url-color` | color | `#0563C1`, `#0563C1` | Internal-reference and external-URL colors in the default neutral palette. |
 | <span id="tables-stroke"></span>`tables.stroke` | length | `0.5pt` | Default table rule thickness for shared table helpers. |
 | <span id="tables-inset"></span>`tables.inset` | length or dictionary such as `(x: 8pt, y: 4pt)` | `(x: 8pt, y: 4pt)` | Cell padding for shared table helpers. |
 | <span id="tables-font-size"></span>`tables.font-size` | length | `10pt` | Text size in shared styled tables. |
@@ -121,7 +119,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="captions-weight"></span>`captions.weight` | Typst font-weight value | `"regular"` | Caption text weight. |
 | <span id="captions-alignment"></span>`captions.alignment` | Typst alignment | `center` | Caption alignment. |
 | <span id="captions-label-weight"></span>`captions.label-weight` | Typst font-weight value | `"regular"` | Weight of the caption label, independently of caption text. |
-| <span id="toc-depth"></span>`toc.depth` | `none` or non-negative integer | `none` | `0` disables the contents; other depths depend on the template. |
+| <span id="toc-depth"></span>`toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. `book-contents(depth: 0)` instead renders an empty titled list; other depths depend on the template. |
 | <span id="toc-title"></span>`toc.title` | content or `none` | `[Table of Contents]` | Contents title; `none` omits it. |
 | <span id="toc-indent"></span>`toc.indent` | `auto` or length | `auto` | Entry indentation policy. |
 | <span id="toc-entry-size"></span>`toc.entry-size` | length | `10pt` | Contents entry size. |
@@ -140,7 +138,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="lof-below"></span><span id="lot-below"></span>`lof.below`, `lot.below` | length | `2em` | Gap after the list. |
 | <span id="lof-compact"></span><span id="lot-compact"></span>`lof.compact`, `lot.compact` | boolean | `false` | When true, omit caption text and show only label and page. |
 | <span id="bibliography-style"></span>`bibliography.style` | CSL style name | `"apa"` | Citation style where bibliography support is enabled. |
-| <span id="colors-bg-paper"></span><span id="colors-bg-subtle"></span><span id="colors-brand-primary"></span><span id="colors-brand-accent"></span><span id="colors-text-main"></span><span id="colors-text-muted"></span>`colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted` | Typst color | `#f8fafc`, `#f1f5f9`, `#1d293d`, `#0f172b`, `#020618`, `#90a1b9` | Paper, panel, accent, and text colors. Templates can provide their own palette. |
+| <span id="colors-bg-paper"></span><span id="colors-bg-subtle"></span><span id="colors-brand-primary"></span><span id="colors-brand-accent"></span><span id="colors-text-main"></span><span id="colors-text-muted"></span>`colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted` | Typst color | `white`, `white`, `black`, `black`, `black`, `black` | Neutral black-on-white defaults. Use `theme: "slate"` for the former blue-gray palette. |
 
 
 ## Article-specific settings
@@ -165,7 +163,8 @@ The experimental `book` template accepts common shared settings through `config`
 
 | Field | Type | Default | Effect |
 | --- | --- | --- | --- |
-| <span id="book-ink"></span>`book.ink` | Typst color | `#24313B` | Color for the book cover title and chapter headings; the direct `ink:` argument can override it. |
+| <span id="book-ink"></span>`book.ink` | Typst color | `#24313B` | Color for the book cover title and chapter headings. |
+| <span id="book-running-headers"></span>`book.running-headers` | `"bottom"`, `"top"`, or `"none"` | `"bottom"` | Placement of alternating chapter titles. This nested key overrides the direct `running-headers:` argument. |
 | <span id="book-contents-title-before"></span>`book.contents.title-before` | length | `24.5pt` | Space before the contents title. |
 | <span id="book-contents-title-after"></span>`book.contents.title-after` | length | `26pt` | Gap after the contents title. |
 | <span id="book-contents-title-size"></span>`book.contents.title-size` | length | `17pt` | Contents title size. |
@@ -206,14 +205,14 @@ arguments described in their source API comments and guides.
 
 | Template | Defaults or notable differences |
 | --- | --- |
-| `custom` | Uses the shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. |
-| `report` | `theme: "neutral"`; all remaining appearance defaults come from the internal shared document class. `theme: none` leaves the shared palette in place. |
-| `article` | `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1em`, body gap `1.5em`. |
-| `journal-entry` / `journal-index` | `page.paper: "iso-b5"`; margins `(x: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; neutral gray palette. Journal block and running-header gaps are in `journal.*` above. |
-| `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Direct options include `font`, `papier`, `seitenraender`, `schriftgroesse`, `zeilenabstand`, and `blocksatz`; nested config only accepts the documented page, typography, color, and link keys. |
-| `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Direct `font` is supported. Nested config accepts the same limited appearance keys as letters. |
-| `book` (experimental) | A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; default teal accent and dark slate ink. `theme: none` selects these defaults. |
-| `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, black-on-white neutral cover palette; `theme` defaults to `"neutral"`, and layout defaults to `"classic"`. Generated title content requires `layout: "research"` or `"minimal"`; classic remains the composable slot-based layout. The research layout leaves `4.5cm` above its title block. |
+| `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
+| `report` | Defaults to `theme: "neutral"`; all remaining appearance defaults come from the shared document class. `theme: none` skips a named palette and uses the shared defaults. |
+| `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
+| `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; black-on-white palette. Journal block and running-header gaps are in `journal.*` above. |
+| `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`; German names are aliases. Nested config only accepts the documented page, typography, color, and link keys. |
+| `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Canonical direct names are `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, and `qr-purpose`; German names are aliases. Nested config accepts the same limited appearance keys as letters. |
+| `book` (experimental) | Defaults to `theme: "neutral"`; A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; black accent and ink. `theme: "slate"` selects the former blue-gray palette. |
+| `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, black-on-white neutral cover palette; `theme` defaults to `"neutral"`, and layout defaults to `"classic"`. Generated title content requires `layout: "research"` or `"minimal"`; classic requires `body` and remains the composable slot-based layout. Covers consume only the documented page, font, and color keys; other valid shared keys are accepted and ignored. They do not inherit a following document's `theme` or `config`. The research layout leaves `4.5cm` above its title block. |
 | `research-proposal` / `project-proposal` | No contents/lists; margins `(x: 25mm, y: 25mm)`; white paper, black text and links; paragraph gap `0.7em`; heading numbering `"1.1"`. |
 | `dfg-proposal` | DFG form 53.01 (09/26), A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 15mm)`; Arial `11pt`, form-specific leading, four-level numbering `"1.1.1.1"`; no contents/lists; black text/links; left captions. |
 | `nwo-proposal` | Only source-checked 2026 profiles; A4 with `25mm` margins; Arial, 9.5pt pre-proposal or 10pt Vici full form; no contents/lists; black text/links. Form profile controls remaining typography and page budget. |

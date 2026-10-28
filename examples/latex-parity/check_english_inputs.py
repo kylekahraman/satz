@@ -1,4 +1,4 @@
-"""Check English letter/invoice inputs normalize to the existing German API."""
+"""Check canonical English inputs against German compatibility aliases."""
 from pathlib import Path
 import subprocess
 import tempfile
@@ -39,6 +39,14 @@ def main():
   empfaenger: (name: "Example Recipient", strasse: "Sample Road 2", plz_ort: "54321 Sample City", land: "UK"),
   datum: "2026-10-01", betreff: "English aliases", lang: "de",
   anlagenverzeichnis: ("Protocol copy",), signatur: false,
+  falzmarken: false, adressfenster: false, seitenzahlen: false,
+  digitaler_absender: true, datum_rechts: true, blocksatz: false,
+  absender_anzeigen: true, empfaenger_anzeigen: true,
+  datum_anzeigen: true, betreff_anzeigen: true,
+  papier: "a4", seitenraender: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm),
+  schriftgroesse: 10.5pt, zeilenabstand: 0.7em, betreff_groesse: 12pt,
+  digitaler_absender_hoehe: 20mm,
+  abstaende: (signatur: 2em,), config: (typography: (justify: false)),
 )
 Dear Example Recipient,\nLetter body.\n'''
         english_letter = f'''#import "{IMPORT}": letter
@@ -46,7 +54,14 @@ Dear Example Recipient,\nLetter body.\n'''
   sender: (name: "Example Sender", street: "Example Street 1", postal-code-city: "12345 Example City", phone: "555-0100"),
   recipient: (name: "Example Recipient", street: "Sample Road 2", postal-code-city: "54321 Sample City", country: "UK"),
   date: "2026-10-01", subject: "English aliases", language: "de",
-  enclosure-list: ("Protocol copy",), signatur: false,
+  enclosure-list: ("Protocol copy",), signature: false,
+  fold-marks: false, address-window: false, page-numbers: false,
+  digital-sender: true, date-right: true, justify: false,
+  show-sender: true, show-recipient: true, show-date: true, show-subject: true,
+  paper: "a4", margins: (left: 25mm, right: 20mm, top: 25mm, bottom: 25mm),
+  font-size: 10.5pt, line-spacing: 0.7em, subject-size: 12pt,
+  digital-sender-height: 20mm,
+  block-spacing: (signature: 2em, "sender-recipient": 2em), config: (typography: (justify: false)),
 )
 Dear Example Recipient,\nLetter body.\n'''
         assert render_text(folder, "german-letter", german_letter) == render_text(folder, "english-letter", english_letter)
@@ -73,21 +88,79 @@ Invoice text body.\n'''
 Invoice text body.\n'''
         assert render_text(folder, "german-invoice", german_invoice) == render_text(folder, "english-invoice", english_invoice)
 
+        german_guest = f'''#import "{IMPORT}": gastspielvertrag
+#show: gastspielvertrag.with(
+  dokument: "angebot", kuenstler: "Example Artist", kuenstler_vertreter: "Alex Example",
+  kuenstler_anschrift: "Example Street 1, 12345 Example City",
+  veranstaltung: "Example concert", location: "Example Hall", datum: "15.03.2026",
+  auftrittszeit: "20:00", auftrittsdauer: "90 min", einlass: "19:00", curfew: "23:00",
+  musiker: 3, techniker: false, fotograf: true,
+  gage_typ: "prozent", festgage: 500, prozentsatz: 70, mindestgage: 300,
+  kleinunternehmer: false, transport_km: 100, transport_satz: 0.4,
+  techniker_honorar: 50, uebernachtung: 80,
+  sonstiges_text: "Parking", sonstiges_betrag: 10, buyout_pro_person: 20,
+  font: "Libertinus Serif",
+)[Extra clause.]
+'''
+        english_guest = f'''#import "{IMPORT}": guest-contract
+#show: guest-contract.with(
+  document-type: "angebot", artist: "Example Artist", artist-representative: "Alex Example",
+  artist-address: "Example Street 1, 12345 Example City",
+  event: "Example concert", venue: "Example Hall", date: "15.03.2026",
+  performance-time: "20:00", performance-duration: "90 min", doors: "19:00", curfew: "23:00",
+  musicians: 3, technician: false, photographer: true,
+  fee-type: "prozent", fixed-fee: 500, percentage: 70, minimum-fee: 300,
+  small-business: false, travel-km: 100, travel-rate: 0.4,
+  technician-fee: 50, accommodation: 80,
+  other-description: "Parking", other-amount: 10, buyout-per-person: 20,
+  font: "Libertinus Serif",
+)[Extra clause.]
+'''
+        assert render_text(folder, "german-guest", german_guest) == render_text(folder, "english-guest", english_guest)
+
+        german_complaint = f'''#import "{IMPORT}": klageschrift
+#show: klageschrift.with(
+  gericht: "Amtsgericht Musterstadt", gericht_ort: "Gerichtsstraße 1, 12345 Musterstadt",
+  klagername: "Alex Example", klagerin_str: "Example Street 1", klagerin_plz: "12345 Example City",
+  beklagter: "Robin Sample", beklagter_str: "Sample Road 2", beklagter_plz: "54321 Sample City",
+  streitwert: "1.000,00 EUR", anlagen: ("Anlage K 1: Contract",),
+  datum: "27.10.2026",
+)
+= Anträge
+The claim.
+'''
+        english_complaint = f'''#import "{IMPORT}": complaint
+#show: complaint.with(
+  court: "Amtsgericht Musterstadt", court-address: "Gerichtsstraße 1, 12345 Musterstadt",
+  plaintiff: "Alex Example", plaintiff-street: "Example Street 1", plaintiff-postal-code-city: "12345 Example City",
+  defendant: "Robin Sample", defendant-street: "Sample Road 2", defendant-postal-code-city: "54321 Sample City",
+  amount-in-dispute: "1.000,00 EUR", exhibits: ("Anlage K 1: Contract",),
+  date: "27.10.2026",
+)
+= Anträge
+The claim.
+'''
+        assert render_text(folder, "german-complaint", german_complaint) == render_text(folder, "english-complaint", english_complaint)
+
         conflicts = {
-            "sender-record": '''absender: (name: "German"), sender: (name: "English"),''',
-            "sender-field": '''sender: (street: "English", strasse: "German"),''',
-            "invoice-item": '''items: ((description: "Consulting", quantity: 2),),''',
-            "sender-record-type": '''sender: "not a record",''',
-            "sender-field-type": '''sender: (street: 12),''',
-            "invoice-item-quantity": '''items: ((description: "Consulting", quantity: 0, unit-price: 80),),''',
-            "invoice-item-tuple": '''items: (("Consulting", 2),),''',
-            "letter-flag": '''signatur: "yes",''',
-            "letter-reference-line": '''reference-line: (("Ref", 1),),''',
-            "invoice-qr-flag": '''qr: "yes",''',
-            "invoice-qr-amount": '''qr-amount: -1,''',
+            "sender-record": ("brief", '''absender: (name: "German"), sender: (name: "English"),'''),
+            "sender-field": ("brief", '''sender: (street: "English", strasse: "German"),'''),
+            "sender-record-type": ("brief", '''sender: "not a record",'''),
+            "sender-field-type": ("brief", '''sender: (street: 12),'''),
+            "letter-flag": ("brief", '''signatur: "yes",'''),
+            "letter-layout-flag": ("brief", '''fold-marks: "yes",'''),
+            "letter-alias-conflict": ("brief", '''signatur: false, signature: true,'''),
+            "letter-reference-line": ("brief", '''reference-line: (("Ref", 1),),'''),
+            "invoice-item": ("rechnung", '''items: ((description: "Consulting", quantity: 2),),'''),
+            "invoice-item-quantity": ("rechnung", '''items: ((description: "Consulting", quantity: 0, unit-price: 80),),'''),
+            "invoice-item-tuple": ("rechnung", '''items: (("Consulting", 2),),'''),
+            "invoice-qr-flag": ("rechnung", '''qr: "yes",'''),
+            "invoice-qr-amount": ("rechnung", '''qr-amount: -1,'''),
+            "guest-alias-conflict": ("gastspielvertrag", '''festgage: 100, fixed-fee: 100,'''),
+            "complaint-alias-conflict": ("klageschrift", '''gericht: "A", court: "B",'''),
+            "complaint-page-limit": ("klageschrift", '''exhibit-page-limit: 0,'''),
         }
-        for name, arguments in conflicts.items():
-            template = "rechnung" if name.startswith(("invoice-item", "invoice-qr")) else "brief"
+        for name, (template, arguments) in conflicts.items():
             source = f'''#import "{IMPORT}": {template}\n#show: {template}.with({arguments})\nBody.\n'''
             result, _ = compile_pdf(folder, name, source)
             assert result.returncode != 0, f"{name} should fail validation"
@@ -105,15 +178,25 @@ Invoice text body.\n'''
                 assert "must be a three-value tuple" in result.stderr
             elif name == "letter-flag":
                 assert "Letter `signature` option must be a boolean" in result.stderr
+            elif name == "letter-layout-flag":
+                assert "Letter `fold-marks` option must be a boolean" in result.stderr
+            elif name == "letter-alias-conflict":
+                assert "either `signatur` or `signature`" in result.stderr
             elif name == "letter-reference-line":
                 assert "reference-line must be an array of two-string pairs" in result.stderr
             elif name == "invoice-qr-flag":
                 assert "Invoice qr option must be a boolean" in result.stderr
             elif name == "invoice-qr-amount":
                 assert "qr-amount must be a nonnegative number" in result.stderr
+            elif name == "guest-alias-conflict":
+                assert "either `festgage` or `fixed-fee`" in result.stderr
+            elif name == "complaint-alias-conflict":
+                assert "either `gericht` or `court`" in result.stderr
+            elif name == "complaint-page-limit":
+                assert "Complaint `exhibit-page-limit` must be a positive integer" in result.stderr
             else:
                 assert "unit-price" in result.stderr
-    print("Passed: equivalent German/English inputs render the same text; alias conflicts, malformed addresses, and invalid invoice items fail clearly.")
+    print("Passed: canonical English and German compatibility inputs render the same text; alias conflicts and malformed values fail clearly.")
 
 
 if __name__ == "__main__":

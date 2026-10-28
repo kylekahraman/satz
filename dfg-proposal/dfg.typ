@@ -14,8 +14,16 @@
   [#metadata("supplement") <satz-dfg-supplement>]
 }
 
-/// Render section 3's bibliography at 9, 10 or 11pt (without another heading).
-/// Place under the ordinary level-one publications heading.
+/// Render the publications bibliography without adding another heading.
+///
+/// Place it under the ordinary level-one publications heading. With
+/// `proposal-citations`, omit `source` and this delegates to
+/// `proposal-publications()`, preserving highlighted entries.
+///
+/// - source (str, none): bibliography path; `none` uses `proposal-citations`
+/// - size (length): bibliography text size, at least 9pt; defaults to 9pt
+/// - style (str): CSL style for a direct `bibliography()` call; defaults to `"apa"`
+/// - ..args: one positional bibliography path or native `bibliography` options
 #let dfg-publications(source: none, size: 9pt, style: "apa", ..args) = {
   assert(size >= 9pt, message: "DFG publications must be at least 9pt.")
   set text(size: size)
@@ -30,14 +38,38 @@
   }
 }
 
-/// DFG form 53.01 project description, revision 09/26, German or English.
-/// Uses Arial 11pt, four numbered heading levels, and no contents/cover page.
+/// DFG form 53.01 project description, revision 09/26, in German or English.
+///
+/// Uses Arial 11pt, four numbered heading levels, and no contents or cover page.
 /// `dfg-supplement()` starts the separately counted eight-page second part.
-/// By default compilation fails when either part exceeds its page allowance.
-/// `max-pages` preserves the legacy first-part limit parameter.
-/// `language` is `"english"` or `"german"`; `check-pages: false` permits an
-/// overlength working draft.
-/// Config overrides are available, but authors must retain DFG formatting.
+/// By default compilation fails when either part exceeds its allowance.
+///
+/// ```example
+/// #show: dfg-proposal.with(
+///   applicant: [Alex Example, Example University],
+///   project: [A small example project],
+///   doc: [
+///     = 1 Starting point
+///     ...
+///     #dfg-supplement()
+///     = 4 Project plan
+///   ],
+/// )
+/// ```
+///
+/// - doc (content): numbered project description including headings 1–5
+/// - applicant (content): applicant and institution block; defaults to empty
+/// - project (content): project title block; defaults to empty
+/// - language (str): `"english"` (default) or `"german"`
+/// - max-pages (int): first-part page limit; defaults to 17. Sections 1–3 use
+///   this limit; sections 4–5 always use the eight-page supplement limit
+/// - form-date (str): displayed DFG form date; defaults to `"09/26"`
+/// - check-pages (bool): fail compilation on an overlength draft when true
+///   (default); set false for a working draft
+/// - config (dictionary): shared Satz overrides; DFG formatting must be retained.
+///   Example: `config: (typography: (font: "Arial", size: 11pt))`.
+///   The DFG form defaults and its fixed page limits are in
+///   `dfg-proposal/defaults.typ`; shared keys and defaults are in `defaults.typ`.
 #let dfg-proposal(
   applicant: [], project: [], language: "english", max-pages: 17,
   form-date: "09/26", check-pages: true, config: (:), doc,

@@ -1,6 +1,7 @@
 #import "@preview/cheq:0.4.0": checklist
 #import "../class.typ": document-class
 #import "../defaults.typ": defaults, merge, validate-config
+#import "defaults.typ": defaults as journal-defaults
 #import "../themes.typ": theme-config
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
 #import "dates.typ": journal-date-parts
@@ -19,27 +20,45 @@
 
 /// One journal entry — title, date, keywords, and your notes.
 ///
-/// You get a heading, badges for date + keywords, and a header
-/// that keeps showing title + date on later pages.
-/// Checklists work: `- [ ] todo` and `- [x] done`.
+/// You get a heading, date and keyword badges, and a running header that keeps
+/// showing the title and date on later pages. Checklists work with
+/// `- [ ] todo` and `- [x] done`. Journal entries use ISO B5 paper by default.
 ///
-/// - title (str): what this entry is about
-/// - date (str): `YYYY-MM-DD` or `DD/MM/YY` / `DD/MM/YYYY`, optionally preceded by a weekday; empty is allowed for drafts
-/// - keywords (str): comma-separated, e.g. "MEG, ICA"
+/// ```example
+/// #journal-index()
+/// #journal-entry(
+///   title: [Pilot run],
+///   date: "2026-10-27",
+///   keywords: "DCM, working memory",
+/// )[
+///   - [ ] Check the model comparison.
+/// ]
+/// ```
+///
+/// - title (str): entry title; inserted verbatim
+/// - date (str): `YYYY-MM-DD` or `DD/MM/YY` / `DD/MM/YYYY`, optionally
+///   preceded by a weekday; empty is allowed for drafts
+/// - keywords (str): comma-separated keywords, e.g. `"MEG, ICA"`; inserted
+///   verbatim
 /// - body (content): your notes
-/// - config (dictionary): tweak colors, fonts ...
-/// - theme (str, none): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`; explicit config overrides win.
+/// - config (dictionary): shared Satz overrides plus `journal.*` spacing keys.
+///   For example, use `typography: (font: "Libertinus Serif", size: 11pt)` or
+///   `page: (paper: "a4", columns: 1)`. Shared typography defaults to
+///   Libertinus Serif at 11pt; journal defaults use ISO B5, one column, and
+///   set entry spacing in `journal/defaults.typ`. All shared keys and values
+///   are in `defaults.typ`.
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; explicit config overrides win
 #let journal-entry(
   title: "",
   date: "",
   keywords: "",
   body,
   config: (:),
-  theme: none,
+  theme: "neutral",
 ) = {
   let validated-date = journal-date-parts(date)
-  let config = theme-config(theme, config: config)
+  let config = merge(journal-defaults, theme-config(theme, config: config))
   let c = merge(defaults, config)
 
   context {
@@ -100,13 +119,18 @@
 
 /// The index — all entries, grouped by month.
 ///
-/// We query every `<journal-item>` and list date, title, and
-/// page with a dotted line and a clickable link.
-/// Put this before your entries — Typst finds them anyway at compile time.
+/// Every `journal-entry` contributes a `<journal-item>`; the index lists date,
+/// title, and page with a dotted line and clickable link. Put the index before
+/// your entries—Typst resolves them at compile time. The fixed heading is
+/// English "Index"; undated entries appear under "Undated"; month headings gain
+/// a year only when the journal spans multiple years.
 ///
-/// - config (dictionary): tweak defaults
-#let journal-index(config: (:), theme: none) = context {
-  let config = theme-config(theme, config: config)
+/// - config (dictionary): same shared settings and journal defaults as
+///   `journal-entry`; use `toc`, `colors`, or `typography` overrides here too.
+/// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
+///   `plum`, or `soft-rose`; explicit config overrides win
+#let journal-index(config: (:), theme: "neutral") = context {
+  let config = merge(journal-defaults, theme-config(theme, config: config))
   let config = validate-config(config)
   let c = merge(defaults, config)
 

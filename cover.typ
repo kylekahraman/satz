@@ -3,7 +3,7 @@
 // Shared cover page — a composable layout plus ready-to-use title-page styles.
 
 /// Built-in cover palettes as a dictionary keyed by palette name:
-/// `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
+/// `neutral`, `slate`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
 /// `soft-rose`.
 ///
 /// Each value contains `bg-paper`, `brand-primary`, `brand-accent`, `text-main`,
@@ -17,6 +17,13 @@
     brand-accent: black,
     text-main: black,
     text-muted: black,
+  ),
+  slate: (
+    bg-paper: rgb("#f8fafc"),
+    brand-primary: rgb("#1d293d"),
+    brand-accent: rgb("#0f172b"),
+    text-main: rgb("#020618"),
+    text-muted: rgb("#90a1b9"),
   ),
   soft-jade: (
     bg-paper: rgb("#FBFAF7"),
@@ -120,15 +127,20 @@
 /// = Introduction
 /// ```
 ///
-/// - config (dictionary): shared page, typography, and color overrides
+/// - config (dictionary): shared page, typography, and color overrides. The
+///   cover reads `page.paper` (default `"a4"`), `page.margin` (default 2.5cm),
+///   `typography.font` (default `"Libertinus Serif"`), `typography.size`
+///   (default 11pt), and the listed `colors.*` keys. Example:
+///   `config: (typography: (font: "STIX Two Text"), colors: (brand-primary: blue))`.
+///   Other valid shared settings are ignored by this component.
 /// - logos (none, content): optional logos at the top left
 /// - body (none, content): custom cover body; overrides generated title content
 /// - footer (none, content): custom content at the bottom center
 /// - footer-left (none, content): custom content at the bottom left
 /// - layout (str): `"classic"` (default), `"research"`, or `"minimal"`.
 ///   Classic requires `body`; the generated layouts require `title`.
-/// - theme (str): `neutral`, `soft-jade`, `soft-slate`, `warm-editorial`,
-///   `plum`, or `soft-rose`; defaults to `neutral`
+/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`
 /// - title (none, str, content): generated-cover title; use `box` to keep a word
 ///   together. Ignored by classic covers.
 /// - subtitle (none, str, content): optional generated-cover subtitle

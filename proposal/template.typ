@@ -2,10 +2,37 @@
 #import "../defaults.typ": defaults as root-defaults, merge
 #import "defaults.typ": defaults as proposal-defaults
 
-/// A general research or project proposal, with an inline title and summary.
-/// No funder-specific headings or page limits are imposed. Use ordinary markup.
-/// The header shows the short title and current/total page numbers from page 1.
-/// `config` accepts the shared Satz settings; `language` is `"english"` or `"german"`.
+/// A general research or project proposal with an inline title and summary.
+///
+/// No funder-specific headings or page limits are imposed; write ordinary
+/// markup. The running header shows the short title and current/total page
+/// numbers from page 1.
+///
+/// ```example
+/// #show: research-proposal.with(
+///   title: [Example proposal],
+///   applicants: [Alex Example],
+///   institution: [Example University],
+///   summary: [We propose a small example.],
+/// )
+/// = Objectives
+/// #lorem(60)
+/// ```
+///
+/// - title (content, str): proposal title; defaults to empty
+/// - applicants (content, str): applicant line; defaults to empty
+/// - institution (content, str): institution line; defaults to empty
+/// - date (content, str, none): optional date printed verbatim
+/// - summary (content, none): optional summary block
+/// - short-title (content, str, none): running-header title; `none` reuses `title`
+/// - language (str): `"english"` (default) or `"german"`; controls labels and
+///   Typst language
+/// - config (dictionary): shared Satz settings. For example,
+///   `config: (typography: (font: "Libertinus Serif", size: 11pt),
+///   colors: (brand-primary: blue))`. Shared defaults and all available keys
+///   are in `defaults.typ`; proposal-specific defaults are in
+///   `proposal/defaults.typ`.
+/// - body (content): proposal sections
 #let research-proposal(
   title: [], applicants: [], institution: [], date: none, summary: none,
   short-title: none, language: "english", config: (:), body,
@@ -43,5 +70,5 @@
   ]
 }
 
-/// Alias for general project proposals using the same flexible layout.
+/// Alias for `research-proposal`, using the same flexible layout.
 #let project-proposal = research-proposal

@@ -44,7 +44,7 @@ whether the event timing stays stable across a full session.
 - [ ] Compare event timing at the beginning and end.
 ```
 
-The `journal-entry` show rule puts the title, date, and keywords in the entry header, then styles everything that follows. It also enables checklists. On later pages of a long entry, the title and date stay in the running header. The `remember` and `question` callouts mark something to keep visible or investigate; they do not create a separate task system.
+The `journal-entry` show rule puts the title, date, and keywords in the entry header, then styles everything that follows. It also enables checklists. The journal templates default to ISO B5 with the journal typography in `journal/defaults.typ`; pass `config` only when you want to change those values. On later pages of a long entry, the title and date stay in the running header. The `remember` and `question` callouts mark something to keep visible or investigate; they do not create a separate task system.
 
 You choose the headings that fit your work. A useful entry often answers these questions in some form:
 

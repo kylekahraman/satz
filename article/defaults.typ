@@ -10,9 +10,10 @@
   article: (
     title-size: 18pt,
     author-size: 11pt,
+    author-gap: 0.8em,
     affiliation-size: 8.5pt,
     abstract-size: 9pt,
-    title-gap: 1em,
-    body-gap: 1.5em,
+    title-gap: 1.2em,
+    body-gap: 2.2em,
   ),
 )

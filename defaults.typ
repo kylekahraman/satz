@@ -7,17 +7,38 @@
 /// Pass only what you want to change — the rest stays.
 /// Nested dicts merge deep, so `config: (colors: (brand-primary: blue))` just changes that one color.
 ///
-/// - page (dictionary): paper, margins, binding
-/// - typography (dictionary): font, size, line-spacing or leading, paragraph spacing/indent, hyphenation, justification
-/// - headings (dictionary): numbering, sizes, spacing per level
-/// - decorative (dictionary): header, footer, date, keyword, and list sizes
-/// - page-footer (dictionary): how page numbers look
-/// - links (dictionary): link color
-/// - tables (dictionary): stroke, inset, font size
-/// - captions (dictionary): caption size and weight
-/// - toc / lof / lot (dictionary): table of contents, figures, and tables
-/// - bibliography (dictionary): cite style
-/// - colors (dictionary): your palette (bg-paper, brand-primary, text-main ...)
+/// Common defaults are A4 paper with 2.5cm margins; Libertinus Serif at 11pt;
+/// `math-font: auto` and `mono-font: auto`; justified paragraphs; 1.2em between
+/// paragraphs; numbered headings; and the neutral black-on-white palette.
+/// With `math-font: auto`, Satz leaves
+/// equations to Typst, whose default math font is New Computer Modern Math.
+/// The Typst CLI embeds that font, so users do not need to install it.
+/// Templates can override these defaults.
+/// For example, an article can select STIX fonts and a smaller page setup with:
+///
+/// ```typst
+/// #show: article.with(config: (
+///   typography: (font: "STIX Two Text", math-font: "STIX Two Math", size: 9.6pt),
+///   page: (paper: "a4", margin: (top: 2cm, bottom: 2cm, x: 2.3cm)),
+/// ))
+/// ```
+///
+/// - page: `paper`, `margin`, `binding`, `binding-correction`, `headers`,
+///   `columns`, `column-gutter`
+/// - typography: `font`, `math-font`, `mono-font`, `size`, `line-spacing`,
+///   `leading`, `paragraph-spacing`, `first-line-indent`, `hyphenate`, `justify`
+/// - headings: `numbering`, `hyphenate`, `h1-pagebreak`, `spacing`, and
+///   `h1`–`h4` size/above/below values
+/// - journal: `header-below`, `running-gutter`, `running-leading`
+/// - decorative: header/footer/date/keyword sizes, `list-tight`, `list-spacing`
+/// - page-footer: `format`, `size`, `weight`; links: `color`, `url-color`
+/// - tables: `stroke`, `inset`, `font-size`, `caption-position`, `caption-gap`
+/// - callouts: `inset`, `radius`, `stroke`, `title-below`, paragraph/list spacing
+/// - captions: `size`, `weight`, `alignment`, `label-weight`
+/// - toc / lof / lot: `depth`, `title`, `indent`, entry size/leading/spacing,
+///   title/bottom spacing; LoF and LoT also accept `compact`
+/// - bibliography: `style`; colors: `bg-paper`, `bg-subtle`, `brand-primary`,
+///   `brand-accent`, `text-main`, `text-muted`
 #let defaults = (
   page: (
     paper: "a4",
@@ -72,11 +93,11 @@
   page-footer: (
     format: "1",
     size: 10pt,
-    weight: "bold",
+    weight: "regular",
   ),
   links: (
-    color: rgb("#B4313F"),
-    url-color: rgb("#45556c"),
+    color: rgb("#0563C1"),
+    url-color: rgb("#0563C1"),
   ),
   tables: (
     stroke: 0.5pt,
@@ -147,19 +168,13 @@
   bibliography: (
     style: "apa",
   ),
-  // === Slate palette (dark → light) ===
-  // #020618 #0f172b #1d293d #314158 #45556c #90a1b9 #cad5e2 #e2e8f0 #f1f5f9 #f8fafc
-  //
-  // === Gray palette (dark → light) ===
-  // #030712 #101828 #1e2939 #364153 #4a5565 #6a7282 #99a1af #d1d5dc #e5e7eb #f3f4f6 #f9fafb
-
   colors: (
-    bg-paper: rgb("#f8fafc"),
-    bg-subtle: rgb("#f1f5f9"),
-    brand-primary: rgb("#1d293d"),
-    brand-accent: rgb("#0f172b"),
-    text-main: rgb("#020618"),
-    text-muted: rgb("#90a1b9"),
+    bg-paper: white,
+    bg-subtle: white,
+    brand-primary: black,
+    brand-accent: black,
+    text-main: black,
+    text-muted: black,
   ),
 )
 
