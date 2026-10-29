@@ -7,9 +7,20 @@ A research journal is a record of how your work changes over time. It helps you 
 
 This guide takes you from an empty file to a small, organized journal. It uses the Satz `0.2.0` API from the local package and ordinary Typst files. You can write entries manually; the optional starter and launcher are described at the end.
 
-## 1. Start with one entry
+> **Before customizing the appearance:** this guide keeps each entry in a separate `.typ` file. If you want to change the journal-wide style, create `journal-style.typ` and import it from both `main.typ` and every entry. A config defined only in `main.typ` does not reach the separate entry files. The default setup needs no `journal-style.typ`; the optional style module is explained in [Section 5](#5-optional-shared-appearance-settings).
 
-Create `main.typ` and write one entry with a question, a record of the work, and a next step. Replace the example text with your own.
+## 1. Create the journal files
+
+Keep the assembly in `main.typ` and put each entry in its own file under `entries/`. Start with this small project:
+
+```text
+my-journal/
+├── main.typ
+└── entries/
+    └── 2026-10-21-equipment-check.typ
+```
+
+Write the entry in `entries/2026-10-21-equipment-check.typ`:
 
 ```typst
 #import "@local/satz:0.2.0": journal-entry, remember, question
@@ -46,6 +57,17 @@ whether the event timing stays stable across a full session.
 
 The `journal-entry` show rule puts the title, date, and keywords in the entry header, then styles everything that follows. It also enables checklists. The journal templates default to ISO B5 with the journal typography in `journal/defaults.typ`; pass `config` only when you want to change those values. On later pages of a long entry, the title and date stay in the running header. The `remember` and `question` callouts mark something to keep visible or investigate; they do not create a separate task system.
 
+Now make `main.typ` the file you preview and compile:
+
+```typst
+#import "@local/satz:0.2.0": journal-index
+
+#journal-index()
+#include "entries/2026-10-21-equipment-check.typ"
+```
+
+The index can find entries in included files. Keep each entry as a separate file; `main.typ` assembles them and provides the index.
+
 You choose the headings that fit your work. A useful entry often answers these questions in some form:
 
 1. What were you trying to find out?
@@ -62,45 +84,37 @@ The date is a string that you provide; Satz does not timestamp entries automatic
 
 Use one date convention throughout a journal so entries are easy to scan. The date shown in an entry stays as you typed it; the index parses it to choose its month and year group.
 
-## 3. Add entries and an index
+## 3. Add entries and update the index
 
-When you want several entries in one document, use `journal-entry` as a content function and put `journal-index()` first:
+Create another file under `entries/`, import `journal-entry` there, and include it from `main.typ`:
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry, journal-index
+#import "@local/satz:0.2.0": journal-entry
 
-#journal-index()
-
-#journal-entry(
-  title: "Pilot recording: first equipment check",
-  date: "2026-10-21",
-  keywords: "pilot, equipment",
-)[
-  == What I did
-  Checked the trigger cable and recorded a short test run.
-
-  == What I learned
-  Every trigger appeared in the event channel.
-]
-
-#journal-entry(
+#show: journal-entry.with(
   title: "Pilot recording: timing follow-up",
   date: "2026-10-23",
   keywords: "pilot, timing",
-)[
-  == Question
-  Does event timing stay stable during a full session?
+)
 
-  == Result
-  The timing was stable from the first block to the last.
-]
+== Question
+Does event timing stay stable during a full session?
+
+== Result
+The timing was stable from the first block to the last.
 ```
 
-The index finds entries in the same Typst document, even though it comes before them. It sorts dated entries chronologically, groups them by month and year, and links each title to its entry page. Undated drafts appear after dated entries under “Undated.” You can add an older entry anywhere in the source; the index still places it by its date.
+Add the new file to `main.typ`:
+
+```typst
+#include "entries/2026-10-23-timing-follow-up.typ"
+```
+
+The index finds included entries even though it comes before them. It sorts dated entries chronologically, groups them by month and year, and links each title to its entry page. Undated drafts appear after dated entries under “Undated.” You can include an older entry anywhere in `main.typ`; the index still places it by date.
 
 Each entry's keywords are displayed in its header. The index lists the date, title, and page number; it does not filter or search by keyword. The link targets are generated when Typst compiles the document, so compile or preview the main file to refresh the page numbers and links.
 
-For one entry in a standalone document, `#show: journal-entry.with(...)` is the short path. For several entries in a journal, use `#journal-entry(...)[...]` for each entry. That keeps each entry's metadata and body together and lets the index find it.
+Each entry file contains its metadata and body together. That keeps entry editing independent while `main.typ` remains the one document you compile.
 
 ## 4. Keep entries readable and useful
 
@@ -115,33 +129,11 @@ An entry body is normal Typst content: paragraphs, headings, lists, equations, c
 
 The template does not impose a fixed scientific method or a required entry type. A meeting note, field observation, experiment log, analysis record, or personal research reflection can each use headings suited to the work.
 
-## 5. Choose how to organize a growing journal
+## 5. Optional shared appearance settings
 
-For a few entries, keeping everything in `main.typ` is simplest. You can search it in your editor and the index will see all entries in that file.
+You can start without a style file: `journal-entry` and `journal-index` use Satz's journal defaults. Add `journal-style.typ` only if you want custom settings shared by the index and all entries. Separate Typst files have separate module scopes, so entries cannot read config variables from `main.typ`.
 
-As the journal grows, split entries into separate files while keeping one main file to assemble them:
-
-```text
-my-journal/
-├── main.typ
-└── entries/
-    ├── 2026-10-21-equipment-check.typ
-    └── 2026-10-23-timing-follow-up.typ
-```
-
-`main.typ` imports the functions, generates the index, then includes the entry files in chronological order:
-
-```typst
-#import "journal-style.typ": journal-entry, journal-index
-
-#journal-index()
-#include "entries/2026-10-21-equipment-check.typ"
-#include "entries/2026-10-23-timing-follow-up.typ"
-```
-
-Each entry file imports `journal-entry` from the same style module and contains one entry. Keep the relative folder structure when moving the project, and keep `main.typ` as the document you preview or compile. The files remain editable Typst source; the PDF is the reading copy generated from them.
-
-When all entries are in `main.typ`, define a config there and pass it to each entry and the index. When entries are separate files, they cannot read variables declared in `main.typ`: each Typst file has its own module scope. Put shared appearance settings in a small optional `journal-style.typ` module instead. For example:
+Create `journal-style.typ` with the settings you want to override and bind the Satz functions once:
 
 ```typst
 #import "@local/satz:0.2.0": journal-entry as base-entry, journal-index as base-index
@@ -155,17 +147,29 @@ When all entries are in `main.typ`, define a config there and pass it to each en
 #let journal-index = base-index.with(config: journal-config)
 ```
 
-Then `main.typ` and each entry import the preconfigured functions from `journal-style.typ`. Satz supplies every setting omitted from `journal-config`; this is a list of overrides, not a copy of Satz's defaults. If you do not need custom settings, skip this module and import `journal-entry` and `journal-index` directly from Satz.
+Then import the preconfigured functions from `journal-style.typ` in `main.typ` and each entry. Satz supplies every setting omitted from `journal-config`; this is a short list of overrides, not a copy of Satz's defaults. If you do not need custom settings, skip this module and import the relevant Satz function directly in each file.
+
+In `main.typ`, import the index and include the entry files:
+
+```typst
+#import "journal-style.typ": journal-index
+
+#journal-index()
+#include "entries/2026-10-21-equipment-check.typ"
+```
 
 For example, an entry file starts with:
 
 ```typst
 #import "../journal-style.typ": journal-entry
 
-#journal-entry(title: "Pilot recording", date: "2026-10-21")[
-  == What I did
-  Checked the trigger cable and recorded a short test run.
-]
+#show: journal-entry.with(
+  title: "Pilot recording",
+  date: "2026-10-21",
+)
+
+== What I did
+Checked the trigger cable and recorded a short test run.
 ```
 
 See the [configuration reference](/satz/reference/configuration/) for each field and the [API reference](/satz/reference/api/#journal-entry) for the function arguments.
