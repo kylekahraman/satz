@@ -132,22 +132,40 @@ my-journal/
 `main.typ` imports the functions, generates the index, then includes the entry files in chronological order:
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry, journal-index
+#import "journal-style.typ": journal-entry, journal-index
 
 #journal-index()
 #include "entries/2026-10-21-equipment-check.typ"
 #include "entries/2026-10-23-timing-follow-up.typ"
 ```
 
-Each entry file contains one `#journal-entry(...)[...]` call and no index. Keep the relative folder structure when moving the project, and keep `main.typ` as the document you preview or compile. The files remain editable Typst source; the PDF is the reading copy generated from them.
+Each entry file imports `journal-entry` from the same style module and contains one entry. Keep the relative folder structure when moving the project, and keep `main.typ` as the document you preview or compile. The files remain editable Typst source; the PDF is the reading copy generated from them.
 
-You can apply one appearance config to the index and all entries. Add this after the import, then pass `config: journal-config` to `journal-index` and each `journal-entry`:
+When all entries are in `main.typ`, define a config there and pass it to each entry and the index. When entries are separate files, they cannot read variables declared in `main.typ`: each Typst file has its own module scope. Put shared appearance settings in a small optional `journal-style.typ` module instead. For example:
 
 ```typst
+#import "@local/satz:0.2.0": journal-entry as base-entry, journal-index as base-index
+
 #let journal-config = (
   page: (paper: "iso-b5"),
   typography: (font: "Libertinus Serif", size: 11pt),
 )
+
+#let journal-entry = base-entry.with(config: journal-config)
+#let journal-index = base-index.with(config: journal-config)
+```
+
+Then `main.typ` and each entry import the preconfigured functions from `journal-style.typ`. Satz supplies every setting omitted from `journal-config`; this is a list of overrides, not a copy of Satz's defaults. If you do not need custom settings, skip this module and import `journal-entry` and `journal-index` directly from Satz.
+
+For example, an entry file starts with:
+
+```typst
+#import "../journal-style.typ": journal-entry
+
+#journal-entry(title: "Pilot recording", date: "2026-10-21")[
+  == What I did
+  Checked the trigger cable and recorded a short test run.
+]
 ```
 
 See the [configuration reference](/satz/reference/configuration/) for each field and the [API reference](/satz/reference/api/#journal-entry) for the function arguments.
