@@ -4,6 +4,26 @@ title: "Choose a template"
 
 Choose the template that matches the document's structure. Satz controls the page furniture and common styles; your headings, paragraphs, lists, figures, and tables remain normal Typst content. Each link below opens the matching function in the [API reference](/satz/reference/api/). Its exact signature and source link let you inspect the accepted inputs.
 
+## Article, report, or book?
+
+| Template | Good starting point | Default layout |
+| --- | --- | --- |
+| [`article`](/satz/reference/api/#article) | A paper or essay organized into sections | Two columns, with an optional title, authors, affiliations, and abstract |
+| [`report`](/satz/reference/api/#report) | A report, protocol, or thesis organized into chapters or sections | One column, numbered headings, and automatic contents |
+| [`book`](/satz/reference/api/#book) (experimental) | A book or thesis with book-style front and back matter | A cover, two-sided pages, and explicit front and main matter |
+
+For most theses, start with `report`. Choose `book` if you want its cover,
+facing-page layout, and explicit book structure. The templates share ordinary
+Typst content such as figures, tables, and references; section and chapter are
+ways of organizing that content, not restrictions on what you can write.
+
+Report headings stay on the current page by default. Set
+`config: (headings: (h1-pagebreak: true))` to start each top-level heading on a
+new page. Articles default to two columns; set
+`config: (page: (columns: 1))` for one column, or choose another column count.
+Article and book are part of the local 0.2.0 development version; book remains
+experimental.
+
 ## Published templates
 
 | Document | Entry points | Good starting point |

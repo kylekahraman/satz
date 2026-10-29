@@ -33,6 +33,32 @@ See the [full report quick start](docs/site/getting-started/report.md) or browse
 the [Satz documentation](https://kylekahraman.github.io/satz/) for journal,
 letter, figure, table, and layout guides. The site source is in `docs/site/`.
 
+## Choose an article, report, or book
+
+| Template | Start here when you are writing | Default layout |
+|---|---|---|
+| `article()` | A paper or essay organized into sections | Two columns; title, authors, affiliations, and abstract can appear above the text |
+| `report()` | A report, protocol, or thesis organized into chapters or sections | One column; numbered headings and automatic contents |
+| `book()` (experimental) | A book or thesis with book-style front matter and chapter layout | Two-sided pages, a cover, and explicit front and main matter |
+
+For most theses, start with `report()`. Choose `book()` when you want its
+book-style cover, facing pages, and front- and back-matter structure; it is still
+experimental. Both can use ordinary Typst figures, tables, and references.
+The difference between sections and chapters is a way to organize your content,
+not a restriction on what you may write in either template.
+
+Reports keep top-level headings on the current page by default to avoid wasted
+space. To start each chapter on a new page, set:
+
+```typst
+#show: report.with(config: (headings: (h1-pagebreak: true)))
+```
+
+Articles default to two columns; choose one or more columns with
+`config: (page: (columns: 1))`, and set `column-gutter` if needed. See
+[article layouts](docs/site/getting-started/article.md) and the
+[book guide](docs/book-api.md) for examples.
+
 ## Quick Usage
 
 ### Write a letter in one file
@@ -139,6 +165,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **letter** | `letter(...)` / `brief(...)` | DIN 5008-style postal letter with fold/punch marks. Canonical fields: `sender`, `recipient`, `date`, `subject`, `language`, `reference-line`, `enclosure-list`. `language` is `"de"` / `"en"`; German argument and record names remain aliases. |
 | **invoice** | `invoice(...)` / `rechnung(...)` | German invoice adapted from the letter template. Canonical fields: `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, `qr-purpose`. Optional EPC QR code; output remains German. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary on ISO B5 with entries, keywords, and auto-generated monthly index |
+| **article** | `article(...)` | Articles and manuscripts with title, authors, affiliations, and abstract; configurable columns |
 | **report** | `report(body, config: (:), theme: "neutral")` | Reports, protocols, and theses — numbered headings, auto TOC/LoF/LoT, two-sided layout, pre-styled bibliography |
 | **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]`, `book-index[...]` | KOMA-Script-inspired book layout with adjustable or image cover, alternating running titles, back-matter pages, two-column index, and optional exercise components |
 | **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), German/English starters, separate page limits and counters |
