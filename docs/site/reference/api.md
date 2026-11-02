@@ -543,10 +543,30 @@ hanging-indent entry.
 ```
 
 Use `custom()` when you want to write your own document structure with Satz
-styles. Named templates such as `report`, `article`, `journal-entry`, and `book`
-provide ready-made structures and use the internal `document-class()` layer.
-The `kind` argument selects shared behavior such as numbering and front matter;
-it does not select a template structure. The former `personal()` name is not
+styles. Put typography overrides inside `config.typography`:
+
+```typst
+#show: custom.with(config: (typography: (
+  font: "STIX Two Text",
+  math-font: "STIX Two Math",
+  mono-font: "Fira Code",
+  size: 11pt,
+  line-spacing: 1.25,
+)))
+```
+
+`config.typography` accepts `font`, `math-font`, `mono-font`, `size`,
+`line-spacing`, `leading`, `paragraph-spacing`, `first-line-indent`,
+`hyphenate`, and `justify`. `line-spacing` sets baseline distance as a multiple
+of the body font size and takes precedence over `leading`; `leading` sets
+Typst's line gap directly. Paragraph spacing and first-line indentation are
+separate controls. See the [configuration reference](configuration.md) for
+types, defaults, and descriptions of every key.
+
+Named templates such as `report`, `article`, `journal-entry`, and `book` provide
+ready-made structures and use the internal `document-class()` layer. The
+`kind` argument selects shared behavior such as numbering and front matter; it
+does not select a template structure. The former `personal()` name is not
 exported in 0.2.0.
 
 <a id="satz-figure"></a>

@@ -436,7 +436,13 @@
 /// heading, link, and outline settings.
 ///
 /// ```example
-/// #show: custom.with(kind: "thesis", config: (page: (paper: "a5")))
+/// #show: custom.with(
+///   kind: "thesis",
+///   config: (
+///     typography: (font: "STIX Two Text", math-font: "STIX Two Math", size: 11pt),
+///     page: (paper: "a5"),
+///   ),
+/// )
 /// = My document
 /// I choose the structure and content.
 /// ```
@@ -448,15 +454,28 @@
 ///   front matter. Defaults to `"report"`.
 /// - config (dictionary): shared settings deep-merged over `defaults`. Known
 ///   groups are validated, so misspellings such as `typography.leadng` fail
-///   instead of being silently ignored. Unknown top-level groups remain
-///   available to caller extensions. Common keys are
-///   `typography: (font: "Libertinus Serif", math-font: auto, size: 11pt)` and
-///   `page: (paper: "a4", margin: (x: 2.5cm, y: 2.5cm))`; you can also set
-///   `headings`, `toc`, `lof`, `lot`, `links`, `tables`, `captions`,
-///   `bibliography`, and `colors`. These are the shared defaults; consult the
-///   `line-numbers` group controls draft line numbering (`enabled`, `format`,
-///   `scope`, `size`, `color`, `clearance`). See the `defaults` documentation
-///   for the complete key list and values.
+///   instead of being silently ignored. To change typography, set a nested
+///   `typography` dictionary in `config`; it accepts these keys:
+///   - `font` (str): body text font; defaults to `"Libertinus Serif"`.
+///   - `math-font` (str or auto): math font; defaults to `auto` (Typst's
+///     default).
+///   - `mono-font` (str or auto): monospace font; defaults to `auto`.
+///   - `size` (length): body text size; defaults to `11pt`.
+///   - `line-spacing` (positive number or none): baseline distance as a
+///     multiple of the body font size; defaults to `none`. When set, it takes
+///     precedence over `leading`.
+///   - `leading` (length): Typst's line gap; defaults to `0.65em`.
+///   - `paragraph-spacing` (length): gap between paragraphs; defaults to
+///     `1.2em`.
+///   - `first-line-indent` (length): paragraph first-line indent; defaults to
+///     `0pt`.
+///   - `hyphenate` (bool): enable automatic hyphenation; defaults to `false`.
+///   - `justify` (bool): justify paragraphs; defaults to `true`.
+///   Other shared groups include `page`, `headings`, `toc`, `lof`, `lot`,
+///   `links`, `tables`, `captions`, `bibliography`, `colors`, and `line-numbers`.
+///   Unknown top-level groups remain available to caller extensions. See the
+///   `defaults` documentation and configuration reference for every group,
+///   key, and default value.
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and
 ///   `config.links` values override the selected palette.
