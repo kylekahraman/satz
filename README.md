@@ -512,12 +512,13 @@ For indented prose with a smaller paragraph gap:
 )))
 ```
 
-`first-line-indent: true` uses a horizontal indent of one em, which equals the
-current body font size (11pt when `size: 11pt`). It does not set vertical line
-spacing. `paragraph-spacing` still controls the vertical gap between paragraphs;
-it remains independent, so set it to `0pt` or another chosen value when you
-prefer indentation to provide the paragraph break cue. The first paragraph
-after a heading stays unindented. The same config works in journal entries. See
+`first-line-indent: true` indents the first line of every paragraph by one em,
+which equals the current body font size (11pt when `size: 11pt`). This includes
+the first paragraph after a heading. It does not set vertical line spacing.
+`paragraph-spacing` still controls the vertical gap between paragraphs; it is
+independent, so set it to `0pt` or another chosen value when you prefer
+indentation to provide the paragraph break cue. The same config works in
+journal entries. See
 the [native/KOMA typography comparison](examples/latex-parity/README.md) for the
 specimen and checks. This change is not yet published.
 

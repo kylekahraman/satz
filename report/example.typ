@@ -1,8 +1,9 @@
 // Example: Scientific protocol using the report template.
-// Shows config overrides, sections, figures, tables, math, citations.
-// Compile: typst compile example.typ
+// Shows config overrides, sections, figures, tables, math, and citations.
+// Its first-line-indent setting also indents the first paragraph after headings.
+// Compile with the local 0.2.0 candidate: typst compile --root . report/example.typ
 
-#import "@preview/satz:0.1.1": report
+#import "@local/satz:0.2.0": report
 
 #show: report.with(
   config: (
@@ -14,7 +15,9 @@
     typography: (
       font: "EB Garamond",
       size: 11pt,
-      leading: 0.65em,
+      line-spacing: 1.25,
+      paragraph-spacing: 0.65em,
+      first-line-indent: true,
       hyphenate: false,
       justify: true,
     ),

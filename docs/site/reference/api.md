@@ -562,11 +562,10 @@ styles. Put typography overrides inside `config.typography`:
 `hyphenate`, and `justify`. `line-spacing` sets baseline distance as a multiple
 of the body font size and takes precedence over `leading`; `leading` sets
 Typst's line gap directly. `paragraph-spacing` sets the vertical gap between
-paragraphs. `first-line-indent` is a boolean: `true` indents consecutive
-paragraphs by one em (the body font size, 11pt in this example), and `false`
-does not indent. Typst leaves the first paragraph in a document/container and
-paragraphs after blocks such as headings unindented. The indent is horizontal
-and does not change line spacing. See the
+paragraphs. `first-line-indent` is a boolean: `true` indents the first line of
+every paragraph by one em (the body font size, 11pt in this example), including
+the first paragraph after a heading; `false` does not indent. The indent is
+horizontal and does not change line or paragraph spacing. See the
 [configuration reference](configuration.md) for types, defaults, and
 descriptions of every key.
 

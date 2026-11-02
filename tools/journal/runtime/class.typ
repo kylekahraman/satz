@@ -172,7 +172,11 @@
     justify: c.typography.justify,
     leading: c.typography.leading,
     spacing: c.typography.paragraph-spacing,
-    first-line-indent: if c.typography.first-line-indent { 1em } else { 0pt },
+    first-line-indent: if c.typography.first-line-indent {
+      (amount: 1em, all: true)
+    } else {
+      0pt
+    },
   )
 
   // --- List spacing ---

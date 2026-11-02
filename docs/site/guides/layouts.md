@@ -49,7 +49,7 @@ typography: (
 )
 ```
 
-`line-spacing` asks for a baseline-to-baseline distance equal to a multiple of the body font size. It uses font metrics to calculate Typst's leading and takes precedence over `typography.leading`. If you prefer to set Typst's line gap directly, use `leading: 0.65em` instead. Paragraph spacing is separate: it controls the vertical gap between paragraphs, not between lines. To mark paragraph breaks with indentation, set `first-line-indent: true`; it adds a horizontal one-em indent. Reduce `paragraph-spacing` separately if you want less whitespace between indented paragraphs. The indent, paragraph gap, and line spacing control different things. See [line and paragraph spacing](/satz/reference/configuration/#typography-line-spacing) for the exact types and defaults.
+`line-spacing` asks for a baseline-to-baseline distance equal to a multiple of the body font size. It uses font metrics to calculate Typst's leading and takes precedence over `typography.leading`. If you prefer to set Typst's line gap directly, use `leading: 0.65em` instead. Paragraph spacing is separate: it controls the vertical gap between paragraphs, not between lines. To mark paragraph breaks with indentation, set `first-line-indent: true`; it adds a horizontal one-em indent to every paragraph, including the first paragraph after a heading. Reduce `paragraph-spacing` separately if you want less whitespace between indented paragraphs. The indent, paragraph gap, and line spacing control different things. See [line and paragraph spacing](/satz/reference/configuration/#typography-line-spacing) for the exact types and defaults.
 
 ## Find the full setting list
 

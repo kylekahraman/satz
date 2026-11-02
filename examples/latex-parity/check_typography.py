@@ -73,11 +73,11 @@ def main():
             with fitz.open(compile_source(f"edge-{level}-{height}", source)) as document:
                 assert locate(document, "EDGEHEADING")[0] == locate(document, "FOLLOWINGBODY")[0]
 
-    # Paragraph controls must affect geometry, and headings must suppress the indent.
+    # Paragraph spacing is independent, and the boolean indent includes paragraphs after headings.
     baselines = []
     for spacing in (8, 16):
         source = '#import "/lib.typ": report\n#show: report.with(config: (toc: (depth: 0), typography: ('
-        source += f'paragraph-spacing: {spacing}pt, first-line-indent: 1em)))\n'
+        source += f'paragraph-spacing: {spacing}pt, first-line-indent: true)))\n'
         source += 'FIRSTPAR\n\nSECONDPAR\n\n== ANOTHERHEADING\nAFTERHEADING\n'
         with fitz.open(compile_source(f"paragraphs-{spacing}", source)) as document:
             first = locate(document, "FIRSTPAR")[1][0]
@@ -85,7 +85,8 @@ def main():
             after = locate(document, "AFTERHEADING")[1][0]
             if abs(second.x0 - first.x0 - 11) > 0.05:
                 failures.append("Configured first-line indentation did not reach the paragraph")
-            assert abs(after.x0 - first.x0) < 0.05, "Paragraph after heading is indented"
+            if abs(after.x0 - first.x0 - 11) > 0.05:
+                failures.append("First-line indentation did not apply after the heading")
             baselines.append(second.y0 - first.y0)
     if abs(baselines[1] - baselines[0] - 8) > 0.05:
         failures.append("Configured paragraph spacing did not change the gap by 8pt")
