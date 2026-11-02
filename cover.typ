@@ -281,15 +281,50 @@
   ]
 }
 
-/// A ready-made research notebook cover with a small neural-connectivity motif.
+/// Create a research notebook cover with a neural-connectivity motif.
 ///
-/// Accepts the same arguments as `cover-page`; `title` is mandatory.
-/// `#research-cover(title: [Field notes], author: [Alex Example])`
+/// This is a preset for `cover-page(layout: "research")`. It renders a title
+/// block with the supplied title and optional subtitle, author, date, keywords,
+/// supervisors, logos, and footer content. Set `theme` to choose the cover
+/// palette and pass `config` to override its page, typography, or colors. A
+/// following document does not inherit the cover's theme or configuration;
+/// pass those values to both calls when they should match.
+///
+/// ```typst
+/// #research-cover(
+///   title: [Field notes],
+///   author: [Alex Example],
+///   date: "2026",
+///   theme: "soft-jade",
+/// )
+/// ```
+///
+/// - title (content, str): required title; use `box(...)` to keep a word
+///   together
+/// - other arguments: same as `cover-page` with `layout: "research"`
+/// -> content: a generated research title page
 #let research-cover = cover-page.with(layout: "research")
 
-/// A spare, centered title page for reports, notes, and other short documents.
+/// Create a spare, centered title page for reports, notes, and short documents.
 ///
-/// Accepts the same arguments as `cover-page`; `title` is mandatory. The optional
-/// `date` is printed at the bottom.
-/// `#minimal-cover(title: [Project notes], date: "2026")`
+/// This is a preset for `cover-page(layout: "minimal")`. The required title is
+/// centered on the page. Optional subtitle and author appear with it; `date` is
+/// printed at the bottom when no custom `footer` is supplied. Set `theme` to
+/// choose the cover palette and pass `config` for page, typography, or color
+/// overrides. The cover does not pass its appearance to a following document;
+/// configure both explicitly when they should match.
+///
+/// ```typst
+/// #minimal-cover(
+///   title: [Project notes],
+///   subtitle: [A short working document],
+///   date: "2026",
+/// )
+/// ```
+///
+/// - title (content, str): required cover title
+/// - date (content, str, none): optional date at the bottom unless `footer` is
+///   supplied
+/// - other arguments: same as `cover-page` with `layout: "minimal"`
+/// -> content: a generated minimal title page
 #let minimal-cover = cover-page.with(layout: "minimal")

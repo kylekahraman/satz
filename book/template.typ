@@ -335,12 +335,27 @@
 
 /// Insert a styled contents page at the current location.
 ///
-/// The outline is native Typst, so its links and page numbers update on compile.
+/// This inserts a page break, prints a book-styled title, then renders Typst's
+/// native outline. Links and page numbers update when the document is compiled.
+/// By default only level-one chapter headings appear. Nested heading levels can
+/// be included by increasing `depth`. The appearance follows the active book
+/// style; use `config.book.contents.*` to adjust its title spacing, type sizes,
+/// and entry spacing.
 ///
-/// - title (content, none): contents heading; `none` hides it but still reserves
-///   the configured title spacing
+/// ```typst
+/// #book-contents(title: [Contents], depth: 2)
+/// #book-mainmatter[
+///   = First chapter
+///   == First section
+/// ]
+/// ```
+///
+/// - title (content, none): contents heading; defaults to `[Contents]`. `none`
+///   hides the words but retains the configured title spacing.
 /// - depth (int): heading depth to include; defaults to 1 (chapters only).
-///   `0` renders an empty outline below the heading, not no page.
+///   Must be a non-negative integer. `0` renders an empty outline below the
+///   heading; it does not suppress the contents page.
+/// -> content: a page break, styled title, and linked outline
 #let book-contents(title: [Contents], depth: 1) = context {
   assert(type(depth) == int and depth >= 0, message: "book-contents depth must be a nonnegative integer.")
   let style = book-style.get()
@@ -419,12 +434,23 @@
 
 /// Start lettered appendices while keeping Arabic page numbers.
 ///
-/// Resets the heading counter and forces heading numbering to `"A"`. Figure,
-/// table, and equation counters are not reset automatically; use
-/// `chapter-numbering(appendix: true)` inside an appendix when those should be
-/// lettered too.
+/// Resets the heading counter and switches level-one heading numbering to
+/// uppercase letters (`A`, `B`, …). Page numbering remains Arabic and continues
+/// from the preceding content. Figure, table, and equation counters are not
+/// reset or lettered automatically; call `chapter-numbering(appendix: true)`
+/// inside the appendix when those numbers should include appendix letters.
+/// Place appendices after `book-mainmatter`; use `book-backmatter` for any later
+/// unnumbered sections.
 ///
-/// - body (content): appendix chapters
+/// ```typst
+/// #book-appendix[
+///   = Supplementary methods
+///   Appendix content.
+/// ]
+/// ```
+///
+/// - body (content): one or more appendix chapters, beginning at heading level 1
+/// -> content: appendix heading and page-number setup followed by `body`
 #let book-appendix(body) = context {
   let style = book-style.get()
   [
