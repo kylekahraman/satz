@@ -70,5 +70,13 @@
   ]
 }
 
-/// Alias for `research-proposal`, using the same flexible layout.
+/// Create a project proposal with the shared proposal layout.
+///
+/// `project-proposal` is an alias for `research-proposal`; it accepts the same
+/// title, applicant, institution, date, summary, language, config, and body
+/// arguments and uses the same page and heading defaults. Choose either name
+/// according to the wording that fits your document.
+///
+/// See `research-proposal` for the complete argument list, examples, and
+/// configuration details.
 #let project-proposal = research-proposal

@@ -102,7 +102,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="decorative-list-block-spacing"></span>`decorative.list-block-spacing` | length | `baseline + paragraph-skip - cap + 3 × 72 ÷ 72.27 pt` in DFG | Space above and below list and enumeration blocks; uses the DFG font metrics. |
 | <span id="page-footer-format"></span>`page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | <span id="page-footer-size"></span>`page-footer.size` | length | `10pt` | Page-number size. |
-| <span id="page-footer-weight"></span>`page-footer.weight` | Typst font-weight value | `"bold"` | Page-number weight. |
+| <span id="page-footer-weight"></span>`page-footer.weight` | Typst font-weight value | `"regular"` | Page-number weight. |
 | <span id="links-color"></span><span id="links-url-color"></span>`links.color`, `links.url-color` | color | `#0563C1`, `#0563C1` | Internal-reference and external-URL colors in the default neutral palette. |
 | <span id="tables-stroke"></span>`tables.stroke` | length | `0.5pt` | Default table rule thickness for shared table helpers. |
 | <span id="tables-inset"></span>`tables.inset` | length or dictionary such as `(x: 8pt, y: 4pt)` | `(x: 8pt, y: 4pt)` | Cell padding for shared table helpers. |

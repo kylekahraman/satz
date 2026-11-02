@@ -5,9 +5,30 @@
 #import "../proposal/citations.typ": proposal-publications
 #import "layout.typ": proposal-headings, proposal-title
 
-/// Start sections 4–5 on a new page, resetting the displayed page to 1.
-/// Insert exactly once, immediately before the level-one section 4 heading.
-/// Heading numbering continues; the header changes to an eight-page limit.
+/// Begin the separately counted second part of a DFG project description.
+///
+/// Place this call exactly once inside `doc`, immediately before the level-one
+/// heading for section 4. It inserts a page break and resets the displayed page
+/// number to 1 for sections 4–5. Heading numbering continues from section 3;
+/// the DFG running header and page-limit check switch to the fixed eight-page
+/// supplement allowance. The `dfg-proposal` wrapper checks both parts when
+/// `check-pages` is enabled.
+///
+/// ```typst
+/// #show: dfg-proposal.with(doc: [
+///   = 1 Starting point
+///   ...
+///   = 3 Project plan
+///   ...
+///   #dfg-supplement()
+///   = 4 Research data
+///   ...
+///   = 5 Ethics
+/// ])
+/// ```
+///
+/// - arguments: none
+/// -> content: page break and metadata marker used by `dfg-proposal`
 #let dfg-supplement() = {
   pagebreak()
   counter(page).update(1)

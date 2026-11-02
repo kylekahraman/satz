@@ -57,7 +57,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false`. |
 | `page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | `page-footer.size` | length | `10pt` | Page-number size. |
-| `page-footer.weight` | Typst font-weight value | `"bold"` | Page-number weight. |
+| `page-footer.weight` | Typst font-weight value | `"regular"` | Page-number weight. |
 | `line-numbers.enabled` | boolean | `false` | Shows line numbers for document lines when enabled; uses Typst's native paragraph line numbering. |
 | `line-numbers.format` | Typst numbering pattern | `"1"` | Format for line numbers. |
 | `line-numbers.scope` | `"document"` or `"page"` | `"document"` | Keep numbering continuous or reset at each page. |

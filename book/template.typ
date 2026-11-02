@@ -365,11 +365,27 @@
   ]
 }
 
-/// Start numbered chapters on a recto page with Arabic folios beginning at 1.
+/// Begin the book's numbered main matter on a right-hand page.
 ///
-/// - body (content): numbered chapter content
-/// - numbering (str, none): optional chapter numbering pattern; defaults to the
-///   document's `headings.numbering` (the book default is `"1"`)
+/// This inserts a page break to the next recto page, resets the displayed page
+/// number to Arabic `1`, resets the heading counter, and enables the book footer.
+/// The main matter uses the book's configured heading-numbering pattern unless
+/// `numbering` supplies an override. Level-two headings remain unnumbered.
+/// Place front matter and `book-contents()` before this call; place appendices
+/// or back matter after the main matter.
+///
+/// ```typst
+/// #book-contents()
+/// #book-mainmatter[
+///   = First chapter
+///   Main text.
+/// ]
+/// ```
+///
+/// - body (content): chapters in the numbered main matter
+/// - numbering (str, none): optional Typst heading-numbering pattern; `none`
+///   uses the document's `headings.numbering` (the book default is `"1"`)
+/// -> content: page and heading setup followed by `body`
 #let book-mainmatter(body, numbering: none) = context {
   let style = book-style.get()
   let number-format = if numbering == none { style.numbering } else { numbering }
@@ -435,12 +451,23 @@
   ]
 }
 
-/// Add unnumbered back-matter chapters after appendices or solutions.
+/// Begin unnumbered back matter after appendices, solutions, or references.
 ///
-/// Inserts a weak page break, disables heading numbering, and keeps Arabic page
-/// numbers with the book footer.
+/// Inserts a weak page break so existing page flow is preserved when possible,
+/// disables numbering on headings that follow, and keeps Arabic page numbers
+/// with the book footer. It does not reset the page counter or add entries to
+/// the contents. Use this wrapper for material such as acknowledgments, notes,
+/// or a bibliography that should follow the numbered chapters.
 ///
-/// - body (content): back-matter chapters
+/// ```typst
+/// #book-backmatter[
+///   = Acknowledgments
+///   Thank you to everyone who helped.
+/// ]
+/// ```
+///
+/// - body (content): unnumbered back-matter content
+/// -> content: page and heading setup followed by `body`
 #let book-backmatter(body) = context {
   let style = book-style.get()
   [

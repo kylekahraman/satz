@@ -18,10 +18,44 @@
 /// black-on-white palette; pass `theme: "slate"` to use the former blue-gray
 /// shared palette, now available as a named theme.
 #import "letter/template.typ": brief
-/// English alias for `brief`.
+/// Create a DIN 5008 letter using the English API name.
+///
+/// `letter` is the same function as `brief`: it accepts the same sender,
+/// recipient, date, appearance, and layout arguments and produces the same
+/// document. English field names are canonical; the German names remain
+/// supported for existing documents.
+///
+/// ```typst
+/// #show: letter.with(
+///   sender: (name: "Example Author", street: "Example Street 1",
+///     postal-code-city: "12345 Example City"),
+///   recipient: (name: "Example Recipient", street: "Sample Road 2",
+///     postal-code-city: "54321 Sample City"),
+///   language: "en",
+/// )
+/// ```
+///
+/// See `brief` for the complete argument list, record fields, and defaults.
 #let letter = brief
 #import "invoice/rechnung.typ": rechnung
-/// English alias for `rechnung`.
+/// Create a German invoice using the English API name.
+///
+/// `invoice` is the same function as `rechnung`: it accepts the same sender,
+/// recipient, payment, item, appearance, and layout arguments. English field
+/// names are canonical; German names remain supported for existing documents.
+/// The rendered invoice remains German.
+///
+/// ```typst
+/// #show: invoice.with(
+///   sender: (name: "Example Studio", street: "Example Street 1",
+///     postal-code-city: "12345 Example City", iban: "DE00 0000 0000 0000 0000 00"),
+///   recipient: (name: "Sample Client", street: "Sample Road 2",
+///     postal-code-city: "54321 Sample City"),
+///   items: (("Example service", 1, 500)),
+/// )
+/// ```
+///
+/// See `rechnung` for the complete argument list, record fields, and defaults.
 #let invoice = rechnung
 #import "dfg-proposal/dfg.typ": dfg-proposal, dfg-supplement, dfg-publications
 #import "proposal/template.typ": research-proposal, project-proposal
@@ -29,10 +63,23 @@
 #import "proposal/planning.typ": proposal-gantt, work-package
 #import "proposal/citations.typ": proposal-citations, proposal-publications
 #import "legal-complaint/template.typ": klageschrift
-/// English alias for `klageschrift`; output remains German.
+/// Create a German statement of claim using the English API name.
+///
+/// `complaint` is the same function as `klageschrift` and accepts the same
+/// arguments and German-formatted content. It is an API alias only; the
+/// generated legal document remains German.
+///
+/// See `klageschrift` for the full argument list, required content, and defaults.
 #let complaint = klageschrift
 #import "gastspielvertrag/template.typ": gastspielvertrag
-/// English alias for `gastspielvertrag`; output remains German.
+/// Create a German guest performance contract using the English API name.
+///
+/// `guest-contract` is the same function as `gastspielvertrag` and accepts the
+/// same contract configuration and optional clauses. It is an API alias only;
+/// the generated contract remains German.
+///
+/// See `gastspielvertrag` for the full argument list, configuration fields,
+/// and defaults.
 #let guest-contract = gastspielvertrag
 #import "journal/template.typ": journal-entry, journal-index, remember, question
 #import "defaults.typ": defaults, merge
