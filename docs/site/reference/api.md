@@ -552,6 +552,8 @@ styles. Put typography overrides inside `config.typography`:
   mono-font: "Fira Code",
   size: 11pt,
   line-spacing: 1.25,
+  paragraph-spacing: 0pt,
+  first-line-indent: true,
 )))
 ```
 
@@ -559,9 +561,14 @@ styles. Put typography overrides inside `config.typography`:
 `line-spacing`, `leading`, `paragraph-spacing`, `first-line-indent`,
 `hyphenate`, and `justify`. `line-spacing` sets baseline distance as a multiple
 of the body font size and takes precedence over `leading`; `leading` sets
-Typst's line gap directly. Paragraph spacing and first-line indentation are
-separate controls. See the [configuration reference](configuration.md) for
-types, defaults, and descriptions of every key.
+Typst's line gap directly. `paragraph-spacing` sets the vertical gap between
+paragraphs. `first-line-indent` is a boolean: `true` indents consecutive
+paragraphs by one em (the body font size, 11pt in this example), and `false`
+does not indent. Typst leaves the first paragraph in a document/container and
+paragraphs after blocks such as headings unindented. The indent is horizontal
+and does not change line spacing. See the
+[configuration reference](configuration.md) for types, defaults, and
+descriptions of every key.
 
 Named templates such as `report`, `article`, `journal-entry`, and `book` provide
 ready-made structures and use the internal `document-class()` layer. The

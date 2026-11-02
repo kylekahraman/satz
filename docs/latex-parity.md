@@ -16,8 +16,8 @@ The [package review](package-research.md) records candidate dependencies.
 
 ## What the current implementation leaves to authors
 
-- `defaults.typ` exposes paragraph leading but no paragraph-spacing or
-  first-line-indent setting; `document-class()` sets only leading and justification.
+- `defaults.typ` exposes line/paragraph spacing and a boolean first-line-indent
+  switch; `document-class()` applies those shared paragraph settings.
 - Heading rules in `class.typ` wrap headings in blocks, configure spacing below,
   and add an explicit `v(0.5em)` inside the level-one block. Evaluate the combined
   behavior at page starts, between consecutive headings, and after paragraphs.

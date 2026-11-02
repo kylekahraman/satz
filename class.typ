@@ -174,11 +174,15 @@
   let mono-typeface = if c.typography.mono-font == auto { (:) } else { (font: c.typography.mono-font) }
   show raw: set text(..mono-typeface)
 
+  assert(
+    type(c.typography.first-line-indent) == bool,
+    message: "typography.first-line-indent must be true or false.",
+  )
   set par(
     justify: c.typography.justify,
     leading: c.typography.leading,
     spacing: c.typography.paragraph-spacing,
-    first-line-indent: c.typography.first-line-indent,
+    first-line-indent: if c.typography.first-line-indent { 1em } else { 0pt },
   )
   let line-numbering = if c.line-numbers.enabled {
     n => text(size: c.line-numbers.size, fill: c.line-numbers.color)[
@@ -467,8 +471,12 @@
 ///   - `leading` (length): Typst's line gap; defaults to `0.65em`.
 ///   - `paragraph-spacing` (length): gap between paragraphs; defaults to
 ///     `1.2em`.
-///   - `first-line-indent` (length): paragraph first-line indent; defaults to
-///     `0pt`.
+///   - `first-line-indent` (bool): whether consecutive paragraphs are indented;
+///     defaults to `false`. `true` uses one em (the current body font size,
+///     e.g. 11pt with 11pt text); `false` uses no indent. Typst leaves the first
+///     paragraph in a document/container and paragraphs after blocks such as
+///     headings unindented. The indent is horizontal, separate from vertical
+///     line and paragraph spacing.
 ///   - `hyphenate` (bool): enable automatic hyphenation; defaults to `false`.
 ///   - `justify` (bool): justify paragraphs; defaults to `true`.
 ///   Other shared groups include `page`, `headings`, `toc`, `lof`, `lot`,

@@ -61,8 +61,12 @@
 /// - `leading` (length; `0.65em`): Typst's gap between adjacent line boxes.
 ///   This is a direct length, not a baseline-distance multiplier.
 /// - `paragraph-spacing` (length; `1.2em`): vertical gap between paragraphs.
-/// - `first-line-indent` (length; `0pt`): indent on the first line of a
-///   paragraph.
+/// - `first-line-indent` (bool; `false`): whether to indent consecutive
+///   paragraphs. `true` uses one em (the current body font size, so 11pt at an
+///   11pt text size); `false` uses no indent. Typst does not indent the first
+///   paragraph in a document/container or one immediately after a block such
+///   as a heading. This horizontal measure is independent of vertical
+///   `line-spacing` and `paragraph-spacing`.
 /// - `hyphenate` (bool; `false`): automatic word hyphenation in body text.
 /// - `justify` (bool; `true`): justify body paragraphs where supported.
 ///
@@ -211,7 +215,7 @@
     // Backward-compatible Typst gap between adjacent line boxes.
     leading: 0.65em,
     paragraph-spacing: 1.2em,
-    first-line-indent: 0pt,
+    first-line-indent: false,
     hyphenate: false,
     justify: true,
   ),

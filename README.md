@@ -486,7 +486,7 @@ and wrapped headings. Explicit per-level gaps remain available; set
 `headings.spacing: "native"` to opt out. See the
 [shared spacing guide](docs/heading-spacing.md). Existing documents can reflow.
 
-Paragraphs default to `paragraph-spacing: 1.2em` and `first-line-indent: 0pt`.
+Paragraphs default to `paragraph-spacing: 1.2em` and `first-line-indent: false`.
 For an explicit baseline-to-baseline line-spacing multiple, use
 `typography.line-spacing`. For example, `1.5` means each line baseline is 1.5
 times the body font size below the previous one. Satz measures the selected
@@ -502,21 +502,24 @@ Typst line-box gap. Paragraph spacing remains independent:
 )))
 ```
 
-For indented prose with the same line rhythm between paragraphs:
+For indented prose with a smaller paragraph gap:
 
 ```typst
 #show: report.with(config: (typography: (
-  leading: 0.65em,
+  line-spacing: 1.25,
   paragraph-spacing: 0.65em,
-  first-line-indent: 1em,
+  first-line-indent: true,
 )))
 ```
 
-Typst's paragraph spacing measures the gap between text edges, so matching it
-to `leading` gives continuous line spacing between paragraphs. The first
-paragraph after a heading stays unindented. The same config works in journal
-entries. See the [native/KOMA typography comparison](examples/latex-parity/README.md)
-for the specimen and checks. This change is not yet published.
+`first-line-indent: true` uses a horizontal indent of one em, which equals the
+current body font size (11pt when `size: 11pt`). It does not set vertical line
+spacing. `paragraph-spacing` still controls the vertical gap between paragraphs;
+it remains independent, so set it to `0pt` or another chosen value when you
+prefer indentation to provide the paragraph break cue. The first paragraph
+after a heading stays unindented. The same config works in journal entries. See
+the [native/KOMA typography comparison](examples/latex-parity/README.md) for the
+specimen and checks. This change is not yet published.
 
 ### Table text and padding
 

@@ -164,11 +164,15 @@
   let mono-typeface = if c.typography.mono-font == auto { (:) } else { (font: c.typography.mono-font) }
   show raw: set text(..mono-typeface)
 
+  assert(
+    type(c.typography.first-line-indent) == bool,
+    message: "typography.first-line-indent must be true or false.",
+  )
   set par(
     justify: c.typography.justify,
     leading: c.typography.leading,
     spacing: c.typography.paragraph-spacing,
-    first-line-indent: c.typography.first-line-indent,
+    first-line-indent: if c.typography.first-line-indent { 1em } else { 0pt },
   )
 
   // --- List spacing ---

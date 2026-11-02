@@ -35,8 +35,8 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `typography.size` | length | `11pt` | Main text size. |
 | `typography.line-spacing` | positive number or `none` | `none` | Optional baseline-to-baseline distance as a multiple of the body font size (for example `1.5`). Uses the selected font metrics and overrides `typography.leading`. |
 | `typography.leading` | length | `0.65em` | Distance between line bounds, not a multiplier. |
-| `typography.paragraph-spacing` | length | `1.2em` | Space between paragraphs. |
-| `typography.first-line-indent` | length | `0pt` | First-line indentation for paragraphs. |
+| `typography.paragraph-spacing` | length | `1.2em` | Vertical gap between paragraphs. It is independent of line spacing. If paragraphs are identified by indentation, reduce this gap separately; Satz does not change it when indentation is enabled. |
+| `typography.first-line-indent` | boolean | `false` | `true` indents consecutive paragraphs by one em (the current body font size, e.g. 11pt at 11pt text size); `false` uses no indent. Typst leaves the first paragraph in a document/container and paragraphs after blocks such as headings unindented. The horizontal indent is independent of vertical line and paragraph spacing. |
 | `typography.hyphenate` | boolean | `false` | Enables automatic word hyphenation. |
 | `typography.justify` | boolean | `true` | Justifies body paragraphs when supported. |
 | `headings.numbering` | Typst numbering pattern/function or `none` | `"1.1"` | Heading numbering passed to the native heading system. |
