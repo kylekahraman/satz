@@ -62,7 +62,12 @@
   ),
 )
 
-/// Defaults for the cover page.
+/// Baseline values consumed by `cover-page()` before theme and user overrides.
+///
+/// The cover starts on A4 with 2.5cm margins, Libertinus Serif at 11pt, and the
+/// neutral black-on-white palette. Cover `config` is merged on top of these
+/// values after the selected theme; only page paper/margins, text font/size, and
+/// the five cover colors are consumed by the renderer.
 #let cover-defaults = (
   page: (
     paper: "a4",
@@ -75,7 +80,16 @@
   colors: cover-themes.neutral,
 )
 
-/// Draw a small, print-friendly brain and connectome illustration.
+/// Draw the small brain-and-connectome illustration used on research covers.
+///
+/// The drawing uses vector shapes so it stays crisp in print. The parameters
+/// provide its primary ink, secondary accent, and paper colors; no text or
+/// labels are included. This is an internal helper for `cover-page()`.
+///
+/// - ink (color): primary outline and neural paths
+/// - accent (color): secondary nodes and connections
+/// - paper (color): fill used to separate the brain shape from its background
+/// -> content: a compact, right-aligned illustration
 #let research-connectome(ink, accent, paper) = {
   let svg = (
     "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"360\" height=\"190\" viewBox=\"0 0 360 190\">" +
