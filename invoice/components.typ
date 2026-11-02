@@ -92,11 +92,14 @@
   ]
 }
 
-/// The "no VAT" note for small businesses (§ 19 UStG).
+/// Render the German small-business VAT notice on an invoice.
 ///
-/// German law wants this on the invoice if you're exempt.
+/// The italic notice states that no VAT is charged under § 19(1) UStG. The
+/// invoice template includes this block when its small-business option is
+/// enabled; this helper does not decide eligibility or validate tax status.
 ///
-/// - zeilenabstand (length): line spacing
+/// - zeilenabstand (length): vertical gap before the notice
+/// -> content: spacing followed by the fixed italic notice
 #let kleinunternehmer_notice(zeilenabstand) = {
   v(1 * zeilenabstand)
   text(size: 9pt, style: "italic")[

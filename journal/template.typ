@@ -6,12 +6,17 @@
 #import "components.typ": journal-metadata-entry, journal-date-keywords, remember, question
 #import "dates.typ": journal-date-parts
 
-/// Has an entry started? We check this for page breaks.
+/// Reserved internal state slot initialized as `true`.
+///
+/// Current journal layout and index behavior use `journal-state` and Typst's
+/// native page flow; this value is not read or updated by the current template.
 #let journal-entry-state = state("entry-start", true)
 
-/// What the header shows on page 2+.
+/// Internal state for the running header of the current journal entry.
 ///
-/// Each `journal-entry` drops its title, date, and start page in here.
+/// Each `journal-entry` stores its title, date, and first page here. On later
+/// pages, the header reads these values and shows the entry title and date; the
+/// saved start page prevents that header from appearing on the first page.
 #let journal-state = state("journal-entry-state", (
   title: "",
   date: "",
@@ -108,9 +113,12 @@
   )
 }
 
-/// Month names for the index.
+/// English month names keyed by zero-padded month number.
 ///
-/// "01" -> "January", "02" -> "February" ... you get it.
+/// `journal-index` converts each parsed month number to a two-digit key before
+/// looking up its label, so `"01"` maps to `"January"` and `"12"` to
+/// `"December"`. Undated entries are grouped separately and do not use this
+/// table.
 #let month-names = (
   "01": "January", "02": "February", "03": "March", "04": "April",
   "05": "May", "06": "June", "07": "July", "08": "August",

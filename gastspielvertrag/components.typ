@@ -1,10 +1,13 @@
 // Gastspielvertrag components — contract-specific rendering blocks.
 
-/// A blank field to fill in.
+/// Render a labeled blank line for a contract field completed by hand.
 ///
-/// Bold label on top, line below — fill it by hand.
+/// The label appears in bold above a full-width writing line. The component
+/// adds vertical space before and after the label so the printed contract has
+/// room for handwritten information.
 ///
-/// - label (str): what goes above the line
+/// - label (str): short field name printed above the line
+/// -> content: bold label and horizontal rule
 #let fillin(label) = {
   v(0.5em)
   text(weight: "bold", size: 10pt)[#label:]
@@ -59,7 +62,16 @@
   text(size: 10pt)[Besetzung: #g.musiker Musiker #if g.techniker [ + Techniker ] #if g.fotograf [ + Fotograf ] → #gesamt Personen]
 }
 
-/// §1 — What this contract is about.
+/// Render section 1, which identifies the engagement and the organizer's
+/// pre-event information duties.
+///
+/// The section states that the organizer engages the artist for the event
+/// described in the contract header, then lists the contact, schedule, and
+/// parking details to send by email at least two weeks before the event.
+///
+/// - g (dictionary): accepted for consistent section composition; currently
+///   does not change this clause
+/// -> content: section heading, engagement terms, and required-information list
 #let paragraph_1(g) = {
   text(weight: "bold", size: 11pt)[§ 1 Gegenstand des Vertrages]
   v(0.3em)
@@ -76,7 +88,17 @@
   )
 }
 
-/// §2 — Pay and terms.
+/// Render section 2, including the selected fee model and payment conditions.
+///
+/// A fixed-fee contract prints `festgage`; a percentage contract prints the
+/// percentage of net ticket revenue and guaranteed minimum. The section also
+/// states the payment deadline and late-payment terms, and adds the small
+/// business VAT notice when `kleinunternehmer` is enabled.
+///
+/// - g (dictionary): fee type, amount or percentage, minimum fee, and VAT flag
+/// - zeilenabstand (length): accepted for consistent section composition;
+///   spacing in this clause is fixed
+/// -> content: fee terms and payment conditions
 #let paragraph_2(g, zeilenabstand) = {
   text(weight: "bold", size: 11pt)[§ 2 Gage und Konditionen]
   v(0.3em)
@@ -108,7 +130,14 @@
   }
 }
 
-/// §3 — What the venue has to do.
+/// Render section 3, listing the organizer's production and safety duties.
+///
+/// The numbered terms cover compliance with the technical rider, GEMA fees,
+/// provision of suitable PA/lighting and a house technician, and responsibility
+/// for the safety of the artist team and their equipment.
+///
+/// - arguments: none; the section text is fixed
+/// -> content: numbered organizer obligations
 #let paragraph_3() = {
   text(weight: "bold", size: 11pt)[§ 3 Pflichten des Veranstalters]
   v(0.3em)
@@ -121,7 +150,15 @@
   )
 }
 
-/// §4 — What if someone cancels.
+/// Render section 4, describing cancellation by either party.
+///
+/// Organizer cancellation triggers the stated cancellation fee schedule based
+/// on how many days remain before the show. If the artist cannot perform for an
+/// important reason such as documented illness or an accident, the section
+/// removes the fee claim and requires prompt notice to the organizer.
+///
+/// - arguments: none; the clause text and fee schedule are fixed
+/// -> content: numbered cancellation terms
 #let paragraph_4() = {
   text(weight: "bold", size: 11pt)[§ 4 Rücktritt und Ausfall]
   v(0.3em)
@@ -147,7 +184,16 @@
   )
 }
 
-/// §5 — Hospitality — food, drinks, backstage.
+/// Render section 5 with the team's hospitality and backstage requirements.
+///
+/// The team size is calculated from musicians plus any technician and
+/// photographer. The clause requests a vegetarian meal with a vegan option, or
+/// calculates the total cash buyout from the per-person amount; it also lists
+/// backstage facilities, drinks, and snacks.
+///
+/// - g (dictionary): musician count, technician/photographer flags, and buyout
+///   amount per person
+/// -> content: team count, meal/buyout terms, and backstage rider
 #let paragraph_5(g) = {
   let gesamt = g.musiker + (if g.techniker { 1 } else { 0 }) + (if g.fotograf { 1 } else { 0 })
   let buyout_total = gesamt * g.buyout_pro_person
@@ -173,7 +219,16 @@
   ]
 }
 
-/// §6 — Extra costs (travel, tech, hotel …).
+/// Render section 6 as an itemized table of agreed additional costs.
+///
+/// The transport allowance is calculated from distance × rate × two-way travel.
+/// Technician fees, accommodation, and a named miscellaneous item are included
+/// only when their configured amounts are positive. If no items qualify, the
+/// section prints a short no-additional-costs message instead of an empty table.
+///
+/// - g (dictionary): transport, technician, lodging, and optional extra-cost
+///   settings
+/// -> content: itemized costs and their total, or a no-costs message
 #let paragraph_6(g) = {
   text(weight: "bold", size: 11pt)[§ 6 Zusatzkosten]
   v(0.3em)
@@ -223,7 +278,15 @@
   }
 }
 
-/// §7 — Merch, respect, access.
+/// Render section 7, covering merchandise, respectful conduct, and access.
+///
+/// The numbered clauses permit artist merchandise sales without venue
+/// commission, ask for a respectful and non-discriminatory environment with an
+/// awareness plan, and request accessible premises and inclusive restroom
+/// signage.
+///
+/// - arguments: none; the clause text is fixed
+/// -> content: three numbered event-conduct and access terms
 #let paragraph_7() = {
   text(weight: "bold", size: 11pt)[§ 7 Merchandise, Awareness, Sonstiges]
   v(0.3em)
@@ -235,7 +298,14 @@
   )
 }
 
-/// §8 — Final clauses.
+/// Render section 8 with the contract's written-amendment and severability terms.
+///
+/// The clause requires written form for amendments and states that the other
+/// provisions remain effective if one provision is invalid, with a replacement
+/// term serving the closest economic purpose.
+///
+/// - arguments: none; the clause text is fixed
+/// -> content: final contract provisions
 #let paragraph_8() = {
   text(weight: "bold", size: 11pt)[§ 8 Schlussbestimmungen]
   v(0.3em)
@@ -248,7 +318,15 @@
   ]
 }
 
-/// Two lines to sign — venue and artist.
+/// Render signature lines for the organizer and artist representative.
+///
+/// The two columns have matching rules and labels. The organizer line is
+/// unlabeled for a handwritten name; the artist line prints the representative
+/// name supplied to the component.
+///
+/// - kuenstler_vertreter (str): printed name below the artist-side signature
+///   line
+/// -> content: two aligned signature areas
 #let signature_lines(kuenstler_vertreter) = {
   v(3em)
   grid(
