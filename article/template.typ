@@ -29,25 +29,90 @@
 ///   reference them with one-based indices, e.g. `affiliations: (1, 2)`.
 /// - abstract (content, none): full-width abstract
 /// - date (str, content, none): optional date beneath the authors
-/// - config (dictionary): nested overrides for shared Satz settings and
-///   article-specific settings. Shared sections are `page`, `typography`,
-///   `headings`, `journal`, `decorative`, `page-footer`, `line-numbers`, `links`, `tables`,
-///   `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
-///   For example, set
-///   `typography: (font: "STIX Two Text", math-font: "STIX Two Math")` to
-///   choose separate text and math fonts. If you omit `math-font`, Typst uses
-///   New Computer Modern Math by default; it is embedded in the Typst CLI.
-///   Set `line-numbers: (enabled: true)` for a draft; line numbering is off by
-///   default. Its `format`, `scope`, `size`, `color`, and `clearance` are also
-///   configurable.
-///   Shared defaults are in `defaults.typ`;
-///   article defaults are two columns, 10pt text, unnumbered headings, and no
-///   automatic contents. Article-specific keys are `article.title-size`
-///   (18pt), `author-size` (11pt), `author-gap` (0.8em),
-///   `affiliation-size` (8.5pt), `abstract-size` (9pt), `title-gap` (1.2em),
-///   and `body-gap` (2.2em). Override them under `article:`, for example
-///   `article: (title-size: 16pt)`. Set `toc.depth` above 0 (or to `none`) to
-///   insert inline contents after the front matter.
+/// - config (dictionary): nested overrides, deep-merged so omitted fields
+///   retain these effective article defaults. Known shared groups reject
+///   unknown field names; unknown top-level groups such as `article` are
+///   allowed. Theme colors are applied first, then config overrides them.
+///   Supported fields and defaults:
+///   - `page.paper` (paper name/custom size; `"a4"`), `page.margin` (length or
+///     edge-to-length dictionary; 2.5cm each; accepts `top`, `bottom`, `left`,
+///     `right`, `x`, `y`, `inside`, `outside`), `page.binding`
+///     (`none`/`left`/`right`; `none`),
+///     `page.binding-correction` (length; `0pt`), `page.headers` (bool;
+///     `false`), `page.columns` (positive int; `2`), and
+///     `page.column-gutter` (length; `5mm`) control page geometry and columns.
+///   - `typography.font` (font name; `"Libertinus Serif"`), `math-font` and
+///     `mono-font` (font name or `auto`; `auto`), `size` (length; `10pt`),
+///     `line-spacing` (positive multiple or `none`; `none`), `leading` (length;
+///     `0.65em`), `paragraph-spacing` (length; `1.2em`),
+///     `first-line-indent` (bool; `false`), `hyphenate` (bool; `true`), and
+///     `justify` (bool; `true`) control body typography. `line-spacing`, when
+///     set, overrides `leading`; `first-line-indent: true` uses a one-em
+///     horizontal indent.
+///   - `headings.numbering` (pattern/function or `none`; `none`),
+///     `hyphenate` (bool; `false`), `h1-pagebreak` (bool; `false`),
+///     `spacing` (`"koma"`/`"native"`; `"koma"`), `h1-size`–`h4-size`
+///     (lengths; 12pt, 10.5pt, 10pt, 10pt), and each level's `*-above` and
+///     `*-below` (length or `auto`; `auto`) control heading formatting.
+///   - `journal.header-below` (length; `1.5em`), `running-gutter` (length;
+///     `1em`), `running-leading` (length; `0.35em`),
+///     `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
+///     `list-tight` (bool; false), and `list-spacing` (length; 0.9em) are
+///     accepted for journal layouts; article does not use these fields.
+///   - `decorative.header-size` (length; `9pt`), `footer-size` (length;
+///     `10pt`), `date-size` (length; `10pt`), `keywords-size` (length; `9pt`),
+///     `list-tight` (bool; `false`), and `list-spacing` (length; `0.9em`)
+///     configure shared decorative text and lists.
+///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
+///     (length; `10pt`), and `weight` (font weight; `"regular"`) configure
+///     page numbers.
+///   - `line-numbers.enabled` (bool; `false`), `format` (pattern; `"1"`),
+///     `scope` (`"document"`/`"page"`; `"document"`), `size` (length; `8pt`),
+///     `color` (color; `#64748B`), and `clearance` (length or `auto`; `auto`)
+///     configure draft line numbering. Article enables it only when requested.
+///   - `links.color` and `url-color` (colors; neutral `#0563C1`) set internal
+///     and external link colors.
+///   - `tables.stroke` (length; `0.5pt`), `inset` (length or x/y dictionary;
+///     `(x: 8pt, y: 4pt)`), `font-size` (length; `10pt`),
+///     `caption-position` (`top`/`bottom`; `top`), and `caption-gap` (length;
+///     `6pt`) configure shared table helpers.
+///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
+///     `title-below` (1em), `paragraph-spacing` (1em), and `list-spacing`
+///     (1.2em) are lengths controlling callout geometry and content gaps.
+///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
+///     and `label-weight` (`"regular"`) style captions.
+///   - `toc` defaults: `depth` (none or non-negative int; article overrides to
+///     0), `title` (content or none; `[Table of Contents]`), `indent`
+///     (length or auto; auto), `entry-size` (10pt), `leading` (0.65em),
+///     `entry-above` (0.65em), `main-entry-above` (1.25em), `title-below`
+///     (1.5em), and `below` (2em). `lof`/`lot` have the same fields except
+///     `main-entry-above`, with titles `[List of Figures]`/`[List of Tables]`,
+///     depth none (article overrides to 0), and `entry-above` 0.85em. They also
+///     accept `compact` (bool; false), which omits captions from that list.
+///     Article sets all list depths to 0; `toc.depth` above 0 or `none` enables
+///     inline contents after the title block.
+///   - `bibliography.style` (CSL style name; `"apa"`) selects bibliography
+///     style where supported.
+///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, and `text-muted` (colors; neutral article defaults are
+///     white paper/subtle fill and black text/accent) set page and text colors.
+///   - Article-only `article.title-size` (18pt), `author-size` (11pt),
+///     `author-gap` (0.8em), `affiliation-size` (8.5pt), `abstract-size`
+///     (9pt), `title-gap` (1.2em), and `body-gap` (2.2em) are lengths for the
+///     metadata block and body start.
+///   Article applies page and typography fields, heading fields, list
+///   spacing, page-footer format/size/weight, line-number and link settings,
+///   table inset/font size, caption fields, bibliography style, and
+///   `colors.bg-paper`, `brand-primary`, `text-main`, and `text-muted`.
+///   `page.headers` applies only with two-sided binding. Inline contents use
+///   `toc.depth`, `title`, `indent`, and `below`; `entry-size`, `leading`,
+///   `entry-above`, `main-entry-above`, and `title-below` are accepted but do
+///   not style that native outline. The article accepts but does not render
+///   `lof.*`, `lot.*`, `journal.*`, `callouts.*`, decorative date/keyword/footer
+///   sizes, `tables.stroke`/`caption-position`/`caption-gap`, or
+///   `colors.bg-subtle`/`brand-accent`. Pass component-only settings directly
+///   to the matching component. Other template extension groups are not
+///   applied to an article.
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`; explicit `config.colors` wins
 /// - body (content): the article

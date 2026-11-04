@@ -93,6 +93,13 @@
 /// - `running-gutter` (length; `1em`): gap between columns in a running header.
 /// - `running-leading` (length; `0.35em`): line gap in a multi-line running
 ///   header.
+/// - `running-header-size` (length; `9pt`): journal running-header text size.
+/// - `date-size` (length; `10pt`): journal date text size.
+/// - `keywords-size` (length; `9pt`): journal keyword text size.
+/// - `list-tight` (bool; `false`): use paragraph leading between list items
+///   instead of the item gap.
+/// - `list-spacing` (length; `0.9em`): journal list-item gap when `list-tight`
+///   is false. The journal template overrides this to `0.65em`.
 ///
 /// **Decorative text and lists (`decorative`)**
 /// - `header-size` (length; `9pt`): running-header text size.
@@ -102,7 +109,8 @@
 /// - `list-tight` (bool; `false`): use paragraph leading between list items
 ///   instead of the separate list gap.
 /// - `list-spacing` (length; `0.9em`): gap between list items when
-///   `list-tight` is false.
+///   `list-tight` is false for templates using the shared decorative settings.
+///   Journal templates use the corresponding `journal.*` controls.
 ///
 /// **Page number (`page-footer`)**
 /// - `format` (Typst numbering pattern/function; `"1"`): page-number format.
@@ -237,6 +245,11 @@
     header-below: 1.5em,
     running-gutter: 1em,
     running-leading: 0.35em,
+    running-header-size: 9pt,
+    date-size: 10pt,
+    keywords-size: 9pt,
+    list-tight: false,
+    list-spacing: 0.9em,
   ),
   decorative: (
     header-size: 9pt,
@@ -343,9 +356,16 @@
   ),
 )
 
-// Validate known shared namespaces while leaving template-specific and caller
-// extension groups open. This catches common misspellings without making the
-// generic merge helper or custom config metadata closed-world.
+/// Validate keys in known shared configuration groups.
+///
+/// The validator checks that the input and each known group are dictionaries,
+/// then rejects unknown keys in groups defined by defaults. Template-specific
+/// and caller extension groups remain open, including unknown top-level group
+/// names. It does not validate the value type or semantic range for individual
+/// fields; consuming templates may perform additional validation.
+///
+/// - config (dictionary): nested config overrides to validate
+/// -> dictionary: the same config dictionary, returned unchanged
 #let validate-config(config) = {
   assert(type(config) == dictionary, message: "Satz config must be a dictionary.")
   for (group, values) in config {

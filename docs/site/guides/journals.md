@@ -57,6 +57,18 @@ whether the event timing stays stable across a full session.
 
 The `journal-entry` show rule puts the title, date, and keywords in the entry header, then styles everything that follows. It also enables checklists. The journal templates default to ISO B5 with the journal typography in `journal/defaults.typ`; pass `config` only when you want to change those values. On later pages of a long entry, the title and date stay in the running header. The `remember` and `question` callouts mark something to keep visible or investigate; they do not create a separate task system.
 
+Journal list spacing has its own settings. For example, set `journal.list-spacing`
+to tighten or open the gap between list items:
+
+```typst
+#show: journal-entry.with(config: (
+  journal: (list-spacing: 0.4em),
+))
+```
+
+The default is `0.65em`. Set `journal.list-tight: true` to use paragraph
+leading between list items instead.
+
 Now make `main.typ` the file you preview and compile:
 
 ```typst

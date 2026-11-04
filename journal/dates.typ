@@ -1,5 +1,15 @@
-// Parse dates used by journal-entry and journal-index. Blank dates remain
-// valid for drafts; indexed dates use day/month/year order.
+/// Parse a journal date into numeric day, month, and year parts.
+///
+/// Accepted inputs are `YYYY-MM-DD`, `DD/MM/YY`, or `DD/MM/YYYY`, optionally
+/// preceded by a weekday and comma or space. Two-digit years are interpreted
+/// as 20xx. An empty string returns `none`, which lets draft entries appear in
+/// the index's Undated group. Invalid formats and impossible calendar dates
+/// raise an assertion error. The returned month and day are validated against
+/// the selected year, including Gregorian leap-year rules.
+///
+/// - date (str): date string to parse; empty is allowed
+/// -> dictionary or none: `(day:, month:, year:)` for a dated entry, otherwise
+///   `none`
 #let journal-date-parts(date) = {
   assert(type(date) == str, message: "journal-entry date must be a string.")
   if date == "" { return none }

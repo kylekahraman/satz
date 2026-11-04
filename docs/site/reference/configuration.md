@@ -28,7 +28,7 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **heading sizes and gaps:** [`headings.h1-size`](#headings-h1-size), [`headings.h2-size`](#headings-h2-size), [`headings.h3-size`](#headings-h3-size), [`headings.h4-size`](#headings-h4-size), [`headings.h1-above`](#headings-h1-above), [`headings.h2-above`](#headings-h2-above), [`headings.h3-above`](#headings-h3-above), [`headings.h4-above`](#headings-h4-above), [`headings.h1-below`](#headings-h1-below), [`headings.h2-below`](#headings-h2-below), [`headings.h3-below`](#headings-h3-below), [`headings.h4-below`](#headings-h4-below)
 
-**journal:** [`journal.header-below`](#journal-header-below), [`journal.running-gutter`](#journal-running-gutter), [`journal.running-leading`](#journal-running-leading)
+**journal:** [`journal.header-below`](#journal-header-below), [`journal.running-gutter`](#journal-running-gutter), [`journal.running-leading`](#journal-running-leading), [`journal.running-header-size`](#journal-running-header-size), [`journal.date-size`](#journal-date-size), [`journal.keywords-size`](#journal-keywords-size), [`journal.list-tight`](#journal-list-tight), [`journal.list-spacing`](#journal-list-spacing)
 
 **decorative:** [`decorative.header-size`](#decorative-header-size), [`decorative.footer-size`](#decorative-footer-size), [`decorative.date-size`](#decorative-date-size), [`decorative.keywords-size`](#decorative-keywords-size), [`decorative.list-tight`](#decorative-list-tight), [`decorative.list-spacing`](#decorative-list-spacing)
 
@@ -91,12 +91,17 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="journal-header-below"></span>`journal.header-below` | length | `1.5em` | Gap between the complete entry header/date and notes. Journal only. |
 | <span id="journal-running-gutter"></span>`journal.running-gutter` | length | `1em` | Gap between running-header columns. Journal only. |
 | <span id="journal-running-leading"></span>`journal.running-leading` | length | `0.35em` | Line gap in a multi-line running header. Journal only. |
+| <span id="journal-running-header-size"></span>`journal.running-header-size` | length | `9pt` | Running-header text size. Journal only. |
+| <span id="journal-date-size"></span>`journal.date-size` | length | `10pt` | Journal date text size. Journal only. |
+| <span id="journal-keywords-size"></span>`journal.keywords-size` | length | `9pt` | Journal keyword text size. Journal only. |
+| <span id="journal-list-tight"></span>`journal.list-tight` | boolean | `false` | Uses paragraph leading between journal list items when `true`. |
+| <span id="journal-list-spacing"></span>`journal.list-spacing` | length | `0.9em` shared; `0.65em` in journal templates | Gap between journal list items when `journal.list-tight` is `false`. |
 | <span id="decorative-header-size"></span>`decorative.header-size` | length | `9pt` | Running-header text size. |
 | <span id="decorative-footer-size"></span>`decorative.footer-size` | length | `10pt` | Footer text size where implemented. |
 | <span id="decorative-date-size"></span>`decorative.date-size` | length | `10pt` | Date text size where implemented. |
 | <span id="decorative-keywords-size"></span>`decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
-| <span id="decorative-list-tight"></span>`decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true`. |
-| <span id="decorative-list-spacing"></span>`decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false`. |
+| <span id="decorative-list-tight"></span>`decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true` in templates that use shared decorative list settings. Journal templates use `journal.list-tight`. |
+| <span id="decorative-list-spacing"></span>`decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false` in templates that use shared decorative list settings. Journal templates use `journal.list-spacing`. |
 | <span id="decorative-list-indent"></span>`decorative.list-indent` | length | `17.9669pt` in DFG | Indentation of list and enumeration markers in the DFG template. |
 | <span id="decorative-list-body-indent"></span>`decorative.list-body-indent` | length | `5.475 × 72 ÷ 72.27 pt` in DFG | Gap from each list or enumeration marker to its body text. |
 | <span id="decorative-list-block-spacing"></span>`decorative.list-block-spacing` | length | `baseline + paragraph-skip - cap + 3 × 72 ÷ 72.27 pt` in DFG | Space above and below list and enumeration blocks; uses the DFG font metrics. |
@@ -208,7 +213,7 @@ arguments described in their source API comments and guides.
 | `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
 | `report` | Defaults to `theme: "neutral"`; all remaining appearance defaults come from the shared document class. `theme: none` skips a named palette and uses the shared defaults. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
-| `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; black-on-white palette. Journal block and running-header gaps are in `journal.*` above. |
+| `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above. |
 | `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`; German names are aliases. Nested config only accepts the documented page, typography, color, and link keys. |
 | `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Canonical direct names are `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, and `qr-purpose`; German names are aliases. Nested config accepts the same limited appearance keys as letters. |
 | `book` (experimental) | Defaults to `theme: "neutral"`; A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; black accent and ink. `theme: "slate"` selects the former blue-gray palette. |

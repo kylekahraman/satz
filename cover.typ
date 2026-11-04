@@ -141,12 +141,73 @@
 /// = Introduction
 /// ```
 ///
-/// - config (dictionary): shared page, typography, and color overrides. The
-///   cover reads `page.paper` (default `"a4"`), `page.margin` (default 2.5cm),
-///   `typography.font` (default `"Libertinus Serif"`), `typography.size`
-///   (default 11pt), and the listed `colors.*` keys. Example:
-///   `config: (typography: (font: "STIX Two Text"), colors: (brand-primary: blue))`.
-///   Other valid shared settings are ignored by this component.
+/// - config (dictionary): nested Satz config. Dictionaries merge recursively.
+///   Precedence is cover defaults, selected theme colors, then explicit config.
+///   This cover reads only the fields marked **used** below; other valid fields
+///   are accepted and ignored. The neutral effective defaults are A4, 2.5cm
+///   margins, Libertinus Serif 11pt, white paper, and black for the other four
+///   cover colors. A selected non-neutral theme replaces all five colors before
+///   config overrides them. Example: `config: (typography: (font: "STIX Two Text"),
+///   colors: (brand-primary: blue))`.
+///
+///   Complete shared schema accepted by this function:
+///   - `page.paper` (paper name/custom size; default `"a4"`; **used**);
+///     `margin` (dictionary of edge lengths, default 2.5cm each; supports
+///     top/bottom/left/right, inside/outside, or x/y; **used**); `binding`
+///     (`none`/`left`/`right`, default `none`; ignored); `binding-correction`
+///     (length, `0pt`; ignored); `headers` (bool, `false`; ignored); `columns`
+///     (positive integer, 1; ignored); `column-gutter` (length, 5mm; ignored);
+///     `header-ascent` (length, extra key; ignored).
+///   - `typography.font` (font name, `"Libertinus Serif"`; **used**), `size`
+///     (length, 11pt; **used**); `math-font`, `mono-font` (font name or `auto`,
+///     default `auto`; ignored); `line-spacing` (positive number or `none`,
+///     `none`; ignored); `leading` (length, 0.65em; ignored);
+///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
+///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
+///     `true`; ignored).
+///   - `headings.numbering` (Typst numbering pattern/function or `none`,
+///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
+///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
+///     `"native"`, `"koma"`; ignored); `h1-size`–`h4-size` (lengths,
+///     14pt/12pt/11pt/11pt; ignored); `h1-above`–`h4-above` and
+///     `h1-below`–`h4-below` (`auto` or length, `auto`; ignored);
+///     `h1-number-size` (extra length key with no shared default; ignored).
+///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
+///     `running-leading` (0.35em); all ignored.
+///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
+///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
+///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
+///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
+///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
+///   - `line-numbers.enabled` (bool, false), `format` (numbering pattern,
+///     `"1"`), `scope` (`"document"` or `"page"`, `"document"`), `size`
+///     (8pt), `color` (`#64748B`), `clearance` (`auto` or length, `auto`);
+///     ignored.
+///   - `links.color`, `url-color` (colors, both `#0563C1`); ignored.
+///   - `tables.stroke` (0.5pt), `inset` (length or dictionary, `(x: 8pt,
+///     y: 4pt)`), `font-size` (10pt), `caption-position` (`top`/`bottom`,
+///     `top`), `caption-gap` (6pt); ignored.
+///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
+///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
+///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
+///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
+///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
+///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
+///     `main-entry-above` (1.25em), `title-below` (1.5em), `below` (2em);
+///     ignored.
+///   - `lof` and `lot` use the same fields; defaults are depth none, their
+///     English list title, auto indent, 10pt entry size, 0.65em leading,
+///     0.85em entry gap, 1.5em title gap, 2em below gap, and `compact: false`.
+///     `compact` is bool. These fields are ignored by the cover.
+///   - `bibliography.style` (CSL style name, `"apa"`); ignored.
+///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted` (colors; neutral defaults white/white/black/
+///     black/black/black; **used**). `bg-subtle` is accepted but ignored; the
+///     other five color fields style the cover.
+///   Unknown keys inside known shared groups are rejected. Additional
+///   template-specific or caller extension groups are accepted and ignored.
 /// - logos (none, content): optional logos at the top left
 /// - body (none, content): custom cover body; overrides generated title content
 /// - footer (none, content): custom content at the bottom center
@@ -297,12 +358,10 @@
 
 /// Create a research notebook cover with a neural-connectivity motif.
 ///
-/// This is a preset for `cover-page(layout: "research")`. It renders a title
-/// block with the supplied title and optional subtitle, author, date, keywords,
-/// supervisors, logos, and footer content. Set `theme` to choose the cover
-/// palette and pass `config` to override its page, typography, or colors. A
-/// following document does not inherit the cover's theme or configuration;
-/// pass those values to both calls when they should match.
+/// Render a research title page with a neural-connectivity illustration. The
+/// illustration uses the chosen primary, accent, and paper colors. A following
+/// document does not inherit this cover's theme or config; pass matching values
+/// to both calls if they should share an appearance.
 ///
 /// ```typst
 /// #research-cover(
@@ -315,18 +374,95 @@
 ///
 /// - title (content, str): required title; use `box(...)` to keep a word
 ///   together
-/// - other arguments: same as `cover-page` with `layout: "research"`
+/// - subtitle (content, str, none): optional line beneath the title
+/// - author (content, str, none): optional author line
+/// - date (content, str, none): optional date in the title block
+/// - keywords (content, str, none): optional keywords in the title block
+/// - supervisors (array of str, none): optional bottom-left names
+/// - logos (content, none): optional content at the top left
+/// - body (content, none): optional custom cover body; replaces generated fields
+/// - footer (content, none): optional bottom-center content
+/// - footer-left (content, none): optional bottom-left content; replaces
+///   `supervisors`
+/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`
+/// - config (dictionary): nested Satz config. Dictionaries merge recursively.
+///   Precedence is cover defaults, selected theme colors, then explicit config.
+///   This cover reads only the fields marked **used** below; other valid fields
+///   are accepted and ignored. The neutral effective defaults are A4, 2.5cm
+///   margins, Libertinus Serif 11pt, white paper, and black for the other four
+///   cover colors. A selected non-neutral theme replaces all five colors before
+///   config overrides them. Example: `config: (typography: (font: "STIX Two Text"),
+///   colors: (brand-primary: blue))`.
+///
+///   Complete shared schema accepted by this function:
+///   - `page.paper` (paper name/custom size; default `"a4"`; **used**);
+///     `margin` (dictionary of edge lengths, default 2.5cm each; supports
+///     top/bottom/left/right, inside/outside, or x/y; **used**); `binding`
+///     (`none`/`left`/`right`, default `none`; ignored); `binding-correction`
+///     (length, `0pt`; ignored); `headers` (bool, `false`; ignored); `columns`
+///     (positive integer, 1; ignored); `column-gutter` (length, 5mm; ignored);
+///     `header-ascent` (length, extra key; ignored).
+///   - `typography.font` (font name, `"Libertinus Serif"`; **used**), `size`
+///     (length, 11pt; **used**); `math-font`, `mono-font` (font name or `auto`,
+///     default `auto`; ignored); `line-spacing` (positive number or `none`,
+///     `none`; ignored); `leading` (length, 0.65em; ignored);
+///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
+///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
+///     `true`; ignored).
+///   - `headings.numbering` (Typst numbering pattern/function or `none`,
+///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
+///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
+///     `"native"`, `"koma"`; ignored); `h1-size`–`h4-size` (lengths,
+///     14pt/12pt/11pt/11pt; ignored); `h1-above`–`h4-above` and
+///     `h1-below`–`h4-below` (`auto` or length, `auto`; ignored);
+///     `h1-number-size` (extra length key with no shared default; ignored).
+///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
+///     `running-leading` (0.35em); all ignored.
+///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
+///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
+///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
+///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
+///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
+///   - `line-numbers.enabled` (bool, false), `format` (numbering pattern,
+///     `"1"`), `scope` (`"document"` or `"page"`, `"document"`), `size`
+///     (8pt), `color` (`#64748B`), `clearance` (`auto` or length, `auto`);
+///     ignored.
+///   - `links.color`, `url-color` (colors, both `#0563C1`); ignored.
+///   - `tables.stroke` (0.5pt), `inset` (length or dictionary, `(x: 8pt,
+///     y: 4pt)`), `font-size` (10pt), `caption-position` (`top`/`bottom`,
+///     `top`), `caption-gap` (6pt); ignored.
+///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
+///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
+///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
+///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
+///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
+///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
+///     `main-entry-above` (1.25em), `title-below` (1.5em), `below` (2em);
+///     ignored.
+///   - `lof` and `lot` use the same fields; defaults are depth none, their
+///     English list title, auto indent, 10pt entry size, 0.65em leading,
+///     0.85em entry gap, 1.5em title gap, 2em below gap, and `compact: false`.
+///     `compact` is bool. These fields are ignored by the cover.
+///   - `bibliography.style` (CSL style name, `"apa"`); ignored.
+///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted` (colors; neutral defaults white/white/black/
+///     black/black/black; **used**). `bg-subtle` is accepted but ignored; the
+///     other five color fields style the cover.
+///   Unknown keys inside known shared groups are rejected. Additional
+///   template-specific or caller extension groups are accepted and ignored.
 /// -> content: a generated research title page
 #let research-cover = cover-page.with(layout: "research")
 
 /// Create a spare, centered title page for reports, notes, and short documents.
 ///
-/// This is a preset for `cover-page(layout: "minimal")`. The required title is
-/// centered on the page. Optional subtitle and author appear with it; `date` is
-/// printed at the bottom when no custom `footer` is supplied. Set `theme` to
-/// choose the cover palette and pass `config` for page, typography, or color
-/// overrides. The cover does not pass its appearance to a following document;
-/// configure both explicitly when they should match.
+/// Render a minimal centered title page. The required title is centered;
+/// optional subtitle and author appear below it. The date is placed at the
+/// bottom unless a custom `footer` replaces it. A following document does not
+/// inherit this cover's theme or config; pass matching values to both calls if
+/// they should share an appearance.
 ///
 /// ```typst
 /// #minimal-cover(
@@ -337,8 +473,83 @@
 /// ```
 ///
 /// - title (content, str): required cover title
-/// - date (content, str, none): optional date at the bottom unless `footer` is
-///   supplied
-/// - other arguments: same as `cover-page` with `layout: "minimal"`
+/// - subtitle, author (content, str, none): optional lines beneath the title
+/// - date (content, str, none): optional bottom date unless `footer` is supplied
+/// - logos (content, none): optional content at top left
+/// - body (content, none): optional custom body; replaces generated fields
+/// - footer (content, none): optional bottom-center content; replaces the date
+/// - footer-left (content, none): optional bottom-left content
+/// - supervisors (array of str, none): optional names at bottom left; replaced
+///   by `footer-left` when that is supplied
+/// - keywords (content, str, none): accepted but not displayed by this layout
+/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`
+/// - config (dictionary): nested Satz config. Dictionaries merge recursively.
+///   Precedence is cover defaults, selected theme colors, then explicit config.
+///   This cover reads only the fields marked **used** below; other valid fields
+///   are accepted and ignored. The neutral effective defaults are A4, 2.5cm
+///   margins, Libertinus Serif 11pt, white paper, and black for the other four
+///   cover colors. A selected non-neutral theme replaces all five colors before
+///   config overrides them. Example: `config: (typography: (font: "STIX Two Text"),
+///   colors: (brand-primary: blue))`.
+///
+///   Complete shared schema accepted by this function:
+///   - `page.paper` (paper name/custom size; default `"a4"`; **used**);
+///     `margin` (dictionary of edge lengths, default 2.5cm each; supports
+///     top/bottom/left/right, inside/outside, or x/y; **used**); `binding`
+///     (`none`/`left`/`right`, default `none`; ignored); `binding-correction`
+///     (length, `0pt`; ignored); `headers` (bool, `false`; ignored); `columns`
+///     (positive integer, 1; ignored); `column-gutter` (length, 5mm; ignored);
+///     `header-ascent` (length, extra key; ignored).
+///   - `typography.font` (font name, `"Libertinus Serif"`; **used**), `size`
+///     (length, 11pt; **used**); `math-font`, `mono-font` (font name or `auto`,
+///     default `auto`; ignored); `line-spacing` (positive number or `none`,
+///     `none`; ignored); `leading` (length, 0.65em; ignored);
+///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
+///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
+///     `true`; ignored).
+///   - `headings.numbering` (Typst numbering pattern/function or `none`,
+///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
+///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
+///     `"native"`, `"koma"`; ignored); `h1-size`–`h4-size` (lengths,
+///     14pt/12pt/11pt/11pt; ignored); `h1-above`–`h4-above` and
+///     `h1-below`–`h4-below` (`auto` or length, `auto`; ignored);
+///     `h1-number-size` (extra length key with no shared default; ignored).
+///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
+///     `running-leading` (0.35em); all ignored.
+///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
+///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
+///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
+///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
+///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
+///   - `line-numbers.enabled` (bool, false), `format` (numbering pattern,
+///     `"1"`), `scope` (`"document"` or `"page"`, `"document"`), `size`
+///     (8pt), `color` (`#64748B`), `clearance` (`auto` or length, `auto`);
+///     ignored.
+///   - `links.color`, `url-color` (colors, both `#0563C1`); ignored.
+///   - `tables.stroke` (0.5pt), `inset` (length or dictionary, `(x: 8pt,
+///     y: 4pt)`), `font-size` (10pt), `caption-position` (`top`/`bottom`,
+///     `top`), `caption-gap` (6pt); ignored.
+///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
+///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
+///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
+///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
+///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
+///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
+///     `main-entry-above` (1.25em), `title-below` (1.5em), `below` (2em);
+///     ignored.
+///   - `lof` and `lot` use the same fields; defaults are depth none, their
+///     English list title, auto indent, 10pt entry size, 0.65em leading,
+///     0.85em entry gap, 1.5em title gap, 2em below gap, and `compact: false`.
+///     `compact` is bool. These fields are ignored by the cover.
+///   - `bibliography.style` (CSL style name, `"apa"`); ignored.
+///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted` (colors; neutral defaults white/white/black/
+///     black/black/black; **used**). `bg-subtle` is accepted but ignored; the
+///     other five color fields style the cover.
+///   Unknown keys inside known shared groups are rejected. Additional
+///   template-specific or caller extension groups are accepted and ignored.
 /// -> content: a generated minimal title page
 #let minimal-cover = cover-page.with(layout: "minimal")

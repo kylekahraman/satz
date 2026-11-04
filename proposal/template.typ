@@ -27,11 +27,59 @@
 /// - short-title (content, str, none): running-header title; `none` reuses `title`
 /// - language (str): `"english"` (default) or `"german"`; controls labels and
 ///   Typst language
-/// - config (dictionary): shared Satz settings. For example,
-///   `config: (typography: (font: "Libertinus Serif", size: 11pt),
-///   colors: (brand-primary: blue))`. Shared defaults and all available keys
-///   are in `defaults.typ`; proposal-specific defaults are in
-///   `proposal/defaults.typ`.
+/// - config (dictionary): recursively merged overrides, applied after the
+///   general proposal preset. Explicit values replace preset values while
+///   unspecified siblings retain their defaults. The proposal preset is A4,
+///   25mm margins, 11pt Libertinus Serif, 0.7em paragraph spacing, numbered
+///   `"1.1"` headings, no automatic contents/figure/table lists, black text and
+///   links, and a black-on-white page. The running header uses the shared
+///   `decorative.header-size` (9pt). Supported shared groups and fields are:
+///   - `page`: `paper` (paper name or custom size; `"a4"`), `margin` (edge
+///     dictionary; proposal default 25mm on every edge), `binding` (`none` or
+///     `left`/`right`; default `none`), `binding-correction` (length; `0pt`),
+///     `headers` (bool; `false`), `columns` (positive integer; `1`),
+///     `column-gutter` (length; `5mm`).
+///   - `typography`: `font` (name; `"Libertinus Serif"`), `math-font` and
+///     `mono-font` (name or `auto`; `auto`), `size` (length; `11pt`),
+///     `line-spacing` (positive baseline multiple or `none`; `none`),
+///     `leading` (length; `0.65em`), `paragraph-spacing` (length; proposal
+///     default `0.7em`), `first-line-indent` (bool; `false`), `hyphenate`
+///     (bool; `false`), `justify` (bool; `true`).
+///   - `headings`: `numbering` (pattern/function or `none`; proposal default
+///     `"1.1"`), `hyphenate` (`false`), `h1-pagebreak` (`false`), `spacing`
+///     (`"koma"` or `"native"`; `"koma"`), and `h1-size` through `h4-size`
+///     (14pt/12pt/11pt/11pt), `hN-above` and `hN-below` (length or `auto`;
+///     `auto`).
+///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
+///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
+///     `list-spacing` (0.9em). These are accepted but do not affect this
+///     proposal template.
+///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
+///     (0.9em). `header-size` controls the running header.
+///   - `page-footer`: `format` (numbering pattern/function; `"1"`), `size`
+///     (10pt), `weight` (`"regular"`).
+///   - `line-numbers`: `enabled` (`false`), `format` (`"1"`), `scope`
+///     (`"document"` or `"page"`; `"document"`), `size` (8pt), `color`
+///     (`#64748B`), `clearance` (length or `auto`; `auto`).
+///   - `links`: `color` and `url-color` (colors; proposal defaults both black).
+///   - `tables`: `stroke` (0.5pt), `inset` ((x: 8pt, y: 4pt)), `font-size`
+///     (10pt), `caption-position` (`top` or `bottom`; `top`), `caption-gap`
+///     (6pt).
+///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
+///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
+///   - `captions`: `size` (10pt), `weight` and `label-weight` (`"regular"`),
+///     `alignment` (`center`; proposal default `left`).
+///   - `toc`, `lof`, `lot`: `depth` (proposal default `0`), `title` (content or
+///     `none`), `indent` (`auto` or length; `auto`), `entry-size` (10pt),
+///     `leading` (0.65em), `entry-above` (0.65em for toc; 0.85em for lof/lot),
+///     `title-below` (1.5em), `below` (2em). `toc.main-entry-above` is 1.25em;
+///     `lof.compact` and `lot.compact` default to false.
+///   - `bibliography.style` (CSL name; `"apa"`).
+///   - `colors`: `bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted` (colors; proposal defaults white paper and
+///     black text/primary accent).
 /// - body (content): proposal sections
 #let research-proposal(
   title: [], applicants: [], institution: [], date: none, summary: none,
@@ -70,13 +118,56 @@
   ]
 }
 
-/// Create a project proposal with the shared proposal layout.
+/// Create a general research or project proposal with an inline title and
+/// summary. This is the same layout as `research-proposal`, provided under a
+/// project-oriented name.
 ///
-/// `project-proposal` is an alias for `research-proposal`; it accepts the same
-/// title, applicant, institution, date, summary, language, config, and body
-/// arguments and uses the same page and heading defaults. Choose either name
-/// according to the wording that fits your document.
-///
-/// See `research-proposal` for the complete argument list, examples, and
-/// configuration details.
+/// - title (content, str): title; defaults to empty
+/// - applicants (content, str): applicant line; defaults to empty
+/// - institution (content, str): institution line; defaults to empty
+/// - date (content, str, none): optional date printed verbatim
+/// - summary (content, none): optional summary block
+/// - short-title (content, str, none): running-header title; defaults to title
+/// - language (str): `"english"` (default) or `"german"`; controls labels and
+///   Typst language
+/// - config (dictionary): recursively merged over the proposal preset. The
+///   effective preset is A4, 25mm margins, 11pt Libertinus Serif, 0.7em
+///   paragraph spacing, `"1.1"` heading numbering, no automatic contents or
+///   figure/table lists, black text and links, white paper, and a 9pt running
+///   header. It accepts `page.paper` (paper name/custom size, `"a4"`),
+///   `page.margin` (edge lengths; 25mm each), `binding` (`none`, `left`,
+///   `right`), `binding-correction` (0pt), `headers` (false), `columns` (1),
+///   and `column-gutter` (5mm); `typography.font` (`"Libertinus Serif"`),
+///   `math-font`/`mono-font` (`auto` or font name; `auto`), `size` (11pt),
+///   `line-spacing` (positive baseline multiple or `none`; `none`), `leading`
+///   (0.65em), `paragraph-spacing` (0.7em), `first-line-indent` (false),
+///   `hyphenate` (false), and `justify` (true); `headings.numbering`
+///   (pattern/function or `none`; `"1.1"`), `hyphenate` (false),
+///   `h1-pagebreak` (false), `spacing` (`"koma"` or `"native"`; `"koma"`),
+///   and `h1`–`h4` size/above/below fields (14pt/12pt/11pt/11pt, `auto`,
+///   `auto`). It also accepts `journal.header-below` (1.5em),
+///   `running-gutter` (1em), `running-leading` (0.35em),
+///   `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
+///   `list-tight` (false), `list-spacing` (0.9em); `decorative` sizes
+///   (header 9pt, footer/date 10pt, keywords 9pt), `list-tight` (false),
+///   `list-spacing` (0.9em); `page-footer.format` (`"1"`), `size` (10pt),
+///   `weight` (`"regular"`); `line-numbers.enabled` (false), `format` (`"1"`),
+///   `scope` (`"document"` or `"page"`), `size` (8pt), `color` (`#64748B`),
+///   `clearance` (auto or length); `links.color` and `url-color` (black in this
+///   template); `tables.stroke` (0.5pt), `inset` (length or dictionary;
+///   default `(x: 8pt, y: 4pt)`), `font-size` (10pt), `caption-position`
+///   (`top` or `bottom`; `top`), `caption-gap` (6pt); `callouts.inset` (9pt),
+///   `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
+///   `paragraph-spacing` (1em), `list-spacing` (1.2em); `captions.size` (10pt),
+///   `weight`/`label-weight` (`"regular"`), `alignment` (`left` in proposals);
+///   `toc`, `lof`, `lot` depth (0 in this template), title, indent (`auto`),
+///   entry-size (10pt), leading (0.65em), entry-above (0.65em toc, 0.85em
+///   figures/tables), title-below (1.5em), and below (2em); `toc` also has
+///   `main-entry-above` (1.25em), while `lof`/`lot` have `compact` (false);
+///   `bibliography.style` (`"apa"`); and colors `bg-paper`, `bg-subtle`,
+///   `brand-primary`, `brand-accent`, `text-main`, `text-muted` (white paper,
+///   black text and primary accent in this template). Unknown top-level groups
+///   are retained as extensions. Known shared group keys are validated.
+/// - body (content): proposal sections
+/// -> content: proposal title block, running header, and supplied sections
 #let project-proposal = research-proposal

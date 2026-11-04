@@ -1,5 +1,15 @@
-// Private DFG heading renderer. Keep original heading identity/counter/labels;
-// translate KOMA's skips without adding Typst's own heading block a second time.
+/// Render DFG headings with form-specific numbering and spacing.
+///
+/// Preserves each native heading's counter, location, and label while drawing
+/// its visible block with configured DFG heading sizes and gaps. Levels above
+/// four use level-four styling. The helper tracks preceding body blocks to
+/// suppress above-spacing at the top of a heading sequence and applies the
+/// measured form topskip at page top. It is an internal show-rule wrapper.
+///
+/// - c (dictionary): resolved DFG document config with headings.* and
+///   page.margin.top values
+/// - body (content): document content whose native headings should be rendered
+/// -> content: content with DFG heading show rules applied
 #let proposal-headings(c, body) = {
   show par: it => {
     state("satz-dfg-previous-block", none).update("body")
@@ -50,7 +60,17 @@
   body
 }
 
-// The reference title has five baseline rows, with a rule on the fourth.
+/// Render the five-row DFG title block, with a rule on its fourth row.
+///
+/// Rows use the resolved paragraph spacing as their gutter. The rule's
+/// thickness and vertical offset use the DFG form's measured 11pt geometry.
+///
+/// - c (dictionary): resolved DFG config; reads typography.paragraph-spacing
+/// - title (content): proposal title
+/// - applicant (content): applicant name or block
+/// - project (content): project title
+/// - description (content): project description
+/// -> content: bold, single-column title block
 #let proposal-title(c, title, applicant, project, description) = {
   set text(weight: "bold")
   grid(

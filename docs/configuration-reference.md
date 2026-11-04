@@ -49,12 +49,17 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `journal.header-below` | length | `1.5em` | Gap between the complete entry header/date and notes. Journal only. |
 | `journal.running-gutter` | length | `1em` | Gap between running-header columns. Journal only. |
 | `journal.running-leading` | length | `0.35em` | Line gap in a multi-line running header. Journal only. |
+| `journal.running-header-size` | length | `9pt` | Running-header text size. Journal only. |
+| `journal.date-size` | length | `10pt` | Journal date text size. Journal only. |
+| `journal.keywords-size` | length | `9pt` | Journal keyword text size. Journal only. |
+| `journal.list-tight` | boolean | `false` | Use body leading between list items when true. Journal only. |
+| `journal.list-spacing` | length | `0.9em` shared; `0.65em` in journal templates | Gap between list items when `journal.list-tight` is false. Journal only. |
 | `decorative.header-size` | length | `9pt` | Running-header text size. |
 | `decorative.footer-size` | length | `10pt` | Footer text size where implemented. |
 | `decorative.date-size` | length | `10pt` | Date text size where implemented. |
 | `decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
-| `decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true`. |
-| `decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false`. |
+| `decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true` in templates that use shared decorative list settings. Journal templates use `journal.list-tight`. |
+| `decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false` in templates that use shared decorative list settings. Journal templates use `journal.list-spacing`. |
 | `page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | `page-footer.size` | length | `10pt` | Page-number size. |
 | `page-footer.weight` | Typst font-weight value | `"regular"` | Page-number weight. |
@@ -104,7 +109,7 @@ arguments described in their source API comments and guides.
 | `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
 | all document templates | Default to `theme: "neutral"` or the equivalent black-on-white template defaults. Use `theme: "slate"` for the former shared blue-gray palette where themes are accepted. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
-| `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, header/footer `9pt`/`10pt`; list gap `0.65em`; black-on-white palette. Journal block and running-header gaps are in `journal.*` above. |
+| `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above. |
 | `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`; German names are aliases. Nested config only accepts the documented page, typography, color, and link keys. |
 | `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Canonical direct names are `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, and `qr-purpose`; German names are aliases. Nested config accepts the same limited appearance keys as letters. |
 | `book` (experimental) | A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; neutral black accent/ink by default. `theme: "slate"` selects the former blue-gray palette. |

@@ -1,6 +1,18 @@
-// KOMA-Script's section skips are measured from baselines, not ink-box edges.
-// Resolve them in the document's actual font instead of copying em/ex values
-// into Typst's differently defined block gaps.
+/// Apply measured KOMA-style heading spacing to document content.
+///
+/// Measures the active body and heading font metrics to translate baseline
+/// skips into Typst block gaps. Explicit headings.hN-above and
+/// headings.hN-below lengths override the measured values; auto uses the
+/// KOMA-derived gaps. Level four remains a block heading. The wrapper preserves
+/// native heading counters and labels, and optionally starts h1 headings on a
+/// new page when headings.h1-pagebreak is enabled. Journal h1 text is rendered
+/// in small caps.
+///
+/// - c (dictionary): resolved document config with typography.size and
+///   headings settings
+/// - kind (str): document kind; journal enables small caps for h1
+/// - body (content): content whose headings should use the measured spacing
+/// -> content: content with the heading show rule applied
 #let koma-headings(c, kind, body) = {
   show par: it => {
     state("satz-heading-previous", none).update("body")

@@ -6,7 +6,7 @@
 
 #figure(
   scientific-table(
-    columns: (1fr, auto, auto),
+    columns: 3,
     align: (left, right, right),
     header: ([Condition], [Mean], [SEM]),
     [Baseline], [0.12], [0.03],

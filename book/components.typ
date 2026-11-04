@@ -36,11 +36,18 @@
 ///
 /// - body (content): worked steps or a short worked calculation
 /// - above (length, none): space before the block; `none` uses
-///   `config.book.worked-example.above`
+///   `config.book.worked-example.above` (26pt)
 /// - below (length, none): space after the block; `none` uses
-///   `config.book.worked-example.below`
+///   `config.book.worked-example.below` (27pt)
 /// - inset (length, none): left inset; `none` uses
-///   `config.book.worked-example.inset`
+///   `config.book.worked-example.inset` (27pt). The right inset is fixed at
+///   20pt.
+///
+/// Book config can also set `book.worked-example.label-gap` (0pt),
+/// `label-size` (9pt), and `body-size` (9pt). These control the gap under the
+/// fixed label and the label/body text sizes. All five values are lengths;
+/// explicit function arguments override the corresponding above/below/inset
+/// config values.
 #let worked-example(body, above: none, below: none, inset: none) = context {
   let style = book-style.get()
   let layout = style.worked-example
@@ -85,8 +92,10 @@
 ///
 /// - height (length): grid height; defaults to 25mm
 /// - cell (length): square cell edge length; must be positive; defaults to 5mm
-/// - color (color, none): line color; `none` uses `book-style.grid`
-/// - width (length, none): line thickness; `none` uses `book-style.grid-width`
+/// - color (color, none): line color; `none` uses the book's fixed grid color
+///   (`#D2D2D2`)
+/// - width (length, none): line thickness; `none` uses the book's fixed
+///   0.2pt grid width. Neither default is configurable through `book` config.
 #let answer-grid(height: 25mm, cell: 5mm, color: none, width: none) = context {
   assert(cell > 0pt, message: "answer-grid cell must be positive")
   let style = book-style.get()
@@ -128,6 +137,12 @@
 ///   Matching is exact and case-sensitive.
 /// - grid (length, none): answer-space height. `none` uses 20mm for the exact
 ///   kind `"Core"` and 25mm for every other kind.
+///
+/// Book config controls group spacing with `book.exercise.grid-gap` (11pt),
+/// the gap between a prompt and its answer grid, and
+/// `book.exercise.group-gap` (20pt), the gap after each exercise. Both values
+/// are lengths. `grid` overrides only the grid height; these config values
+/// continue to control the surrounding spacing.
 #let exercise(body, kind: "Core", grid: none) = {
   let height = if grid != none { grid } else if kind == "Core" { 20mm } else { 25mm }
   [

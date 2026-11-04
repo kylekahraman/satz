@@ -1,6 +1,13 @@
 // Shared authoring helpers for DFG and general proposals.
 
-// Integer cents avoid rounding errors in sums and display exactly two decimals.
+/// Format an integer amount of cents as euros with two decimal places.
+///
+/// Uses a comma decimal separator for German output and a period otherwise.
+/// The caller is responsible for providing an integer number of cents.
+///
+/// - cents (int): amount in cents
+/// - de (bool): whether to use the German comma separator
+/// -> str: formatted amount followed by the euro symbol
 #let money(cents, de) = {
   let whole = str(int(calc.floor(cents / 100)))
   let digits = str(calc.rem(cents, 100))

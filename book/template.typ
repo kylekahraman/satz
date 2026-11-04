@@ -42,29 +42,85 @@
 /// - eyebrow (content, none): small line above the title
 /// - note (content, none): small text near the bottom of the cover
 /// - date (content, none): date near the bottom of the cover
-/// - accent (color, none): heading and component accent; defaults to the book palette
-/// - ink (color, none): cover title and chapter-heading color; defaults to the book palette
+/// - accent (color, none): heading and component accent; defaults to `#23616B`
+/// - ink (color, none): cover title and chapter-heading color; defaults to `#24313B`
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`; direct arguments and `config` win
-/// - font (str): body text family
-/// - math-font (str): equation font family
-/// - font-size (length): main text size
-/// - leading (length): extra line spacing
-/// - paragraph-spacing (length): space between paragraphs
-/// - paper (str): page format
-/// - margin (dictionary): page margins
+/// - font (str, none): body family; `none` keeps `"Libertinus Serif"`
+/// - math-font (str, none): equation family; `none` keeps `"New Computer Modern Math"`
+/// - font-size (length, none): body size; `none` keeps 11pt
+/// - leading (length, none): line-box gap; `none` keeps 0.74em
+/// - paragraph-spacing (length, none): paragraph gap; `none` keeps 14pt
+/// - paper (str, none): paper name; `none` keeps `"a4"`
+/// - margin (dictionary, none): page margins; `none` keeps left 27mm, right
+///   25mm, top 25mm, bottom 27mm
 /// - binding (auto, alignment, none): inside edge for two-sided pages. `auto`
 ///   keeps the book's left binding; `none` disables two-sided layout
 /// - binding-correction (length): extra room at the binding edge; defaults to 5mm
 /// - running-headers (str): `"bottom"` (default), `"top"`, or `"none"`.
 ///   `config.book.running-headers` takes precedence over this direct argument
-/// - config (dictionary): shared Satz settings plus book-specific `book.*`
-///   settings. Common overrides include `typography: (font: "Georgia",
-///   math-font: "New Computer Modern Math", size: 11pt)` and
-///   `page: (paper: "a4", binding: left)`. `book.*` contains cover geometry
-///   and type sizes, contents layout, worked-example and exercise spacing,
-///   `running-headers`, and `footer-dy`. Shared defaults are in `defaults.typ`;
-///   book defaults are in `book/defaults.typ`.
+/// - config (dictionary): nested overrides, deep-merged after the book
+///   defaults, selected palette, and direct arguments. Explicit config values
+///   win. Known shared groups validate their keys; custom top-level extension
+///   groups are retained. The book accepts these shared fields:
+///   - `page.paper` (paper name/custom size; `"a4"`), `margin` (edge lengths;
+///     book default left 27mm, right 25mm, top 25mm, bottom 27mm), `binding`
+///     (`left` by default, or `right`/`none`), `binding-correction` (5mm),
+///     `headers` (`false`), `columns` (1), `column-gutter` (5mm).
+///   - `typography.font` (`"Libertinus Serif"`), `math-font`
+///     (`"New Computer Modern Math"`), `mono-font` (`auto`), `size` (11pt),
+///     `line-spacing` (`none`), `leading` (0.74em), `paragraph-spacing` (14pt),
+///     `first-line-indent` (`false`), `hyphenate` (`true`), `justify` (`true`).
+///     Font names, sizes, lengths, and boolean values are passed to Typst.
+///   - `headings.numbering` (`"1"`), `hyphenate` (`false`), `h1-pagebreak`
+///     (`false`), `spacing` (`"koma"` or `"native"`; `"koma"`), and levels
+///     1–4 `hN-size`, `hN-above`, `hN-below` (defaults 18pt/12pt/11pt/11pt,
+///     `auto` above, and book-specific 33pt/auto/auto/auto below), plus
+///     `h1-number-size` (25pt).
+///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
+///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
+///     `list-spacing` (0.9em); accepted but unused by this template.
+///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
+///     (0.9em).
+///   - `page-footer`: `format` (`"1"`), `size` (10pt), `weight` (`"regular"`).
+///   - `line-numbers`: `enabled` (`false`), `format` (`"1"`),
+///     `scope` (`"document"` or `"page"`; `"document"`), `size` (8pt),
+///     `color` (`#64748B`), `clearance` (`auto` or length; `auto`).
+///   - `links.color`, `links.url-color` (colors; book defaults both to a mix of
+///     the accent and black).
+///   - `tables`: `stroke` (0.5pt), `inset` ((x: 8pt, y: 4pt)), `font-size`
+///     (10pt), `caption-position` (`top` or `bottom`; `top`), `caption-gap` (6pt).
+///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
+///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
+///   - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
+///     `label-weight` (`"regular"`).
+///   - `toc`, `lof`, `lot`: `depth` (book toc defaults to 0; other depths
+///     `none`), `title` (default English title), `indent` (`auto`),
+///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em for toc;
+///     0.85em for lof/lot), `title-below` (1.5em), `below` (2em). `toc` also
+///     has `main-entry-above` (1.25em); `lof` and `lot` have `compact` (`false`).
+///   - `bibliography.style` (CSL name; `"apa"`).
+///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
+///     `text-main`, `text-muted` (colors; book defaults white paper, teal
+///     `#23616B` accent, `#24313B` ink, and muted `luma(110)`).
+///   Book-specific `book.*` fields are independently configurable:
+///   `ink` (`#24313B`), `running-headers` (`"bottom"`; also `"top"` or
+///   `"none"`), `footer-dy` (5pt), `cover-top` (28mm), `cover-eyebrow-size`
+///   (14.3pt), `cover-eyebrow-below` (14mm), `cover-title-size` (25pt),
+///   `cover-title-leading` (8pt), `cover-title-below` (13.5mm),
+///   `cover-subtitle-size` (14.3pt), `cover-subtitle-leading` (6.5pt),
+///   `cover-subtitle-below` (21.6mm), `cover-rule-width` (0.8pt),
+///   `cover-author-size` (12pt), `cover-author-below` (3pt), `cover-note-size`
+///   (10pt), `cover-note-below` (11.2mm), and `cover-date-dy` (6.5pt).
+///   `book.contents` fields are `title-before` (24.5pt), `title-after` (26pt),
+///   `title-size` (17pt), `entry-size` (10pt), `entry-spacing` (11.8pt).
+///   `book.worked-example` fields are `inset` (27pt), `above` (26pt),
+///   `below` (27pt), `label-gap` (0pt), `label-size` (9pt), `body-size` (9pt).
+///   `book.exercise.grid-gap` (11pt) and `group-gap` (20pt) control exercise
+///   layout. These values affect the book cover, running matter, contents,
+///   worked examples, and exercises respectively.
 /// - body (content): preliminary pages and book structure
 #let book(
   body,
@@ -110,7 +166,7 @@
       size: 11pt,
       leading: 0.74em,
       paragraph-spacing: 14pt,
-      first-line-indent: 0pt,
+      first-line-indent: false,
       hyphenate: true,
       justify: true,
     ),
@@ -300,6 +356,19 @@
 }
 
 // Shared footer for Arabic main matter, appendices, and back matter.
+/// Draw the running footer used on book main-matter, appendix, and back-matter pages.
+///
+/// The footer accepts the resolved internal style record created by `book()`.
+/// It prints an Arabic page number on chapter-opening pages. Other pages show
+/// the configured running chapter label and page number when
+/// `book.running-headers` is `"bottom"`, or only the page number for `"top"`
+/// and `"none"`. Even and odd pages place these items on opposite outer edges.
+///
+/// - style (dictionary): resolved book style with `footer-size`,
+///   `footer-weight`, `footer` color, `footer-dy`, `running-headers`, and the
+///   current chapter/number state. This is an internal helper; configure these
+///   values through `book()` rather than calling this function directly.
+/// -> content: positioned running footer or page number
 #let book-page-footer(style) = context {
   let n = counter(page).get().first()
   if n > 0 {
@@ -339,8 +408,11 @@
 /// native outline. Links and page numbers update when the document is compiled.
 /// By default only level-one chapter headings appear. Nested heading levels can
 /// be included by increasing `depth`. The appearance follows the active book
-/// style; use `config.book.contents.*` to adjust its title spacing, type sizes,
-/// and entry spacing.
+/// style. Its title position and entry typography/spacing are set by
+/// `book.contents.title-before` (24.5pt), `title-after` (26pt),
+/// `title-size` (17pt), `entry-size` (10pt), and `entry-spacing` (11.8pt).
+/// Each field is a length and directly controls the indicated gap or type size;
+/// `book()` config values override these defaults.
 ///
 /// ```typst
 /// #book-contents(title: [Contents], depth: 2)
@@ -384,8 +456,9 @@
 ///
 /// This inserts a page break to the next recto page, resets the displayed page
 /// number to Arabic `1`, resets the heading counter, and enables the book footer.
-/// The main matter uses the book's configured heading-numbering pattern unless
-/// `numbering` supplies an override. Level-two headings remain unnumbered.
+/// The main matter uses `headings.numbering` (the book default is `"1"`) unless
+/// `numbering` supplies a Typst heading-numbering pattern override. Level-two
+/// headings remain unnumbered.
 /// Place front matter and `book-contents()` before this call; place appendices
 /// or back matter after the main matter.
 ///
