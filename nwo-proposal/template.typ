@@ -67,6 +67,10 @@
 ///     `leading` (0.65em), `paragraph-spacing` (1.2em),
 ///     `first-line-indent` (`false`), `hyphenate` (`false`), and `justify`
 ///     (`true`).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
 ///   - `headings.numbering` (pattern/function or `none`; `"1.1"`, profile
 ///     override), `hyphenate` (`false`), `h1-pagebreak` (`false`),
 ///     `spacing` (`"koma"` or `"native"`; `"koma"`), and for levels 1–4
@@ -76,12 +80,9 @@
 ///     size.
 ///   - `journal.header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
-///     `list-spacing` (0.9em); these are accepted shared fields but do not
-///     affect this proposal layout.
-///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), and
-///     `list-spacing` (0.9em).
+///     (10pt), and `keywords-size` (9pt): journal-only settings, unused here.
+///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
+///     and `keywords-size` (9pt): shared text furniture settings.
 ///   - `page-footer.format` (numbering pattern; `"1"`), `size` (10pt), and
 ///     `weight` (`"regular"`).
 ///   - `line-numbers.enabled` (`false`), `format` (`"1"`),

@@ -22,15 +22,15 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **page:** [`page.paper`](#page-paper), [`page.margin`](#page-margin), [`page.binding`](#page-binding), [`page.binding-correction`](#page-binding-correction), [`page.headers`](#page-headers), [`page.columns`](#page-columns), [`page.column-gutter`](#page-column-gutter)
 
-**typography:** [`typography.font`](#typography-font), [`typography.math-font`](#typography-math-font), [`typography.mono-font`](#typography-mono-font), [`typography.size`](#typography-size), [`typography.line-spacing`](#typography-line-spacing), [`typography.leading`](#typography-leading), [`typography.paragraph-spacing`](#typography-paragraph-spacing), [`typography.first-line-indent`](#typography-first-line-indent), [`typography.hyphenate`](#typography-hyphenate), [`typography.justify`](#typography-justify)
+**typography:** [`typography.font`](#typography-font), [`typography.math-font`](#typography-math-font), [`typography.mono-font`](#typography-mono-font), [`typography.size`](#typography-size), [`typography.line-spacing`](#typography-line-spacing), [`typography.leading`](#typography-leading), [`typography.list-spacing`](#typography-list-spacing), [`typography.paragraph-spacing`](#typography-paragraph-spacing), [`typography.first-line-indent`](#typography-first-line-indent), [`typography.hyphenate`](#typography-hyphenate), [`typography.justify`](#typography-justify)
 
 **headings:** [`headings.numbering`](#headings-numbering), [`headings.hyphenate`](#headings-hyphenate), [`headings.h1-pagebreak`](#headings-h1-pagebreak), [`headings.spacing`](#headings-spacing)
 
 **heading sizes and gaps:** [`headings.h1-size`](#headings-h1-size), [`headings.h2-size`](#headings-h2-size), [`headings.h3-size`](#headings-h3-size), [`headings.h4-size`](#headings-h4-size), [`headings.h1-above`](#headings-h1-above), [`headings.h2-above`](#headings-h2-above), [`headings.h3-above`](#headings-h3-above), [`headings.h4-above`](#headings-h4-above), [`headings.h1-below`](#headings-h1-below), [`headings.h2-below`](#headings-h2-below), [`headings.h3-below`](#headings-h3-below), [`headings.h4-below`](#headings-h4-below)
 
-**journal:** [`journal.header-below`](#journal-header-below), [`journal.running-gutter`](#journal-running-gutter), [`journal.running-leading`](#journal-running-leading), [`journal.running-header-size`](#journal-running-header-size), [`journal.date-size`](#journal-date-size), [`journal.keywords-size`](#journal-keywords-size), [`journal.list-tight`](#journal-list-tight), [`journal.list-spacing`](#journal-list-spacing)
+**journal:** [`journal.header-below`](#journal-header-below), [`journal.running-gutter`](#journal-running-gutter), [`journal.running-leading`](#journal-running-leading), [`journal.running-header-size`](#journal-running-header-size), [`journal.date-size`](#journal-date-size), [`journal.keywords-size`](#journal-keywords-size)
 
-**decorative:** [`decorative.header-size`](#decorative-header-size), [`decorative.footer-size`](#decorative-footer-size), [`decorative.date-size`](#decorative-date-size), [`decorative.keywords-size`](#decorative-keywords-size), [`decorative.list-tight`](#decorative-list-tight), [`decorative.list-spacing`](#decorative-list-spacing)
+**decorative:** [`decorative.header-size`](#decorative-header-size), [`decorative.footer-size`](#decorative-footer-size), [`decorative.date-size`](#decorative-date-size), [`decorative.keywords-size`](#decorative-keywords-size)
 
 **page-footer:** [`page-footer.format`](#page-footer-format), [`page-footer.size`](#page-footer-size), [`page-footer.weight`](#page-footer-weight)
 
@@ -76,6 +76,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="typography-size"></span>`typography.size` | length | `11pt` | Main text size. |
 | <span id="typography-line-spacing"></span>`typography.line-spacing` | positive number or `none` | `none` | Optional baseline-to-baseline distance as a multiple of the body font size (for example `1.5`). Uses the selected font metrics and overrides `typography.leading`. |
 | <span id="typography-leading"></span>`typography.leading` | length | `0.65em` | Distance between line bounds, not a multiplier. |
+| <span id="typography-list-spacing"></span>`typography.list-spacing` | non-negative number | `0.5` | Additional list-item gap as a fraction of the calculated body baseline distance. Follows `typography.line-spacing`, or font metrics and `typography.leading`; `0` adds no extra gap. |
 | <span id="typography-paragraph-spacing"></span>`typography.paragraph-spacing` | length | `1.2em` | Vertical gap between paragraphs. It is independent of line spacing. If paragraphs are identified by indentation, reduce this gap separately; Satz does not change it when indentation is enabled. |
 | <span id="typography-first-line-indent"></span>`typography.first-line-indent` | boolean | `false` | `true` indents the first line of every paragraph by one em (the current body font size, e.g. 11pt at 11pt text size), including the first paragraph in a document/container and paragraphs after headings; `false` uses no indent. The horizontal indent is independent of vertical line and paragraph spacing. |
 | <span id="typography-hyphenate"></span>`typography.hyphenate` | boolean | `false` | Enables automatic word hyphenation. |
@@ -94,14 +95,10 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="journal-running-header-size"></span>`journal.running-header-size` | length | `9pt` | Running-header text size. Journal only. |
 | <span id="journal-date-size"></span>`journal.date-size` | length | `10pt` | Journal date text size. Journal only. |
 | <span id="journal-keywords-size"></span>`journal.keywords-size` | length | `9pt` | Journal keyword text size. Journal only. |
-| <span id="journal-list-tight"></span>`journal.list-tight` | boolean | `false` | Uses paragraph leading between journal list items when `true`. |
-| <span id="journal-list-spacing"></span>`journal.list-spacing` | length | `0.9em` shared; `0.65em` in journal templates | Gap between journal list items when `journal.list-tight` is `false`. |
 | <span id="decorative-header-size"></span>`decorative.header-size` | length | `9pt` | Running-header text size. |
 | <span id="decorative-footer-size"></span>`decorative.footer-size` | length | `10pt` | Footer text size where implemented. |
 | <span id="decorative-date-size"></span>`decorative.date-size` | length | `10pt` | Date text size where implemented. |
 | <span id="decorative-keywords-size"></span>`decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
-| <span id="decorative-list-tight"></span>`decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true` in templates that use shared decorative list settings. Journal templates use `journal.list-tight`. |
-| <span id="decorative-list-spacing"></span>`decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false` in templates that use shared decorative list settings. Journal templates use `journal.list-spacing`. |
 | <span id="decorative-list-indent"></span>`decorative.list-indent` | length | `17.9669pt` in DFG | Indentation of list and enumeration markers in the DFG template. |
 | <span id="decorative-list-body-indent"></span>`decorative.list-body-indent` | length | `5.475 × 72 ÷ 72.27 pt` in DFG | Gap from each list or enumeration marker to its body text. |
 | <span id="decorative-list-block-spacing"></span>`decorative.list-block-spacing` | length | `baseline + paragraph-skip - cap + 3 × 72 ÷ 72.27 pt` in DFG | Space above and below list and enumeration blocks; uses the DFG font metrics. |

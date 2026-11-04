@@ -22,10 +22,6 @@
 /// - `journal.running-header-size`: `9pt`; running-header text size.
 /// - `journal.date-size`: `10pt`; date text size.
 /// - `journal.keywords-size`: `9pt`; keyword text size.
-/// - `journal.list-tight`: `false`; use paragraph leading between list items
-///   when true.
-/// - `journal.list-spacing`: `0.65em`; gap between list items when
-///   `journal.list-tight` is false.
 /// - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
 ///   `text-main`, `text-muted`: white, `#F5F5F5`, `#111110`, `#2f2f2c`,
 ///   `#242422`, and `#5e5e5a`. A selected theme replaces these color values.
@@ -51,8 +47,6 @@
     running-header-size: 9pt,
     date-size: 10pt,
     keywords-size: 9pt,
-    list-tight: false,
-    list-spacing: 0.65em,
   ),
   page-footer: (
     format: "1",

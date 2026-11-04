@@ -49,20 +49,21 @@
 ///     `justify` (bool; `true`) control body typography. `line-spacing`, when
 ///     set, overrides `leading`; `first-line-indent: true` uses a one-em
 ///     horizontal indent.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
 ///   - `headings.numbering` (pattern/function or `none`; `none`),
 ///     `hyphenate` (bool; `false`), `h1-pagebreak` (bool; `false`),
 ///     `spacing` (`"koma"`/`"native"`; `"koma"`), `h1-size`–`h4-size`
 ///     (lengths; 12pt, 10.5pt, 10pt, 10pt), and each level's `*-above` and
 ///     `*-below` (length or `auto`; `auto`) control heading formatting.
-///   - `journal.header-below` (length; `1.5em`), `running-gutter` (length;
-///     `1em`), `running-leading` (length; `0.35em`),
-///     `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
-///     `list-tight` (bool; false), and `list-spacing` (length; 0.9em) are
-///     accepted for journal layouts; article does not use these fields.
-///   - `decorative.header-size` (length; `9pt`), `footer-size` (length;
-///     `10pt`), `date-size` (length; `10pt`), `keywords-size` (length; `9pt`),
-///     `list-tight` (bool; `false`), and `list-spacing` (length; `0.9em`)
-///     configure shared decorative text and lists.
+///   - `journal.header-below` (1.5em), `running-gutter` (1em),
+///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
+///     (10pt), and `keywords-size` (9pt): journal furniture settings; article
+///     does not use them.
+///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
+///     (10pt), and `keywords-size` (9pt): shared text furniture settings.
 ///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
 ///     (length; `10pt`), and `weight` (font weight; `"regular"`) configure
 ///     page numbers.

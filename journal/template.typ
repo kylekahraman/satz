@@ -71,6 +71,10 @@
 ///     baseline distance as a multiple of body size; when set, overrides
 ///     `leading`.
 ///   - `typography.leading` (length; `0.65em`): gap between line boxes.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `leading` otherwise. Use `0` for no extra gap.
 ///   - `typography.paragraph-spacing` (length; `1.2em`): paragraph gap.
 ///   - `typography.first-line-indent` (bool; `false`): indent every paragraph
 ///     first line by one em when true.
@@ -95,15 +99,9 @@
 ///   - `journal.running-header-size` (length; `9pt`): entry header text size.
 ///   - `journal.date-size` (length; `10pt`): entry date text size.
 ///   - `journal.keywords-size` (length; `9pt`): entry keyword text size.
-///   - `journal.list-tight` (bool; `false`): use body leading between list
-///     items instead of the separate item gap.
-///   - `journal.list-spacing` (length; `0.65em`): gap between list items when
-///     `journal.list-tight` is false. Set `journal: (list-spacing: 0.4em)` to
-///     tighten journal lists.
 ///   - `decorative.header-size` (length; `9pt`), `date-size` (10pt),
-///     `keywords-size` (9pt), `list-tight` (bool; `false`), and
-///     `list-spacing` (length; `0.9em`) are accepted shared settings but are
-///     ignored by the journal. Use the matching `journal.*` fields above.
+///     `keywords-size` (9pt): accepted shared text settings but ignored by the
+///     journal. Use `typography.list-spacing` for journal lists.
 ///   - `decorative.footer-size` (length; `10pt`): shared footer size; journal
 ///     templates use `page-footer` directly, so this value has no effect here.
 ///   - `page-footer.format` (numbering pattern/function in shared config;
@@ -127,8 +125,8 @@
 ///     (length; `6pt`): shared table styling.
 ///   - `callouts.inset` (length; `9pt`), `radius` (length; `3pt`), `stroke`
 ///     (length; `0.8pt`), `title-below` (length; `1em`),
-///     `paragraph-spacing` (length; `1em`), and `list-spacing` (length;
-///     `1.2em`): shared callout styling. Pass the same config to a `callout`
+///     `paragraph-spacing` (length; `1em`), and `list-spacing` (length; `1.2em`):
+///     shared callout styling. Pass the same config to a `callout`
 ///     component separately for these values to style that component.
 ///   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
 ///     weights; `"regular"`), and `alignment` (alignment; `center`): shared
@@ -271,6 +269,10 @@
 ///     baseline distance as a multiple of body size; when set, overrides
 ///     `leading`.
 ///   - `typography.leading` (length; `0.65em`): gap between line boxes.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `leading` otherwise. Use `0` for no extra gap.
 ///   - `typography.paragraph-spacing` (length; `1.2em`): paragraph gap.
 ///   - `typography.first-line-indent` (bool; `false`): indent every paragraph
 ///     first line by one em when true.
@@ -295,15 +297,9 @@
 ///   - `journal.running-header-size` (length; `9pt`): entry header text size.
 ///   - `journal.date-size` (length; `10pt`): entry date text size.
 ///   - `journal.keywords-size` (length; `9pt`): entry keyword text size.
-///   - `journal.list-tight` (bool; `false`): use body leading between list
-///     items instead of the separate item gap.
-///   - `journal.list-spacing` (length; `0.65em`): gap between list items when
-///     `journal.list-tight` is false. Set `journal: (list-spacing: 0.4em)` to
-///     tighten journal lists.
 ///   - `decorative.header-size` (length; `9pt`), `date-size` (10pt),
-///     `keywords-size` (9pt), `list-tight` (bool; `false`), and
-///     `list-spacing` (length; `0.9em`) are accepted shared settings but are
-///     ignored by the journal. Use the matching `journal.*` fields above.
+///     `keywords-size` (9pt): accepted shared text settings but ignored by the
+///     journal. Use `typography.list-spacing` for journal lists.
 ///   - `decorative.footer-size` (length; `10pt`): shared footer size; journal
 ///     templates use `page-footer` directly, so this value has no effect here.
 ///   - `page-footer.format` (numbering pattern/function in shared config;
@@ -327,8 +323,8 @@
 ///     (length; `6pt`): shared table styling.
 ///   - `callouts.inset` (length; `9pt`), `radius` (length; `3pt`), `stroke`
 ///     (length; `0.8pt`), `title-below` (length; `1em`),
-///     `paragraph-spacing` (length; `1em`), and `list-spacing` (length;
-///     `1.2em`): shared callout styling. Pass the same config to a `callout`
+///     `paragraph-spacing` (length; `1em`), and `list-spacing` (length; `1.2em`):
+///     shared callout styling. Pass the same config to a `callout`
 ///     component separately for these values to style that component.
 ///   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
 ///     weights; `"regular"`), and `alignment` (alignment; `center`): shared

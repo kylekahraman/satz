@@ -35,8 +35,8 @@
 ///   first-line-indent, hyphenate, justify), headings (numbering, hyphenate,
 ///   h1-pagebreak, spacing, h1-h4 size/above/below), journal (header-below,
 ///   running-gutter, running-leading, running-header-size, date-size,
-///   keywords-size, list-tight, list-spacing), decorative (header-size,
-///   footer-size, date-size, keywords-size, list-tight, list-spacing),
+///   keywords-size), decorative (header-size,
+///   footer-size, date-size, keywords-size),
 ///   page-footer (format, size, weight), line-numbers (enabled, format, scope,
 ///   size, color, clearance), links (color, url-color), tables (stroke, inset,
 ///   font-size, caption-position, caption-gap), callouts (inset, radius,
@@ -56,17 +56,18 @@
 ///   (positive int, 1), column-gutter (length, 5mm); typography.font (font
 ///   name, Libertinus Serif), math-font/mono-font (font name or auto, auto),
 ///   size (length, 11pt), line-spacing (positive number or none, none), leading
-///   (length, 0.65em), paragraph-spacing (length, 1.2em), first-line-indent/
+///   (length, 0.65em), list-spacing (non-negative number, 0.5; additional item
+///   gap as a fraction of calculated baseline distance, following line-spacing
+///   or font metrics and leading; 0 adds no extra gap), paragraph-spacing
+///   (length, 1.2em), first-line-indent/
 ///   hyphenate/justify (bool, false/false/true); headings.numbering (pattern
 ///   or none, "1.1"), hyphenate/h1-pagebreak (bool, false), spacing ("koma" or
 ///   "native", "koma"), h1-h4-size (lengths, 14pt/12pt/11pt/11pt), h1-h4-above
 ///   and h1-h4-below (auto or length, auto); journal.header-below/
 ///   running-gutter/running-leading (lengths, 1.5em/1em/0.35em),
-///   running-header-size/date-size/keywords-size (lengths, 9pt/10pt/9pt),
-///   list-tight (bool, false), list-spacing (length, 0.9em); decorative
+///   running-header-size/date-size/keywords-size (lengths, 9pt/10pt/9pt); decorative
 ///   header-size/footer-size/date-size/keywords-size (lengths,
-///   9pt/10pt/10pt/9pt), list-tight (bool, false), list-spacing (length,
-///   0.9em); page-footer.format (numbering pattern, "1"), size (length, 10pt),
+///   9pt/10pt/10pt/9pt); page-footer.format (numbering pattern, "1"), size (length, 10pt),
 ///   weight (font weight, regular); line-numbers.enabled (bool, false),
 ///   format (numbering pattern, "1"), scope (document or page, document), size
 ///   (length, 8pt), color (#64748B), clearance (auto or length, auto);
@@ -86,8 +87,8 @@
 ///   brand-primary/brand-accent/text-main/text-muted (colors,
 ///   white/white/black/black/black/black). In a resolved journal config, page
 ///   defaults to ISO B5 with 2cm horizontal and 2.5cm vertical margins, body
-///   text to Libertinus Serif 11pt, journal list-spacing to 0.65em, and muted
-///   text to #5e5e5a; an explicit theme may alter colors. Shared extension
+///   text to Libertinus Serif 11pt, the shared list-spacing default of 0.5,
+///   and muted text to #5e5e5a; an explicit theme may alter colors. Shared extension
 ///   fields page.header-ascent, headings.h1-number-size, and decorative
 ///   list-indent/list-body-indent/list-block-spacing are lengths when another
 ///   template supports them; this helper also merges and ignores them.

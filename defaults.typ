@@ -60,6 +60,10 @@
 ///   overrides `leading`.
 /// - `leading` (length; `0.65em`): Typst's gap between adjacent line boxes.
 ///   This is a direct length, not a baseline-distance multiplier.
+/// - `list-spacing` (non-negative number; `0.5`): additional gap between list
+///   items as a fraction of the calculated body baseline distance. Zero adds
+///   no extra gap. The baseline follows `line-spacing` when set, or the
+///   selected font metrics and `leading` otherwise.
 /// - `paragraph-spacing` (length; `1.2em`): vertical gap between paragraphs.
 /// - `first-line-indent` (bool; `false`): whether to indent the first line of
 ///   every paragraph. `true` uses one em (the current body font size, so 11pt
@@ -96,21 +100,17 @@
 /// - `running-header-size` (length; `9pt`): journal running-header text size.
 /// - `date-size` (length; `10pt`): journal date text size.
 /// - `keywords-size` (length; `9pt`): journal keyword text size.
-/// - `list-tight` (bool; `false`): use paragraph leading between list items
-///   instead of the item gap.
-/// - `list-spacing` (length; `0.9em`): journal list-item gap when `list-tight`
-///   is false. The journal template overrides this to `0.65em`.
+/// Journal lists use the shared `typography.list-spacing` setting.
 ///
 /// **Decorative text and lists (`decorative`)**
 /// - `header-size` (length; `9pt`): running-header text size.
 /// - `footer-size` (length; `10pt`): footer text size where implemented.
 /// - `date-size` (length; `10pt`): date text size where implemented.
 /// - `keywords-size` (length; `9pt`): keyword text size where implemented.
-/// - `list-tight` (bool; `false`): use paragraph leading between list items
-///   instead of the separate list gap.
-/// - `list-spacing` (length; `0.9em`): gap between list items when
-///   `list-tight` is false for templates using the shared decorative settings.
-///   Journal templates use the corresponding `journal.*` controls.
+/// General list spacing uses `typography.list-spacing`. DFG templates also
+/// accept the extension fields `list-indent`, `list-body-indent`,
+/// `list-block-spacing`, and `list-spacing` in this group. These control DFG
+/// geometry and a DFG-specific length override.
 ///
 /// **Page number (`page-footer`)**
 /// - `format` (Typst numbering pattern/function; `"1"`): page-number format.
@@ -223,6 +223,7 @@
     line-spacing: none,
     // Backward-compatible Typst gap between adjacent line boxes.
     leading: 0.65em,
+    list-spacing: 0.5,
     paragraph-spacing: 1.2em,
     first-line-indent: false,
     hyphenate: false,
@@ -248,16 +249,12 @@
     running-header-size: 9pt,
     date-size: 10pt,
     keywords-size: 9pt,
-    list-tight: false,
-    list-spacing: 0.9em,
   ),
   decorative: (
     header-size: 9pt,
     footer-size: 10pt,
     date-size: 10pt,
     keywords-size: 9pt,
-    list-tight: false,
-    list-spacing: 0.9em,
   ),
   page-footer: (
     format: "1",

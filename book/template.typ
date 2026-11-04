@@ -72,6 +72,10 @@
 ///     `line-spacing` (`none`), `leading` (0.74em), `paragraph-spacing` (14pt),
 ///     `first-line-indent` (`false`), `hyphenate` (`true`), `justify` (`true`).
 ///     Font names, sizes, lengths, and boolean values are passed to Typst.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
 ///   - `headings.numbering` (`"1"`), `hyphenate` (`false`), `h1-pagebreak`
 ///     (`false`), `spacing` (`"koma"` or `"native"`; `"koma"`), and levels
 ///     1–4 `hN-size`, `hN-above`, `hN-below` (defaults 18pt/12pt/11pt/11pt,
@@ -79,11 +83,9 @@
 ///     `h1-number-size` (25pt).
 ///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
-///     `list-spacing` (0.9em); accepted but unused by this template.
+///     (10pt), and `keywords-size` (9pt); journal-only fields, unused by book.
 ///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-///     (0.9em).
+///     (10pt), and `keywords-size` (9pt).
 ///   - `page-footer`: `format` (`"1"`), `size` (10pt), `weight` (`"regular"`).
 ///   - `line-numbers`: `enabled` (`false`), `format` (`"1"`),
 ///     `scope` (`"document"` or `"page"`; `"document"`), `size` (8pt),

@@ -35,6 +35,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `typography.size` | length | `11pt` | Main text size. |
 | `typography.line-spacing` | positive number or `none` | `none` | Optional baseline-to-baseline distance as a multiple of the body font size (for example `1.5`). Uses the selected font metrics and overrides `typography.leading`. |
 | `typography.leading` | length | `0.65em` | Distance between line bounds, not a multiplier. |
+| `typography.list-spacing` | non-negative number | `0.5` | Additional list-item gap as a fraction of the calculated body baseline distance. Follows `typography.line-spacing`, or font metrics and `typography.leading`; `0` adds no extra gap. |
 | `typography.paragraph-spacing` | length | `1.2em` | Vertical gap between paragraphs. It is independent of line spacing. If paragraphs are identified by indentation, reduce this gap separately; Satz does not change it when indentation is enabled. |
 | `typography.first-line-indent` | boolean | `false` | `true` indents the first line of every paragraph by one em (the current body font size, e.g. 11pt at 11pt text size), including the first paragraph in a document/container and paragraphs after headings; `false` uses no indent. The horizontal indent is independent of vertical line and paragraph spacing. |
 | `typography.hyphenate` | boolean | `false` | Enables automatic word hyphenation. |
@@ -52,14 +53,10 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `journal.running-header-size` | length | `9pt` | Running-header text size. Journal only. |
 | `journal.date-size` | length | `10pt` | Journal date text size. Journal only. |
 | `journal.keywords-size` | length | `9pt` | Journal keyword text size. Journal only. |
-| `journal.list-tight` | boolean | `false` | Use body leading between list items when true. Journal only. |
-| `journal.list-spacing` | length | `0.9em` shared; `0.65em` in journal templates | Gap between list items when `journal.list-tight` is false. Journal only. |
 | `decorative.header-size` | length | `9pt` | Running-header text size. |
 | `decorative.footer-size` | length | `10pt` | Footer text size where implemented. |
 | `decorative.date-size` | length | `10pt` | Date text size where implemented. |
 | `decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
-| `decorative.list-tight` | boolean | `false` | Uses paragraph leading between list items when `true` in templates that use shared decorative list settings. Journal templates use `journal.list-tight`. |
-| `decorative.list-spacing` | length | `0.9em` | Gap between list items when `list-tight` is `false` in templates that use shared decorative list settings. Journal templates use `journal.list-spacing`. |
 | `page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | `page-footer.size` | length | `10pt` | Page-number size. |
 | `page-footer.weight` | Typst font-weight value | `"regular"` | Page-number weight. |

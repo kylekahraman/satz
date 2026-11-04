@@ -81,6 +81,10 @@
 ///   overrides `leading`.
 /// - `leading` (length; `0.65em`): Typst's gap between adjacent line boxes.
 ///   This is a direct length, not a baseline-distance multiplier.
+/// - `list-spacing` (non-negative number; `0.5`): additional gap between list
+///   items as a fraction of the calculated body baseline distance. It follows
+///   `line-spacing` when set, or font metrics and `leading` otherwise; `0`
+///   adds no extra gap. `theme-config` passes this setting through unchanged.
 /// - `paragraph-spacing` (length; `1.2em`): vertical gap between paragraphs.
 /// - `first-line-indent` (bool; `false`): whether to indent the first line of
 ///   every paragraph. `true` uses one em (the current body font size, so 11pt
@@ -117,21 +121,12 @@
 /// - `running-header-size` (length; `9pt`): journal running-header text size.
 /// - `date-size` (length; `10pt`): journal date text size.
 /// - `keywords-size` (length; `9pt`): journal keyword text size.
-/// - `list-tight` (bool; `false`): use paragraph leading between list items
-///   instead of the item gap.
-/// - `list-spacing` (length; `0.9em`): journal list-item gap when `list-tight`
-///   is false. The journal template overrides this to `0.65em`.
 ///
 /// **Decorative text and lists (`decorative`)**
 /// - `header-size` (length; `9pt`): running-header text size.
 /// - `footer-size` (length; `10pt`): footer text size where implemented.
 /// - `date-size` (length; `10pt`): date text size where implemented.
 /// - `keywords-size` (length; `9pt`): keyword text size where implemented.
-/// - `list-tight` (bool; `false`): use paragraph leading between list items
-///   instead of the separate list gap.
-/// - `list-spacing` (length; `0.9em`): gap between list items when
-///   `list-tight` is false for templates using the shared decorative settings.
-///   Journal templates use the corresponding `journal.*` controls.
 ///
 /// **Page number (`page-footer`)**
 /// - `format` (Typst numbering pattern/function; `"1"`): page-number format.

@@ -156,6 +156,8 @@ spellings of one value is an error.
 
 <!-- Source docstring included -->
 
+
+
 A German invoice with an optional EPC QR code for bank transfers.
 
 English names are the canonical interface; German argument names remain as
@@ -166,7 +168,7 @@ scannable EPC QR code. Banking apps read the IBAN, amount, and payment
 reference from that code. The letter's postal address components and
 reference-line layout are reused.
 
-```typ
+```example
 #show: invoice.with(
   sender: (
     name: "Example Studio",
@@ -229,8 +231,6 @@ and `kleinunternehmer`. German nested sender fields are `zusatz`, `strasse`,
 `plz_ort`, `steuernummer`, and `kontoinhaber`. Supplying both spellings of
 the same value produces a field-specific conflict error.
 
-
-<a id="dfg-proposal"></a>
 ### `dfg-proposal` ([`dfg-proposal/dfg.typ`](https://github.com/kylekahraman/satz/blob/main/dfg-proposal/dfg.typ))
 
 ```text
@@ -244,13 +244,15 @@ the same value produces a field-specific conflict error.
 
 <!-- Source docstring included -->
 
+
+
 DFG form 53.01 project description, revision 09/26, in German or English.
 
 Uses Arial 11pt, four numbered heading levels, and no contents or cover page.
 `dfg-supplement()` starts the separately counted eight-page second part.
 By default compilation fails when either part exceeds its allowance.
 
-```typ
+```example
 #show: dfg-proposal.with(
   applicant: [Alex Example, Example University],
   project: [A small example project],
@@ -291,6 +293,11 @@ By default compilation fails when either part exceeds its allowance.
     `leading` (length; DFG's measured line-box gap), `paragraph-spacing`
     (length; DFG's measured paragraph gap), `first-line-indent` (`false`),
     `hyphenate` (`true`), and `justify` (`true`).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise; the DFG form overrides it
+    with its measured `decorative.list-spacing`.
   - `headings.numbering` (pattern/function or `none`; DFG default
     `"1.1.1.1"`), `hyphenate` (`false`), `h1-pagebreak` (`false`),
     `spacing` (`"koma"` or `"native"`; `"koma"`), and for levels 1–4
@@ -298,12 +305,10 @@ By default compilation fails when either part exceeds its allowance.
     values).
   - `journal.header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (false), and
-    `list-spacing` (0.9em). These are accepted shared values but do not
-    affect DFG layout.
+    (10pt), and `keywords-size` (9pt): journal-only settings, unused here.
   - `decorative.header-size` (DFG 9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-    (measured DFG line gap), and DFG-specific `list-indent` (17.9669pt),
+    (10pt), `keywords-size` (9pt), and `list-spacing` (measured DFG gap);
+    DFG-specific `list-indent` (17.9669pt),
     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
     (DFG measured gap above and below list blocks).
   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
@@ -329,8 +334,6 @@ By default compilation fails when either part exceeds its allowance.
     `text-main`, `text-muted` (colors; DFG defaults white paper and black
     text/primary accent).
 
-
-<a id="dfg-supplement"></a>
 ### `dfg-supplement` ([`dfg-proposal/dfg.typ`](https://github.com/kylekahraman/satz/blob/main/dfg-proposal/dfg.typ))
 
 ```text
@@ -340,6 +343,8 @@ By default compilation fails when either part exceeds its allowance.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Begin the separately counted second part of a DFG project description.
 
@@ -366,8 +371,6 @@ supplement allowance. The `dfg-proposal` wrapper checks both parts when
 - arguments: none
 -> content: page break and metadata marker used by `dfg-proposal`
 
-
-<a id="dfg-publications"></a>
 ### `dfg-publications` ([`dfg-proposal/dfg.typ`](https://github.com/kylekahraman/satz/blob/main/dfg-proposal/dfg.typ))
 
 ```text
@@ -377,6 +380,8 @@ supplement allowance. The `dfg-proposal` wrapper checks both parts when
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Render the publications bibliography without adding another heading.
 
@@ -389,8 +394,6 @@ Place it under the ordinary level-one publications heading. With
 - style (str): CSL style for a direct `bibliography()` call; defaults to `"apa"`
 - ..args: one positional bibliography path or native `bibliography` options
 
-
-<a id="research-proposal"></a>
 ### `research-proposal` ([`proposal/template.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/template.typ))
 
 ```text
@@ -404,13 +407,15 @@ Place it under the ordinary level-one publications heading. With
 
 <!-- Source docstring included -->
 
+
+
 A general research or project proposal with an inline title and summary.
 
 No funder-specific headings or page limits are imposed; write ordinary
 markup. The running header shows the short title and current/total page
 numbers from page 1.
 
-```typ
+```example
 #show: research-proposal.with(
   title: [Example proposal],
   applicants: [Alex Example],
@@ -447,6 +452,11 @@ numbers from page 1.
     `leading` (length; `0.65em`), `paragraph-spacing` (length; proposal
     default `0.7em`), `first-line-indent` (bool; `false`), `hyphenate`
     (bool; `false`), `justify` (bool; `true`).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between document list items as a fraction of the calculated body
+    baseline distance. It follows `typography.line-spacing` when set, or
+    font metrics and `typography.leading` otherwise; `0` adds no extra gap.
+    Proposal templates do not use this setting for their own layout.
   - `headings`: `numbering` (pattern/function or `none`; proposal default
     `"1.1"`), `hyphenate` (`false`), `h1-pagebreak` (`false`), `spacing`
     (`"koma"` or `"native"`; `"koma"`), and `h1-size` through `h4-size`
@@ -454,12 +464,9 @@ numbers from page 1.
     `auto`).
   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (false), and
-    `list-spacing` (0.9em). These are accepted but do not affect this
-    proposal template.
+    (10pt), and `keywords-size` (9pt); journal-only settings, unused here.
   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-    (0.9em). `header-size` controls the running header.
+    (10pt), and `keywords-size` (9pt). `header-size` styles running text.
   - `page-footer`: `format` (numbering pattern/function; `"1"`), `size`
     (10pt), `weight` (`"regular"`).
   - `line-numbers`: `enabled` (`false`), `format` (`"1"`), `scope`
@@ -484,8 +491,6 @@ numbers from page 1.
     black text/primary accent).
 - body (content): proposal sections
 
-
-<a id="project-proposal"></a>
 ### `project-proposal` ([`proposal/template.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/template.typ))
 
 ```text
@@ -495,6 +500,8 @@ numbers from page 1.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Create a general research or project proposal with an inline title and
 summary. This is the same layout as `research-proposal`, provided under a
@@ -518,17 +525,17 @@ project-oriented name.
   and `column-gutter` (5mm); `typography.font` (`"Libertinus Serif"`),
   `math-font`/`mono-font` (`auto` or font name; `auto`), `size` (11pt),
   `line-spacing` (positive baseline multiple or `none`; `none`), `leading`
-  (0.65em), `paragraph-spacing` (0.7em), `first-line-indent` (false),
-  `hyphenate` (false), and `justify` (true); `headings.numbering`
+  (0.65em), `list-spacing` (non-negative number; `0.5`, extra list-item gap
+  as a fraction of calculated body baseline distance, following line-spacing
+  or font metrics plus leading; 0 adds no extra gap), `paragraph-spacing`
+  (0.7em), `first-line-indent` (false), `hyphenate` (false), and `justify`
+  (true); `headings.numbering`
   (pattern/function or `none`; `"1.1"`), `hyphenate` (false),
   `h1-pagebreak` (false), `spacing` (`"koma"` or `"native"`; `"koma"`),
   and `h1`–`h4` size/above/below fields (14pt/12pt/11pt/11pt, `auto`,
   `auto`). It also accepts `journal.header-below` (1.5em),
   `running-gutter` (1em), `running-leading` (0.35em),
-  `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
-  `list-tight` (false), `list-spacing` (0.9em); `decorative` sizes
-  (header 9pt, footer/date 10pt, keywords 9pt), `list-tight` (false),
-  `list-spacing` (0.9em); `page-footer.format` (`"1"`), `size` (10pt),
+  `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt);
   `weight` (`"regular"`); `line-numbers.enabled` (false), `format` (`"1"`),
   `scope` (`"document"` or `"page"`), `size` (8pt), `color` (`#64748B`),
   `clearance` (auto or length); `links.color` and `url-color` (black in this
@@ -536,7 +543,6 @@ project-oriented name.
   default `(x: 8pt, y: 4pt)`), `font-size` (10pt), `caption-position`
   (`top` or `bottom`; `top`), `caption-gap` (6pt); `callouts.inset` (9pt),
   `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
-  `paragraph-spacing` (1em), `list-spacing` (1.2em); `captions.size` (10pt),
   `weight`/`label-weight` (`"regular"`), `alignment` (`left` in proposals);
   `toc`, `lof`, `lot` depth (0 in this template), title, indent (`auto`),
   entry-size (10pt), leading (0.65em), entry-above (0.65em toc, 0.85em
@@ -549,7 +555,6 @@ project-oriented name.
 - body (content): proposal sections
 -> content: proposal title block, running header, and supplied sections
 
-<a id="proposal-budget"></a>
 ### `proposal-budget` ([`proposal/components.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/components.typ))
 
 ```text
@@ -560,9 +565,11 @@ project-oriented name.
 
 <!-- Source docstring included -->
 
+
+
 Itemized budget with exact totals.
 
-```typ
+```example
 #proposal-budget((
   (description: [Participant payments], unit-cost: 5000, quantity: 40),
   (description: [Travel], unit-cost: 120000),
@@ -579,8 +586,6 @@ prices are nonnegative integer cents.
 - total-label (content, str, none): final total label; `none` uses `"Total"`
   or `"Summe"`
 
-
-<a id="proposal-gantt"></a>
 ### `proposal-gantt` ([`proposal/planning.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/planning.typ))
 
 ```text
@@ -595,13 +600,15 @@ prices are nonnegative integer cents.
 
 <!-- Source docstring included -->
 
+
+
 A Gantt chart with inclusive, one-based month or quarter intervals.
 
 Wrap it in an ordinary `figure` for a caption, numbering, and reference.
 Intervals must not overlap and must stay within `periods`. With
 `start-year`, year headings use plain years instead of `Year 1`, `Year 2`.
 
-```typ
+```example
 #figure(
   proposal-gantt((
     (label: [Recruitment], spans: ((1, 6),)),
@@ -624,8 +631,6 @@ Intervals must not overlap and must stay within `periods`. With
 - color (color): bar and milestone color; defaults to `#314158`
 - language (str): `"english"` (default) or `"german"`
 
-
-<a id="work-package"></a>
 ### `work-package` ([`proposal/planning.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/planning.typ))
 
 ```text
@@ -640,9 +645,11 @@ Intervals must not overlap and must stay within `periods`. With
 
 <!-- Source docstring included -->
 
+
+
 A numbered, referenceable work-package summary, independent of section numbers.
 
-```typ
+```example
 #work-package(
   title: [Data collection],
   objective: [Collect the pilot sample.],
@@ -665,8 +672,6 @@ A numbered, referenceable work-package summary, independent of section numbers.
 The `work-package` figure kind has its own WP numbering. Attach a label after
 the call and reference it with `@wp:label`; no manual WP IDs are needed.
 
-
-<a id="proposal-citations"></a>
 ### `proposal-citations` ([`proposal/citations.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/citations.typ))
 
 ```text
@@ -676,6 +681,8 @@ the call and reference it with `@wp:label`; no manual WP IDs are needed.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Initialize citations from BibTeX text.
 
@@ -691,8 +698,6 @@ available, and the BibTeX file is never rewritten.
 
 Use exactly one `proposal-citations` show rule per document.
 
-
-<a id="proposal-publications"></a>
 ### `proposal-publications` ([`proposal/citations.typ`](https://github.com/kylekahraman/satz/blob/main/proposal/citations.typ))
 
 ```text
@@ -702,6 +707,8 @@ Use exactly one `proposal-citations` show rule per document.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Print the opt-in CSL bibliography, automatically bolding selected entries.
 
@@ -715,8 +722,6 @@ Use `citrus.nocite` to include uncited entries with the CSL backend.
 - max-highlight (none, int): maximum highlighted entries printed; `none`
   leaves the count unrestricted
 
-
-<a id="klageschrift"></a><a id="complaint"></a>
 ### `complaint` / `klageschrift` ([`legal-complaint/template.typ`](https://github.com/kylekahraman/satz/blob/main/legal-complaint/template.typ))
 
 ```text
@@ -860,13 +865,15 @@ German.
 
 <!-- Source docstring included -->
 
+
+
 One journal entry: title, date, keywords, and notes.
 
 You get a heading, date and keyword badges, and a running header that keeps
 showing the title and date on later pages. Checklists work with
 `- [ ] todo` and `- [x] done`. Journal entries use ISO B5 paper by default.
 
-```typ
+```example
 #journal-index()
 #journal-entry(
   title: [Pilot run],
@@ -908,6 +915,10 @@ showing the title and date on later pages. Checklists work with
     baseline distance as a multiple of body size; when set, overrides
     `leading`.
   - `typography.leading` (length; `0.65em`): gap between line boxes.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `leading` otherwise. Use `0` for no extra gap.
   - `typography.paragraph-spacing` (length; `1.2em`): paragraph gap.
   - `typography.first-line-indent` (bool; `false`): indent every paragraph
     first line by one em when true.
@@ -932,15 +943,9 @@ showing the title and date on later pages. Checklists work with
   - `journal.running-header-size` (length; `9pt`): entry header text size.
   - `journal.date-size` (length; `10pt`): entry date text size.
   - `journal.keywords-size` (length; `9pt`): entry keyword text size.
-  - `journal.list-tight` (bool; `false`): use body leading between list
-    items instead of the separate item gap.
-  - `journal.list-spacing` (length; `0.65em`): gap between list items when
-    `journal.list-tight` is false. Set `journal: (list-spacing: 0.4em)` to
-    tighten journal lists.
   - `decorative.header-size` (length; `9pt`), `date-size` (10pt),
-    `keywords-size` (9pt), `list-tight` (bool; `false`), and
-    `list-spacing` (length; `0.9em`) are accepted shared settings but are
-    ignored by the journal. Use the matching `journal.*` fields above.
+    `keywords-size` (9pt): accepted shared text settings but ignored by the
+    journal. Use `typography.list-spacing` for journal lists.
   - `decorative.footer-size` (length; `10pt`): shared footer size; journal
     templates use `page-footer` directly, so this value has no effect here.
   - `page-footer.format` (numbering pattern/function in shared config;
@@ -964,8 +969,8 @@ showing the title and date on later pages. Checklists work with
     (length; `6pt`): shared table styling.
   - `callouts.inset` (length; `9pt`), `radius` (length; `3pt`), `stroke`
     (length; `0.8pt`), `title-below` (length; `1em`),
-    `paragraph-spacing` (length; `1em`), and `list-spacing` (length;
-    `1.2em`): shared callout styling. Pass the same config to a `callout`
+    `paragraph-spacing` (length; `1em`), and `list-spacing` (length; `1.2em`):
+    shared callout styling. Pass the same config to a `callout`
     component separately for these values to style that component.
   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
     weights; `"regular"`), and `alignment` (alignment; `center`): shared
@@ -1006,8 +1011,6 @@ showing the title and date on later pages. Checklists work with
 - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
   `plum`, or `soft-rose`; explicit config overrides win
 
-
-<a id="journal-index"></a>
 ### `journal-index` ([`journal/template.typ`](https://github.com/kylekahraman/satz/blob/main/journal/template.typ))
 
 ```text
@@ -1017,6 +1020,8 @@ showing the title and date on later pages. Checklists work with
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 The index of all entries, grouped by month.
 
@@ -1050,6 +1055,10 @@ a year only when the journal spans multiple years.
     baseline distance as a multiple of body size; when set, overrides
     `leading`.
   - `typography.leading` (length; `0.65em`): gap between line boxes.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `leading` otherwise. Use `0` for no extra gap.
   - `typography.paragraph-spacing` (length; `1.2em`): paragraph gap.
   - `typography.first-line-indent` (bool; `false`): indent every paragraph
     first line by one em when true.
@@ -1074,15 +1083,9 @@ a year only when the journal spans multiple years.
   - `journal.running-header-size` (length; `9pt`): entry header text size.
   - `journal.date-size` (length; `10pt`): entry date text size.
   - `journal.keywords-size` (length; `9pt`): entry keyword text size.
-  - `journal.list-tight` (bool; `false`): use body leading between list
-    items instead of the separate item gap.
-  - `journal.list-spacing` (length; `0.65em`): gap between list items when
-    `journal.list-tight` is false. Set `journal: (list-spacing: 0.4em)` to
-    tighten journal lists.
   - `decorative.header-size` (length; `9pt`), `date-size` (10pt),
-    `keywords-size` (9pt), `list-tight` (bool; `false`), and
-    `list-spacing` (length; `0.9em`) are accepted shared settings but are
-    ignored by the journal. Use the matching `journal.*` fields above.
+    `keywords-size` (9pt): accepted shared text settings but ignored by the
+    journal. Use `typography.list-spacing` for journal lists.
   - `decorative.footer-size` (length; `10pt`): shared footer size; journal
     templates use `page-footer` directly, so this value has no effect here.
   - `page-footer.format` (numbering pattern/function in shared config;
@@ -1106,8 +1109,8 @@ a year only when the journal spans multiple years.
     (length; `6pt`): shared table styling.
   - `callouts.inset` (length; `9pt`), `radius` (length; `3pt`), `stroke`
     (length; `0.8pt`), `title-below` (length; `1em`),
-    `paragraph-spacing` (length; `1em`), and `list-spacing` (length;
-    `1.2em`): shared callout styling. Pass the same config to a `callout`
+    `paragraph-spacing` (length; `1em`), and `list-spacing` (length; `1.2em`):
+    shared callout styling. Pass the same config to a `callout`
     component separately for these values to style that component.
   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
     weights; `"regular"`), and `alignment` (alignment; `center`): shared
@@ -1148,8 +1151,6 @@ a year only when the journal spans multiple years.
 - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
   `plum`, or `soft-rose`; explicit config overrides win
 
-
-<a id="remember"></a>
 ### `remember` ([`journal/components.typ`](https://github.com/kylekahraman/satz/blob/main/journal/components.typ))
 
 ```text
@@ -1160,18 +1161,18 @@ a year only when the journal spans multiple years.
 
 <!-- Source docstring included -->
 
+
+
 A blue box for things you want to keep in mind.
 
 The label and colors are fixed for now, so the box is not theme-aware.
 
-```typ
+```example
 #remember[ICA needs raw, non-interpolated data.]
 ```
 
 - body (content): the note to retain
 
-
-<a id="question"></a>
 ### `question` ([`journal/components.typ`](https://github.com/kylekahraman/satz/blob/main/journal/components.typ))
 
 ```text
@@ -1182,19 +1183,19 @@ The label and colors are fixed for now, so the box is not theme-aware.
 
 <!-- Source docstring included -->
 
+
+
 An orange box for open questions.
 
 The label and colors are fixed for now, so the box is not theme-aware. Use it
 to keep unresolved questions visible during review.
 
-```typ
+```example
 #question[Why did the EOG check flag component 3?]
 ```
 
 - body (content): the unresolved question
 
-
-<a id="report"></a>
 ### `report` ([`report/template.typ`](https://github.com/kylekahraman/satz/blob/main/report/template.typ))
 
 ```text
@@ -1204,6 +1205,8 @@ to keep unresolved questions visible during review.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 A report document class.
 
@@ -1225,6 +1228,10 @@ A report document class.
     `hyphenate` (bool; false), `justify` (bool; true): body typography.
     `line-spacing`, when set, determines baseline distance and overrides
     `leading`; a true first-line indent is one em.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise. Use `0` for no extra gap.
   - `headings.numbering` (pattern/function or none; `"1.1"`), `hyphenate`
     (bool; false), `h1-pagebreak` (bool; false), `spacing` (`"koma"` or
     `"native"`; `"koma"`), `h1-size`–`h4-size` (lengths; 14pt, 12pt, 11pt,
@@ -1232,12 +1239,10 @@ A report document class.
     numbering, heading type, and gaps.
   - `journal.header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool; false), and
-    `list-spacing` (length; 0.9em): accepted for journal layouts; report
-    does not use these fields.
+    (10pt), and `keywords-size` (9pt): journal furniture settings; report
+    does not use them.
   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
-    `keywords-size` (9pt), `list-spacing` (0.9em), all lengths, and
-    `list-tight` (bool; false): decorative text and list item gaps.
+    and `keywords-size` (9pt): shared text furniture settings.
   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
     (length; 10pt), `weight` (font weight; `"regular"`): page number style.
   - `line-numbers.enabled` (bool; false), `format` (pattern; `"1"`),
@@ -1266,7 +1271,6 @@ A report document class.
     paper, black text/accent, and white subtle fill): backgrounds, text,
     and accents.
   Report actually consumes all page and typography fields; all heading
-  fields; `decorative.header-size`, `list-tight`, and `list-spacing`;
   `page-footer.size` and `weight`; all line-number and link fields; table
   `inset` and `font-size`; all caption and contents/list fields;
   bibliography style; and `colors.bg-paper`, `brand-primary`, `text-main`,
@@ -1280,7 +1284,7 @@ A report document class.
   `soft-slate`, `warm-editorial`, `plum`, `soft-rose`; `none` skips the
   named palette.
 
-```typ
+```example
 #show: report.with(
   theme: "neutral",
   config: (
@@ -1296,8 +1300,6 @@ A report document class.
 #lorem(100)
 ```
 
-
-<a id="article"></a>
 ### `article` ([`article/template.typ`](https://github.com/kylekahraman/satz/blob/main/article/template.typ))
 
 ```text
@@ -1308,13 +1310,15 @@ A report document class.
 
 <!-- Source docstring included -->
 
+
+
 An article with a full-width title/author/abstract block and native columns.
 
 Defaults to two columns, ordinary page numbering, and no automatic front
 matter. Set `config: (page: (columns: 1))` for a one-column assignment or
 article. Figures can span both columns with `scope: "parent", placement: top`.
 
-```typ
+```example
 #show: article.with(
   title: [A short article],
   authors: ((name: "Alex Example", affiliations: (1,)),),
@@ -1354,20 +1358,21 @@ article. Figures can span both columns with `scope: "parent", placement: top`.
     `justify` (bool; `true`) control body typography. `line-spacing`, when
     set, overrides `leading`; `first-line-indent: true` uses a one-em
     horizontal indent.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise. Use `0` for no extra gap.
   - `headings.numbering` (pattern/function or `none`; `none`),
     `hyphenate` (bool; `false`), `h1-pagebreak` (bool; `false`),
     `spacing` (`"koma"`/`"native"`; `"koma"`), `h1-size`–`h4-size`
     (lengths; 12pt, 10.5pt, 10pt, 10pt), and each level's `*-above` and
     `*-below` (length or `auto`; `auto`) control heading formatting.
-  - `journal.header-below` (length; `1.5em`), `running-gutter` (length;
-    `1em`), `running-leading` (length; `0.35em`),
-    `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
-    `list-tight` (bool; false), and `list-spacing` (length; 0.9em) are
-    accepted for journal layouts; article does not use these fields.
-  - `decorative.header-size` (length; `9pt`), `footer-size` (length;
-    `10pt`), `date-size` (length; `10pt`), `keywords-size` (length; `9pt`),
-    `list-tight` (bool; `false`), and `list-spacing` (length; `0.9em`)
-    configure shared decorative text and lists.
+  - `journal.header-below` (1.5em), `running-gutter` (1em),
+    `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
+    (10pt), and `keywords-size` (9pt): journal furniture settings; article
+    does not use them.
+  - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
+    (10pt), and `keywords-size` (9pt): shared text furniture settings.
   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
     (length; `10pt`), and `weight` (font weight; `"regular"`) configure
     page numbers.
@@ -1422,8 +1427,6 @@ article. Figures can span both columns with `scope: "parent", placement: top`.
   `warm-editorial`, `plum`, or `soft-rose`; explicit `config.colors` wins
 - body (content): the article
 
-
-<a id="book"></a>
 ### `book` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1457,13 +1460,15 @@ article. Figures can span both columns with `scope: "parent", placement: top`.
 
 <!-- Source docstring included -->
 
+
+
 A configurable book with a title page, front matter, contents, and main matter.
 
 Common choices are direct arguments; less common layout details stay available
 through `config`. Put preliminary pages before `book-contents()`, then place
 numbered chapters inside `book-mainmatter[...]`.
 
-```typ
+```example
 #import "@local/satz:0.2.0": book, book-contents, book-mainmatter
 #show: book.with(
   title: [The Maths Behind Your Analysis],
@@ -1519,6 +1524,10 @@ numbered chapters inside `book-mainmatter[...]`.
     `line-spacing` (`none`), `leading` (0.74em), `paragraph-spacing` (14pt),
     `first-line-indent` (`false`), `hyphenate` (`true`), `justify` (`true`).
     Font names, sizes, lengths, and boolean values are passed to Typst.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise. Use `0` for no extra gap.
   - `headings.numbering` (`"1"`), `hyphenate` (`false`), `h1-pagebreak`
     (`false`), `spacing` (`"koma"` or `"native"`; `"koma"`), and levels
     1–4 `hN-size`, `hN-above`, `hN-below` (defaults 18pt/12pt/11pt/11pt,
@@ -1526,11 +1535,9 @@ numbered chapters inside `book-mainmatter[...]`.
     `h1-number-size` (25pt).
   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (false), and
-    `list-spacing` (0.9em); accepted but unused by this template.
+    (10pt), and `keywords-size` (9pt); journal-only fields, unused by book.
   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-    (0.9em).
+    (10pt), and `keywords-size` (9pt).
   - `page-footer`: `format` (`"1"`), `size` (10pt), `weight` (`"regular"`).
   - `line-numbers`: `enabled` (`false`), `format` (`"1"`),
     `scope` (`"document"` or `"page"`; `"document"`), `size` (8pt),
@@ -1570,8 +1577,6 @@ numbered chapters inside `book-mainmatter[...]`.
   worked examples, and exercises respectively.
 - body (content): preliminary pages and book structure
 
-
-<a id="book-contents"></a>
 ### `book-contents` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1581,6 +1586,8 @@ numbered chapters inside `book-mainmatter[...]`.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Insert a styled contents page at the current location.
 
@@ -1609,8 +1616,6 @@ Each field is a length and directly controls the indicated gap or type size;
   heading; it does not suppress the contents page.
 -> content: a page break, styled title, and linked outline
 
-
-<a id="book-mainmatter"></a>
 ### `book-mainmatter` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1620,6 +1625,8 @@ Each field is a length and directly controls the indicated gap or type size;
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Begin the book's numbered main matter on a right-hand page.
 
@@ -1644,8 +1651,6 @@ or back matter after the main matter.
   uses the document's `headings.numbering` (the book default is `"1"`)
 -> content: page and heading setup followed by `body`
 
-
-<a id="book-appendix"></a>
 ### `book-appendix` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1655,6 +1660,8 @@ or back matter after the main matter.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Start lettered appendices while keeping Arabic page numbers.
 
@@ -1676,8 +1683,6 @@ unnumbered sections.
 - body (content): one or more appendix chapters, beginning at heading level 1
 -> content: appendix heading and page-number setup followed by `body`
 
-
-<a id="book-backmatter"></a>
 ### `book-backmatter` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1687,6 +1692,8 @@ unnumbered sections.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Begin unnumbered back matter after appendices, solutions, or references.
 
@@ -1706,8 +1713,6 @@ or a bibliography that should follow the numbered chapters.
 - body (content): unnumbered back-matter content
 -> content: page and heading setup followed by `body`
 
-
-<a id="book-index"></a>
 ### `book-index` ([`book/template.typ`](https://github.com/kylekahraman/satz/blob/main/book/template.typ))
 
 ```text
@@ -1725,6 +1730,8 @@ or a bibliography that should follow the numbered chapters.
 
 <!-- Source docstring included -->
 
+
+
 Start a fresh, two-column index with hanging entries.
 
 Use one `book-index` call after the references and supply index entries as
@@ -1738,11 +1745,6 @@ paragraphs. The page counter continues from the preceding back-matter page.
 - spacing (length): space between index entries; also sets paragraph
   spacing inside each hanging-indent entry; defaults to 3pt
 
-
-`spacing` controls the gap between entries and the paragraph spacing inside each
-hanging-indent entry.
-
-<a id="exercise"></a>
 ### `exercise` ([`book/components.typ`](https://github.com/kylekahraman/satz/blob/main/book/components.typ))
 
 ```text
@@ -1753,13 +1755,15 @@ hanging-indent entry.
 
 <!-- Source docstring included -->
 
+
+
 A numbered exercise followed by a writing grid.
 
 Requires the book class; use it inside `book-mainmatter[...]`. Exercise
 numbers restart at each numbered level-one heading. Attach a Typst label
 immediately after the call when a solution needs to link back to it.
 
-```typ
+```example
 #exercise(kind: "Optional challenge")[
   Derive the standard error from the bootstrap distribution.
 ] <ex:bootstrap-se>
@@ -1777,8 +1781,6 @@ the gap between a prompt and its answer grid, and
 are lengths. `grid` overrides only the grid height; these config values
 continue to control the surrounding spacing.
 
-
-<a id="worked-example"></a>
 ### `worked-example` ([`book/components.typ`](https://github.com/kylekahraman/satz/blob/main/book/components.typ))
 
 ```text
@@ -1788,6 +1790,8 @@ continue to control the surrounding spacing.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 A worked example with a restrained label and indented content.
 
@@ -1809,8 +1813,6 @@ fixed label and the label/body text sizes. All five values are lengths;
 explicit function arguments override the corresponding above/below/inset
 config values.
 
-
-<a id="analysis-note"></a>
 ### `analysis-note` ([`book/components.typ`](https://github.com/kylekahraman/satz/blob/main/book/components.typ))
 
 ```text
@@ -1821,9 +1823,11 @@ config values.
 
 <!-- Source docstring included -->
 
+
+
 A short connection from the current topic to the reader's analysis.
 
-```typ
+```example
 #analysis-note[
   Compare this interval with the bootstrap interval below.
 ]
@@ -1834,8 +1838,6 @@ The block is unbreakable with fixed 8pt space above and below.
 - body (content): the connection or prompt
 - title (content): heading text; defaults to `[In your analysis]`
 
-
-<a id="answer-grid"></a>
 ### `answer-grid` ([`book/components.typ`](https://github.com/kylekahraman/satz/blob/main/book/components.typ))
 
 ```text
@@ -1845,6 +1847,8 @@ The block is unbreakable with fixed 8pt space above and below.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 A square writing grid whose cell size and height can be adjusted.
 
@@ -1859,8 +1863,6 @@ separate grid-width argument.
 - width (length, none): line thickness; `none` uses the book's fixed
   0.2pt grid width. Neither default is configurable through `book` config.
 
-
-<a id="cover-page"></a>
 ### `cover-page` ([`cover.typ`](https://github.com/kylekahraman/satz/blob/main/cover.typ))
 
 ```text
@@ -1884,6 +1886,8 @@ separate grid-width argument.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Build an optional cover page, either from custom content or title fields.
 
@@ -1935,6 +1939,11 @@ The generated title sizes are intentionally part of each preset.
     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
     `true`; ignored).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise; it has no effect on this
+    cover because the cover does not render body lists.
   - `headings.numbering` (Typst numbering pattern/function or `none`,
     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -1945,8 +1954,6 @@ The generated title sizes are intentionally part of each preset.
   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
     `running-leading` (0.35em); all ignored.
   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-    `list-spacing` (0.9em); all ignored. Extra `list-indent`,
     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
@@ -2000,8 +2007,6 @@ The generated title sizes are intentionally part of each preset.
 - footer (none, content): bottom-center content; replaces the minimal date
 - footer-left (none, content): bottom-left content; replaces `supervisors`
 
-
-<a id="custom"></a>
 ### `custom` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))
 
 ```text
@@ -2019,6 +2024,8 @@ The generated title sizes are intentionally part of each preset.
 
 <!-- Source docstring included -->
 
+
+
 Apply Satz's shared document styling to a document structure you write.
 
 Prefer a named template when its structure fits: `report`, `article`,
@@ -2026,7 +2033,7 @@ Prefer a named template when its structure fits: `report`, `article`,
 to write the structure yourself while reusing Satz's page, typography,
 heading, link, and outline settings.
 
-```typ
+```example
 #show: custom.with(
   kind: "thesis",
   config: (
@@ -2075,7 +2082,8 @@ I choose the structure and content.
   `page.columns` (positive integer, 1), `page.column-gutter` (length, 5mm);
   `typography.font` (name, Libertinus Serif), `math-font`/`mono-font`
   (name or auto, auto), `size` (11pt), `line-spacing` (positive multiple or
-  none, none), `leading` (0.65em), `paragraph-spacing` (1.2em),
+  none, none), `leading` (0.65em), `list-spacing` (non-negative baseline
+  multiple; 0.5), `paragraph-spacing` (1.2em),
   `first-line-indent` (bool, false), `hyphenate` (bool, false), `justify`
   (bool, true); `headings.numbering` (pattern/function or none, `"1.1"`),
   `hyphenate`/`h1-pagebreak` (bool, false), `spacing` (koma/native, koma),
@@ -2085,10 +2093,10 @@ I choose the structure and content.
   `running-gutter` (1em), and `running-leading` (0.35em), all lengths.
   `journal` fields are `header-below` (1.5em), `running-gutter` (1em),
   `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-  (10pt), `keywords-size` (9pt), `list-tight` (bool, false), and
-  `list-spacing` (0.9em shared default; journal template default 0.65em).
+  (10pt), and `keywords-size` (9pt). Shared list spacing is
+  `typography.list-spacing` (non-negative baseline multiple; 0.5).
   `decorative.header-size`/`date-size` (9pt/10pt), `footer-size` (10pt),
-  `keywords-size` (9pt), `list-tight` (bool, false), `list-spacing` (0.9em);
+  `keywords-size` (9pt);
   `page-footer.format` (pattern/function, `"1"`), `size` (10pt), `weight`
   (regular); line-number fields `enabled` (false), `format` (`"1"`),
   `scope` (document/page, document), `size` (8pt), `color` (`#64748B`),
@@ -2119,9 +2127,8 @@ I choose the structure and content.
   counter display. `journal.header-below`, `running-gutter`,
   `running-leading`, `running-header-size`, `date-size`, and
   `keywords-size` are accepted but not consumed by `custom()`; it consumes
-  `journal.list-tight` and `journal.list-spacing` only for `kind: "journal"`.
   `decorative.date-size`, `keywords-size`, `footer-size`,
-  `decorative.list-tight` and `list-spacing`, `tables.stroke`, `tables.caption-position`,
+  `tables.stroke`, `tables.caption-position`,
   `tables.caption-gap`, `callouts.*`, `colors.bg-subtle`, and
   `colors.brand-accent` are accepted/validated but have no effect through
   `custom()`. It also accepts the DFG extension fields `page.header-ascent`,
@@ -2137,41 +2144,6 @@ I choose the structure and content.
 - footer (none, content): replaces Satz's automatic alternating page footer
 - body (content): your document structure
 
-
-Use `custom()` when you want to write your own document structure with Satz
-styles. Put typography overrides inside `config.typography`:
-
-```typst
-#show: custom.with(config: (typography: (
-  font: "STIX Two Text",
-  math-font: "STIX Two Math",
-  mono-font: "Fira Code",
-  size: 11pt,
-  line-spacing: 1.25,
-  paragraph-spacing: 0pt,
-  first-line-indent: true,
-)))
-```
-
-`config.typography` accepts `font`, `math-font`, `mono-font`, `size`,
-`line-spacing`, `leading`, `paragraph-spacing`, `first-line-indent`,
-`hyphenate`, and `justify`. `line-spacing` sets baseline distance as a multiple
-of the body font size and takes precedence over `leading`; `leading` sets
-Typst's line gap directly. `paragraph-spacing` sets the vertical gap between
-paragraphs. `first-line-indent` is a boolean: `true` indents the first line of
-every paragraph by one em (the body font size, 11pt in this example), including
-the first paragraph after a heading; `false` does not indent. The indent is
-horizontal and does not change line or paragraph spacing. See the
-[configuration reference](configuration.md) for types, defaults, and
-descriptions of every key.
-
-Named templates such as `report`, `article`, `journal-entry`, and `book` provide
-ready-made structures and use the internal `document-class()` layer. The
-`kind` argument selects shared behavior such as numbering and front matter; it
-does not select a template structure. The former `personal()` name is not
-exported in 0.2.0.
-
-<a id="satz-figure"></a>
 ### `satz-figure` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))
 
 ```text
@@ -2181,6 +2153,8 @@ exported in 0.2.0.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Show a long caption under the figure, a short one in the List of Figures.
 
@@ -2196,7 +2170,7 @@ normal `figure`.
 - ..args: native `figure` arguments, including `placement` and `kind`. Pass
   `kind: table` when the body is a table so it enters the List of Tables.
 
-```typ
+```example
 #satz-figure(
   rect(width: 8cm, height: 4cm, fill: luma(230)),
   caption: [Full description spanning several lines.],
@@ -2204,8 +2178,6 @@ normal `figure`.
 ) <fig:results>
 ```
 
-
-<a id="citepre"></a>
 ### `citepre` ([`citation.typ`](https://github.com/kylekahraman/satz/blob/main/citation.typ))
 
 ```text
@@ -2216,21 +2188,21 @@ normal `figure`.
 
 <!-- Source docstring included -->
 
+
+
 Cite without brackets — `Author Year`, not `(Author, Year)`.
 
 `@key` produces the bracketed form. `citepre` uses only the author and year
 parts, optionally preceded by custom content. A `bibliography()` must exist in
 the document for the citation to resolve.
 
-```typ
+```example
 #citepre(<smith2020>, pre: [see ])
 ```
 
 - key (label, str): bibliography key, e.g. `<smith2020>` or `"smith2020"`
 - pre (none, content): optional content before the citation, e.g. `[see ]`
 
-
-<a id="placeholder"></a>
 ### `placeholder` ([`figures.typ`](https://github.com/kylekahraman/satz/blob/main/figures.typ))
 
 ```text
@@ -2240,6 +2212,8 @@ the document for the citation to resolve.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 An empty labeled box for a figure that has not been drawn yet.
 
@@ -2256,7 +2230,7 @@ The box itself does not create a figure or a List of Figures entry.
   Other valid shared and extension fields are accepted by the merge but do
   not affect the placeholder. The inner inset is fixed at 8pt.
 
-```typ
+```example
 #figure(
   placeholder(width: 80%, height: 4cm, label: [Planned result plot]),
   caption: [Results will be inserted here.],
@@ -2293,6 +2267,10 @@ reference within this function documentation.
   overrides `leading`.
 - `leading` (length; `0.65em`): Typst's gap between adjacent line boxes.
   This is a direct length, not a baseline-distance multiplier.
+- `list-spacing` (non-negative number; `0.5`): additional gap between list
+  items as a fraction of the calculated body baseline distance. It follows
+  `line-spacing` when set, or font metrics and `leading` otherwise; `0`
+  adds no extra gap. `placeholder` accepts this field but does not use it.
 - `paragraph-spacing` (length; `1.2em`): vertical gap between paragraphs.
 - `first-line-indent` (bool; `false`): whether to indent the first line of
   every paragraph. `true` uses one em (the current body font size, so 11pt
@@ -2329,21 +2307,12 @@ reference within this function documentation.
 - `running-header-size` (length; `9pt`): journal running-header text size.
 - `date-size` (length; `10pt`): journal date text size.
 - `keywords-size` (length; `9pt`): journal keyword text size.
-- `list-tight` (bool; `false`): use paragraph leading between list items
-  instead of the item gap.
-- `list-spacing` (length; `0.9em`): journal list-item gap when `list-tight`
-  is false. The journal template overrides this to `0.65em`.
 
 **Decorative text and lists (`decorative`)**
 - `header-size` (length; `9pt`): running-header text size.
 - `footer-size` (length; `10pt`): footer text size where implemented.
 - `date-size` (length; `10pt`): date text size where implemented.
 - `keywords-size` (length; `9pt`): keyword text size where implemented.
-- `list-tight` (bool; `false`): use paragraph leading between list items
-  instead of the separate list gap.
-- `list-spacing` (length; `0.9em`): gap between list items when
-  `list-tight` is false for templates using the shared decorative settings.
-  Journal templates use the corresponding `journal.*` controls.
 
 **Page number (`page-footer`)**
 - `format` (Typst numbering pattern/function; `"1"`): page-number format.
@@ -2424,8 +2393,6 @@ Both groups use the same fields and meanings as `toc`, with these defaults:
 - `text-muted` (color; `black`): secondary or muted text.
 
 
-
-<a id="scientific-table"></a>
 ### `scientific-table` ([`tables.typ`](https://github.com/kylekahraman/satz/blob/main/tables.typ))
 
 ```text
@@ -2436,9 +2403,11 @@ Both groups use the same fields and meanings as `toc`, with these defaults:
 
 <!-- Source docstring included -->
 
+
+
 Scientific table with repeated column headings and booktabs-style rules.
 
-```typ
+```example
 #scientific-table(
   columns: 2,
   header: ([Method], [Score]),
@@ -2465,6 +2434,12 @@ Scientific table with repeated column headings and booktabs-style rules.
     `first-line-indent` (bool; false), `hyphenate` (bool; false), `justify`
     (bool; true). A set line-spacing overrides leading; indentation uses one
     em when enabled.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between document list items as a fraction of calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise; `0` adds no extra gap.
+    Table helpers do not render document lists, so this field has no effect
+    on them.
   - `headings`: `numbering` (pattern/function/none; `"1.1"`), `hyphenate`
     (bool; false), `h1-pagebreak` (bool; false), `spacing` (koma/native;
     koma), `h1-size`–`h4-size` (14pt/12pt/11pt/11pt), per-level `*-above`/
@@ -2472,9 +2447,10 @@ Scientific table with repeated column headings and booktabs-style rules.
     with a 25pt book default.
   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), all lengths.
-  - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-    `list-spacing` (0.9em). DFG-only `list-indent` (17.9669pt),
+  - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
+    `keywords-size` (9pt), plus DFG-only `list-indent` (17.9669pt),
+    `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
+    (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt).
     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt)
     are lengths.
@@ -2511,8 +2487,6 @@ Scientific table with repeated column headings and booktabs-style rules.
 
 Inside a multi-page figure, also make the enclosing figure block breakable.
 
-
-<a id="scientific-tables"></a>
 ### `scientific-tables` ([`tables.typ`](https://github.com/kylekahraman/satz/blob/main/tables.typ))
 
 ```text
@@ -2523,11 +2497,13 @@ Inside a multi-page figure, also make the enclosing figure block breakable.
 
 <!-- Source docstring included -->
 
+
+
 Apply scientific table-figure layout with a document-level show rule.
 
 Native figures and their labels retain numbering, references, and outlines.
 
-```typ
+```example
 #show: scientific-tables.with(breakable: true)
 #figure(table(...), caption: [Long table]) <tab:long>
 ```
@@ -2551,6 +2527,10 @@ Native figures and their labels retain numbering, references, and outlines.
     `first-line-indent` (bool; false), `hyphenate` (bool; false), `justify`
     (bool; true). A set line-spacing overrides leading; indentation uses one
     em when enabled.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise. Use `0` for no extra gap.
   - `headings`: `numbering` (pattern/function/none; `"1.1"`), `hyphenate`
     (bool; false), `h1-pagebreak` (bool; false), `spacing` (koma/native;
     koma), `h1-size`–`h4-size` (14pt/12pt/11pt/11pt), per-level `*-above`/
@@ -2559,8 +2539,6 @@ Native figures and their labels retain numbering, references, and outlines.
   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), all lengths.
   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-    `list-spacing` (0.9em). DFG-only `list-indent` (17.9669pt),
     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt)
     are lengths.
@@ -2595,8 +2573,6 @@ Native figures and their labels retain numbering, references, and outlines.
   `breakable` independently allows matching table figures to span pages.
   Example: `config: (tables: (caption-gap: 8pt, caption-position: bottom), captions: (size: 9pt))`.
 
-
-<a id="callout"></a>
 ### `callout` ([`callouts.typ`](https://github.com/kylekahraman/satz/blob/main/callouts.typ))
 
 ```text
@@ -2607,9 +2583,11 @@ Native figures and their labels retain numbering, references, and outlines.
 
 <!-- Source docstring included -->
 
+
+
 Breakable explanatory box that retains the surrounding body line rhythm.
 
-```typ
+```example
 #callout(title: [Note])[
   This paragraph keeps the document's baseline rhythm.
 ]
@@ -2633,6 +2611,12 @@ Breakable explanatory box that retains the surrounding body line rhythm.
     `paragraph-spacing` (1.2em), `first-line-indent` (bool; false),
     `hyphenate` (bool; false), `justify` (bool; true). A set line-spacing
     overrides leading; true first-line-indent is one em.
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between document list items as a fraction of the calculated body
+    baseline distance. It follows `typography.line-spacing` when set, or
+    font metrics and `typography.leading` otherwise; `0` adds no extra gap.
+    This callout uses `callouts.list-spacing` instead, so this field has no
+    effect inside the callout.
   - `headings`: `numbering` (pattern/function/none; `"1.1"`), `hyphenate`
     (bool; false), `h1-pagebreak` (bool; false), `spacing` (koma/native;
     koma), `h1-size`–`h4-size` (14pt/12pt/11pt/11pt), and each level's
@@ -2640,9 +2624,10 @@ Breakable explanatory box that retains the surrounding body line rhythm.
     length with a 25pt book default.
   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), all lengths.
-  - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-    `list-spacing` (0.9em). DFG-only `list-indent` (17.9669pt),
+  - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
+    `keywords-size` (9pt), plus DFG-only `list-indent` (17.9669pt),
+    `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
+    (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt).
     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt)
     are lengths.
@@ -2682,8 +2667,6 @@ Breakable explanatory box that retains the surrounding body line rhythm.
   `config.colors.brand-primary` with the configured `callouts.stroke`;
   `none` removes the border; a color or stroke dictionary sets it directly.
 
-
-<a id="chapter-numbering"></a>
 ### `chapter-numbering` ([`chapter-numbering.typ`](https://github.com/kylekahraman/satz/blob/main/chapter-numbering.typ))
 
 ```text
@@ -2694,6 +2677,8 @@ Breakable explanatory box that retains the surrounding body line rhythm.
 
 <!-- Source docstring included -->
 
+
+
 Scope figure, table, and equation numbers to a chapter or appendix.
 
 The chapter number is captured in each element's numbering function, so a
@@ -2702,7 +2687,7 @@ headings and content inside the scope. `chapter` is manual: nothing reads
 the visible heading counter, so pass the chapter number yourself. Heading
 numbering and chapter page breaks remain the document class's responsibility.
 
-```typ
+```example
 #chapter-numbering(chapter: 1)[
   = Methods
   #figure(rect(), caption: [First figure]) <fig:methods>
@@ -2721,8 +2706,6 @@ numbering and chapter page breaks remain the document class's responsibility.
 Only image figures, table figures, and equations are reset. Headings are not
 renumbered by this component.
 
-
-<a id="unnumbered-heading"></a>
 ### `unnumbered-heading` ([`headings.typ`](https://github.com/kylekahraman/satz/blob/main/headings.typ))
 
 ```text
@@ -2733,12 +2716,14 @@ renumbered by this component.
 
 <!-- Source docstring included -->
 
+
+
 Create an unnumbered heading while keeping Satz's normal heading style.
 
 The heading remains in the outline by default, so it appears in the table
 of contents. Pass `outlined: false` to keep it out of the outline.
 
-```typ
+```example
 #unnumbered-heading(level: 1)[Acknowledgements]
 ```
 
@@ -2746,10 +2731,6 @@ of contents. Pass `outlined: false` to keep it out of the outline.
 - level (int): heading level from 1 to 6; defaults to 1
 - outlined (bool): include the heading in outlines; defaults to true
 
-
-`body` is heading content. `level` is an integer from 1 through 6. `outlined` controls whether the heading appears in the document outline and contents.
-
-<a id="nwo-proposal"></a>
 ### `nwo-proposal` ([`nwo-proposal/template.typ`](https://github.com/kylekahraman/satz/blob/main/nwo-proposal/template.typ))
 
 ```text
@@ -2763,13 +2744,15 @@ of contents. Pass `outlined: false` to keep it out of the outline.
 
 <!-- Source docstring included -->
 
+
+
 NWO Talent Programme application layout using an explicit checked profile.
 
 Ordinary headings continue to work. There is no cover, contents, or page
 counter reset. Pages have a stable current/total header from page 1. This is
 a source-checked authoring aid, not universal submission certification.
 
-```typ
+```example
 #show: nwo-proposal.with(
   scheme: "veni",
   domain: "science",
@@ -2807,6 +2790,10 @@ a source-checked authoring aid, not universal submission certification.
     `leading` (0.65em), `paragraph-spacing` (1.2em),
     `first-line-indent` (`false`), `hyphenate` (`false`), and `justify`
     (`true`).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise. Use `0` for no extra gap.
   - `headings.numbering` (pattern/function or `none`; `"1.1"`, profile
     override), `hyphenate` (`false`), `h1-pagebreak` (`false`),
     `spacing` (`"koma"` or `"native"`; `"koma"`), and for levels 1–4
@@ -2816,12 +2803,9 @@ a source-checked authoring aid, not universal submission certification.
     size.
   - `journal.header-below` (1.5em), `running-gutter` (1em),
     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (false), and
-    `list-spacing` (0.9em); these are accepted shared fields but do not
-    affect this proposal layout.
-  - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (`false`), and
-    `list-spacing` (0.9em).
+    (10pt), and `keywords-size` (9pt): journal-only settings, unused here.
+  - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
+    and `keywords-size` (9pt): shared text furniture settings.
   - `page-footer.format` (numbering pattern; `"1"`), `size` (10pt), and
     `weight` (`"regular"`).
   - `line-numbers.enabled` (`false`), `format` (`"1"`),
@@ -2848,8 +2832,6 @@ a source-checked authoring aid, not universal submission certification.
     sets paper, text, and primary accent to white/black/black).
 - body (content): the application sections
 
-
-<a id="nwo-profile"></a>
 ### `nwo-profile` ([`nwo-proposal/profiles.typ`](https://github.com/kylekahraman/satz/blob/main/nwo-proposal/profiles.typ))
 
 ```text
@@ -2859,6 +2841,8 @@ a source-checked authoring aid, not universal submission certification.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Return the source and constraints for a supported NWO form.
 
@@ -2872,8 +2856,6 @@ Unavailable combinations fail explicitly instead of inventing rules.
 -> dictionary: `scheme`, `domain`, `domain-name`, `stage`, `year`, `source`,
   `size`, and `limits`. `limits` maps each word-limited field to `(min:, max:)`.
 
-
-<a id="nwo-text"></a>
 ### `nwo-text` ([`nwo-proposal/components.typ`](https://github.com/kylekahraman/satz/blob/main/nwo-proposal/components.typ))
 
 ```text
@@ -2883,6 +2865,8 @@ Unavailable combinations fail explicitly instead of inventing rules.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Check a plain-text response against the chosen form's word limits.
 
@@ -2897,8 +2881,6 @@ Must be called inside `nwo-proposal`.
   `public-summary-nl`, or `public-summary-en`
 - response (str): plain-text response; rich content is rejected
 
-
-<a id="nwo-key-output"></a>
 ### `nwo-key-output` ([`nwo-proposal/components.typ`](https://github.com/kylekahraman/satz/blob/main/nwo-proposal/components.typ))
 
 ```text
@@ -2909,13 +2891,15 @@ Must be called inside `nwo-proposal`.
 
 <!-- Source docstring included -->
 
+
+
 A narrative-CV key output with explicit contribution.
 
 Bibliographic reference, URL, type, and indicators are separated from the
 narrative so authors can apply the form's exclusions when counting key-output
 words. Must be used inside `nwo-proposal`; at most ten key outputs per document.
 
-```typ
+```example
 #nwo-key-output(
   reference: [Example et al. (2026). Example paper.],
   output-type: [Journal article],
@@ -2931,8 +2915,6 @@ words. Must be used inside `nwo-proposal`; at most ten key outputs per document.
 - urls (array of str): up to two URLs (output and open-access copy)
 - open-access (bool, none): open-access status; `none` prints "Yes / No"
 
-
-<a id="nwo-page-budget"></a>
 ### `nwo-page-budget` ([`nwo-proposal/components.typ`](https://github.com/kylekahraman/satz/blob/main/nwo-proposal/components.typ))
 
 ```text
@@ -2942,6 +2924,8 @@ words. Must be used inside `nwo-proposal`; at most ten key outputs per document.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Check a bounded section's vertical extent, including its own headings.
 
@@ -2954,8 +2938,6 @@ text height. Must be called inside `nwo-proposal`.
 - max-pages (int, float): allowed extent; defaults to 14
 - body (content): the bounded section, including headings
 
-
-<a id="research-cover"></a>
 ### `research-cover` ([`cover.typ`](https://github.com/kylekahraman/satz/blob/main/cover.typ))
 
 ```text
@@ -2965,6 +2947,8 @@ text height. Must be called inside `nwo-proposal`.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Create a research notebook cover with a neural-connectivity motif.
 
@@ -3020,6 +3004,11 @@ to both calls if they should share an appearance.
     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
     `true`; ignored).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise; it has no effect on this
+    cover because the cover does not render body lists.
   - `headings.numbering` (Typst numbering pattern/function or `none`,
     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -3030,8 +3019,6 @@ to both calls if they should share an appearance.
   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
     `running-leading` (0.35em); all ignored.
   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-    `list-spacing` (0.9em); all ignored. Extra `list-indent`,
     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
@@ -3065,7 +3052,6 @@ to both calls if they should share an appearance.
   template-specific or caller extension groups are accepted and ignored.
 -> content: a generated research title page
 
-<a id="minimal-cover"></a>
 ### `minimal-cover` ([`cover.typ`](https://github.com/kylekahraman/satz/blob/main/cover.typ))
 
 ```text
@@ -3075,6 +3061,8 @@ to both calls if they should share an appearance.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Create a spare, centered title page for reports, notes, and short documents.
 
@@ -3128,6 +3116,11 @@ they should share an appearance.
     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
     `true`; ignored).
+  - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+    between list items as a fraction of the calculated body baseline
+    distance. It follows `typography.line-spacing` when set, or font
+    metrics and `typography.leading` otherwise; it has no effect on this
+    cover because the cover does not render body lists.
   - `headings.numbering` (Typst numbering pattern/function or `none`,
     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -3138,8 +3131,6 @@ they should share an appearance.
   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
     `running-leading` (0.35em); all ignored.
   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-    (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-    `list-spacing` (0.9em); all ignored. Extra `list-indent`,
     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
@@ -3173,7 +3164,6 @@ they should share an appearance.
   template-specific or caller extension groups are accepted and ignored.
 -> content: a generated minimal title page
 
-<a id="theme-config"></a>
 ### `theme-config` ([`themes.typ`](https://github.com/kylekahraman/satz/blob/main/themes.typ))
 
 ```text
@@ -3183,6 +3173,8 @@ they should share an appearance.
 #### Complete function documentation
 
 <!-- Source docstring included -->
+
+
 
 Select a document palette for any Satz template accepting `config`.
 
@@ -3235,6 +3227,10 @@ reference within this function documentation.
   overrides `leading`.
 - `leading` (length; `0.65em`): Typst's gap between adjacent line boxes.
   This is a direct length, not a baseline-distance multiplier.
+- `list-spacing` (non-negative number; `0.5`): additional gap between list
+  items as a fraction of the calculated body baseline distance. It follows
+  `line-spacing` when set, or font metrics and `leading` otherwise; `0`
+  adds no extra gap. `theme-config` passes this setting through unchanged.
 - `paragraph-spacing` (length; `1.2em`): vertical gap between paragraphs.
 - `first-line-indent` (bool; `false`): whether to indent the first line of
   every paragraph. `true` uses one em (the current body font size, so 11pt
@@ -3271,21 +3267,12 @@ reference within this function documentation.
 - `running-header-size` (length; `9pt`): journal running-header text size.
 - `date-size` (length; `10pt`): journal date text size.
 - `keywords-size` (length; `9pt`): journal keyword text size.
-- `list-tight` (bool; `false`): use paragraph leading between list items
-  instead of the item gap.
-- `list-spacing` (length; `0.9em`): journal list-item gap when `list-tight`
-  is false. The journal template overrides this to `0.65em`.
 
 **Decorative text and lists (`decorative`)**
 - `header-size` (length; `9pt`): running-header text size.
 - `footer-size` (length; `10pt`): footer text size where implemented.
 - `date-size` (length; `10pt`): date text size where implemented.
 - `keywords-size` (length; `9pt`): keyword text size where implemented.
-- `list-tight` (bool; `false`): use paragraph leading between list items
-  instead of the separate list gap.
-- `list-spacing` (length; `0.9em`): gap between list items when
-  `list-tight` is false for templates using the shared decorative settings.
-  Journal templates use the corresponding `journal.*` controls.
 
 **Page number (`page-footer`)**
 - `format` (Typst numbering pattern/function; `"1"`): page-number format.
@@ -3364,19 +3351,3 @@ Both groups use the same fields and meanings as `toc`, with these defaults:
 - `brand-accent` (color; `black`): secondary accent.
 - `text-main` (color; `black`): primary body text.
 - `text-muted` (color; `black`): secondary or muted text.
-
-
-
-## Other exported names
-
-| Name | Kind | Meaning |
-| --- | --- | --- |
-| `letter` | alias | Same function as [`brief`](#brief); English names are canonical and German names remain aliases. |
-| `invoice` | alias | Same function as [`rechnung`](#rechnung); the output remains a German invoice. |
-| `complaint` | alias | Same function as [`klageschrift`](#klageschrift); the output remains a German complaint. |
-| `guest-contract` | alias | Same function as [`gastspielvertrag`](#gastspielvertrag); the output remains a German contract. |
-| <span id="project-proposal"></span>`project-proposal` | alias | Same function as [`research-proposal`](#research-proposal). |
-| <span id="research-cover"></span><span id="minimal-cover"></span>`research-cover`, `minimal-cover` | preset aliases | `cover-page` with `layout: "research"` or `layout: "minimal"` fixed. |
-| <span id="merge"></span><span id="defaults"></span>`merge`, `defaults` | functions/dictionary | `merge` recursively merges nested dictionaries; `defaults` exports shared appearance defaults. See the [configuration reference](/satz/reference/configuration/). |
-| <span id="cover-themes"></span>`cover-themes`, <span id="document-themes"></span>`document-themes` | dictionaries | Palette dictionaries; use [`theme-config`](#theme-config) to apply a palette to supported templates. |
-| <span id="glossarium"></span>`glossarium` | namespace | The pinned upstream glossary package is re-exported for explicit document-level setup. See the [glossary example](https://github.com/kylekahraman/satz/blob/main/examples/glossary.typ). |

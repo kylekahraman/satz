@@ -22,12 +22,12 @@
 ///   shared or extension fields; none are silently ignored. For clarity, the
 ///   full shared schema includes page (paper, margin, binding,
 ///   binding-correction, headers, columns, column-gutter), typography (font,
-///   math-font, mono-font, size, line-spacing, leading, paragraph-spacing,
+///   math-font, mono-font, size, line-spacing, leading, list-spacing, paragraph-spacing,
 ///   first-line-indent, hyphenate, justify), headings (numbering, hyphenate,
 ///   h1-pagebreak, spacing, h1-h4 size/above/below), journal (header-below,
 ///   running-gutter, running-leading, running-header-size, date-size,
-///   keywords-size, list-tight, list-spacing), decorative (header-size,
-///   footer-size, date-size, keywords-size, list-tight, list-spacing),
+///   keywords-size), decorative (header-size,
+///   footer-size, date-size, keywords-size),
 ///   page-footer (format, size, weight), line-numbers (enabled, format, scope,
 ///   size, color, clearance), links (color, url-color), tables (stroke, inset,
 ///   font-size, caption-position, caption-gap), callouts (inset, radius,
@@ -50,17 +50,19 @@
 ///   page.column-gutter (length, 5mm); typography.font (font name,
 ///   Libertinus Serif), math-font and mono-font (font name or auto, auto),
 ///   size (length, 11pt), line-spacing (positive number or none, none),
-///   leading (length, 0.65em), paragraph-spacing (length, 1.2em),
+///   leading (length, 0.65em), list-spacing (non-negative number, 0.5; extra
+///   list-item gap as a fraction of calculated body baseline distance, following
+///   line-spacing or font metrics plus leading; 0 adds no extra gap),
+///   paragraph-spacing (length, 1.2em),
 ///   first-line-indent, hyphenate, and justify (bool, false, false, true);
 ///   headings.numbering (pattern/function or none, "1.1"), hyphenate and h1-pagebreak
 ///   (bool, false), spacing ("koma" or "native", "koma"), h1-h4-size (lengths,
 ///   14pt/12pt/11pt/11pt), h1-h4-above and h1-h4-below (auto or length, auto);
 ///   journal.header-below/running-gutter/running-leading (lengths,
 ///   1.5em/1em/0.35em), running-header-size/date-size/keywords-size (lengths,
-///   9pt/10pt/9pt), list-tight (bool, false), list-spacing (length, 0.9em);
+///   9pt/10pt/9pt);
 ///   decorative.header-size/footer-size/date-size/keywords-size (lengths,
-///   9pt/10pt/10pt/9pt), list-tight (bool, false), list-spacing (length,
-///   0.9em); page-footer.format (numbering pattern, "1"), size (length, 10pt),
+///   9pt/10pt/10pt/9pt); page-footer.format (numbering pattern, "1"), size (length, 10pt),
 ///   weight (font weight, regular); line-numbers.enabled (bool, false),
 ///   format (numbering pattern, "1"), scope ("document" or "page", document),
 ///   size (length, 8pt), color (#64748B), clearance (auto or length, auto);

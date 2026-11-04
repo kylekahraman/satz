@@ -45,6 +45,11 @@
 ///     `leading` (length; `0.65em`), `paragraph-spacing` (length; proposal
 ///     default `0.7em`), `first-line-indent` (bool; `false`), `hyphenate`
 ///     (bool; `false`), `justify` (bool; `true`).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between document list items as a fraction of the calculated body
+///     baseline distance. It follows `typography.line-spacing` when set, or
+///     font metrics and `typography.leading` otherwise; `0` adds no extra gap.
+///     Proposal templates do not use this setting for their own layout.
 ///   - `headings`: `numbering` (pattern/function or `none`; proposal default
 ///     `"1.1"`), `hyphenate` (`false`), `h1-pagebreak` (`false`), `spacing`
 ///     (`"koma"` or `"native"`; `"koma"`), and `h1-size` through `h4-size`
@@ -52,12 +57,9 @@
 ///     `auto`).
 ///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
-///     `list-spacing` (0.9em). These are accepted but do not affect this
-///     proposal template.
+///     (10pt), and `keywords-size` (9pt); journal-only settings, unused here.
 ///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-///     (0.9em). `header-size` controls the running header.
+///     (10pt), and `keywords-size` (9pt). `header-size` styles running text.
 ///   - `page-footer`: `format` (numbering pattern/function; `"1"`), `size`
 ///     (10pt), `weight` (`"regular"`).
 ///   - `line-numbers`: `enabled` (`false`), `format` (`"1"`), `scope`
@@ -140,17 +142,17 @@
 ///   and `column-gutter` (5mm); `typography.font` (`"Libertinus Serif"`),
 ///   `math-font`/`mono-font` (`auto` or font name; `auto`), `size` (11pt),
 ///   `line-spacing` (positive baseline multiple or `none`; `none`), `leading`
-///   (0.65em), `paragraph-spacing` (0.7em), `first-line-indent` (false),
-///   `hyphenate` (false), and `justify` (true); `headings.numbering`
+///   (0.65em), `list-spacing` (non-negative number; `0.5`, extra list-item gap
+///   as a fraction of calculated body baseline distance, following line-spacing
+///   or font metrics plus leading; 0 adds no extra gap), `paragraph-spacing`
+///   (0.7em), `first-line-indent` (false), `hyphenate` (false), and `justify`
+///   (true); `headings.numbering`
 ///   (pattern/function or `none`; `"1.1"`), `hyphenate` (false),
 ///   `h1-pagebreak` (false), `spacing` (`"koma"` or `"native"`; `"koma"`),
 ///   and `h1`–`h4` size/above/below fields (14pt/12pt/11pt/11pt, `auto`,
 ///   `auto`). It also accepts `journal.header-below` (1.5em),
 ///   `running-gutter` (1em), `running-leading` (0.35em),
-///   `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt),
-///   `list-tight` (false), `list-spacing` (0.9em); `decorative` sizes
-///   (header 9pt, footer/date 10pt, keywords 9pt), `list-tight` (false),
-///   `list-spacing` (0.9em); `page-footer.format` (`"1"`), `size` (10pt),
+///   `running-header-size` (9pt), `date-size` (10pt), `keywords-size` (9pt);
 ///   `weight` (`"regular"`); `line-numbers.enabled` (false), `format` (`"1"`),
 ///   `scope` (`"document"` or `"page"`), `size` (8pt), `color` (`#64748B`),
 ///   `clearance` (auto or length); `links.color` and `url-color` (black in this
@@ -158,7 +160,6 @@
 ///   default `(x: 8pt, y: 4pt)`), `font-size` (10pt), `caption-position`
 ///   (`top` or `bottom`; `top`), `caption-gap` (6pt); `callouts.inset` (9pt),
 ///   `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
-///   `paragraph-spacing` (1em), `list-spacing` (1.2em); `captions.size` (10pt),
 ///   `weight`/`label-weight` (`"regular"`), `alignment` (`left` in proposals);
 ///   `toc`, `lof`, `lot` depth (0 in this template), title, indent (`auto`),
 ///   entry-size (10pt), leading (0.65em), entry-above (0.65em toc, 0.85em

@@ -29,6 +29,12 @@
 ///     `first-line-indent` (bool; false), `hyphenate` (bool; false), `justify`
 ///     (bool; true). A set line-spacing overrides leading; indentation uses one
 ///     em when enabled.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between document list items as a fraction of calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise; `0` adds no extra gap.
+///     Table helpers do not render document lists, so this field has no effect
+///     on them.
 ///   - `headings`: `numbering` (pattern/function/none; `"1.1"`), `hyphenate`
 ///     (bool; false), `h1-pagebreak` (bool; false), `spacing` (koma/native;
 ///     koma), `h1-size`–`h4-size` (14pt/12pt/11pt/11pt), per-level `*-above`/
@@ -36,9 +42,10 @@
 ///     with a 25pt book default.
 ///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), all lengths.
-///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-///     `list-spacing` (0.9em). DFG-only `list-indent` (17.9669pt),
+///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
+///     `keywords-size` (9pt), plus DFG-only `list-indent` (17.9669pt),
+///     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
+///     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt).
 ///     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
 ///     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt)
 ///     are lengths.
@@ -126,6 +133,10 @@
 ///     `first-line-indent` (bool; false), `hyphenate` (bool; false), `justify`
 ///     (bool; true). A set line-spacing overrides leading; indentation uses one
 ///     em when enabled.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
 ///   - `headings`: `numbering` (pattern/function/none; `"1.1"`), `hyphenate`
 ///     (bool; false), `h1-pagebreak` (bool; false), `spacing` (koma/native;
 ///     koma), `h1-size`–`h4-size` (14pt/12pt/11pt/11pt), per-level `*-above`/
@@ -134,8 +145,6 @@
 ///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), all lengths.
 ///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-///     `list-spacing` (0.9em). DFG-only `list-indent` (17.9669pt),
 ///     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
 ///     (measured baseline + paragraph skip - cap height + 3 × 72 ÷ 72.27pt)
 ///     are lengths.

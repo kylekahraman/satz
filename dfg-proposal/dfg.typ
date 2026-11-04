@@ -106,6 +106,11 @@
 ///     `leading` (length; DFG's measured line-box gap), `paragraph-spacing`
 ///     (length; DFG's measured paragraph gap), `first-line-indent` (`false`),
 ///     `hyphenate` (`true`), and `justify` (`true`).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise; the DFG form overrides it
+///     with its measured `decorative.list-spacing`.
 ///   - `headings.numbering` (pattern/function or `none`; DFG default
 ///     `"1.1.1.1"`), `hyphenate` (`false`), `h1-pagebreak` (`false`),
 ///     `spacing` (`"koma"` or `"native"`; `"koma"`), and for levels 1–4
@@ -113,12 +118,10 @@
 ///     values).
 ///   - `journal.header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (false), and
-///     `list-spacing` (0.9em). These are accepted shared values but do not
-///     affect DFG layout.
+///     (10pt), and `keywords-size` (9pt): journal-only settings, unused here.
 ///   - `decorative.header-size` (DFG 9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (`false`), `list-spacing`
-///     (measured DFG line gap), and DFG-specific `list-indent` (17.9669pt),
+///     (10pt), `keywords-size` (9pt), and `list-spacing` (measured DFG gap);
+///     DFG-specific `list-indent` (17.9669pt),
 ///     `list-body-indent` (5.475 × 72 ÷ 72.27pt), and `list-block-spacing`
 ///     (DFG measured gap above and below list blocks).
 ///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`

@@ -165,6 +165,11 @@
 ///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
 ///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
 ///     `true`; ignored).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise; it has no effect on this
+///     cover because the cover does not render body lists.
 ///   - `headings.numbering` (Typst numbering pattern/function or `none`,
 ///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
 ///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -175,8 +180,6 @@
 ///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
 ///     `running-leading` (0.35em); all ignored.
 ///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
 ///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
 ///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
 ///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
@@ -410,6 +413,11 @@
 ///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
 ///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
 ///     `true`; ignored).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise; it has no effect on this
+///     cover because the cover does not render body lists.
 ///   - `headings.numbering` (Typst numbering pattern/function or `none`,
 ///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
 ///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -420,8 +428,6 @@
 ///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
 ///     `running-leading` (0.35em); all ignored.
 ///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
 ///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
 ///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
 ///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.
@@ -508,6 +514,11 @@
 ///     `paragraph-spacing` (length, 1.2em; ignored); `first-line-indent` (bool,
 ///     `false`; ignored); `hyphenate` (bool, `false`; ignored); `justify` (bool,
 ///     `true`; ignored).
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise; it has no effect on this
+///     cover because the cover does not render body lists.
 ///   - `headings.numbering` (Typst numbering pattern/function or `none`,
 ///     `"1.1"`; ignored); `hyphenate` (bool, `false`; ignored);
 ///     `h1-pagebreak` (bool, `false`; ignored); `spacing` (`"koma"` or
@@ -518,8 +529,6 @@
 ///   - `journal.header-below` (length, 1.5em), `running-gutter` (1em), and
 ///     `running-leading` (0.35em); all ignored.
 ///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool, false),
-///     `list-spacing` (0.9em); all ignored. Extra `list-indent`,
 ///     `list-body-indent`, and `list-block-spacing` lengths are also ignored.
 ///   - `page-footer.format` (Typst numbering pattern/function, `"1"`),
 ///     `size` (10pt), `weight` (Typst font weight, `"regular"`); ignored.

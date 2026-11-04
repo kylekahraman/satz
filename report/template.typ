@@ -25,6 +25,10 @@
 ///     `hyphenate` (bool; false), `justify` (bool; true): body typography.
 ///     `line-spacing`, when set, determines baseline distance and overrides
 ///     `leading`; a true first-line indent is one em.
+///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
+///     between list items as a fraction of the calculated body baseline
+///     distance. It follows `typography.line-spacing` when set, or font
+///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
 ///   - `headings.numbering` (pattern/function or none; `"1.1"`), `hyphenate`
 ///     (bool; false), `h1-pagebreak` (bool; false), `spacing` (`"koma"` or
 ///     `"native"`; `"koma"`), `h1-size`–`h4-size` (lengths; 14pt, 12pt, 11pt,
@@ -32,12 +36,10 @@
 ///     numbering, heading type, and gaps.
 ///   - `journal.header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool; false), and
-///     `list-spacing` (length; 0.9em): accepted for journal layouts; report
-///     does not use these fields.
+///     (10pt), and `keywords-size` (9pt): journal furniture settings; report
+///     does not use them.
 ///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size` (10pt),
-///     `keywords-size` (9pt), `list-spacing` (0.9em), all lengths, and
-///     `list-tight` (bool; false): decorative text and list item gaps.
+///     and `keywords-size` (9pt): shared text furniture settings.
 ///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
 ///     (length; 10pt), `weight` (font weight; `"regular"`): page number style.
 ///   - `line-numbers.enabled` (bool; false), `format` (pattern; `"1"`),
@@ -66,7 +68,6 @@
 ///     paper, black text/accent, and white subtle fill): backgrounds, text,
 ///     and accents.
 ///   Report actually consumes all page and typography fields; all heading
-///   fields; `decorative.header-size`, `list-tight`, and `list-spacing`;
 ///   `page-footer.size` and `weight`; all line-number and link fields; table
 ///   `inset` and `font-size`; all caption and contents/list fields;
 ///   bibliography style; and `colors.bg-paper`, `brand-primary`, `text-main`,

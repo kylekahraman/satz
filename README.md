@@ -424,13 +424,12 @@ short-caption: [...])`. Compact lists retain the actual figure/table numbering
 and page format, including Roman numerals. See [the complete outline
 example](examples/outline.typ).
 
-For templates using the shared decorative list settings, bullet and numbered
-lists default to `decorative.list-tight: false` and
-`decorative.list-spacing: 0.9em`. Journal lists use their own
-`journal.list-tight` and `journal.list-spacing` settings instead. Both provide
-extra space between items by default; set the matching `list-tight: true` to
-use paragraph leading between items. Native local list rules still override
-package defaults.
+Bullet and numbered lists use `typography.list-spacing`, a fraction of the
+calculated body baseline distance. Its default `0.5` adds half a line between
+items; set it to `0` for no extra gap. The setting follows
+`typography.line-spacing` when provided, or the selected font metrics and
+`typography.leading` otherwise. Native local list rules still override package
+defaults. Callout lists use their separate `callouts.list-spacing` setting.
 
 ### Report palettes
 
@@ -471,7 +470,7 @@ dark blue-gray palette can now set `theme: "slate"`.
     brand-primary: rgb("#111110"), brand-accent: rgb("#2f2f2c"),
   ),
   links: (color: rgb("#B4313F"), url-color: rgb("#45556c")),
-  decorative: (list-spacing: 0.65em),
+  typography: (list-spacing: 0.5),
 ))
 ```
 

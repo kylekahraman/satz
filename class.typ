@@ -63,7 +63,8 @@
 ///   - `typography.font` (font name; `"Libertinus Serif"`), `math-font` and
 ///     `mono-font` (font name or auto; auto), `size` (length; 11pt),
 ///     `line-spacing` (positive baseline multiple or none; none), `leading`
-///     (length; 0.65em), `paragraph-spacing` (length; 1.2em),
+///     (length; 0.65em), `list-spacing` (non-negative baseline multiple; 0.5),
+///     `paragraph-spacing` (length; 1.2em),
 ///     `first-line-indent` (bool; false), `hyphenate` (bool; false), and
 ///     `justify` (bool; true) control body text. A set `line-spacing` overrides
 ///     `leading`; true first-line-indent uses one em.
@@ -74,12 +75,11 @@
 ///     numbering, type, page starts, and spacing.
 ///   - `journal.header-below` (1.5em), `running-gutter` (1em),
 ///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool; false), and
-///     `list-spacing` (length; 0.9em): journal header, metadata, and list
-///     styling. Journal templates override `list-spacing` to 0.65em.
+///     (10pt), and `keywords-size` (9pt): journal header and metadata styling.
 ///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), `keywords-size` (9pt), `list-tight` (bool; false),
-///     `list-spacing` (length; 0.9em): running/decorative text and list gaps.
+///     (10pt), and `keywords-size` (9pt): running/decorative text styling.
+///   Lists and enumerations use `typography.list-spacing` as an extra gap
+///   relative to the calculated body baseline distance; zero adds no extra gap.
 ///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
 ///     (10pt), `weight` (regular font weight): page-number appearance.
 ///   - `line-numbers.enabled` (bool; false), `format` (pattern; `"1"`),
@@ -269,12 +269,6 @@
     numbering-scope: c.line-numbers.scope,
     number-clearance: c.line-numbers.clearance,
   )
-
-  // --- List spacing ---
-  // Tight lists use paragraph leading instead of the configured item spacing.
-  let list-style = if kind == "journal" { c.journal } else { c.decorative }
-  set list(tight: list-style.list-tight, spacing: list-style.list-spacing)
-  set enum(tight: list-style.list-tight, spacing: list-style.list-spacing)
 
   // --- Heading numbering (journal uses none) ---
   set heading(numbering: if kind == "journal" { none } else { c.headings.numbering })
@@ -477,31 +471,41 @@
       ((type(line-spacing) == int or type(line-spacing) == float) and line-spacing > 0),
     message: "typography.line-spacing must be none or a positive number such as 1.5.",
   )
-  if line-spacing == none {
-    styled-body
-  } else {
-    context {
-      let font-size = c.typography.size
-      let sample = text(
-        font: c.typography.font,
-        size: font-size,
-        top-edge: "cap-height",
-        bottom-edge: "baseline",
-      )[H]
-      let text-height = measure(sample).height
-      let target-baseline-gap = font-size * line-spacing
-      let calculated-leading = target-baseline-gap - text-height
-      assert(
-        calculated-leading >= 0pt,
-        message: "typography.line-spacing is too small for the selected font and size.",
-      )
-      {
-        // Fix the text frame edges used in the measurement so the configured
-        // multiple means the same baseline-to-baseline distance in the body.
+  context {
+    let font-size = c.typography.size
+    let sample = text(
+      font: c.typography.font,
+      size: font-size,
+      top-edge: "cap-height",
+      bottom-edge: "baseline",
+    )[H]
+    let text-height = measure(sample).height
+    let baseline-distance = if line-spacing == none {
+      text-height + c.typography.leading
+    } else {
+      font-size * line-spacing
+    }
+    let calculated-leading = baseline-distance - text-height
+    assert(
+      line-spacing == none or calculated-leading >= 0pt,
+      message: "typography.line-spacing is too small for the selected font and size.",
+    )
+    assert(
+      (type(c.typography.list-spacing) == int or type(c.typography.list-spacing) == float)
+        and c.typography.list-spacing >= 0,
+      message: "typography.list-spacing must be a non-negative number.",
+    )
+    let list-spacing = baseline-distance * c.typography.list-spacing
+    {
+      // Fix text frame edges so a configured line-spacing multiple also
+      // determines list spacing from the same body baseline distance.
+      if line-spacing != none {
         set text(top-edge: "cap-height", bottom-edge: "baseline")
         set par(leading: calculated-leading)
-        styled-body
       }
+      set list(tight: false, spacing: list-spacing)
+      set enum(tight: false, spacing: list-spacing)
+      styled-body
     }
   }
 }
@@ -562,7 +566,8 @@
 ///   `page.columns` (positive integer, 1), `page.column-gutter` (length, 5mm);
 ///   `typography.font` (name, Libertinus Serif), `math-font`/`mono-font`
 ///   (name or auto, auto), `size` (11pt), `line-spacing` (positive multiple or
-///   none, none), `leading` (0.65em), `paragraph-spacing` (1.2em),
+///   none, none), `leading` (0.65em), `list-spacing` (non-negative baseline
+///   multiple; 0.5), `paragraph-spacing` (1.2em),
 ///   `first-line-indent` (bool, false), `hyphenate` (bool, false), `justify`
 ///   (bool, true); `headings.numbering` (pattern/function or none, `"1.1"`),
 ///   `hyphenate`/`h1-pagebreak` (bool, false), `spacing` (koma/native, koma),
@@ -572,10 +577,10 @@
 ///   `running-gutter` (1em), and `running-leading` (0.35em), all lengths.
 ///   `journal` fields are `header-below` (1.5em), `running-gutter` (1em),
 ///   `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///   (10pt), `keywords-size` (9pt), `list-tight` (bool, false), and
-///   `list-spacing` (0.9em shared default; journal template default 0.65em).
+///   (10pt), and `keywords-size` (9pt). Shared list spacing is
+///   `typography.list-spacing` (non-negative baseline multiple; 0.5).
 ///   `decorative.header-size`/`date-size` (9pt/10pt), `footer-size` (10pt),
-///   `keywords-size` (9pt), `list-tight` (bool, false), `list-spacing` (0.9em);
+///   `keywords-size` (9pt);
 ///   `page-footer.format` (pattern/function, `"1"`), `size` (10pt), `weight`
 ///   (regular); line-number fields `enabled` (false), `format` (`"1"`),
 ///   `scope` (document/page, document), `size` (8pt), `color` (`#64748B`),
@@ -606,9 +611,8 @@
 ///   counter display. `journal.header-below`, `running-gutter`,
 ///   `running-leading`, `running-header-size`, `date-size`, and
 ///   `keywords-size` are accepted but not consumed by `custom()`; it consumes
-///   `journal.list-tight` and `journal.list-spacing` only for `kind: "journal"`.
 ///   `decorative.date-size`, `keywords-size`, `footer-size`,
-///   `decorative.list-tight` and `list-spacing`, `tables.stroke`, `tables.caption-position`,
+///   `tables.stroke`, `tables.caption-position`,
 ///   `tables.caption-gap`, `callouts.*`, `colors.bg-subtle`, and
 ///   `colors.brand-accent` are accepted/validated but have no effect through
 ///   `custom()`. It also accepts the DFG extension fields `page.header-ascent`,
