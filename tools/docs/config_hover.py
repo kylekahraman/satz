@@ -19,6 +19,8 @@ TARGETS = {
     ('journal/template.typ', 'journal-entry'): ('journal-entry', 'Journal entries do not create a contents page or figure/table lists. Pass callout settings directly to the callout component.'),
     ('journal/template.typ', 'journal-index'): ('journal-index', 'The index uses page.paper, page.margin, typography.font, typography.size, colors.bg-paper, colors.text-main and colors.brand-primary. Other recognized fields are validated but do not affect its layout.'),
     ('class.typ', 'custom'): ('custom', 'The selected kind controls front matter, heading numbering, links and bibliography behavior.'),
+    ('dfg-proposal/dfg.typ', 'dfg-proposal'): ('dfg-proposal', 'The DFG preset also accepts page.header-ascent and decorative.list-indent, list-body-indent, list-spacing and list-block-spacing. Explicit config overrides the form preset.'),
+    ('nwo-proposal/template.typ', 'nwo-proposal'): ('nwo-proposal', 'NWO supports page.header-ascent. Profile typography varies with the selected scheme and stage; explicit config overrides profile values.'),
 }
 
 def main():
@@ -32,7 +34,7 @@ def main():
     for (filename, function), (row, note) in TARGETS.items():
         path = ROOT / filename
         text = files.get(path, path.read_text())
-        pattern = r'(?m)^/// - config \(dictionary\):.*?(?=^/// - (?:theme|body|header) \()'
+        pattern = r'(?m)^/// - config \(dictionary\):.*?(?=^/// - (?:theme|body|header) \(|\Z)'
         position = text.index('#let ' + function + '(')
         doc_start = text.rfind('\n\n', 0, position) + 2
         # Locate the config argument in this function's contiguous doc comment.
