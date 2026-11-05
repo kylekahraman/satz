@@ -64,11 +64,10 @@ Articles default to two columns; choose one or more columns with
 ### Write a letter in one file
 
 This is a complete `main.typ`; no copied template file or separate `config.typ`
-is required. The example uses the local development version, including the
-unpublished improvements described below:
+is required:
 
 ```typst
-#import "@local/satz:0.2.0": letter
+#import "@preview/satz:0.2.0": letter
 #show: letter.with(
   sender: (name: "Example Author", street: "Example Street 1", postal-code-city: "12345 Example City"),
   recipient: (name: "Example Recipient", street: "Sample Road 2", postal-code-city: "54321 Sample City"),
@@ -93,11 +92,11 @@ compilation date. For a digital letter, see the options below.
 
 ### Two-column articles
 
-The local development version includes an article entry point. Start writing
+Satz includes an article entry point. Start writing
 immediately after the show rule; a separate template or config file is optional:
 
 ```typst
-#import "@local/satz:0.2.0": article
+#import "@preview/satz:0.2.0": article
 #show: article.with(
   title: [My paper],
   authors: (name: "Example Author", affiliations: (1,)),
@@ -248,7 +247,7 @@ The postal layout remains the default. For an application sent as a PDF, hide
 the envelope-specific components:
 
 ```typst
-#import "@local/satz:0.2.0": letter
+#import "@preview/satz:0.2.0": letter
 
 #show: letter.with(
   sender: (name: "Your Name", email: "you@example.org", website: "example.org"),
@@ -304,12 +303,10 @@ Invoice output remains German. The 0.1.1 German argument names remain aliases.
 ### Cover pages — ready-made layouts or full control
 
 For a research notebook, pass the usual title details directly. No separate
-`config.typ` is needed. These helpers are included in the unpublished 0.2.0
-candidate. The import below uses a local development install; after release,
-use `@preview/satz:0.2.0`:
+`config.typ` is needed:
 
 ```typst
-#import "@local/satz:0.2.0": research-cover
+#import "@preview/satz:0.2.0": research-cover
 
 #research-cover(
   title: [MEG Connectivity Analysis in #box[Non-Conscious] Working Memory],
@@ -409,7 +406,7 @@ label inline. The full options are in the [configuration reference](docs/configu
 
 ### Contents, figure lists, and table lists
 
-The local development version uses native heading numbers and hanging indents
+Satz 0.2.0 uses native heading numbers and hanging indents
 in the contents. Main sections are bold and separated by larger gaps;
 subsections retain their complete numbers (`2.1`, `2.1.1`, etc.). Wrapped entries
 use normal line leading. Outline links use the body text color.
@@ -454,7 +451,7 @@ The cover themes are also available as document palettes: `neutral`, `slate`,
 `slate` theme preserves the former blue-gray shared palette.
 
 ```typst
-#import "@local/satz:0.2.0": report
+#import "@preview/satz:0.2.0": report
 #show: report.with(theme: "soft-jade")
 ```
 
@@ -462,8 +459,8 @@ Pass `theme: "slate"` for the former shared blue-gray palette. Explicit `config.
 `config.links` overrides win over the selected theme. The public
 `document-themes` dictionary also makes the same palettes available for custom
 `custom(config: (colors: document-themes.plum))` layouts. Report-specific
-defaults now contain only the report theme; font and layout defaults come from
-the shared configuration. These changes are local and not yet published.
+defaults set the report theme and floating figure placement; other layout defaults
+come from the shared configuration.
 
 Callout colors can be chosen independently of the report theme: pass
 `config: (colors: (brand-primary: my-color, bg-subtle: my-fill))` to `callout`
@@ -492,11 +489,11 @@ The corrected `tables.font-size` and `tables.inset` settings now affect native
 tables; their defaults are 10pt and `(x: 8pt, y: 4pt)`. Tables that depended on
 inherited body size or the old hard-coded padding may wrap or paginate
 differently. Use a table-local `set text(size: ...)` or `inset:` when a specific
-table needs a different treatment. These changes are unreleased until 0.2.0.
+table needs a different treatment.
 
 ### Heading and paragraph rhythm
 
-The local development version defaults to shared KOMA-Script heading spacing.
+Satz 0.2.0 defaults to shared KOMA-Script heading spacing.
 It translates baseline skips using the actual font metrics, including stacked
 and wrapped headings. Explicit per-level gaps remain available; set
 `headings.spacing: "native"` to opt out. See the
@@ -536,11 +533,11 @@ independent, so set it to `0pt` or another chosen value when you prefer
 indentation to provide the paragraph break cue. The same config works in
 journal entries. See
 the [native/KOMA typography comparison](examples/latex-parity/README.md) for the
-specimen and checks. This change is not yet published.
+specimen and checks.
 
 ### Table text and padding
 
-The local development version applies `tables.font-size` (default `10pt`) and
+Satz 0.2.0 applies `tables.font-size` (default `10pt`) and
 `tables.inset` (default `(x: 8pt, y: 4pt)`) to native tables. These existing keys
 were previously ignored, so the corrected font size can change wrapping and
 pagination. Explicit rules inside an individual table still override them.
@@ -549,11 +546,11 @@ multi-page table and diagram findings.
 
 ### Running headers
 
-In the local development version, two-sided reports and theses use
+Two-sided reports and theses use
 [`hydra:0.6.3`](https://typst.app/universe/package/hydra/) for heading selection:
 
 ```typst
-#import "@local/satz:0.2.0": report
+#import "@preview/satz:0.2.0": report
 #show: report.with(config: (page: (binding: left, headers: true)))
 ```
 
@@ -567,16 +564,16 @@ Custom header content takes precedence over the generated header.
 The existing report page-number offset and counter-based alignment are retained.
 See the [paired KOMA-Script comparison](examples/latex-parity/README.md) for
 reproducible checks. Hydra also imports `oxifmt:1.0.0`; Typst downloads missing
-packages on the first compilation. This integration is not yet published.
+packages on the first compilation.
 
 ### Glossaries and abbreviations
 
-The local development version exports the pinned
+Satz exports the pinned
 [`glossarium:0.5.10`](https://typst.app/universe/package/glossarium/) namespace.
 Keep one list of term definitions and install its show rule before the report:
 
 ```typst
-#import "@local/satz:0.2.0": report, glossarium
+#import "@preview/satz:0.2.0": report, glossarium
 #show: glossarium.make-glossary
 #show: report
 
@@ -596,7 +593,7 @@ First use expands the term; later uses show the abbreviation. Unused terms are
 hidden by default; pass `show-all: true` to print them too. Glossarium setup is
 optional and its upstream API remains available under the namespace. Importing
 satz downloads the package if it is missing; ordinary documents need no glossary
-configuration. This integration is not yet published. See
+configuration. See
 [the complete example](examples/glossary.typ), including ordinary figures,
 tables, and short/long captions. Avoid broad `show figure` transformations when
 using Glossarium: it uses a special figure kind internally.
@@ -610,7 +607,7 @@ For long captions use `satz-figure` — long text under the figure, short title 
 
 ### Books and workbooks
 
-The local development version has an experimental `book` entry point for
+Satz has an experimental `book` entry point for
 KOMA-Script-like book authoring: set the title, typeface, and accent once, then
 write with ordinary headings. `book-contents`, `book-mainmatter`,
 `book-appendix`, and `book-backmatter` mark the document parts. Optional
@@ -627,11 +624,11 @@ included in the package.
 ### Placeholder figures
 
 Draft a report before the illustrations are ready with `placeholder`, available
-in the local development version. It draws a labeled empty box using native
+in Satz. It draws a labeled empty box using native
 Typst, with no additional dependency:
 
 ```typst
-#import "@local/satz:0.2.0": placeholder
+#import "@preview/satz:0.2.0": placeholder
 
 #figure(
   placeholder(width: 80%, height: 4cm, label: [Planned result plot]),
@@ -660,7 +657,7 @@ header rule. Headings and boundary rules repeat across page breaks. Native
 cells, alignment and group separators remain available:
 
 ```typst
-#import "@local/satz:0.2.0": scientific-table, callout
+#import "@preview/satz:0.2.0": scientific-table, callout
 
 #scientific-table(
   columns: (1fr, auto),
