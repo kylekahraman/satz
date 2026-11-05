@@ -12,24 +12,24 @@
 #let posten_table(posten) = {
   if posten.len() > 0 {
     let gesamt_summe = posten.map(p => p.at(1) * p.at(2)).sum()
-    
+
     table(
       columns: (1fr, auto, auto, auto),
       inset: 7pt,
       align: (left, center, right, right),
       stroke: none,
-      
+
       table.hline(stroke: 0.5pt),
       [*Beschreibung*], [*Anzahl*], [*Einzelpreis*], [*Gesamt*],
       table.hline(stroke: 0.25pt),
-      
+
       ..posten.map(p => (
         [#p.at(0)],
         [#p.at(1)],
         [#p.at(2) €],
         [#(p.at(1) * p.at(2)) €]
       )).flatten(),
-      
+
       table.hline(stroke: 0.5pt),
       [], [], [*Gesamtbetrag:*], [*#gesamt_summe €*],
       table.hline(stroke: 0.5pt)
@@ -55,7 +55,7 @@
   let bic = absender.at("bic", default: "")
   block(width: 100%, breakable: false)[
     #v(2 * zeilenabstand)
-    
+
     #if qr and absender.iban != "" [
       // QR Code and bank details side by side
       #grid(

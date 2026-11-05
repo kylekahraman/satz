@@ -36,4 +36,3 @@ Keep standard tables, figures, captions, and basic diagrams native to Typst. Add
 - Typst figure reference: <https://typst.app/docs/reference/model/figure/>
 - Typst Universe: [Zero](https://typst.app/universe/package/zero/), [Subpar](https://typst.app/universe/package/subpar/), [Unify](https://typst.app/universe/package/unify/), [Marginalia](https://typst.app/universe/package/marginalia/), [Fletcher](https://typst.app/universe/package/fletcher/), [Pillar](https://typst.app/universe/package/pillar/), [Tablex](https://typst.app/universe/package/tablex/)
 - Upstream source and docs: [Zero](https://github.com/typst/packages/tree/main/packages/preview/zero), [Subpar](https://github.com/tingerrr/typst-subpar), [Unify](https://github.com/typst/packages/tree/main/packages/preview/unify), [Marginalia](https://github.com/nleanba/typst-marginalia), [Fletcher](https://github.com/Jollywatt/typst-fletcher), [Pillar](https://github.com/Mc-Zen/typst-pillar)
-

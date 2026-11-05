@@ -11,7 +11,7 @@
   let telefon = absender.at("telefon", default: "")
   let email = absender.at("email", default: "")
   let zusatz = absender.at("zusatz", default: none)
-  
+
   block(width: 100%, height: 2.8cm, clip: true)[
     #if logo != none {
       // Logo left, sender info right
@@ -178,7 +178,7 @@
       geschaeftszeile + ((strings.datum, datum),)
     }
     #let spalten_anzahl = alle_posten.len()
-    
+
     #let bloecke = alle_posten.enumerate().map(((i, pair)) => {
       let text_ausrichtung = if i == spalten_anzahl - 1 { right } else { left }
       block(align(text_ausrichtung)[
@@ -187,7 +187,7 @@
         #text(size: 9pt)[#pair.at(1)]
       ])
     })
-    
+
     #stack(dir: ltr, spacing: 1fr, ..bloecke)
   ]
 }

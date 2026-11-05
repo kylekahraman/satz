@@ -277,7 +277,7 @@
     ..spacing-overrides,
   )
   let has-reference-block = datum_anzeigen or geschaeftszeile.len() > 0
-  
+
   let strings = if lang == "de" {
     (
       tel: "Tel.",
@@ -299,7 +299,7 @@
       of: "of",
     )
   }
-  
+
   // Stile konfigurieren
   set text(font: c.typography.font, size: c.typography.size, lang: lang, hyphenate: c.typography.hyphenate, fill: c.colors.text-main, weight: "regular")
   set par(leading: zeilenabstand, justify: c.typography.justify)
@@ -397,7 +397,7 @@
 
   // Inhalt aus main.typ
   body
-  
+
   // Abschluss-Segmente
   if signatur {
     signatur_block(absender.name, signatur_zusatz, zeilenabstand, abstaende.signatur)
@@ -411,11 +411,11 @@
       #v(0.5em)
       #list(..enclosure-names.map(a => text(size: 9.5pt)[#a]))
     ])
-    
+
     // PDF-Anhänge rendern
     for pdf_pfad in anlagen {
       set page(margin: 0mm, background: none, header: none, footer: none)
       image(pdf_pfad, width: 100%, height: 100%)
     }
-  }  
+  }
 }
