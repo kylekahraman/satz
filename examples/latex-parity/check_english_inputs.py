@@ -33,7 +33,7 @@ def render_text(folder, name, source):
 def main():
     with tempfile.TemporaryDirectory(prefix="satz-english-inputs-", dir=ROOT / "examples/latex-parity") as directory:
         folder = Path(directory)
-        german_letter = f'''#import "{IMPORT}": brief
+        german_letter = f'''#import "../../../letter/template.typ": brief
 #show: brief.with(
   absender: (name: "Example Sender", strasse: "Example Street 1", plz_ort: "12345 Example City", telefon: "555-0100"),
   empfaenger: (name: "Example Recipient", strasse: "Sample Road 2", plz_ort: "54321 Sample City", land: "UK"),
@@ -72,8 +72,19 @@ Letter body.
 '''
         nested_reference = single_reference.replace('("Customer", "123")', '(("Customer", "123"),)')
         assert render_text(folder, "single-reference", single_reference) == render_text(folder, "nested-reference", nested_reference)
-        german_reference = single_reference.replace('reference-line:', 'geschaeftszeile:')
-        assert render_text(folder, "german-reference", german_reference) == render_text(folder, "single-reference-again", single_reference)
+        removed_alias = single_reference.replace('reference-line:', 'geschaeftszeile:')
+        result, _ = compile_pdf(folder, "removed-letter-alias", removed_alias)
+        assert result.returncode != 0 and "unexpected argument" in result.stderr
+        removed_export, _ = compile_pdf(folder, "removed-brief", f'#import "{IMPORT}": brief\n')
+        assert removed_export.returncode != 0
+        hidden_label = single_reference.replace('date: "2026-10-01"', 'date: "2026-10-01", show-date-label: false')
+        hidden_text = render_text(folder, "hidden-date-label", hidden_label)
+        assert "Customer" in hidden_text and "2026-10-01" in hidden_text
+        hidden_no_date = single_reference.replace('date: "2026-10-01"', 'show-date: false, show-date-label: false')
+        assert "Customer" in render_text(folder, "hidden-date-reference", hidden_no_date)
+        german_nested = f'#import "{IMPORT}": letter\n#show: letter.with(sender: (strasse: "Street",))\nBody\n'
+        result, _ = compile_pdf(folder, "removed-german-address", german_nested)
+        assert result.returncode != 0 and "English field names" in result.stderr
 
         german_invoice = f'''#import "{IMPORT}": rechnung
 #show: rechnung.with(
@@ -173,7 +184,8 @@ The claim.
             "complaint-page-limit": ("klageschrift", '''exhibit-page-limit: 0,'''),
         }
         for name, (template, arguments) in conflicts.items():
-            source = f'''#import "{IMPORT}": {template}\n#show: {template}.with({arguments})\nBody.\n'''
+            module = "../../../letter/template.typ" if template == "brief" else IMPORT
+            source = f'''#import "{module}": {template}\n#show: {template}.with({arguments})\nBody.\n'''
             result, _ = compile_pdf(folder, name, source)
             assert result.returncode != 0, f"{name} should fail validation"
             if name == "sender-record":
@@ -192,8 +204,10 @@ The claim.
                 assert "Letter `signature` option must be a boolean" in result.stderr
             elif name == "letter-layout-flag":
                 assert "Letter `fold-marks` option must be a boolean" in result.stderr
-            elif name in ("letter-alias-conflict", "letter-wrapper-alias-conflict"):
+            elif name == "letter-alias-conflict":
                 assert "either `signatur` or `signature`" in result.stderr
+            elif name == "letter-wrapper-alias-conflict":
+                assert "unexpected argument" in result.stderr
             elif name == "letter-reference-line":
                 assert "reference-line must be an array of two-string pairs" in result.stderr
             elif name == "invoice-qr-flag":
@@ -208,7 +222,7 @@ The claim.
                 assert "Complaint `exhibit-page-limit` must be a positive integer" in result.stderr
             else:
                 assert "unit-price" in result.stderr
-    print("Passed: canonical English and German compatibility inputs render the same text; alias conflicts and malformed values fail clearly.")
+    print("Passed: English letter and remaining compatibility inputs render correctly; removed letter aliases and malformed values fail clearly.")
 
 
 if __name__ == "__main__":

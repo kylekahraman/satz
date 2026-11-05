@@ -19,7 +19,7 @@ Choose a full document template when you want Satz to set page layout and docume
 
 | If you are making… | Start with… | Follow this focused guide |
 | --- | --- | --- |
-| Business letter | `letter` / `brief` | [Write a letter](/satz/getting-started/letter/). |
+| Business letter | `letter` | [Write a letter](/satz/getting-started/letter/). |
 | Report, assignment, or research protocol | `report` | Continue this course, or use [Write your first report](/satz/getting-started/report/). |
 | Research diary | `journal-entry`, `journal-index` | [Keep a research journal](/satz/guides/journals/). |
 | Thesis or book | `custom(kind: "thesis")`, `book` | [Typeset a thesis or book](/satz/getting-started/thesis-book/). |

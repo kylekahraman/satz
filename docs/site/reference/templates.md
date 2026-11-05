@@ -30,14 +30,14 @@ experimental.
 | --- | --- | --- |
 | Report, assignment, or protocol | [`report`](/satz/reference/api/#report) | General documents with numbered headings and optional contents. Start with [Write your first report](/satz/getting-started/report/). |
 | Research journal | [`journal-entry`](/satz/reference/api/#journal-entry), [`journal-index`](/satz/reference/api/#journal-index) | Dated notes, decisions, observations, and next steps. Follow [Keep a research journal](/satz/guides/journals/). |
-| DIN-style letter | [`letter`](/satz/reference/api/#letter) / [`brief`](/satz/reference/api/#brief) | German or English template labels with a window-envelope address block. Start with [Write a letter](/satz/getting-started/letter/). |
+| DIN-style letter | [`letter`](/satz/reference/api/#letter) | German or English template labels with a window-envelope address block. Start with [Write a letter](/satz/getting-started/letter/). |
 | Invoice | [`invoice`](/satz/reference/api/#invoice) / [`rechnung`](/satz/reference/api/#rechnung) | German invoice layout and item table. |
 | Legal complaint | [`complaint`](/satz/reference/api/#complaint) / [`klageschrift`](/satz/reference/api/#klageschrift) | German civil complaint document structure. Start with [Prepare a legal complaint document](/satz/getting-started/legal-complaint/). |
 | Guest performance contract | [`guest-contract`](/satz/reference/api/#guest-contract) / [`gastspielvertrag`](/satz/reference/api/#gastspielvertrag) | Contract, offer, or title-only invoice mode for a performance. Follow [Create a guest performance contract](/satz/getting-started/guest-contract/). |
 | Cover page | [`cover-page`](/satz/reference/api/#cover-page) | A composable cover page with body and footer slots. Start with [Add a cover page](/satz/getting-started/cover-page/). |
 
-English names are the documented interface. The German template names `brief`,
-`rechnung`, `klageschrift`, and `gastspielvertrag`, and their German fields,
+English names are the documented interface. The German template names `rechnung`, `klageschrift`, and `gastspielvertrag`,
+and their German fields,
 remain compatibility aliases. The letter and invoice layouts keep their existing
 output language; guest-contract and complaint output remains German. Read the
 [API reference](/satz/reference/api/) for exact signatures and the

@@ -11,7 +11,7 @@ This page documents every public name exported by `lib.typ`. Use the jump list b
 | [custom](#custom) | kind defaults to report; `theme` defaults to neutral; config dictionary, optional header/footer content, required body content. Config is deep-merged over the defaults and known groups reject misspelled keys. Passing `header` or `footer` replaces the automatic furniture. Shared configuration is listed [field by field](/satz/reference/configuration/). | Applies Satz's shared styling to a structure you write yourself. Named templates remain the usual starting point when their structure fits. |
 | [report](#report) | required content body, optional config dictionary, theme name or none (default neutral). | Returns report content with headings, page setup and report front matter. |
 | [article](#article) | optional title, authors, affiliations, abstract and date; config/theme; required body. `authors` accepts one record directly or an array of records; each has a required string/content name and optional one-based affiliation indices. Affiliations are strings/content. | Returns article content with full-width metadata and a column-based body. |
-| [letter](#letter) / [brief](#brief) | English canonical fields: `sender`, `recipient`, `date`, `reference-line`, `subject`, `enclosure-list`, `attachments`, `signature-addition`, `postal-mark`, and appearance/layout options. `language` is `"de"` or `"en"`. German argument and record names are aliases. Omitting `date` uses the compilation date; `show-date: false` does not hide reference fields. | Returns a complete letter layout around the supplied body content. |
+| [letter](#letter) | English canonical fields: `sender`, `recipient`, `date`, `reference-line`, `subject`, `enclosure-list`, `attachments`, `signature-addition`, `postal-mark`, and appearance/layout options. `language` is `"de"` or `"en"`. Letter argument and record names are English. Omitting `date` uses the compilation date; `show-date: false` does not hide reference fields. | Returns a complete letter layout around the supplied body content. |
 | [invoice](#invoice) / [rechnung](#rechnung) | English canonical fields: `sender`, `recipient`, `date`, `invoice-number`, `service-date`, `subject`, `items`, `qr`, `qr-amount`, and `qr-purpose`. Sender/recipient follow the letter record contract. Items are records or three-value tuples: description (string/content), positive numeric quantity, nonnegative numeric unit price. Output labels are German; German input names are aliases. | Returns a complete invoice layout around the supplied body content. |
 | [journal-entry](#journal-entry) | title/date/keywords strings, required body, config/theme. Uses ISO B5 by default. Date is blank or a valid YYYY-MM-DD, DD/MM/YY, or DD/MM/YYYY date, optionally prefixed with weekday. | Returns a formatted entry and registers its metadata for the index. |
 | [journal-index](#journal-index) | config/theme; finds entries in the document, sorts dated entries chronologically, groups them by month, and places undated entries last. `remember` and `question` each wrap supplied content. | Returns the generated index content. |
@@ -40,15 +40,13 @@ The staged candidate check compiles the quick-start and representative template 
 
 ## Browse functions
 
-[`letter`](#letter) / [`brief`](#brief) · [`invoice`](#invoice) / [`rechnung`](#rechnung) · [`complaint`](#complaint) / [`klageschrift`](#klageschrift) · [`guest-contract`](#guest-contract) / [`gastspielvertrag`](#gastspielvertrag) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`book-index`](#book-index) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`custom`](#custom) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
+[`letter`](#letter) · [`invoice`](#invoice) / [`rechnung`](#rechnung) · [`complaint`](#complaint) / [`klageschrift`](#klageschrift) · [`guest-contract`](#guest-contract) / [`gastspielvertrag`](#gastspielvertrag) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`book-index`](#book-index) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`custom`](#custom) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
 
 ## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. `letter` exposes an English signature and forwards compatibility arguments to `brief`. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
-<a id="brief"></a><a id="letter"></a>
-### `letter` / `brief` ([`letter/template.typ`](https://github.com/kylekahraman/satz/blob/main/letter/template.typ))
-
-`letter` exposes English named arguments; `..legacy` accepts compatible German names.
+<a id="letter"></a>
+### `letter` ([`lib.typ`](https://github.com/kylekahraman/satz/blob/main/lib.typ))
 
 ```text
 #let letter(
@@ -56,6 +54,7 @@ These signatures are taken from the current source; they show every optional arg
   sender: none,
   recipient: none,
   date: none,
+  show-date-label: none,
   reference-line: none,
   subject: none,
   enclosure-list: none,
@@ -84,86 +83,12 @@ These signatures are taken from the current source; they show every optional arg
   theme: "neutral",
   config: (:),
   font: "Inter",
-  ..legacy,
 )
 ```
 
-`brief` retains its existing signature:
+`letter` uses English argument and address field names. Set `language: "de"` for German labels or `"en"` for English labels.
 
-```text
-#let brief(
-  absender: none,
-  empfaenger: none,
-  datum: none,
-  geschaeftszeile: none,
-  betreff: none,
-  anlagenverzeichnis: none,
-  anlagen: none,
-  signatur_zusatz: none,
-  signatur: none,
-  postvermerk: none,
-  lang: none,
-  sender: none,
-  recipient: none,
-  date: none,
-  reference-line: none,
-  subject: none,
-  enclosure-list: none,
-  attachments: none,
-  signature-addition: none,
-  postal-mark: none,
-  language: none,
-  signature: none,
-  fold-marks: none,
-  address-window: none,
-  page-numbers: none,
-  digital-sender: none,
-  date-right: none,
-  justify: none,
-  show-sender: none,
-  show-recipient: none,
-  show-date: none,
-  show-subject: none,
-  paper: none,
-  margins: none,
-  font-size: none,
-  line-spacing: none,
-  block-spacing: none,
-  subject-size: none,
-  digital-sender-height: none,
-  theme: "neutral",
-  config: (:),
-  font: "Inter",
-  falzmarken: none,
-  adressfenster: none,
-  seitenzahlen: none,
-  digitaler_absender: none,
-  datum_rechts: none,
-  blocksatz: none,
-  absender_anzeigen: none,
-  empfaenger_anzeigen: none,
-  datum_anzeigen: none,
-  betreff_anzeigen: none,
-  papier: none,
-  seitenraender: none,
-  schriftgroesse: none,
-  zeilenabstand: none,
-  abstaende: none,
-  betreff_groesse: none,
-  digitaler_absender_hoehe: none,
-  body
-)
-```
-
-The German defaults shown as `none` resolve to the postal values: signature,
-fold marks, address window, page numbers, sender/recipient/date/subject blocks
-and justification are enabled; the digital sender and right-aligned date are
-disabled. `font` is the shared direct typography option. Supplying both
-spellings of one value is an error.
-
-A single `reference-line` can be a pair, such as `("Customer number", "123")`.
-For several references, pass an array of pairs, for example
-`(("Customer number", "123"), ("Project", "ABC"))`.
+A single `reference-line` accepts a `(label, value)` pair; several references use an array of pairs.
 
 <a id="rechnung"></a>
 <span id="invoice"></span>

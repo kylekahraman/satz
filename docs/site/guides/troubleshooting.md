@@ -14,7 +14,7 @@ The current tutorials use a local checkout because 0.2.0 is being usability-test
 
 First compare the imported package version with the page's version label. A feature marked **development** may only exist in the 0.2.0 candidate source. Published imports are fixed to the version in the import line, so installing a newer editor does not add missing package functions.
 
-Then check spelling and punctuation in the argument name. Use the [API reference](/satz/reference/api/) to confirm the exact name, whether it is required, and its default. For example, the letter API uses the established German field names even though `letter` is its English alias.
+Then check spelling and punctuation in the argument name. Use the [API reference](/satz/reference/api/) to confirm the exact name, whether it is required, and its default. For example, `letter` uses English names such as `sender` and `recipient` even for German output.
 
 ## Typst rejects a setting value
 

@@ -121,7 +121,7 @@ arguments described in their source API comments and guides.
 | all document templates | Default to `theme: "neutral"` or the equivalent black-on-white template defaults. Use `theme: "slate"` for the former shared blue-gray palette where themes are accepted. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
 | `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above. |
-| `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`; German names are aliases. Nested config only accepts the documented page, typography, color, and link keys. |
+| `letter` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`. Nested config only accepts the documented page, typography, color, and link keys. |
 | `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Canonical direct names are `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, and `qr-purpose`; German names are aliases. Nested config accepts the same limited appearance keys as letters. |
 | `book` (experimental) | A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; neutral black accent/ink by default. `theme: "slate"` selects the former blue-gray palette. |
 | `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, black-on-white neutral cover palette; `theme` defaults to `"neutral"`, and layout defaults to `"classic"`. Generated title content requires `layout: "research"` or `"minimal"`; classic requires `body` and remains the composable slot-based layout. Covers consume only the documented page, font, and color keys; other valid shared keys are accepted and ignored. They do not inherit a following document's `theme` or `config`. The research layout leaves `4.5cm` above its title block. |
@@ -178,7 +178,7 @@ three fields. Descriptions accept strings or content, quantities are positive
 numbers, and unit prices are non-negative numbers. The existing German tuple
 form remains supported.
 
-`letter` / `brief` accepts only `language: "de"` or `language: "en"` (the German
+`letter` accepts only `language: "de"` or `language: "en"` (the German
 alias is `lang:`). DFG proposals accept `form-date` as a display string and
 `check-pages` as a boolean. NWO profiles currently require the integer year
 `2026`; an equal-looking floating-point value is rejected.
@@ -192,7 +192,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 | custom | kind defaults to report; `theme` defaults to neutral; config, optional header/footer, required body. Shared configuration is listed above. `personal()` is not exported in 0.2.0. |
 | report | required body, config, theme (neutral by default; none retains its legacy palette). |
 | article | optional title, authors, affiliations, abstract and date; config/theme; required body. `authors` accepts one record directly or an array of records, each with a required string/content name and optional one-based affiliation indices. Affiliations are strings/content. |
-| brief / letter | English canonical fields are `sender`, `recipient`, `date`, `reference-line`, `subject`, `enclosure-list`, `attachments`, `signature-addition`, and `postal-mark`; optional `language` is `de` or `en`. Sender/recipient are records with string address fields; optional logo is content/none. Appearance flags and layout options are booleans, strings, lengths, or dictionaries. German argument and record names are aliases. Omitting `date` uses the compilation date; `show-date: false` hides the date without hiding supplied reference fields. |
+| letter | English canonical fields are `sender`, `recipient`, `date`, `reference-line`, `subject`, `enclosure-list`, `attachments`, `signature-addition`, and `postal-mark`; optional `language` is `de` or `en`. Sender/recipient are records with string address fields; optional logo is content/none. Appearance flags and layout options are booleans, strings, lengths, or dictionaries. Letter argument and record names are English. Omitting `date` uses the compilation date; `show-date: false` hides the date without hiding supplied reference fields. |
 | rechnung / invoice | English canonical fields are `sender`, `recipient`, `date`, `invoice-number`, `service-date`, `subject`, and `items`; `qr`, `qr-amount`, and `qr-purpose` control payment encoding. Sender/recipient follow the letter record contract. Items are records or three-value tuples: description (string/content), positive numeric quantity, nonnegative numeric unit price. Output is German; German input names are aliases. |
 | journal-entry | title/date/keywords strings, required body, config/theme. Date is blank or a valid YYYY-MM-DD, DD/MM/YY, or DD/MM/YYYY date, optionally prefixed with weekday. |
 | journal-index | config/theme; queries journal entries and groups blank dates under Undated. remember and question are content blocks. |
@@ -219,11 +219,9 @@ Known shared configuration groups (page, typography, headings, journal, decorati
 The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
 
 ## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. `letter` exposes English named arguments and forwards compatibility arguments to `brief`. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+These signatures are taken from the current source; they show every optional argument and default. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
-### `letter` / `brief` ([`letter/template.typ`](../letter/template.typ))
-
-`letter` exposes English named arguments; `..legacy` accepts compatible German names.
+### `letter` ([`lib.typ`](../lib.typ))
 
 ```text
 #let letter(
@@ -231,6 +229,7 @@ These signatures are taken from the current source; they show every optional arg
   sender: none,
   recipient: none,
   date: none,
+  show-date-label: none,
   reference-line: none,
   subject: none,
   enclosure-list: none,
@@ -259,82 +258,12 @@ These signatures are taken from the current source; they show every optional arg
   theme: "neutral",
   config: (:),
   font: "Inter",
-  ..legacy,
 )
 ```
 
-`brief` retains its existing signature:
+`letter` uses English argument and address field names. Set `language: "de"` for German labels or `"en"` for English labels.
 
-```text
-#let brief(
-  absender: none,
-  empfaenger: none,
-  datum: none,
-  geschaeftszeile: none,
-  betreff: none,
-  anlagenverzeichnis: none,
-  anlagen: none,
-  signatur_zusatz: none,
-  signatur: none,
-  postvermerk: none,
-  lang: none,
-  sender: none,
-  recipient: none,
-  date: none,
-  reference-line: none,
-  subject: none,
-  enclosure-list: none,
-  attachments: none,
-  signature-addition: none,
-  postal-mark: none,
-  language: none,
-  signature: none,
-  fold-marks: none,
-  address-window: none,
-  page-numbers: none,
-  digital-sender: none,
-  date-right: none,
-  justify: none,
-  show-sender: none,
-  show-recipient: none,
-  show-date: none,
-  show-subject: none,
-  paper: none,
-  margins: none,
-  font-size: none,
-  line-spacing: none,
-  block-spacing: none,
-  subject-size: none,
-  digital-sender-height: none,
-  theme: "neutral",
-  config: (:),
-  font: "Inter",
-  falzmarken: none,
-  adressfenster: none,
-  seitenzahlen: none,
-  digitaler_absender: none,
-  datum_rechts: none,
-  blocksatz: none,
-  absender_anzeigen: none,
-  empfaenger_anzeigen: none,
-  datum_anzeigen: none,
-  betreff_anzeigen: none,
-  papier: none,
-  seitenraender: none,
-  schriftgroesse: none,
-  zeilenabstand: none,
-  abstaende: none,
-  betreff_groesse: none,
-  digitaler_absender_hoehe: none,
-  body
-)
-```
-
-The German arguments default to `none` and resolve to the postal defaults:
-signature, fold marks, address window, page numbers, sender/recipient/date/
-subject blocks, and justification are enabled; the digital sender and
-right-aligned date are disabled. `font` is the shared direct typography option.
-Supplying both spellings of one value is an error.
+A single `reference-line` accepts a `(label, value)` pair; several references use an array of pairs.
 
 ### `rechnung` ([`invoice/rechnung.typ`](../invoice/rechnung.typ))
 

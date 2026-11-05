@@ -3,27 +3,27 @@
 // Distributed under LPPL 1.3c or later; see LPPL-1.3c.txt and README.md.
 // The original source and compiled reference are available in the linked archive.
 
-#import "../../lib.typ": brief
+#import "../../lib.typ": letter
 
-#show: brief.with(
-  empfaenger: (
+#show: letter.with(
+  recipient: (
     name: "Petra Mustermann",
-    strasse: "Vor dem Berg 1",
-    plz_ort: "12345 Musterhausen",
+    street: "Vor dem Berg 1",
+    postal-code-city: "12345 Musterhausen",
   ),
   // The source uses today's date; freeze the date printed in the reference PDF.
-  datum: "16. Februar 2018",
-  datum_anzeigen: false,
-  absender_anzeigen: false,
-  betreff_anzeigen: false,
-  signatur: false,
+  date: "16. Februar 2018",
+  show-date: false,
+  show-sender: false,
+  show-subject: false,
+  signature: false,
   font: "New Computer Modern",
-  blocksatz: true,
-  schriftgroesse: 12pt,
-  zeilenabstand: 6.2pt,
+  justify: true,
+  font-size: 12pt,
+  line-spacing: 6.2pt,
   // Reference geometry, expressed through existing public configuration.
-  seitenraender: (left: 26.25mm, right: 26.25mm, top: 63.5mm),
-  abstaende: (empfaenger_text: 20mm),
+  margins: (left: 26.25mm, right: 26.25mm, top: 63.5mm),
+  block-spacing: ("recipient-body": 20mm),
 )
 
 // Workaround: satz's date block always adds a label and uses 9pt text.

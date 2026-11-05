@@ -83,10 +83,10 @@ Could we arrange an appointment next week?
 Kind regards,
 ```
 
-`letter` offers English arguments; `brief` remains available for German and existing inputs. Both use the same layout.
+`letter` uses English argument names and supports German or English output labels.
 The package supplies the page layout, sender/recipient blocks, date, subject, and
 signature line. Write the salutation and closing in the body. Argument and record
-names are English; the German names from 0.1.1 remain aliases. The date is explicit
+names are English. The date is explicit
 here so recompiling later does not silently change the letter; omit it to use the
 compilation date. For a digital letter, see the options below.
 
@@ -161,7 +161,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 
 | Template | Function | Description |
 |---|---|---|
-| **letter** | `letter(...)` / `brief(...)` | DIN 5008-style postal letter with fold/punch marks. Canonical fields: `sender`, `recipient`, `date`, `subject`, `language`, `reference-line`, `enclosure-list`. `language` is `"de"` / `"en"`; German argument and record names remain aliases. |
+| **letter** | `letter(...)` | DIN 5008-style postal letter with fold/punch marks. Canonical fields: `sender`, `recipient`, `date`, `subject`, `language`, `reference-line`, `enclosure-list`. `language` is `"de"` / `"en"`; Letter argument and record names are English. |
 | **invoice** | `invoice(...)` / `rechnung(...)` | German invoice adapted from the letter template. Canonical fields: `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, `qr-purpose`. Optional EPC QR code; output remains German. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary on ISO B5 with entries, keywords, and auto-generated monthly index |
 | **article** | `article(...)` | Articles and manuscripts with title, authors, affiliations, and abstract; configurable columns |
@@ -238,10 +238,10 @@ defaults and their value contracts.
 
 ### Letters — language and PDF applications
 
-`letter()` and `brief()` accept `language: "de"` (default) or `"en"`.
+`letter()` accepts `language: "de"` (default) or `"en"`.
 This changes labels for phone, email, date, attachments, and page numbers, and
 sets the Typst text language for hyphenation. It does not change argument names.
-English argument and record names are canonical; the German names remain aliases.
+Use English argument and record names in either language.
 
 The postal layout remains the default. For an application sent as a PDF, hide
 the envelope-specific components:
@@ -288,9 +288,7 @@ Use `enclosure-list: ("Protocol copy", "Schedule copy")` to print an enclosure
 list without embedding files. If `attachments` also contains file paths, the
 named list supplies their display labels; without it, the paths are the fallback.
 
-The German names from 0.1.1 remain aliases: `absender`, `empfaenger`, `datum`,
-`betreff`, `lang`, `falzmarken`, `adressfenster`, `seitenzahlen`,
-`digitaler_absender`, `datum_rechts`, `blocksatz`, `abstaende`, and `signatur`.
+Migration from 0.1.1: replace `brief` with `letter` and use English argument and address field names, such as `sender`, `recipient`, `street`, and `postal-code-city`.
 
 ### Invoice — EPC QR code
 
@@ -361,7 +359,7 @@ defaults.typ         ← unified defaults + merge()
 class.typ            ← shared document layer + public `custom()` + satz-figure
 citation.typ         ← citepre() — author-year cite without parens
 cover.typ            ← cover-page() — logos/body/footer slots
-letter/              ← brief() — DIN 5008 letter, i18n (de/en)
+letter/              ← letter implementation — DIN 5008, i18n (de/en)
 invoice/             ← rechnung() — German invoice, EPC QR code
 journal/             ← journal-entry / journal-index + remember/question
 report/              ← report() — thin wrapper around the shared document layer

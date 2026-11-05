@@ -13,13 +13,13 @@
 /// For the shared config fields and baseline values, hover `satz.defaults` in
 /// the editor. The same import exposes templates such as `satz.report`.
 ///
-/// English argument names are canonical. German names remain available as
-/// compatibility aliases on templates that historically used them. Covers are
+/// English argument names are canonical. Some templates retain German
+/// compatibility aliases; the letter interface uses English names. Covers are
 /// optional components: pass shared `theme` and `config` explicitly when a
 /// cover should match a document. Document templates default to the neutral
 /// black-on-white palette; pass `theme: "slate"` to use the former blue-gray
 /// shared palette, now available as a named theme.
-#import "letter/template.typ": brief
+#import "letter/template.typ": brief as _render-letter
 /// A DIN 5008-style letter with optional postal and digital components.
 ///
 /// English names are the canonical interface. The postal layout is the default;
@@ -78,7 +78,7 @@
 /// - page-numbers (bool): show continuation-page numbers; defaults to true
 /// - digital-sender (bool): use the compact digital sender header; defaults to false
 /// - date-right (bool): use the standalone right-aligned date when no reference
-///   fields exist; defaults to true
+///   fields exist
 /// - justify (bool): justify body paragraphs; defaults to true
 /// - show-sender (bool), show-recipient (bool), show-date (bool),
 ///   show-subject (bool): include those blocks; all default to true. Hiding the
@@ -98,22 +98,12 @@
 /// - digital-sender-height (length): reserved digital header height; defaults to `19mm`
 /// - body (content): the letter text, including salutation and closing
 ///
-/// German compatibility aliases remain available: `absender`, `empfaenger`,
-/// `datum`, `geschaeftszeile`, `betreff`, `anlagenverzeichnis`, `anlagen`,
-/// `signatur_zusatz`, `postvermerk`, `lang`, `signatur`, `falzmarken`,
-/// `adressfenster`, `seitenzahlen`, `digitaler_absender`, `datum_rechts`,
-/// `datum_label_anzeigen`,
-/// `blocksatz`, `absender_anzeigen`, `empfaenger_anzeigen`, `datum_anzeigen`,
-/// `betreff_anzeigen`, `papier`, `seitenraender`, `schriftgroesse`,
-/// `zeilenabstand`, `abstaende`, `betreff_groesse`, and
-/// `digitaler_absender_hoehe`. German nested address fields are `zusatz`,
-/// `strasse`, `plz_ort`, `telefon`, and `land`. Supplying both spellings of the
-/// same value produces a field-specific conflict error.
 #let letter(
   body,
   sender: none,
   recipient: none,
   date: none,
+  show-date-label: none,
   reference-line: none,
   subject: none,
   enclosure-list: none,
@@ -142,12 +132,22 @@
   theme: "neutral",
   config: (:),
   font: "Inter",
-  ..legacy,
 ) = {
-  brief(
+  for (record, forbidden) in (
+    (sender, ("zusatz", "strasse", "plz_ort", "telefon")),
+    (recipient, ("zusatz", "strasse", "plz_ort", "land")),
+    (block-spacing, ("absender_empfaenger", "absender_datum", "absender_betreff", "absender_text", "empfaenger_datum", "empfaenger_betreff", "empfaenger_text", "datum_betreff", "betreff_text", "datum_text", "signatur")),
+  ) {
+    if type(record) == dictionary {
+      assert(not forbidden.any(key => key in record),
+        message: "Letter records and spacing use English field names; see the letter documentation.")
+    }
+  }
+  _render-letter(
     sender: sender,
     recipient: recipient,
     date: date,
+    show-date-label: show-date-label,
     reference-line: reference-line,
     subject: subject,
     enclosure-list: enclosure-list,
@@ -176,7 +176,6 @@
     theme: theme,
     config: config,
     font: font,
-    ..legacy,
     body,
   )
 }

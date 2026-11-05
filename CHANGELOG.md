@@ -75,8 +75,12 @@ LaTeX/KOMA-Script parity.
 
 ### Letter and invoice inputs
 
-- Accept English top-level names and English sender/recipient fields alongside
-  the existing German spellings; both paths normalize to the existing renderers.
+- Breaking change: the letter template is exported as `letter` with English
+  argument and address-field names. Replace `brief` and German letter options
+  when migrating from 0.1.1; German output remains available with `language: "de"`.
+
+- Accept English top-level names and English sender/recipient fields for postal
+  templates; invoice retains its existing German input aliases.
 - Accept invoice items as `(description, quantity, unit-price)` records or keep
   the original tuple form. Invoice output remains German; English input does not
   imply localization.

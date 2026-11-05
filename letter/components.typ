@@ -170,7 +170,7 @@
 /// - datum (str, none): date for the final column; `none` omits that column
 /// - zeilenabstand (length): line spacing
 /// - strings (dictionary): translated "Datum"
-#let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings) = {
+#let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings, show-date-label: true) = {
   block(width: 100%)[
     #let alle_posten = if datum == none {
       geschaeftszeile
@@ -182,7 +182,8 @@
     #let bloecke = alle_posten.enumerate().map(((i, pair)) => {
       let text_ausrichtung = if i == spalten_anzahl - 1 { right } else { left }
       block(align(text_ausrichtung)[
-        #text(size: 7.5pt)[#pair.at(0)] \
+        #if datum == none or i != spalten_anzahl - 1 or show-date-label [#text(size: 7.5pt)[#pair.at(0)] \
+        ]
         #text(size: 9pt)[#pair.at(1)]
       ])
     })
@@ -201,8 +202,9 @@
 /// - strings (dictionary): translated `datum` label
 /// - show-label (bool): whether to show the date label; defaults to `true`
 /// -> content: right-aligned label and date
-#let digitales_datum_block(datum, strings) = align(right)[
-  #text(size: 7.5pt)[#strings.datum] \
+#let digitales_datum_block(datum, strings, show-label: true) = align(right)[
+  #if show-label [#text(size: 7.5pt)[#strings.datum] \
+  ]
   #text(size: 9pt)[#datum]
 ]
 

@@ -28,32 +28,18 @@ validation gates are complete; the manifest now identifies the 0.2.0 candidate.
 
 Acceptance: a clean, identified candidate commit with a truthful changelog.
 
-## 2. English interfaces without breaking German documents
+## 2. English interfaces and migration
 
-Status: implemented and checked by `examples/latex-parity/check_english_inputs.py`.
-German and English spellings render equivalent letter, invoice, complaint, and
-guest-contract content, and conflicting aliases, malformed records, and invalid
-item values fail clearly.
+`letter`, `invoice`, `complaint`, and `guest-contract` are the English entry
+points. In 0.2.0, `letter` uses English argument and address-field names; the
+old public `brief` name and German letter arguments are removed. This is a
+breaking change from 0.1.1 and must be highlighted in migration notes. German
+letter output remains available through `language: "de"`.
 
-`letter`, `invoice`, `complaint`, and `guest-contract` are the documented English
-entry points; `brief`, `rechnung`, `klageschrift`, and `gastspielvertrag` remain
-compatibility aliases. Add English input support to the familiar public entry
-points while continuing to accept existing German calls. Preserve the German
-entry points as well.
-
-Normalize both spellings once into one representation before rendering.
-Translate nested records too: adding `sender` without English street/address
-fields leaves the interface half translated. If a caller supplies both names
-for the same field, report a clear conflict instead of silently choosing one.
-Do not implement two separate letter or invoice layouts.
-
-Document spelling separately from output language. English field names must
-also be usable for German letters. Invoice output is currently hard-coded to
-German; English input aliases alone must not be advertised as English invoice
-localization. Decide and document that scope explicitly.
-
-Acceptance: old German examples and new English examples compile; equivalent
-inputs produce equivalent document content/layout; conflicts identify the field.
+`rechnung`, `klageschrift`, and `gastspielvertrag` and their German arguments
+remain supported; English input aliases normalize to their existing renderers.
+Invoice, complaint, and guest-contract output remain German. The focused checks
+compile the supported English and German interfaces and reject invalid values.
 
 ## 3. Resolve appearance consistently
 

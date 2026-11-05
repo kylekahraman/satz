@@ -87,7 +87,7 @@ Copy only these three settings into the existing `letter.with(...)` call; do not
 
 ## Language and version
 
-`language: "de"` selects German template labels and `language: "en"` selects English labels. This setting does not translate the message you write. The English option names are documented above; the German names from 0.1.1 remain compatibility aliases.
+`language: "de"` selects German template labels and `language: "en"` selects English labels. This setting does not translate the message you write. Use English option and address field names for either output language.
 
 All examples on this site use the Satz 0.2.0 API. While 0.2.0 is under usability review, import it from the local package as shown. After the release is published to Typst Universe, change only the package namespace from `@local` to `@preview`; keep version `0.2.0`.
 

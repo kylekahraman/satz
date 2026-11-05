@@ -16,7 +16,7 @@ Satz aims to make common document decisions coherent across templates while leav
 ## Existing differences to resolve carefully
 
 - `report` and `journal-entry` use shared `config`; `article` combines document fields and shared config; `book` offers common style arguments plus advanced config.
-- `letter` exposes English argument names and forwards German compatibility options to `brief`; `invoice` and `rechnung` support both spellings.
+- `letter` exposes English argument names; `invoice` and `rechnung` support both spellings.
 - Some functions take content directly; others use `#show: function.with(...)` to style following document content.
 - Template readiness varies. The book and article APIs are still developing, and DFG proposal remains work in progress.
 

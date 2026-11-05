@@ -37,6 +37,8 @@
 /// - date (str, none): date text. Omitting it uses the compilation date formatted
 ///   as `YYYY-MM-DD`; set an explicit date for reproducible correspondence.
 ///   `none` does not hide the date—use `show-date: false` for that.
+/// - show-date-label (bool): show the `Date`/`Datum` label above the date;
+///   defaults to true
 /// - subject (str): subject line; defaults to an empty line
 /// - reference-line (array): one `(label, value)` pair or an array of pairs,
 ///   such as `(("Label", "Value"), ("Other", "Value"))`
@@ -85,6 +87,7 @@
 /// `datum`, `geschaeftszeile`, `betreff`, `anlagenverzeichnis`, `anlagen`,
 /// `signatur_zusatz`, `postvermerk`, `lang`, `signatur`, `falzmarken`,
 /// `adressfenster`, `seitenzahlen`, `digitaler_absender`, `datum_rechts`,
+/// `datum_label_anzeigen`,
 /// `blocksatz`, `absender_anzeigen`, `empfaenger_anzeigen`, `datum_anzeigen`,
 /// `betreff_anzeigen`, `papier`, `seitenraender`, `schriftgroesse`,
 /// `zeilenabstand`, `abstaende`, `betreff_groesse`, and
@@ -106,6 +109,7 @@
   sender: none,
   recipient: none,
   date: none,
+  show-date-label: none,
   reference-line: none,
   subject: none,
   enclosure-list: none,
@@ -139,6 +143,7 @@
   seitenzahlen: none,
   digitaler_absender: none,
   datum_rechts: none,
+  datum_label_anzeigen: none,
   blocksatz: none,
   absender_anzeigen: none,
   empfaenger_anzeigen: none,
@@ -171,6 +176,7 @@
   validate-postal-record(absender, "Sender", ("name", "strasse", "plz_ort", "telefon", "email", "website"), nullable-fields: ("zusatz",), content-fields: ("logo",))
   validate-postal-record(empfaenger, "Recipient", ("name", "strasse", "plz_ort", "land"), nullable-fields: ("zusatz",))
   let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[year]-[month]-[day]"))
+  let datum_label_anzeigen = select-alias(datum_label_anzeigen, show-date-label, "datum_label_anzeigen", "show-date-label", true)
   let geschaeftszeile = select-alias(geschaeftszeile, reference-line, "geschaeftszeile", "reference-line", ())
   if type(geschaeftszeile) == array and geschaeftszeile.len() == 2 and geschaeftszeile.all(value => type(value) == str) {
     geschaeftszeile = (geschaeftszeile,)
@@ -217,7 +223,7 @@
     message: "Letter enclosure-list must be an array of strings.")
   assert(type(anlagen) == array and anlagen.all(path => type(path) == str),
     message: "Letter attachments must be an array of PDF path strings.")
-  for (field, value) in (("signature", signatur), ("fold-marks", falzmarken), ("address-window", adressfenster), ("page-numbers", seitenzahlen), ("digital-sender", digitaler_absender), ("date-right", datum_rechts), ("justify", blocksatz), ("show-sender", absender_anzeigen), ("show-recipient", empfaenger_anzeigen), ("show-date", datum_anzeigen), ("show-subject", betreff_anzeigen)) {
+  for (field, value) in (("signature", signatur), ("fold-marks", falzmarken), ("address-window", adressfenster), ("page-numbers", seitenzahlen), ("digital-sender", digitaler_absender), ("date-right", datum_rechts), ("show-date-label", datum_label_anzeigen), ("justify", blocksatz), ("show-sender", absender_anzeigen), ("show-recipient", empfaenger_anzeigen), ("show-date", datum_anzeigen), ("show-subject", betreff_anzeigen)) {
     assert(type(value) == bool, message: "Letter `" + field + "` option must be a boolean.")
   }
   let seitenraender = (
@@ -363,13 +369,14 @@
   }
   if has-reference-block {
     if datum_anzeigen and datum_rechts and geschaeftszeile.len() == 0 {
-      digitales_datum_block(datum, strings)
+      digitales_datum_block(datum, strings, show-label: datum_label_anzeigen)
     } else {
       geschaeftszeile_block(
         geschaeftszeile,
         if datum_anzeigen { datum } else { none },
         zeilenabstand,
         strings,
+        show-date-label: datum_label_anzeigen,
       )
     }
   }
