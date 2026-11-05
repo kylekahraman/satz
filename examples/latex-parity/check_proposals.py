@@ -82,7 +82,7 @@ def main():
             assert two['top'] - one['top'] >= 11 * 1.2
             assert 'Body page 1' in pdf.pages[1].extract_text()
         # Legacy API and the existing consuming document still compile.
-        with compile_doc('legacy', load('dfg-proposal/main.typ').replace('"@preview/satz:0.1.1"', '"/lib.typ"')) as pdf:
+        with compile_doc('legacy', load('dfg-proposal/main.typ').replace('"@preview/satz:0.2.0"', '"/lib.typ"')) as pdf:
             assert len(pdf.pages) > 0
         with compile_doc('publications', base + '= Publications\n@duncan2010\n#dfg-publications("/dfg-proposal/lit.bib")') as pdf:
             sizes = {round(ch['size'], 1) for p in pdf.pages for ch in p.chars}
