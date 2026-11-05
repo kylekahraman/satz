@@ -78,7 +78,7 @@
 /// - page-numbers (bool): show continuation-page numbers; defaults to true
 /// - digital-sender (bool): use the compact digital sender header; defaults to false
 /// - date-right (bool): use the standalone right-aligned date when no reference
-///   fields exist
+///   fields exist; defaults to true
 /// - justify (bool): justify body paragraphs; defaults to true
 /// - show-sender (bool), show-recipient (bool), show-date (bool),
 ///   show-subject (bool): include those blocks; all default to true. Hiding the

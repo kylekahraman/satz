@@ -63,7 +63,7 @@
 /// - page-numbers (bool): show continuation-page numbers; defaults to true
 /// - digital-sender (bool): use the compact digital sender header; defaults to false
 /// - date-right (bool): use the standalone right-aligned date when no reference
-///   fields exist; defaults to false
+///   fields exist; defaults to true
 /// - justify (bool): justify body paragraphs; defaults to true
 /// - show-sender (bool), show-recipient (bool), show-date (bool),
 ///   show-subject (bool): include those blocks; all default to true. Hiding the
@@ -192,7 +192,7 @@
   let adressfenster = select-alias(adressfenster, address-window, "adressfenster", "address-window", true)
   let seitenzahlen = select-alias(seitenzahlen, page-numbers, "seitenzahlen", "page-numbers", true)
   let digitaler_absender = select-alias(digitaler_absender, digital-sender, "digitaler_absender", "digital-sender", false)
-  let datum_rechts = select-alias(datum_rechts, date-right, "datum_rechts", "date-right", false)
+  let datum_rechts = select-alias(datum_rechts, date-right, "datum_rechts", "date-right", true)
   let blocksatz = select-alias(blocksatz, justify, "blocksatz", "justify", true)
   let absender_anzeigen = select-alias(absender_anzeigen, show-sender, "absender_anzeigen", "show-sender", true)
   let empfaenger_anzeigen = select-alias(empfaenger_anzeigen, show-recipient, "empfaenger_anzeigen", "show-recipient", true)

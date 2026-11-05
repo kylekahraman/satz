@@ -78,6 +78,9 @@ LaTeX/KOMA-Script parity.
 
 ### Letter and invoice inputs
 
+- Letters place the date in the standalone right-aligned block by default when
+  no reference fields are supplied. `show-date-label: false` hides its label.
+
 - Breaking change: the letter template is exported as `letter` with English
   argument and address-field names. Replace `brief` and German letter options
   when migrating from 0.1.1; German output remains available with `language: "de"`.

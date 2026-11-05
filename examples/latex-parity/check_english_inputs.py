@@ -80,8 +80,10 @@ Letter body.
         hidden_label = single_reference.replace('date: "2026-10-01"', 'date: "2026-10-01", show-date-label: false')
         hidden_text = render_text(folder, "hidden-date-label", hidden_label)
         assert "Customer" in hidden_text and "2026-10-01" in hidden_text
+        assert "Datum" not in hidden_text
         hidden_no_date = single_reference.replace('date: "2026-10-01"', 'show-date: false, show-date-label: false')
-        assert "Customer" in render_text(folder, "hidden-date-reference", hidden_no_date)
+        no_date_text = render_text(folder, "hidden-date-reference", hidden_no_date)
+        assert "Customer" in no_date_text and "123" in no_date_text
         german_nested = f'#import "{IMPORT}": letter\n#show: letter.with(sender: (strasse: "Street",))\nBody\n'
         result, _ = compile_pdf(folder, "removed-german-address", german_nested)
         assert result.returncode != 0 and "English field names" in result.stderr
