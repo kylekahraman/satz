@@ -41,7 +41,7 @@ With the local package directory from [setup](/satz/getting-started/setup/) avai
 typst compile --package-path packages main.typ
 ```
 
-Typst writes `main.pdf` next to the source. The report starts with your content. A cover and contents pages are optional.
+Typst writes `main.pdf` next to the source. The report starts with your content. Satz does not add a cover automatically. You can create your own cover or use a Satz cover before the show rule; see [Add a cover page](/satz/getting-started/cover-page/). Contents pages are also optional.
 
 ## 3. Change one setting
 

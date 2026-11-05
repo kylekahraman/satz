@@ -3,7 +3,7 @@ title: "Write a research article"
 description: "Create a two-column research article with a title, authors, affiliations, abstract, and ordinary Typst body content."
 ---
 
-Use `article()` when you need a compact research-paper structure with author information and an abstract above a two-column body. This tutorial uses the Satz 0.2.0 local package and fictional research content.
+Use `article()` when you need a compact research-paper structure with author information and an abstract above a two-column body. The article generates its title block, but no separate cover page. Add your own cover or an optional [Satz cover](/satz/getting-started/cover-page/) before the article show rule if you need one. This tutorial uses the Satz 0.2.0 local package and fictional research content.
 
 ## 1. Create the article file
 

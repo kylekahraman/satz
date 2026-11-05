@@ -3,7 +3,7 @@ title: "Add a cover page"
 description: "Build a reusable cover page for a report or thesis with a title, author, and optional project details."
 ---
 
-Use `cover-page()` to add a cover to a larger document. The cover is a component: it does not replace the document template that styles the report, thesis, or book that follows it.
+Satz reports, custom documents, articles, and journal entries do not create a cover automatically. You can write a cover in Typst or use the optional `cover-page()` component. It does not replace the template that styles the following document. The experimental `book` template creates its own title page unless you provide a cover image.
 
 ## 1. Add a research cover to a report
 
@@ -93,6 +93,6 @@ contents page; use `config: (toc: (depth: none))` to add one.
 
 ## 4. Compile and check the cover
 
-Compile with `typst compile --package-path packages main.typ`. Check that the title, author, and other details fit without awkward line breaks and that the first report page follows the cover. For a hand-designed cover, use `layout: "classic"` and pass your own `body: [...]`; the [`cover-page` API entry](/satz/reference/api/#cover-page) documents the available slots and theme names.
+Compile with `typst compile --package-path packages main.typ`. Check that the title, author, and other details fit without awkward line breaks and that the first report page follows the cover. For a hand-designed cover, use `layout: "classic"` and pass your own `body: [...]`; add `logos`, `footer`, or `footer-left` content as needed. You can also write a separate Typst page without using the Satz cover component; the [`cover-page` API entry](/satz/reference/api/#cover-page) documents the available slots and theme names.
 
 This tutorial uses Satz 0.2.0 during usability testing. After publication, change `@local` to `@preview` in the import and keep version `0.2.0`.

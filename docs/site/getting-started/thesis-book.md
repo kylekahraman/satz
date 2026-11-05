@@ -53,7 +53,7 @@ Explain what the findings mean and what they do not establish.
 
 ```
 
-`custom` lets you decide the section order and wording. The `thesis` kind turns on shared long-document behavior such as a table of contents and thesis numbering; it does not generate a university-specific cover or required chapter structure. Confirm those requirements with your department and add the required front matter yourself.
+`custom` lets you decide the section order and wording. The `thesis` kind provides report-style page numbering; contents and lists are optional, and it does not generate a cover or required chapter structure. Add your own cover or use a [Satz cover](/satz/getting-started/cover-page/) before the show rule. Confirm those requirements with your department and add the required front matter yourself.
 
 Move each chapter into its own file when the source becomes difficult to navigate. For example, replace the Introduction text with `#include "chapters/introduction.typ"` and keep the included file in a `chapters/` folder beside `thesis.typ`. When you need a bibliography, create a `.bib` file and add `#bibliography("references.bib", style: "apa")` where the references should appear.
 

@@ -5,7 +5,7 @@ description: "Start a useful research journal in Typst, write entries you can re
 
 A research journal is a record of how your work changes over time. It helps you return to the question you were investigating, remember what you tried, and see why you made a decision. An entry does not need to be polished. It needs enough context that future-you can understand it.
 
-This guide takes you from an empty file to a small, organized journal. It uses the Satz `0.2.0` API from the local package and ordinary Typst files. You can write entries manually; the optional starter and launcher are described at the end.
+This guide takes you from an empty file to a small, organized journal. It uses the Satz `0.2.0` API from the local package and ordinary Typst files. You can write entries manually; the optional starter and launcher are described at the end. The journal entry and index functions do not create a cover. Add your own cover or an optional [Satz cover](/satz/getting-started/cover-page/) when assembling the journal.
 
 > **Before customizing the appearance:** this guide keeps each entry in a separate `.typ` file. If you want to change the journal-wide style, create `journal-style.typ` and import it from both `main.typ` and every entry. A config defined only in `main.typ` does not reach the separate entry files. The default setup needs no `journal-style.typ`; the optional style module is explained in [Section 5](#5-optional-shared-appearance-settings).
 

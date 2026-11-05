@@ -1944,10 +1944,9 @@ text height. Must be called inside `nwo-proposal`.
 
 
 
-Create a research notebook cover with a neural-connectivity motif.
+Create a research notebook cover with title and optional metadata.
 
-Render a research title page with a neural-connectivity illustration. The
-illustration uses the chosen primary, accent, and paper colors. A following
+Render a research title page with a title, optional metadata, and logos. A following
 document does not inherit this cover's theme or config; pass matching values
 to both calls if they should share an appearance.
 

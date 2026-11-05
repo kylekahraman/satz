@@ -60,6 +60,9 @@ LaTeX/KOMA-Script parity.
   baseline distance (default `0.5`). This replaces the earlier decorative list
   spacing controls and can reflow existing reports.
 
+- Remove the fixed neuroscience illustration from research covers; the drawing
+  is archived for possible future use. Covers remain optional and customizable.
+
 ### Other development work already committed
 
 - Expose `custom()` for author-defined document structures. Named templates
