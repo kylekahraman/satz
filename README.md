@@ -393,6 +393,16 @@ before `config`, so the nested override wins.
 
 Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`, `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
 
+Captions default to a regular label in a hanging layout: wrapped lines align
+with the caption text. To use an inline label or bold only the label, set
+`captions: (hanging: false, label-weight: "bold")`. The full options are in the
+[configuration reference](docs/configuration-reference.md).
+
+Captions default to a regular label in a hanging layout: wrapped lines align
+with the caption text. To use an inline label or bold only the label, set
+`captions: (hanging: false, label-weight: "bold")`. The full options are in the
+[configuration reference](docs/configuration-reference.md).
+
 ### Contents, figure lists, and table lists
 
 The local development version uses native heading numbers and hanging indents
@@ -704,6 +714,8 @@ Keep appendix titles themselves free of repeated “Appendix A” wording.
 
 Configuration adds `typography.math-font` and `typography.mono-font`
 (both default to `auto`), `captions.alignment`, `captions.label-weight`,
+`captions.hanging` (true by default),
+`captions.hanging` (true by default),
 and opt-in `headings.h1-pagebreak`. Callouts accept an attached `title:`.
 The [research report audit](docs/report-parity-audit.md) records what was
 visually verified and what still differs from LaTeX. These APIs are unreleased.

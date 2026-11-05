@@ -96,8 +96,8 @@
 ///     (10pt), `caption-position` (`top` or `bottom`; `top`), `caption-gap` (6pt).
 ///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-///   - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
-///     `label-weight` (`"regular"`).
+///   - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`left`),
+///     `label-weight` (`"regular"`), `hanging` (`true`).
 ///   - `toc`, `lof`, `lot`: `depth` (book toc defaults to 0; other depths
 ///     `none`), `title` (default English title), `indent` (`auto`),
 ///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em for toc;

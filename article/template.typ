@@ -80,8 +80,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), and `list-spacing`
 ///     (1.2em) are lengths controlling callout geometry and content gaps.
-///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
-///     and `label-weight` (`"regular"`) style captions.
+///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (`left`),
+///     `label-weight` (`"regular"`), and `hanging` (`true`) style captions.
 ///   - `toc` defaults: `depth` (none or non-negative int; article overrides to
 ///     0), `title` (content or none; `[Table of Contents]`), `indent`
 ///     (length or auto; auto), `entry-size` (10pt), `leading` (0.65em),

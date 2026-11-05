@@ -30,7 +30,7 @@ Shared groups in `defaults.typ` participate in common validation. If a new share
 1. Create or extend the relevant template folder. Keep its public function, defaults, components, and compiling example close together.
 2. Use named arguments for semantic fields, and accept `config` for appearance that follows the shared contract.
 3. Reuse the internal `document-class()` when a template needs the shared page, text, heading, and paragraph behavior. Document authors who supply their own structure use public `custom()`. A standalone helper should not install global show rules unless its documented use requires that.
-4. Write `///` documentation for each exported function. State each argument's type, default, accepted values, and whether it expects content or returns content. Include a short example.
+4. Write `///` documentation for each exported function. State each argument's type, default, accepted values, and whether it expects content or returns content. Include a short example. For shared `config` fields, link to the configuration reference instead of copying the shared field list into each template docstring.
 5. Export the intended public name from `lib.typ`, then add it to the overview table and detailed section in `docs/site/reference/api.md`.
 6. Add a real example or focused regression check in `examples/` and include the source in the existing check workflow when appropriate.
 

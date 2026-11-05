@@ -19,6 +19,34 @@ The pattern in @response-plot shows a larger response in the second condition.
 
 The `caption` is content in square brackets. The label in angle brackets must be unique within the document. Typst numbers the figure and resolves `@response-plot` to its number. If the path or label is misspelled, the compiler reports it.
 
+Satz formats captions with a regular label and a hanging layout by default:
+when the caption wraps, its later lines start under the caption text, not under
+“Figure 1:”. To bold the label or return to an inline label, configure the
+document:
+
+```typst
+#show: report.with(config: (
+  captions: (label-weight: "bold", hanging: false),
+))
+```
+
+## Keep text flowing around large figures
+
+Figures are in the text flow by default. If a large figure does not fit in the
+remaining space, Typst moves the whole figure to the next page and leaves that
+space unused. To let later content fill the gap, make figures float to the
+nearest page top or bottom with Typst's native placement option:
+
+```typst
+#set figure(placement: auto)
+```
+
+You can also set `placement: auto` on an individual `figure`. Floats may move
+away from their source location, so keep each figure's markup near its first
+reference and inspect the compiled PDF for placement and reading order. `auto`
+chooses the nearer top or bottom position; it does not reproduce LaTeX's full
+float-placement algorithm. See the [Typst figure reference](https://typst.app/docs/reference/model/figure/).
+
 ## Use a shorter list entry
 
 For long captions, `satz-figure` lets the page show the full caption while a short version appears in the List of Figures:
@@ -71,4 +99,4 @@ The column tuple gives the first column flexible width and lets the second fit i
 
 ## Troubleshoot figure placement
 
-Typst decides where a floating figure fits on the page. If it appears earlier or later than expected, shorten nearby content, reduce the image width, or inspect the compiled PDF before changing margins. For two-column articles, confirm whether a figure should fit one column or span both; mixed-width floats can change page flow. The [layout guide](/satz/guides/layouts/) covers columns, and the [API reference](/satz/reference/api/) lists Satz's figure and table helpers.
+For two-column articles, confirm whether a figure should fit one column or span both; mixed-width floats can change page flow. The [layout guide](/satz/guides/layouts/) covers columns, and the [API reference](/satz/reference/api/) lists Satz's figure and table helpers.

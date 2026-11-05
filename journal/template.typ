@@ -129,8 +129,8 @@
 ///     shared callout styling. Pass the same config to a `callout`
 ///     component separately for these values to style that component.
 ///   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
-///     weights; `"regular"`), and `alignment` (alignment; `center`): shared
-///     caption styling.
+///     weights; `"regular"`), `alignment` (left), and `hanging` (true): shared
+///     caption styling. See the configuration reference for customization.
 ///   - `toc.depth` (`none` or non-negative integer; `none`), `title` (content
 ///     or `none`; `[Table of Contents]`), `indent` (`auto` or length; `auto`),
 ///     `entry-size` (length; `10pt`), `leading` (length; `0.65em`),
@@ -327,8 +327,8 @@
 ///     shared callout styling. Pass the same config to a `callout`
 ///     component separately for these values to style that component.
 ///   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
-///     weights; `"regular"`), and `alignment` (alignment; `center`): shared
-///     caption styling.
+///     weights; `"regular"`), `alignment` (left), and `hanging` (true): shared
+///     caption styling. See the configuration reference for customization.
 ///   - `toc.depth` (`none` or non-negative integer; `none`), `title` (content
 ///     or `none`; `[Table of Contents]`), `indent` (`auto` or length; `auto`),
 ///     `entry-size` (length; `10pt`), `leading` (length; `0.65em`),

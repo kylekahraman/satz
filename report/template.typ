@@ -53,8 +53,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em):
 ///     callout geometry and content gaps.
-///   - `captions.size` (10pt), `weight` (regular), `alignment` (center),
-///     `label-weight` (regular): caption appearance.
+///   - `captions.size` (10pt), `weight` (regular), `alignment` (left),
+///     `label-weight` (regular), `hanging` (true): caption appearance.
 ///   - `toc`, `lof`, `lot`: `depth` (none or non-negative int; none), `title`
 ///     (content or none; Table of Contents/List of Figures/List of Tables),
 ///     `indent` (length or auto; auto), `entry-size` (10pt), `leading` (0.65em),

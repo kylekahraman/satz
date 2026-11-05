@@ -479,7 +479,7 @@ numbers from page 1.
   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
   - `captions`: `size` (10pt), `weight` and `label-weight` (`"regular"`),
-    `alignment` (`center`; proposal default `left`).
+    `alignment` (`left`), `hanging` (`true`): caption styling. The proposal uses left alignment.
   - `toc`, `lof`, `lot`: `depth` (proposal default `0`), `title` (content or
     `none`), `indent` (`auto` or length; `auto`), `entry-size` (10pt),
     `leading` (0.65em), `entry-above` (0.65em for toc; 0.85em for lof/lot),
@@ -973,8 +973,8 @@ showing the title and date on later pages. Checklists work with
     shared callout styling. Pass the same config to a `callout`
     component separately for these values to style that component.
   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
-    weights; `"regular"`), and `alignment` (alignment; `center`): shared
-    caption styling.
+    weights; `"regular"`), `alignment` (left), and `hanging` (true): shared caption styling. See the
+    configuration reference for customization.
   - `toc.depth` (`none` or non-negative integer; `none`), `title` (content
     or `none`; `[Table of Contents]`), `indent` (`auto` or length; `auto`),
     `entry-size` (length; `10pt`), `leading` (length; `0.65em`),
@@ -1113,8 +1113,8 @@ a year only when the journal spans multiple years.
     shared callout styling. Pass the same config to a `callout`
     component separately for these values to style that component.
   - `captions.size` (length; `10pt`), `weight` and `label-weight` (font
-    weights; `"regular"`), and `alignment` (alignment; `center`): shared
-    caption styling.
+    weights; `"regular"`), `alignment` (left), and `hanging` (true): shared caption styling. See the
+    configuration reference for customization.
   - `toc.depth` (`none` or non-negative integer; `none`), `title` (content
     or `none`; `[Table of Contents]`), `indent` (`auto` or length; `auto`),
     `entry-size` (length; `10pt`), `leading` (length; `0.65em`),
@@ -1256,8 +1256,8 @@ A report document class.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em):
     callout geometry and content gaps.
-  - `captions.size` (10pt), `weight` (regular), `alignment` (center),
-    `label-weight` (regular): caption appearance.
+  - `captions.size` (10pt), `weight` (regular), `alignment` (left),
+    `label-weight` (regular), `hanging` (true): caption appearance.
   - `toc`, `lof`, `lot`: `depth` (none or non-negative int; none), `title`
     (content or none; Table of Contents/List of Figures/List of Tables),
     `indent` (length or auto; auto), `entry-size` (10pt), `leading` (0.65em),
@@ -1389,8 +1389,8 @@ article. Figures can span both columns with `scope: "parent", placement: top`.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), and `list-spacing`
     (1.2em) are lengths controlling callout geometry and content gaps.
-  - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
-    and `label-weight` (`"regular"`) style captions.
+  - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (`left`),
+    `label-weight` (`"regular"`), and `hanging` (`true`) style captions.
   - `toc` defaults: `depth` (none or non-negative int; article overrides to
     0), `title` (content or none; `[Table of Contents]`), `indent`
     (length or auto; auto), `entry-size` (10pt), `leading` (0.65em),
@@ -1548,8 +1548,8 @@ numbered chapters inside `book-mainmatter[...]`.
     (10pt), `caption-position` (`top` or `bottom`; `top`), `caption-gap` (6pt).
   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-  - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`center`),
-    `label-weight` (`"regular"`).
+  - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`left`),
+    `label-weight` (`"regular"`), `hanging` (`true`).
   - `toc`, `lof`, `lot`: `depth` (book toc defaults to 0; other depths
     `none`), `title` (default English title), `indent` (`auto`),
     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em for toc;
@@ -1968,7 +1968,8 @@ The generated title sizes are intentionally part of each preset.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-    alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+    alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+    all are ignored.
   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
@@ -2105,7 +2106,8 @@ I choose the structure and content.
   `caption-position` (top/bottom, top), `caption-gap` (6pt); callout fields
   `inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
   `paragraph-spacing` (1em), `list-spacing` (1.2em); caption fields `size`
-  (10pt), `weight` (regular), `alignment` (center), `label-weight` (regular).
+  (10pt), `weight` (regular), `alignment` (left), `label-weight` (regular),
+  `hanging` (true).
   Each of `toc`, `lof`, `lot` accepts `depth` (none or non-negative int;
   none), `title` (content or none; Table of Contents/List of Figures/List of
   Tables), `indent` (length/auto; auto), `entry-size` (10pt), `leading`
@@ -2354,9 +2356,11 @@ reference within this function documentation.
 **Captions (`captions`)**
 - `size` (length; `10pt`): caption text size.
 - `weight` (Typst font weight; `"regular"`): caption text weight.
-- `alignment` (Typst alignment; `center`): caption alignment.
+- `alignment` (Typst alignment; `left`): caption alignment when `hanging` is false.
 - `label-weight` (Typst font weight; `"regular"`): weight of the caption
   label, independently of the rest of the caption.
+- `hanging` (boolean; `true`): put the label in its own column so wrapped
+  lines align with the caption text; `false` keeps it inline.
 
 **Contents (`toc`)**
 - `depth` (`none` or non-negative integer; `none`): included heading depth.
@@ -2465,8 +2469,8 @@ Scientific table with repeated column headings and booktabs-style rules.
     top), `caption-gap` (6pt).
   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-  - `captions`: `size` (10pt), `weight` (regular), `alignment` (center),
-    `label-weight` (regular).
+  - `captions`: `size` (10pt), `weight` (regular), `alignment` (left),
+    `label-weight` (regular), `hanging` (true).
   - `toc`, `lof`, `lot`: `depth` (none/non-negative int; none), `title`
     (content/none; `[Table of Contents]`, `[List of Figures]`, or
     `[List of Tables]`), `indent` (length/auto; auto),
@@ -2553,8 +2557,8 @@ Native figures and their labels retain numbering, references, and outlines.
     top), `caption-gap` (6pt).
   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-  - `captions`: `size` (10pt), `weight` (regular), `alignment` (center),
-    `label-weight` (regular).
+  - `captions`: `size` (10pt), `weight` (regular), `alignment` (left),
+    `label-weight` (regular), `hanging` (true).
   - `toc`, `lof`, `lot`: `depth` (none/non-negative int; none), `title`
     (content/none; `[Table of Contents]`, `[List of Figures]`, or
     `[List of Tables]`), `indent` (length/auto; auto),
@@ -2642,8 +2646,8 @@ Breakable explanatory box that retains the surrounding body line rhythm.
     top), `caption-gap` (6pt).
   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-  - `captions`: `size` (10pt), `weight` (regular), `alignment` (center),
-    `label-weight` (regular).
+  - `captions`: `size` (10pt), `weight` (regular), `alignment` (left),
+    `label-weight` (regular), `hanging` (true).
   - Each of `toc`, `lof`, and `lot`: `depth` (none/non-negative int; none),
     `title` (content/none; `[Table of Contents]`, `[List of Figures]`, or
     `[List of Tables]`, respectively),
@@ -2819,8 +2823,8 @@ a source-checked authoring aid, not universal submission certification.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
   - `captions.size` (10pt, profile override), `weight` (`"regular"`),
-    `alignment` (`center`; NWO defaults to `left`), and
-    `label-weight` (`"regular"`).
+    `alignment` (`left`), `label-weight` (`"regular"`), and `hanging` (`true`). NWO
+    profiles also use left alignment.
   - `toc`, `lof`, and `lot` each accept `depth` (none), `title` (their
     English default title), `indent` (`auto`), `entry-size` (10pt),
     `leading` (0.65em), `entry-above` (0.65em for toc, 0.85em for lof/lot),
@@ -3033,7 +3037,8 @@ to both calls if they should share an appearance.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-    alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+    alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+    all are ignored.
   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
@@ -3145,7 +3150,8 @@ they should share an appearance.
   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-    alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+    alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+    all are ignored.
   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
@@ -3314,9 +3320,11 @@ reference within this function documentation.
 **Captions (`captions`)**
 - `size` (length; `10pt`): caption text size.
 - `weight` (Typst font weight; `"regular"`): caption text weight.
-- `alignment` (Typst alignment; `center`): caption alignment.
+- `alignment` (Typst alignment; `left`): caption alignment when `hanging` is false.
 - `label-weight` (Typst font weight; `"regular"`): weight of the caption
   label, independently of the rest of the caption.
+- `hanging` (boolean; `true`): put the label in its own column so wrapped
+  lines align with the caption text; `false` keeps it inline.
 
 **Contents (`toc`)**
 - `depth` (`none` or non-negative integer; `none`): included heading depth.

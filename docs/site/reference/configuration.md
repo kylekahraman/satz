@@ -40,7 +40,7 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **callouts:** [`callouts.inset`](#callouts-inset), [`callouts.radius`](#callouts-radius), [`callouts.stroke`](#callouts-stroke), [`callouts.title-below`](#callouts-title-below), [`callouts.paragraph-spacing`](#callouts-paragraph-spacing), [`callouts.list-spacing`](#callouts-list-spacing)
 
-**captions:** [`captions.size`](#captions-size), [`captions.weight`](#captions-weight), [`captions.alignment`](#captions-alignment), [`captions.label-weight`](#captions-label-weight)
+**captions:** [`captions.size`](#captions-size), [`captions.weight`](#captions-weight), [`captions.alignment`](#captions-alignment), [`captions.label-weight`](#captions-label-weight), [`captions.hanging`](#captions-hanging)
 
 **toc:** [`toc.depth`](#toc-depth), [`toc.title`](#toc-title), [`toc.indent`](#toc-indent), [`toc.entry-size`](#toc-entry-size), [`toc.leading`](#toc-leading), [`toc.entry-above`](#toc-entry-above), [`toc.main-entry-above`](#toc-main-entry-above), [`toc.title-below`](#toc-title-below), [`toc.below`](#toc-below)
 
@@ -119,8 +119,9 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="callouts-list-spacing"></span>`callouts.list-spacing` | length | `1.2em` | List-item gap inside a callout. |
 | <span id="captions-size"></span>`captions.size` | length | `10pt` | Caption text size. |
 | <span id="captions-weight"></span>`captions.weight` | Typst font-weight value | `"regular"` | Caption text weight. |
-| <span id="captions-alignment"></span>`captions.alignment` | Typst alignment | `center` | Caption alignment. |
+| <span id="captions-alignment"></span>`captions.alignment` | Typst alignment | `left` | Caption alignment when `hanging` is false. |
 | <span id="captions-label-weight"></span>`captions.label-weight` | Typst font-weight value | `"regular"` | Weight of the caption label, independently of caption text. |
+| <span id="captions-hanging"></span>`captions.hanging` | boolean | `true` | Put the label in its own column so wrapped lines align with the caption text. Set to `false` for an inline label. |
 | <span id="toc-depth"></span>`toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. `book-contents(depth: 0)` instead renders an empty titled list; other depths depend on the template. |
 | <span id="toc-title"></span>`toc.title` | content or `none` | `[Table of Contents]` | Contents title; `none` omits it. |
 | <span id="toc-indent"></span>`toc.indent` | `auto` or length | `auto` | Entry indentation policy. |

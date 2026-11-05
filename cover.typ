@@ -194,7 +194,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
 ///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
 ///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///     alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+///     all are ignored.
 ///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
 ///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
 ///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
@@ -442,7 +443,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
 ///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
 ///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///     alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+///     all are ignored.
 ///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
 ///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
 ///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),
@@ -543,7 +545,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below`
 ///     (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em); ignored.
 ///   - `captions.size` (10pt), `weight` (`"regular"`), `alignment` (Typst
-///     alignment, `center`), and `label-weight` (`"regular"`); all are ignored.
+///     alignment, `left`), `label-weight` (`"regular"`), and `hanging` (`true`);
+///     all are ignored.
 ///   - `toc.depth` (none or nonnegative integer, `none`), `title` (content or
 ///     none, `[Table of Contents]`), `indent` (auto or length, `auto`),
 ///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em),

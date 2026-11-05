@@ -72,7 +72,7 @@
 ///   callouts.inset/radius/stroke/title-below/paragraph-spacing/list-spacing
 ///   (lengths, 9pt/3pt/0.8pt/1em/1em/1.2em); captions.size (length, 10pt),
 ///   weight and label-weight (font weights, regular), alignment (alignment,
-///   center); toc.depth (none or nonnegative int, none), title (content or
+///   left), hanging (boolean, true); toc.depth (none or nonnegative int, none), title (content or
 ///   none, Table of Contents), indent (auto or length, auto), entry-size
 ///   (length, 10pt), leading/entry-above (lengths, 0.65em), main-entry-above
 ///   (length, 1.25em), title-below (length, 1.5em), below (length, 2em);

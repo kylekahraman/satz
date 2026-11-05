@@ -96,8 +96,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
 ///   - `captions.size` (10pt, profile override), `weight` (`"regular"`),
-///     `alignment` (`center`; NWO defaults to `left`), and
-///     `label-weight` (`"regular"`).
+///     `alignment` (`left`), `label-weight` (`"regular"`), and
+///     `hanging` (`true`).
 ///   - `toc`, `lof`, and `lot` each accept `depth` (none), `title` (their
 ///     English default title), `indent` (`auto`), `entry-size` (10pt),
 ///     `leading` (0.65em), `entry-above` (0.65em for toc, 0.85em for lof/lot),

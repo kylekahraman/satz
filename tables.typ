@@ -60,8 +60,8 @@
 ///     top), `caption-gap` (6pt).
 ///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-///   - `captions`: `size` (10pt), `weight` (regular), `alignment` (center),
-///     `label-weight` (regular).
+///   - `captions`: `size` (10pt), `weight`/`label-weight` (regular),
+///     `alignment` (left), `hanging` (true).
 ///   - `toc`, `lof`, `lot`: `depth` (none/non-negative int; none), `title`
 ///     (content/none; `[Table of Contents]`, `[List of Figures]`, or
 ///     `[List of Tables]`), `indent` (length/auto; auto),
@@ -159,8 +159,8 @@
 ///     top), `caption-gap` (6pt).
 ///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-///   - `captions`: `size` (10pt), `weight` (regular), `alignment` (center),
-///     `label-weight` (regular).
+///   - `captions`: `size` (10pt), `weight`/`label-weight` (regular),
+///     `alignment` (left), `hanging` (true).
 ///   - `toc`, `lof`, `lot`: `depth` (none/non-negative int; none), `title`
 ///     (content/none; `[Table of Contents]`, `[List of Figures]`, or
 ///     `[List of Tables]`), `indent` (length/auto; auto),

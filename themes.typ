@@ -168,9 +168,10 @@
 /// **Captions (`captions`)**
 /// - `size` (length; `10pt`): caption text size.
 /// - `weight` (Typst font weight; `"regular"`): caption text weight.
-/// - `alignment` (Typst alignment; `center`): caption alignment.
+/// - `alignment` (Typst alignment; `left`): caption alignment when `hanging` is false.
 /// - `label-weight` (Typst font weight; `"regular"`): weight of the caption
 ///   label, independently of the rest of the caption.
+/// - `hanging` (boolean; `true`): align wrapped lines with the caption text.
 ///
 /// **Contents (`toc`)**
 /// - `depth` (`none` or non-negative integer; `none`): included heading depth.
