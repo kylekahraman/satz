@@ -23,7 +23,7 @@ This page documents every public name exported by `lib.typ`. Use the jump list b
 | [nwo-proposal](#nwo-proposal) | scheme/domain/stage/year profile, applicant/title content, config dictionary and required body. Only source-checked 2026 combinations are supported; see [proposal coverage](/satz/guides/proposals/). nwo-text takes a field and plain string. nwo-key-output allows up to three string/content indicators, two URL strings, and boolean/none open-access. nwo-page-budget takes a unique nonempty key and positive page limit. | Returns formatted proposal content. `nwo-profile` returns the selected profile data; `nwo-page-budget` sets a page-budget check around its body. |
 | [complaint](#complaint) / [klageschrift](#klageschrift) | English canonical court/party/address/value fields, exhibits array of strings, optional PDF path and positive page limit, explicit date, plaintiff designation, font, and required body. German names are aliases. Output remains German. | Rendered document content; use as a show rule or content block as shown in its example. |
 | [guest-contract](#guest-contract) / [gastspielvertrag](#gastspielvertrag) | document mode (vertrag/angebot/rechnung), fee mode (fest/prozent), string artist/event fields, nonnegative integer costs and counts, percentage 0–100, booleans for technician/photographer/small-business, nonnegative transport rate, font, and required body. German names are aliases. Output remains German. | Rendered document content; use as a show rule or content block as shown in its example. |
-| [scientific-table / scientific-tables](#scientific-table) | positive column count, nonempty header content, config and remaining native table arguments; show-rule body, breakable boolean and config. | Return a styled native table, or apply table styling to matching table content. |
+| [scientific-table / scientific-tables](#scientific-table) | positive column count or nonempty array of native column widths, nonempty header content, config and remaining native table arguments; show-rule body, breakable boolean and config. | Return a styled native table, or apply table styling to matching table content. |
 | [callout](#callout) | required body content, optional title content/config and fill/stroke color or auto. | Returns a bordered callout block. |
 | [placeholder](#placeholder) | width/height lengths, label content and config; wrap in a native figure for caption and numbering. | Returns a placeholder block. |
 | [satz-figure](#satz-figure) | required body content, optional full/short caption content and remaining native figure arguments. | Returns a native figure with separate long caption and short list entry. |
@@ -1657,7 +1657,7 @@ Scientific table with repeated column headings and booktabs-style rules.
 )
 ```
 
-- columns (positive int): number of columns; must match the supplied cells
+- columns (positive int or non-empty array): column count or native Typst column widths, such as `(1fr, auto)`; defaults to 1
 - header (array): non-empty array of header cells, one per column
 - config (dictionary): partial overrides merged over the shared defaults.
   Hover the exported `defaults` dictionary for shared keys, types, meanings, and

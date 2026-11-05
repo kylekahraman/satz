@@ -11,7 +11,8 @@
 /// )
 /// ```
 ///
-/// - columns (positive int): number of columns; must match the supplied cells
+/// - columns (positive int or non-empty array): column count or native Typst
+///   column widths, such as `(1fr, auto)`; defaults to 1
 /// - header (array): non-empty array of header cells, one per column
 /// - config (dictionary): partial nested overrides merged over the exported
 ///   `defaults` dictionary. Hover `satz.defaults` for the shared keys, types,
@@ -19,8 +20,8 @@
 ///   `tables.inset`, and `tables.font-size`; other accepted values do not affect
 ///   this helper. The merge helper does not validate unknown values.
 #let scientific-table(columns: 1, header: (), config: (:), ..args) = {
-  assert(type(columns) == int and columns > 0,
-    message: "scientific-table columns must be a positive integer")
+  assert((type(columns) == int and columns > 0) or (type(columns) == array and columns.len() > 0),
+    message: "scientific-table columns must be a positive integer or a non-empty array of column widths")
   assert(type(header) == array and header.len() > 0,
     message: "scientific-table needs header cells")
   let c = merge(defaults, config)
