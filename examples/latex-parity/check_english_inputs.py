@@ -100,7 +100,8 @@ Invoice text body.\n'''
   techniker_honorar: 50, uebernachtung: 80,
   sonstiges_text: "Parking", sonstiges_betrag: 10, buyout_pro_person: 20,
   font: "Libertinus Serif",
-)[Extra clause.]
+)
+Extra clause.
 '''
         english_guest = f'''#import "{IMPORT}": guest-contract
 #show: guest-contract.with(
@@ -114,7 +115,8 @@ Invoice text body.\n'''
   technician-fee: 50, accommodation: 80,
   other-description: "Parking", other-amount: 10, buyout-per-person: 20,
   font: "Libertinus Serif",
-)[Extra clause.]
+)
+Extra clause.
 '''
         assert render_text(folder, "german-guest", german_guest) == render_text(folder, "english-guest", english_guest)
 
