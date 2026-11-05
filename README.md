@@ -83,7 +83,7 @@ Could we arrange an appointment next week?
 Kind regards,
 ```
 
-`letter` is the English name for the letter template; `brief` remains an alias.
+`letter` offers English arguments; `brief` remains available for German and existing inputs. Both use the same layout.
 The package supplies the page layout, sender/recipient blocks, date, subject, and
 signature line. Write the salutation and closing in the body. Argument and record
 names are English; the German names from 0.1.1 remain aliases. The date is explicit
@@ -238,7 +238,7 @@ defaults and their value contracts.
 
 ### Letters — language and PDF applications
 
-`letter()` (German alias `brief()`) accepts `language: "de"` (default) or `"en"`.
+`letter()` and `brief()` accept `language: "de"` (default) or `"en"`.
 This changes labels for phone, email, date, attachments, and page numbers, and
 sets the Typst text language for hyphenation. It does not change argument names.
 English argument and record names are canonical; the German names remain aliases.

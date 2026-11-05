@@ -219,9 +219,51 @@ Known shared configuration groups (page, typography, headings, journal, decorati
 The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
 
 ## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. Aliases share the signature of their target: `letter` / `brief`, `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+These signatures are taken from the current source; they show every optional argument and default. `letter` exposes English named arguments and forwards compatibility arguments to `brief`. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
 ### `letter` / `brief` ([`letter/template.typ`](../letter/template.typ))
+
+`letter` exposes English named arguments; `..legacy` accepts compatible German names.
+
+```text
+#let letter(
+  body,
+  sender: none,
+  recipient: none,
+  date: none,
+  reference-line: none,
+  subject: none,
+  enclosure-list: none,
+  attachments: none,
+  signature-addition: none,
+  postal-mark: none,
+  language: none,
+  signature: none,
+  fold-marks: none,
+  address-window: none,
+  page-numbers: none,
+  digital-sender: none,
+  date-right: none,
+  justify: none,
+  show-sender: none,
+  show-recipient: none,
+  show-date: none,
+  show-subject: none,
+  paper: none,
+  margins: none,
+  font-size: none,
+  line-spacing: none,
+  block-spacing: none,
+  subject-size: none,
+  digital-sender-height: none,
+  theme: "neutral",
+  config: (:),
+  font: "Inter",
+  ..legacy,
+)
+```
+
+`brief` retains its existing signature:
 
 ```text
 #let brief(

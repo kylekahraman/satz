@@ -43,10 +43,52 @@ The staged candidate check compiles the quick-start and representative template 
 [`letter`](#letter) / [`brief`](#brief) · [`invoice`](#invoice) / [`rechnung`](#rechnung) · [`complaint`](#complaint) / [`klageschrift`](#klageschrift) · [`guest-contract`](#guest-contract) / [`gastspielvertrag`](#gastspielvertrag) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`book-index`](#book-index) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`custom`](#custom) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
 
 ## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. Aliases share the signature of their target: `letter` / `brief`, `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. `letter` exposes an English signature and forwards compatibility arguments to `brief`. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
 <a id="brief"></a><a id="letter"></a>
 ### `letter` / `brief` ([`letter/template.typ`](https://github.com/kylekahraman/satz/blob/main/letter/template.typ))
+
+`letter` exposes English named arguments; `..legacy` accepts compatible German names.
+
+```text
+#let letter(
+  body,
+  sender: none,
+  recipient: none,
+  date: none,
+  reference-line: none,
+  subject: none,
+  enclosure-list: none,
+  attachments: none,
+  signature-addition: none,
+  postal-mark: none,
+  language: none,
+  signature: none,
+  fold-marks: none,
+  address-window: none,
+  page-numbers: none,
+  digital-sender: none,
+  date-right: none,
+  justify: none,
+  show-sender: none,
+  show-recipient: none,
+  show-date: none,
+  show-subject: none,
+  paper: none,
+  margins: none,
+  font-size: none,
+  line-spacing: none,
+  block-spacing: none,
+  subject-size: none,
+  digital-sender-height: none,
+  theme: "neutral",
+  config: (:),
+  font: "Inter",
+  ..legacy,
+)
+```
+
+`brief` retains its existing signature:
 
 ```text
 #let brief(

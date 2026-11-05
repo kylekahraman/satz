@@ -161,6 +161,7 @@ The claim.
             "letter-flag": ("brief", '''signatur: "yes",'''),
             "letter-layout-flag": ("brief", '''fold-marks: "yes",'''),
             "letter-alias-conflict": ("brief", '''signatur: false, signature: true,'''),
+            "letter-wrapper-alias-conflict": ("letter", '''signatur: false, signature: true,'''),
             "letter-reference-line": ("brief", '''reference-line: (("Ref", 1),),'''),
             "invoice-item": ("rechnung", '''items: ((description: "Consulting", quantity: 2),),'''),
             "invoice-item-quantity": ("rechnung", '''items: ((description: "Consulting", quantity: 0, unit-price: 80),),'''),
@@ -191,7 +192,7 @@ The claim.
                 assert "Letter `signature` option must be a boolean" in result.stderr
             elif name == "letter-layout-flag":
                 assert "Letter `fold-marks` option must be a boolean" in result.stderr
-            elif name == "letter-alias-conflict":
+            elif name in ("letter-alias-conflict", "letter-wrapper-alias-conflict"):
                 assert "either `signatur` or `signature`" in result.stderr
             elif name == "letter-reference-line":
                 assert "reference-line must be an array of two-string pairs" in result.stderr

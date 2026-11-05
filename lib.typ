@@ -56,7 +56,7 @@
 /// - show-date-label (bool): show the `Date`/`Datum` label above the date;
 ///   defaults to true
 /// - subject (str): subject line; defaults to an empty line
-/// - reference-line (array): reference columns as `(("Label", "Value"), ...)`
+/// - reference-line (array): one `(label, value)` pair or an array of pairs
 /// - enclosure-list (array): enclosure names to print without embedding files
 /// - attachments (array): PDF path strings to embed after the letter
 /// - postal-mark (str): postal note such as "Registered mail"
@@ -109,7 +109,77 @@
 /// `digitaler_absender_hoehe`. German nested address fields are `zusatz`,
 /// `strasse`, `plz_ort`, `telefon`, and `land`. Supplying both spellings of the
 /// same value produces a field-specific conflict error.
-#let letter = brief
+#let letter(
+  body,
+  sender: none,
+  recipient: none,
+  date: none,
+  reference-line: none,
+  subject: none,
+  enclosure-list: none,
+  attachments: none,
+  signature-addition: none,
+  postal-mark: none,
+  language: none,
+  signature: none,
+  fold-marks: none,
+  address-window: none,
+  page-numbers: none,
+  digital-sender: none,
+  date-right: none,
+  justify: none,
+  show-sender: none,
+  show-recipient: none,
+  show-date: none,
+  show-subject: none,
+  paper: none,
+  margins: none,
+  font-size: none,
+  line-spacing: none,
+  block-spacing: none,
+  subject-size: none,
+  digital-sender-height: none,
+  theme: "neutral",
+  config: (:),
+  font: "Inter",
+  ..legacy,
+) = {
+  brief(
+    sender: sender,
+    recipient: recipient,
+    date: date,
+    reference-line: reference-line,
+    subject: subject,
+    enclosure-list: enclosure-list,
+    attachments: attachments,
+    signature-addition: signature-addition,
+    postal-mark: postal-mark,
+    language: language,
+    signature: signature,
+    fold-marks: fold-marks,
+    address-window: address-window,
+    page-numbers: page-numbers,
+    digital-sender: digital-sender,
+    date-right: date-right,
+    justify: justify,
+    show-sender: show-sender,
+    show-recipient: show-recipient,
+    show-date: show-date,
+    show-subject: show-subject,
+    paper: paper,
+    margins: margins,
+    font-size: font-size,
+    line-spacing: line-spacing,
+    block-spacing: block-spacing,
+    subject-size: subject-size,
+    digital-sender-height: digital-sender-height,
+    theme: theme,
+    config: config,
+    font: font,
+    ..legacy,
+    body,
+  )
+}
 #import "invoice/rechnung.typ": rechnung
 /// A German invoice with an optional EPC QR code for bank transfers.
 ///
