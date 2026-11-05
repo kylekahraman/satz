@@ -60,10 +60,10 @@ Typst creates `main.pdf`. Read the page and check the spelling, addresses, date,
 
 ## 4. Add the details you need
 
-Put optional fields inside `letter.with(...)`, after `subject`. For example, this adds a reference line and a list of enclosures:
+Put optional fields inside `letter.with(...)`, after `subject`. A single reference accepts a `(label, value)` pair; for several, pass an array of pairs. For example, this adds a reference line and a list of enclosures:
 
 ```typst
-  reference-line: (("Your reference", "ABC-123"),),
+  reference-line: ("Your reference", "ABC-123"),
   enclosure-list: ("Project outline", "Budget"),
 ```
 

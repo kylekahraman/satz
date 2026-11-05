@@ -38,7 +38,8 @@
 ///   as `YYYY-MM-DD`; set an explicit date for reproducible correspondence.
 ///   `none` does not hide the date—use `show-date: false` for that.
 /// - subject (str): subject line; defaults to an empty line
-/// - reference-line (array): reference columns as `(("Label", "Value"), ...)`
+/// - reference-line (array): one `(label, value)` pair or an array of pairs,
+///   such as `(("Label", "Value"), ("Other", "Value"))`
 /// - enclosure-list (array): enclosure names to print without embedding files
 /// - attachments (array): PDF path strings to embed after the letter
 /// - postal-mark (str): postal note such as "Registered mail"
@@ -171,6 +172,9 @@
   validate-postal-record(empfaenger, "Recipient", ("name", "strasse", "plz_ort", "land"), nullable-fields: ("zusatz",))
   let datum = select-alias(datum, date, "datum", "date", datetime.today().display("[year]-[month]-[day]"))
   let geschaeftszeile = select-alias(geschaeftszeile, reference-line, "geschaeftszeile", "reference-line", ())
+  if type(geschaeftszeile) == array and geschaeftszeile.len() == 2 and geschaeftszeile.all(value => type(value) == str) {
+    geschaeftszeile = (geschaeftszeile,)
+  }
   let betreff = select-alias(betreff, subject, "betreff", "subject", "")
   let anlagenverzeichnis = select-alias(anlagenverzeichnis, enclosure-list, "anlagenverzeichnis", "enclosure-list", ())
   let anlagen = select-alias(anlagen, attachments, "anlagen", "attachments", ())

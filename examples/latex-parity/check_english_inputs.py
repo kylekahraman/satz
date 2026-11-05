@@ -66,6 +66,15 @@ Dear Example Recipient,\nLetter body.\n'''
 Dear Example Recipient,\nLetter body.\n'''
         assert render_text(folder, "german-letter", german_letter) == render_text(folder, "english-letter", english_letter)
 
+        single_reference = f'''#import "{IMPORT}": letter
+#show: letter.with(reference-line: ("Customer", "123"), date: "2026-10-01")
+Letter body.
+'''
+        nested_reference = single_reference.replace('("Customer", "123")', '(("Customer", "123"),)')
+        assert render_text(folder, "single-reference", single_reference) == render_text(folder, "nested-reference", nested_reference)
+        german_reference = single_reference.replace('reference-line:', 'geschaeftszeile:')
+        assert render_text(folder, "german-reference", german_reference) == render_text(folder, "single-reference-again", single_reference)
+
         german_invoice = f'''#import "{IMPORT}": rechnung
 #show: rechnung.with(
   absender: (name: "Example Company", strasse: "Main Street 3", plz_ort: "London", steuernummer: "TAX-1", iban: "", bank: "Example Bank"),
