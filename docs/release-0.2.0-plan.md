@@ -171,9 +171,8 @@ check plus focused API/PDF regressions with pinned inspection dependencies.
 The regression workflow includes shared outlines, tables, callouts,
 placeholders, paragraph rhythm, article layout, and proposal forms. The latest
 local run passes the staged-package check and all focused API/PDF regressions.
-An isolated download of published 0.1.1 previously compiled the stable letter,
-invoice, report, journal, and cover starters; the current rerun is blocked by
-DNS resolution for `packages.typst.org`. The staged source tree is also
+An isolated download of published 0.1.1 compiled the stable letter,
+invoice, report, journal, and cover starters again on 5 November 2026. The staged source tree is also
 installed under an isolated `0.2.0` package name and compiled. Direct package
 imports are version-pinned; the manifest declares compiler minimum 0.15.0, the
 version used for local and CI checks. The tracked examples use placeholders,
@@ -201,10 +200,11 @@ Acceptance: reproducible candidate checks, a clean package, and a migration guid
 Then submit the reviewed 0.2.0 package to Typst Universe as a separate release step.
 
 Current local status: the staged package and focused API/PDF checks pass. The
+5 November staged-package run included the then-current uncommitted worktree;
+repeat it against the exact chosen release commit before submission. The
 independent review found and led to a fix for the `qr-purpose` alias, now covered
-by regression. The published-0.1.1 compatibility check previously passed, but
-its latest rerun could not resolve `packages.typst.org`; confirm that check
-again before submission. Remaining float-placement differences are documented
+by regression. The published-0.1.1 compatibility check passed again on 5 November 2026
+using an isolated download. Remaining float-placement differences are documented
 as acceptable where content stays readable/correctly captioned. Sparse chapter
 endings are addressed through a document-level option in the audited workbook.
 The 69-page report has a recorded full visual review; current local article and
