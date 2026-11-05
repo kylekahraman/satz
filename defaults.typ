@@ -152,9 +152,11 @@
 /// **Captions (`captions`)**
 /// - `size` (length; `10pt`): caption text size.
 /// - `weight` (Typst font weight; `"regular"`): caption text weight.
-/// - `alignment` (Typst alignment; `center`): caption alignment.
+/// - `alignment` (Typst alignment; `left`): caption alignment when not hanging.
 /// - `label-weight` (Typst font weight; `"regular"`): weight of the caption
 ///   label, independently of the rest of the caption.
+/// - `hanging` (boolean; `true`): put the label in its own column so wrapped
+///   lines align with the caption text. Set to `false` for inline labels.
 ///
 /// **Contents (`toc`)**
 /// - `depth` (`none` or non-negative integer; `none`): included heading depth.
@@ -292,8 +294,9 @@
   captions: (
     size: 10pt,
     weight: "regular",
-    alignment: center,
+    alignment: left,
     label-weight: "regular",
+    hanging: true,
   ),
   toc: (
     // Set depth: 0 to disable. none includes all outlined heading levels.

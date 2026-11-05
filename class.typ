@@ -93,8 +93,8 @@
 ///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
 ///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em):
 ///     callout geometry and content rhythm.
-///   - `captions.size` (10pt), `weight` (regular), `alignment` (center),
-///     `label-weight` (regular): caption appearance.
+///   - `captions.size` (10pt), `weight` (regular), `alignment` (left),
+///     `label-weight` (regular), `hanging` (true): caption appearance.
 ///   - `toc`, `lof`, `lot` accept `depth` (none or non-negative integer; none),
 ///     `title` (content or none; list-specific default title), `indent` (length
 ///     or auto; auto), `entry-size` (10pt), `leading` (0.65em), `entry-above`
@@ -367,20 +367,25 @@
         }
       }
     }
-    if c.captions.label-weight != "regular" {
-      let caption-body = if long-cap != none { long-cap } else { it.body }
-      if it.numbering != none {
-        let separator = if it.separator == auto { [: ] } else { it.separator }
-        text(weight: c.captions.label-weight)[
-          #if it.supplement != none { [#it.supplement~] }#it.counter.display(it.numbering)#separator
-        ]
-      }
-      caption-body
-    } else if long-cap != none {
-      // `it` holds supplement/counter/separator but its body is the short
-      // text, so rebuild with the long caption.
-      [#it.supplement #h(0.2em) #it.counter.display(it.numbering)#it.separator#long-cap]
-    } else { it }
+    // Rebuild the visible caption so the label can occupy its own column.
+    // The native caption still supplies numbering and outline entries.
+    let caption-body = if long-cap != none { long-cap } else { it.body }
+    let caption-label = if it.numbering != none {
+      let separator = if it.separator == auto { [: ] } else { it.separator }
+      text(weight: c.captions.label-weight)[
+        #if it.supplement != none { [#it.supplement~] }#it.counter.display(it.numbering)#separator
+      ]
+    } else { none }
+    if c.captions.hanging and caption-label != none {
+      block(width: 100%, grid(
+        columns: (auto, 1fr),
+        column-gutter: 0.2em,
+        caption-label,
+        caption-body,
+      ))
+    } else if caption-label != none {
+      [#caption-label#caption-body]
+    } else { caption-body }
   }
 
   // --- Outline entries ---
@@ -589,7 +594,8 @@
 ///   `caption-position` (top/bottom, top), `caption-gap` (6pt); callout fields
 ///   `inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
 ///   `paragraph-spacing` (1em), `list-spacing` (1.2em); caption fields `size`
-///   (10pt), `weight` (regular), `alignment` (center), `label-weight` (regular).
+///   (10pt), `weight` (regular), `alignment` (left), `label-weight` (regular),
+///   `hanging` (true).
 ///   Each of `toc`, `lof`, `lot` accepts `depth` (none or non-negative int;
 ///   none), `title` (content or none; Table of Contents/List of Figures/List of
 ///   Tables), `indent` (length/auto; auto), `entry-size` (10pt), `leading`

@@ -80,8 +80,10 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `callouts.list-spacing` | length | `1.2em` | List-item gap inside a callout. |
 | `captions.size` | length | `10pt` | Caption text size. |
 | `captions.weight` | Typst font-weight value | `"regular"` | Caption text weight. |
-| `captions.alignment` | Typst alignment | `center` | Caption alignment. |
+| `captions.alignment` | Typst alignment | `left` | Caption alignment when `hanging` is false. |
 | `captions.label-weight` | Typst font-weight value | `"regular"` | Weight of the caption label, independently of caption text. |
+| `captions.hanging` | boolean | `true` | Put the label in its own column so wrapped lines align with the caption text. Set to `false` for an inline label. |
+
 | `toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. `book-contents(depth: 0)` instead renders an empty titled list. Other depths depend on the template. |
 | `toc.title` | content or `none` | `[Table of Contents]` | Contents title; `none` omits it. |
 | `toc.indent` | `auto` or length | `auto` | Entry indentation policy. |
@@ -94,6 +96,14 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `lof.*`, `lot.*` | Same value forms as matching `toc.*` keys, plus boolean `compact` | `depth: none`, titles `[List of Figures]` / `[List of Tables]`, `indent: auto`, `entry-size: 10pt`, `leading: 0.65em`, `entry-above: 0.85em`, `title-below: 1.5em`, `below: 2em`, `compact: false` | Figure/table list settings. Here `depth: none` selects automatic depth. Empty lists are omitted by the report implementation. `compact: true` omits caption text. |
 | `bibliography.style` | CSL style name | `"apa"` | Citation style where bibliography support is enabled. |
 | `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted` | Typst color | `white`, `white`, `black`, `black`, `black`, `black` | Neutral black-on-white default. Use `theme: "slate"` for the former blue-gray palette. |
+
+For inline labels, or to emphasize the label while keeping the caption text regular:
+
+```typst
+#show: report.with(config: (
+  captions: (hanging: false, label-weight: "bold"),
+))
+```
 
 ## Template-specific appearance defaults
 
