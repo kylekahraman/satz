@@ -119,6 +119,10 @@ and justification are enabled; the digital sender and right-aligned date are
 disabled. `font` is the shared direct typography option. Supplying both
 spellings of one value is an error.
 
+A single `reference-line` can be a pair, such as `("Customer number", "123")`.
+For several references, pass an array of pairs, for example
+`(("Customer number", "123"), ("Project", "ABC"))`.
+
 <a id="rechnung"></a>
 <span id="invoice"></span>
 ### `rechnung` ([`invoice/rechnung.typ`](https://github.com/kylekahraman/satz/blob/main/invoice/rechnung.typ))
