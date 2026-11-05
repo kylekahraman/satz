@@ -180,7 +180,7 @@ func TestGeneratedStarterAndEscapedEntryCompile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	configText := strings.Replace(string(config), `theme: "soft-slate"`, `theme: "plum"`, 1)
+	configText := strings.Replace(string(config), `theme: "neutral"`, `theme: "plum"`, 1)
 	configText = strings.Replace(configText, `paper: "a4"`, `paper: "iso-b5"`, 1)
 	if err := os.WriteFile(configPath, []byte(configText), 0o644); err != nil {
 		t.Fatal(err)
