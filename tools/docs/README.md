@@ -10,6 +10,8 @@ npm run build
 python3 tools/docs/check.py
 ```
 
+Run `python3 tools/docs/config_hover.py` after changing shared config descriptions or template defaults, and `python3 tools/docs/config_hover.py --check` to check generated hovers. Shared descriptions live in `defaults.typ`; template-specific defaults are drawn from `docs/configuration-reference.md`, and scope notes are maintained in the generator.
+
 The check compiles complete published-package examples and checks internal page
 links, anchors, document language, and top-level headings. It requires the Typst
 CLI. This is maintainer tooling; readers need neither Python nor Node.js.

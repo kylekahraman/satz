@@ -20,7 +20,7 @@ Avoid adding an option that only duplicates a native Typst setting. Keep documen
 1. Add a sensible default in the shared or template-specific defaults dictionary.
 2. Decide whether the field's type and allowed values can be checked at the public entry point. Add a clear assertion for invalid values when silent misuse would be confusing.
 3. Use the field from the implementation; avoid keeping a setting that does not affect output.
-4. Add the field and its complete meaning to `defaults.typ` and the canonical table in `docs/configuration-reference.md`. The `defaults` dictionary is exported from `lib.typ`; do not copy its full field list into each template docstring.
+4. Add the field and its complete meaning to `defaults.typ` and the canonical table in `docs/configuration-reference.md`. Run `python3 tools/docs/config_hover.py` to regenerate the shared configuration in template hover documentation. Run it with `--check` to detect stale output. Edit the shared descriptions in `defaults.typ`, never the generated blocks.
 5. Update the site configuration reference and add an example showing a small override; compile it.
 
 Shared groups in `defaults.typ` participate in common validation. If a new shared key should be accepted there, add it to the default group. Template-specific values can remain in their own group; keep those values documented and validate them in the template that owns them.
@@ -30,13 +30,13 @@ Shared groups in `defaults.typ` participate in common validation. If a new share
 1. Create or extend the relevant template folder. Keep its public function, defaults, components, and compiling example close together.
 2. Use named arguments for semantic fields, and accept `config` for appearance that follows the shared contract.
 3. Reuse the internal `document-class()` when a template needs the shared page, text, heading, and paragraph behavior. Document authors who supply their own structure use public `custom()`. A standalone helper should not install global show rules unless its documented use requires that.
-4. Write `///` documentation for each exported function. State each argument's type, default, accepted values, and whether it expects content or returns content. Include a short example. For `config`, describe only that template's effective overrides and ignored or validation-only fields; direct users to hover the exported `defaults` dictionary for the shared schema and baseline.
+4. Write `///` documentation for each exported function. State each argument's type, default, accepted values, and whether it expects content or returns content. Include a short example. For generated template config documentation, keep template-specific scope notes in `tools/docs/config_hover.py` and effective defaults in `docs/configuration-reference.md`; regenerate after changes.
 5. Export the intended public name from `lib.typ`, then add it to the overview table and detailed section in `docs/site/reference/api.md`.
 6. Add a real example or focused regression check in `examples/` and include the source in the existing check workflow when appropriate.
 
 Do not export internal helpers merely to make one example compile. Public exports are a compatibility commitment.
 
-Use a namespace import (`#import "@preview/satz:0.2.0" as satz`) when a document benefits from inspecting several exports; `satz.defaults` exposes the shared config hover beside `satz.report`, `satz.article`, and other templates. A named import can also import `defaults` in the same import statement as a template.
+Template hovers include generated shared field descriptions and template-specific default notes. The exported `defaults` dictionary also exposes the shared baseline directly.
 
 ## Verify the change
 
