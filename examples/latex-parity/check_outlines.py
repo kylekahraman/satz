@@ -41,6 +41,20 @@ def main():
         with compile_pdf(folder, "report-after-cover", cover_source) as doc:
             footer = doc[1].get_text(clip=fitz.Rect(0, doc[1].rect.height - 60, doc[1].rect.width, doc[1].rect.height)).strip()
             assert footer == "1", footer
+        custom_source = f'#import "{ROOT}/lib.typ": custom\n#show: custom.with()\n= CUSTOM CONTENT\nBody'
+        with compile_pdf(folder, "custom-default", custom_source) as doc:
+            assert len(doc) == 1
+            assert "Table of Contents" not in doc[0].get_text()
+            assert "CUSTOM CONTENT" in doc[0].get_text()
+        with compile_pdf(folder, "custom-opt-in", custom_source.replace("custom.with()", "custom.with(config: (toc: (depth: none)))")) as doc:
+            assert "Table of Contents" in doc[0].get_text()
+        (folder / "cover.typ").write_text(f'#import "{ROOT}/lib.typ": cover-page\n#let my-cover() = cover-page(layout: "minimal", title: [COVER MARKER])\n')
+        separate_cover = f'#import "{ROOT}/lib.typ": custom\n#import "{folder}/cover.typ": my-cover\n#my-cover()\n#show: custom.with()\n= CUSTOM CONTENT\nBody'
+        with compile_pdf(folder, "custom-cover", separate_cover) as doc:
+            assert len(doc) == 2 and "COVER MARKER" in doc[0].get_text()
+            assert "CUSTOM CONTENT" in doc[1].get_text() and "Table of Contents" not in doc[1].get_text()
+            footer = doc[1].get_text(clip=fitz.Rect(0, doc[1].rect.height - 60, doc[1].rect.width, doc[1].rect.height)).strip()
+            assert footer == "1", footer
         with compile_pdf(folder, "report-opt-in", prelude('toc: (depth: none), lof: (depth: none), lot: (depth: none),') + default_body) as doc:
             text = " ".join(page.get_text() for page in doc)
             assert "Table of Contents" in text and "List of Figures" in text and "List of Tables" in text

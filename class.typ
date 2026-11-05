@@ -453,13 +453,13 @@
 /// I choose the structure and content.
 /// ```
 ///
-/// - kind (str): behavior preset. `"report"` and `"thesis"` add front-matter
-///   page numbering and automatic contents/LoF/LoT; `"thesis"` is currently
+/// - kind (str): behavior preset. `"report"` and `"thesis"` support page
+///   numbering and optional contents/LoF/LoT; `"thesis"` is currently
 ///   otherwise identical to `"report"`. `"journal"` disables heading numbering
 ///   and colored internal links. `"article"`, `"book"`, and `"proposal"` add no
 ///   front matter. Defaults to `"report"`.
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   Template defaults: Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes.
+///   Template defaults: Defaults to the neutral palette and no automatic contents, figure list, or table list (`toc.depth`, `lof.depth`, `lot.depth: 0`); set a depth to `none` to enable it. Other values follow the shared defaults. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes.
 ///   The selected kind controls front matter, heading numbering, links and bibliography behavior.
 ///   The following values are the shared baseline; template defaults above override them.
 ///
@@ -658,7 +658,8 @@
   footer: none,
   body,
 ) = {
-  let config = theme-config(theme, config: config)
+  let custom-defaults = (toc: (depth: 0), lof: (depth: 0), lot: (depth: 0))
+  let config = theme-config(theme, config: merge(custom-defaults, config))
   document-class(
     kind: kind,
     config: config,

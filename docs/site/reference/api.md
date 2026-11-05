@@ -1566,15 +1566,16 @@ heading, link, and outline settings.
 I choose the structure and content.
 ```
 
-- kind (str): behavior preset. `"report"` and `"thesis"` add front-matter
-  page numbering and automatic contents/LoF/LoT; `"thesis"` is currently
+- kind (str): behavior preset. `"report"` and `"thesis"` support page
+  numbering and optional contents/LoF/LoT; `"thesis"` is currently
   otherwise identical to `"report"`. `"journal"` disables heading numbering
   and colored internal links. `"article"`, `"book"`, and `"proposal"` add no
   front matter. Defaults to `"report"`.
 - config (dictionary): partial nested overrides, deep-merged with the shared defaults.
   The shared schema and baseline values are documented once on the exported `defaults`
-  dictionary; hover `satz.defaults` when using a namespace import. The selected `kind`
-  changes front matter, numbering, and other behavior; see the [configuration reference](/satz/reference/configuration/)
+  dictionary; hover `satz.defaults` when using a namespace import. Custom documents
+  default to no contents, figure list, or table list; set their depth to `none` to
+  enable them. The selected `kind` changes front matter, numbering, and other behavior; see the [configuration reference](/satz/reference/configuration/)
   for kind-specific defaults.
 - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and

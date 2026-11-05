@@ -26,7 +26,7 @@ Create `main.typ` and paste this complete example. The details are fictional:
 = Introduction
 
 Start the report after the cover. The report template styles the pages that
-follow and creates its contents page from the headings.
+follow. A contents page is optional.
 ```
 
 `layout: "research"` creates a generated title page. The title is required for this layout; subtitle, author, date, keywords, and supervisors are optional. Keep the cover call before the report show rule so it appears first and the report styles the document body.
@@ -63,6 +63,33 @@ A cover does not inherit the following document's `theme` or `config`. Pass the 
 ```
 
 The cover reads only `page.paper`, `page.margin`, `typography.font`, `typography.size`, and the cover color keys. Other valid shared keys are accepted but ignored. A typo in a known key fails compilation instead of being silently ignored.
+
+A cover can also live in a separate file. For example, create `cover.typ`:
+
+```typst
+#import "@local/satz:0.2.0": minimal-cover
+#let my-cover() = minimal-cover(title: [My document])
+```
+
+Then use it before the document show rule in `main.typ`:
+
+```typst
+#import "@local/satz:0.2.0": custom
+#import "cover.typ": my-cover
+```
+
+Then render the cover and the document body:
+
+```typst
+#my-cover()
+#show: custom.with()
+
+= Introduction
+The document starts after the cover.
+```
+
+The cover is rendered on its own page. `custom` starts without an automatic
+contents page; use `config: (toc: (depth: none))` to add one.
 
 ## 4. Compile and check the cover
 
