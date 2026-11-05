@@ -30,8 +30,13 @@ LaTeX/KOMA-Script parity.
   prose. Add optional attached, palette-colored callout titles with a deliberate
   title/body gap; see `examples/callout.typ`.
 - Preserve left-aligned reading text in callouts nested inside centered figures.
-- Expose caption alignment and label weight independently, preserving native
-  labels/references and the existing long-caption/short-list workflow.
+- Use hanging figure and table captions with regular label weight by default;
+  `captions.hanging` and `captions.label-weight` customize the layout and label.
+  Reports default to floating figures (`figures.placement: auto`); set it to
+  `none` to keep figures in source order. Native labels and references and the
+  long-caption/short-list workflow remain available.
+- Default table text to left alignment without justification; individual table
+  alignment settings can override the default.
 - Add `chapter-numbering` scopes: figure/table/equation prefixes remain correct
   in forward, backward and cross-appendix references. Add opt-in
   `headings.h1-pagebreak` for report chapters that start on a new page.
@@ -50,9 +55,9 @@ LaTeX/KOMA-Script parity.
 - Make the six named palettes available as report themes and custom document
   palettes. Reports now default to neutral black-on-white colors; opt into a
   colored palette with `theme:`. Explicit nested color settings take precedence.
-- Add `decorative.list-tight`; the default list gap is now `0.9em`, while
-  `list-tight: true` selects paragraph-leading spacing. These visual changes
-  can reflow existing reports; see the migration notes in the README.
+- Control list spacing with `typography.list-spacing`, a fraction of the body
+  baseline distance (default `0.5`). This replaces the earlier decorative list
+  spacing controls and can reflow existing reports.
 
 ### Other development work already committed
 
