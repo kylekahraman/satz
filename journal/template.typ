@@ -564,15 +564,13 @@
       v(0.3em)
     }
 
-    let entry-text = [
-      #text(fill: c.colors.text-main, weight: "bold")[#clean-date] #text(fill: c.colors.text-main, weight: "regular")[#h(0.5em) #data.title]
-    ]
-
     link(entry.location())[
       #grid(
-        columns: (1fr, auto),
+        columns: (auto, 1fr, auto),
         gutter: 1em,
-        [#entry-text #box(width: 1fr, repeat([.]))],
+        align: (left, left, right),
+        [#text(fill: c.colors.text-main, weight: "bold")[#clean-date]],
+        [#text(fill: c.colors.text-main, weight: "regular")[#data.title #box(width: 1fr, repeat([.]))]],
         [#text(weight: "bold", fill: c.colors.brand-primary)[#page-num]]
       )
     ]
