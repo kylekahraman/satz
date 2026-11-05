@@ -434,14 +434,15 @@
         and c.typography.list-spacing >= 0,
       message: "typography.list-spacing must be a non-negative number.",
     )
-    let list-spacing = baseline-distance * c.typography.list-spacing
-    {
-      // Fix text frame edges so a configured line-spacing multiple also
-      // determines list spacing from the same body baseline distance.
-      if line-spacing != none {
-        set text(top-edge: "cap-height", bottom-edge: "baseline")
-        set par(leading: calculated-leading)
-      }
+    let list-spacing = baseline-distance * (1 + c.typography.list-spacing) - text-height
+    if line-spacing != none {
+      // Put the rules and body in the same scope so Typst applies them.
+      set text(top-edge: "cap-height", bottom-edge: "baseline")
+      set par(leading: calculated-leading)
+      set list(tight: false, spacing: list-spacing)
+      set enum(tight: false, spacing: list-spacing)
+      styled-body
+    } else {
       set list(tight: false, spacing: list-spacing)
       set enum(tight: false, spacing: list-spacing)
       styled-body

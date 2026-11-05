@@ -105,6 +105,16 @@ SECONDLINE
             enum_gap = baseline(page, "ENUMTWO") - baseline(page, "ENUMONE")
             assert bullet_gap > line_gap + 2
             assert abs(bullet_gap - enum_gap) < 0.1
+        for extra in (0, 0.5):
+            config = f'toc: (depth: 0), typography: (line-spacing: 1.25, list-spacing: {extra}),'
+            with compile_pdf(folder, f"list-spacing-{extra}", prelude(config) + lists) as doc:
+                page = doc[0]
+                line_gap = baseline(page, "SECONDLINE") - baseline(page, "FIRSTLINE")
+                bullet_gap = baseline(page, "BULLETTWO") - baseline(page, "BULLETONE")
+                enum_gap = baseline(page, "ENUMTWO") - baseline(page, "ENUMONE")
+                assert abs(line_gap - 13.75) < 0.1
+                assert abs(bullet_gap - line_gap * (1 + extra)) < 0.1
+                assert abs(enum_gap - bullet_gap) < 0.1
         for theme in ('"neutral"', '"soft-jade"', '"soft-slate"', '"warm-editorial"', '"plum"', '"soft-rose"', 'none'):
             with compile_pdf(folder, f"theme-{theme.strip(chr(34))}", prelude('toc: (depth: 0), colors: (brand-primary: red),', theme) + '= Override') as doc:
                 assert any(s["color"] == 0xFF4136 for b in doc[0].get_text("dict")["blocks"]
