@@ -29,7 +29,7 @@ project for live preview. The report adds numbered headings while
 your content remains ordinary Typst. Contents, figure lists, table lists, and a
 cover are optional. Add configuration only when you need to change a default.
 
-See the [full report quick start](docs/site/getting-started/report.md) or browse
+See the [full report quick start](https://kylekahraman.github.io/satz/getting-started/report/) or browse
 the [Satz documentation](https://kylekahraman.github.io/satz/) for journal,
 letter, figure, table, and layout guides. The site source is in `docs/site/`.
 
@@ -56,7 +56,7 @@ space. To start each chapter on a new page, set:
 
 Articles default to two columns; choose one or more columns with
 `config: (page: (columns: 1))`, and set `column-gutter` if needed. See
-[article layouts](docs/site/getting-started/article.md) and the
+[article layouts](https://kylekahraman.github.io/satz/getting-started/article/) and the
 [book guide](docs/book-api.md) for examples.
 
 ## Quick Usage
@@ -532,7 +532,7 @@ the first paragraph after a heading. It does not set vertical line spacing.
 independent, so set it to `0pt` or another chosen value when you prefer
 indentation to provide the paragraph break cue. The same config works in
 journal entries. See
-the [native/KOMA typography comparison](examples/latex-parity/README.md) for the
+the [native/KOMA typography comparison](https://github.com/kylekahraman/satz/blob/main/examples/latex-parity/README.md) for the
 specimen and checks.
 
 ### Table text and padding
@@ -562,7 +562,7 @@ headings with `outlined: false` do not. Headers remain disabled by default.
 Custom header content takes precedence over the generated header.
 
 The existing report page-number offset and counter-based alignment are retained.
-See the [paired KOMA-Script comparison](examples/latex-parity/README.md) for
+See the [paired KOMA-Script comparison](https://github.com/kylekahraman/satz/blob/main/examples/latex-parity/README.md) for
 reproducible checks. Hydra also imports `oxifmt:1.0.0`; Typst downloads missing
 packages on the first compilation.
 
