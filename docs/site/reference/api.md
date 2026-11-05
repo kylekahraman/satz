@@ -1002,6 +1002,8 @@ A report document class.
 - config (dictionary): partial nested overrides, deep-merged with the report defaults.
   The shared schema and baseline values are documented once on the exported
   `defaults` dictionary; hover `satz.defaults` when using a namespace import.
+  Reports disable the contents, figure list, and table list by default; set each
+  `toc.depth`, `lof.depth`, or `lot.depth` to `none` to enable it.
   Reports default `figures.placement` to `auto`; use `figures: (placement: none)`
   to keep figures in source order. The report consumes shared page, typography,
   heading, line-number, link, caption, list, and bibliography settings; table

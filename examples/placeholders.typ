@@ -1,6 +1,6 @@
 // Draft figures through the public satz API.
 #import "../lib.typ": report, placeholder, satz-figure
-#show: report.with(config: (colors: (bg-paper: white), toc: (depth: 1)))
+#show: report.with(config: (colors: (bg-paper: white), toc: (depth: 1), lof: (depth: none)))
 
 = Drafting the report
 

@@ -126,7 +126,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="captions-alignment"></span>`captions.alignment` | Typst alignment | `left` | Caption alignment when `hanging` is false. |
 | <span id="captions-label-weight"></span>`captions.label-weight` | Typst font-weight value | `"regular"` | Weight of the caption label, independently of caption text. |
 | <span id="captions-hanging"></span>`captions.hanging` | boolean | `true` | Put the label in its own column so wrapped lines align with the caption text. Set to `false` for an inline label. |
-| <span id="toc-depth"></span>`toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. `book-contents(depth: 0)` instead renders an empty titled list; other depths depend on the template. |
+| <span id="toc-depth"></span>`toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. Reports override the shared default to `0`; set `none` to enable all levels. `book-contents(depth: 0)` instead renders an empty titled list; other depths depend on the template. |
 | <span id="toc-title"></span>`toc.title` | content or `none` | `[Table of Contents]` | Contents title; `none` omits it. |
 | <span id="toc-indent"></span>`toc.indent` | `auto` or length | `auto` | Entry indentation policy. |
 | <span id="toc-entry-size"></span>`toc.entry-size` | length | `10pt` | Contents entry size. |
@@ -213,7 +213,7 @@ arguments described in their source API comments and guides.
 | Template | Defaults or notable differences |
 | --- | --- |
 | `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
-| `report` | Defaults to `theme: "neutral"`; all remaining appearance defaults come from the shared document class. `theme: none` skips a named palette and uses the shared defaults. |
+| `report` | Defaults to `theme: "neutral"`, `figures.placement: auto`, and `toc.depth`, `lof.depth`, `lot.depth: 0` (no automatic lists); set a depth to `none` to enable that list. Other appearance defaults come from the shared document class. `theme: none` skips a named palette. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
 | `journal-entry` / `journal-index` | Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above. |
 | `letter` / `brief` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`; German names are aliases. Nested config only accepts the documented page, typography, color, and link keys. |

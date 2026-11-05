@@ -41,7 +41,7 @@ With the local package directory from [setup](/satz/getting-started/setup/) avai
 typst compile --package-path packages main.typ
 ```
 
-Typst writes `main.pdf` next to the source. If the document has multiple pages, the report can generate a contents page from your headings. Add enough content to see how page breaks and the contents respond.
+Typst writes `main.pdf` next to the source. The report starts with your content. A cover and contents pages are optional.
 
 ## 3. Change one setting
 
@@ -50,13 +50,25 @@ You can replace the show rule with a configured one. For example, this selects a
 ```typst
 #show: report.with(config: (
   typography: (font: "Libertinus Serif"),
-  lof: (compact: true),
+  lof: (depth: none, compact: true),
 ))
 ```
 
-The nested dictionaries matter: `typography` contains text settings and `lof` contains List of Figures settings. Satz merges these overrides with its defaults, so you do not need to repeat unrelated values. `compact: true` omits caption text from that list; it does not shorten captions where they appear in the report. The font must be available in the environment that compiles the PDF.
+The nested dictionaries matter: `typography` contains text settings and `lof` contains List of Figures settings. Satz merges these overrides with its defaults, so you do not need to repeat unrelated values. `depth: none` enables the list, and `compact: true` omits caption text from it; it does not shorten captions where they appear in the report. The font must be available in the environment that compiles the PDF.
 
 For the type, default, and effect of each supported field, use the [configuration reference](/satz/reference/configuration/). The [API reference](/satz/reference/api/) documents the `report` arguments and which configuration groups each template uses.
+
+To add a table of contents, or lists of figures and tables, enable each one independently:
+
+```typst
+#show: report.with(config: (
+  toc: (depth: none),
+  lof: (depth: none),
+  lot: (depth: none),
+))
+```
+
+Use a positive `toc.depth` to limit heading levels. Figure and table lists appear only when there are matching outlined items.
 
 ## 4. Add a figure or table
 

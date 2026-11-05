@@ -379,6 +379,9 @@
         // Counter 2 displays as page 1 in reports and theses.
         counter(page).update(2)
         pagebreak()
+      } else if counter(page).get().first() == 1 {
+        // With no cover or generated front matter, the first content page is 1.
+        counter(page).update(2)
       }
     }
   }

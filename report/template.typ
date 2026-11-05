@@ -10,7 +10,7 @@
 /// - body (content): your text
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
 ///   <!-- generated-config:start -->
-///   Template defaults: Defaults to `theme: "neutral"` and `figures.placement: auto`; other appearance defaults come from the shared document class. Set `figures.placement: none` to keep figures in source order. `theme: none` skips a named palette and uses shared defaults.
+///   Template defaults: Defaults to `theme: "neutral"`, `figures.placement: auto`, and `toc.depth`, `lof.depth`, `lot.depth: 0` (no automatic lists); set a depth to `none` to enable that list. Other appearance defaults come from the shared document class. Set `figures.placement: none` to keep figures in source order. `theme: none` skips a named palette and uses shared defaults.
 ///   Report defaults to figures.placement: auto. Set it to none for source order. The report does not use journal.*, callouts.*, or all table and color fields; pass component settings directly to the component.
 ///   The following values are the shared baseline; template defaults above override them.
 ///

@@ -25,9 +25,9 @@ Continue with ordinary Typst markup.
 ```
 
 Compile with `typst compile main.typ`, or paste this into a Typst web-app
-project for live preview. The report adds numbered headings and contents while
-your content remains ordinary Typst. Add configuration only when you need to
-change a default.
+project for live preview. The report adds numbered headings while
+your content remains ordinary Typst. Contents, figure lists, table lists, and a
+cover are optional. Add configuration only when you need to change a default.
 
 See the [full report quick start](docs/site/getting-started/report.md) or browse
 the [Satz documentation](https://kylekahraman.github.io/satz/) for journal,
@@ -38,7 +38,7 @@ letter, figure, table, and layout guides. The site source is in `docs/site/`.
 | Template | Start here when you are writing | Default layout |
 |---|---|---|
 | `article()` | A paper or essay organized into sections | Two columns; title, authors, affiliations, and abstract can appear above the text |
-| `report()` | A report, protocol, or thesis organized into chapters or sections | One column; numbered headings and automatic contents |
+| `report()` | A report, protocol, or thesis organized into chapters or sections | One column; numbered headings; contents optional |
 | `book()` (experimental) | A book or thesis with book-style front matter and chapter layout | Two-sided pages, a cover, and explicit front and main matter |
 
 For most theses, start with `report()`. Choose `book()` when you want its
@@ -139,7 +139,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 #import "@preview/satz:0.2.0": report
 #show: report.with(config: (
   typography: (font: "Libertinus Serif"),
-  lof: (compact: true), // List of Figures shows only "Figure 1 .... 5"
+  lof: (depth: none, compact: true), // Enable a compact List of Figures
 ))
 
 = My Report
@@ -165,7 +165,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **invoice** | `invoice(...)` / `rechnung(...)` | German invoice adapted from the letter template. Canonical fields: `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, `qr-purpose`. Optional EPC QR code; output remains German. |
 | **journal** | `journal-entry(..)`, `journal-index(..)` | Research diary on ISO B5 with entries, keywords, and auto-generated monthly index |
 | **article** | `article(...)` | Articles and manuscripts with title, authors, affiliations, and abstract; configurable columns |
-| **report** | `report(body, config: (:), theme: "neutral")` | Reports, protocols, and theses — numbered headings, auto TOC/LoF/LoT, two-sided layout, pre-styled bibliography |
+| **report** | `report(body, config: (:), theme: "neutral")` | Reports, protocols, and theses — numbered headings, optional contents and figure/table lists, two-sided layout, pre-styled bibliography |
 | **book (experimental)** | `book(...)`, `book-contents()`, `book-mainmatter[...]`, `book-appendix[...]`, `book-backmatter[...]`, `book-index[...]` | KOMA-Script-inspired book layout with adjustable or image cover, alternating running titles, back-matter pages, two-column index, and optional exercise components |
 | **dfg-proposal** | `dfg-proposal(...)`, `dfg-supplement()`, `dfg-publications(...)` | DFG 53.01 (09/26), German/English starters, separate page limits and counters |
 | **research/project proposal** | `research-proposal(...)` / `project-proposal(...)`, `proposal-budget(...)` | Flexible proposal with inline title/summary, current/total page headers, and exact budget totals |
@@ -384,7 +384,7 @@ before `config`, so the nested override wins.
 #show: report.with(config: (
   typography: (font: "EB Garamond"),
   colors: (brand-primary: blue),
-  lof: (compact: true), // hide caption text in List of Figures
+  lof: (depth: none, compact: true), // enable a compact List of Figures
 ))
 ```
 
@@ -417,8 +417,10 @@ Defaults use 10pt entries, 0.65em leading, 0.65em contents row gaps, and 1.25em
 before main sections. Figure/table lists use 0.85em row gaps. These gaps replace
 the space between text edges: values below `leading` tighten the list.
 
-Each list is enabled independently; set its `depth: 0` to disable it. Empty
-figure/table lists and figures with `outlined: false` produce no list page.
+Reports start without any of these lists. Enable each independently with
+`config: (toc: (depth: none), lof: (depth: none), lot: (depth: none))`;
+use a positive `toc.depth` to limit heading levels. Set a list's depth to `0`
+to disable it. Empty figure/table lists and figures with `outlined: false` produce no list page.
 A table needs a captioned `figure` to have a number, caption, and list entry:
 
 ```typst

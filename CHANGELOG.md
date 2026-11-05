@@ -49,7 +49,8 @@ LaTeX/KOMA-Script parity.
 - Refine contents, figure-list, and table-list typography with configurable
   entry size, leading, row gaps, title gaps, and section gaps. Preserve Typst's
   native numbering, links, page-number formatting, and wrapped-entry indents.
-- Make the contents, figure list, and table list independent; omit empty lists
+- Keep report contents, figure lists, and table lists disabled by default; enable
+  each with its `depth: none` setting. The lists are independent; omit empty lists
   and figures marked `outlined: false`. Compact lists keep custom numbering and
   page formats while omitting captions.
 - Make the six named palettes available as report themes and custom document

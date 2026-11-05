@@ -9,7 +9,7 @@ Choose the template that matches the document's structure. Satz controls the pag
 | Template | Good starting point | Default layout |
 | --- | --- | --- |
 | [`article`](/satz/reference/api/#article) | A paper or essay organized into sections | Two columns, with an optional title, authors, affiliations, and abstract |
-| [`report`](/satz/reference/api/#report) | A report, protocol, or thesis organized into chapters or sections | One column, numbered headings, and automatic contents |
+| [`report`](/satz/reference/api/#report) | A report, protocol, or thesis organized into chapters or sections | One column, numbered headings, optional contents |
 | [`book`](/satz/reference/api/#book) (experimental) | A book or thesis with book-style front and back matter | A cover, two-sided pages, and explicit front and main matter |
 
 For most theses, start with `report`. Choose `book` if you want its cover,
@@ -28,7 +28,7 @@ experimental.
 
 | Document | Entry points | Good starting point |
 | --- | --- | --- |
-| Report, assignment, or protocol | [`report`](/satz/reference/api/#report) | General documents with numbered headings and contents. Start with [Write your first report](/satz/getting-started/report/). |
+| Report, assignment, or protocol | [`report`](/satz/reference/api/#report) | General documents with numbered headings and optional contents. Start with [Write your first report](/satz/getting-started/report/). |
 | Research journal | [`journal-entry`](/satz/reference/api/#journal-entry), [`journal-index`](/satz/reference/api/#journal-index) | Dated notes, decisions, observations, and next steps. Follow [Keep a research journal](/satz/guides/journals/). |
 | DIN-style letter | [`letter`](/satz/reference/api/#letter) / [`brief`](/satz/reference/api/#brief) | German or English template labels with a window-envelope address block. Start with [Write a letter](/satz/getting-started/letter/). |
 | Invoice | [`invoice`](/satz/reference/api/#invoice) / [`rechnung`](/satz/reference/api/#rechnung) | German invoice layout and item table. |

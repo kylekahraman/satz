@@ -29,6 +29,21 @@ def prelude(config="", theme=None):
 def main():
     with tempfile.TemporaryDirectory(prefix="satz-outline-check-") as directory:
         folder = Path(directory)
+        default_body = '= INTRODUCTIONMARKER\n#figure(rect(), caption: [IMAGECAPTION])\n#figure(table(columns: 1, [CELL]), caption: [TABLECAPTION])'
+        with compile_pdf(folder, "report-default", prelude() + default_body) as doc:
+            text = " ".join(page.get_text() for page in doc)
+            assert "INTRODUCTIONMARKER" in text
+            assert "Table of Contents" not in text
+            assert "List of Figures" not in text and "List of Tables" not in text
+            footer = doc[0].get_text(clip=fitz.Rect(0, doc[0].rect.height - 60, doc[0].rect.width, doc[0].rect.height)).strip()
+            assert footer == "1", footer
+        cover_source = f'#import "{ROOT}/lib.typ": report\nCOVER\n#pagebreak()\n#show: report.with()\n= FIRST CONTENT\nBody'
+        with compile_pdf(folder, "report-after-cover", cover_source) as doc:
+            footer = doc[1].get_text(clip=fitz.Rect(0, doc[1].rect.height - 60, doc[1].rect.width, doc[1].rect.height)).strip()
+            assert footer == "1", footer
+        with compile_pdf(folder, "report-opt-in", prelude('toc: (depth: none), lof: (depth: none), lot: (depth: none),') + default_body) as doc:
+            text = " ".join(page.get_text() for page in doc)
+            assert "Table of Contents" in text and "List of Figures" in text and "List of Tables" in text
         sample = (ROOT / "examples/outline.typ").read_text().replace('"../lib.typ"', f'"{ROOT}/lib.typ"')
         with compile_pdf(folder, "ordinary", sample) as doc:
             toc = doc[0]
@@ -69,7 +84,7 @@ def main():
 #figure(table(columns: 1, [Data]), kind: table, numbering: "I", caption: [TABLECAPTION])
 '''
         for compact in ("false", "true"):
-            source = prelude(f'headings: (numbering: "I.a"), lof: (compact: {compact}), lot: (compact: {compact}),') + custom
+            source = prelude(f'toc: (depth: none), headings: (numbering: "I.a"), lof: (depth: none, compact: {compact}), lot: (depth: none, compact: {compact}),') + custom
             with compile_pdf(folder, f"custom-{compact}", source) as doc:
                 assert "I.a Beta" in doc[0].get_text()
                 assert "Graphic a" in doc[1].get_text().replace('\xa0', ' ')
@@ -81,11 +96,11 @@ def main():
                 assert all(s["color"] == 0 for b in doc[1].get_text("dict")["blocks"]
                            for line in b.get("lines", []) for s in line["spans"] if "Graphic" in s["text"])
 
-        with compile_pdf(folder, "table-only", prelude('toc: (depth: 0),') + custom) as doc:
+        with compile_pdf(folder, "table-only", prelude('toc: (depth: 0), lof: (depth: none), lot: (depth: none),') + custom) as doc:
             assert "List of Figures" in doc[0].get_text()
             assert "List of Tables" in doc[1].get_text()
             assert "Table of Contents" not in ''.join(p.get_text() for p in doc)
-        with compile_pdf(folder, "empty-lists", prelude() + '= Only heading\n#table(columns: 1, [Uncaptioned])\n#figure(rect(), outlined: false)') as doc:
+        with compile_pdf(folder, "empty-lists", prelude('toc: (depth: none), lof: (depth: none), lot: (depth: none),') + '= Only heading\n#table(columns: 1, [Uncaptioned])\n#figure(rect(), outlined: false)') as doc:
             assert len(doc) == 2
             assert "List of" not in ''.join(p.get_text() for p in doc)
 

@@ -3,4 +3,7 @@
 #let defaults = (
   theme: "neutral",
   figures: (placement: auto),
+  toc: (depth: 0),
+  lof: (depth: 0),
+  lot: (depth: 0),
 )

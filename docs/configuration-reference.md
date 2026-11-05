@@ -85,7 +85,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `captions.label-weight` | Typst font-weight value | `"regular"` | Weight of the caption label, independently of caption text. |
 | `captions.hanging` | boolean | `true` | Put the label in its own column so wrapped lines align with the caption text. Set to `false` for an inline label. |
 
-| `toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. `book-contents(depth: 0)` instead renders an empty titled list. Other depths depend on the template. |
+| `toc.depth` | `none` or non-negative integer | `none` | `0` disables automatic contents in report/thesis templates. Reports override the shared default to `0`; set `none` to enable all levels. `book-contents(depth: 0)` instead renders an empty titled list. Other depths depend on the template. |
 | `toc.title` | content or `none` | `[Table of Contents]` | Contents title; `none` omits it. |
 | `toc.indent` | `auto` or length | `auto` | Entry indentation policy. |
 | `toc.entry-size` | length | `10pt` | Contents entry size. |
@@ -116,7 +116,7 @@ arguments described in their source API comments and guides.
 
 | Template | Defaults or notable differences |
 | --- | --- |
-| `report` | Defaults to `theme: "neutral"` and `figures.placement: auto`; other appearance defaults come from the shared document class. Set `figures.placement: none` to keep figures in source order. `theme: none` skips a named palette and uses shared defaults. |
+| `report` | Defaults to `theme: "neutral"`, `figures.placement: auto`, and `toc.depth`, `lof.depth`, `lot.depth: 0` (no automatic lists); set a depth to `none` to enable that list. Other appearance defaults come from the shared document class. Set `figures.placement: none` to keep figures in source order. `theme: none` skips a named palette and uses shared defaults. |
 | `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
 | all document templates | Default to `theme: "neutral"` or the equivalent black-on-white template defaults. Use `theme: "slate"` for the former shared blue-gray palette where themes are accepted. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |

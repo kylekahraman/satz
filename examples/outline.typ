@@ -3,8 +3,9 @@
 
 #show: report.with(config: (
   page: (binding: left, headers: true),
-  lof: (compact: sys.inputs.at("compact", default: "false") == "true"),
-  lot: (compact: sys.inputs.at("compact", default: "false") == "true"),
+  toc: (depth: none),
+  lof: (depth: none, compact: sys.inputs.at("compact", default: "false") == "true"),
+  lot: (depth: none, compact: sys.inputs.at("compact", default: "false") == "true"),
 ))
 
 = Introduction

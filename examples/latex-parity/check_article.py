@@ -47,7 +47,7 @@ def main():
         assert document[0].search_for('SHORTTITLE')[0].y0 < document[0].search_for('Contents')[0].y0
 
     # A two-column report keeps its generated contents page full-width.
-    source = '#import "/lib.typ": report\n#show: report.with(config: (page: (columns: 2)))\n'
+    source = '#import "/lib.typ": report\n#show: report.with(config: (page: (columns: 2), toc: (depth: none)))\n'
     source += '= A deliberately long chapter heading to measure the width of the contents page\n#lorem(600)\n'
     with fitz.open(compile_source('report-columns', source)) as document:
         assert len(document) >= 2
