@@ -8,10 +8,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     cases = [
-        ("legal-exhibit-shape", '#import "/lib.typ": klageschrift\n#show: klageschrift.with(anlagen: (1,))\nBody', "anlagen` must be an array"),
+        ("legal-exhibit-shape", '#import "/lib.typ": klageschrift\n#show: klageschrift.with(anlagen: (1,))\nBody', "exhibits` must be an array"),
         ("legal-page-limit", '#import "/lib.typ": klageschrift\n#show: klageschrift.with(anlagen_pdf_path: "appendix.pdf", anlagen_max_pages: 0)\nBody', "positive integer"),
-        ("contract-mode", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(dokument: "draft")', "dokument must be vertrag, angebot or rechnung"),
-        ("contract-fee-mode", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(gage_typ: "hourly")', "gage_typ must be fest or prozent"),
+        ("contract-mode", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(dokument: "draft")', "document-type` must be vertrag, angebot or rechnung"),
+        ("contract-fee-mode", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(gage_typ: "hourly")', "fee-type` must be fest or prozent"),
         ("contract-percent", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(prozentsatz: 101)', "must not exceed 100"),
         ("contract-cost", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(transport_km: -1)', "nonnegative integer"),
         ("contract-flag", '#import "/lib.typ": gastspielvertrag\n#show: gastspielvertrag.with(techniker: "yes")', "must be booleans"),
