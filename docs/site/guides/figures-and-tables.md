@@ -50,6 +50,8 @@ first reference and inspect the compiled PDF for placement and reading order.
 `auto` chooses the nearer top or bottom position; it does not reproduce LaTeX's
 full float-placement algorithm. See the [Typst figure reference](https://typst.app/docs/reference/model/figure/).
 
+Table cells default to left-aligned, unjustified text for readable columns. Set `align:` on a table or individual cell to choose a different alignment.
+
 ## Use a shorter list entry
 
 For long captions, `satz-figure` lets the page show the full caption while a short version appears in the List of Figures:

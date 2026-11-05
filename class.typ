@@ -267,6 +267,8 @@
   )
 
   show table: set text(size: c.tables.font-size)
+  show table: set align(left)
+  show table: set par(justify: false)
 
   // Work-package summaries can continue across pages without clipping.
   show figure.where(kind: "work-package"): set block(breakable: true)
