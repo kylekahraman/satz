@@ -8,7 +8,7 @@
 /// Show a long caption under the figure, a short one in the List of Figures.
 ///
 /// Typst's List of Figures normally repeats the full caption. This component
-/// stores the long text as `<satz-long>` metadata and gives the figure the short
+/// stores the long text as caption metadata and gives the figure the short
 /// caption, so the list stays compact. Satz's document class restores the long
 /// caption when it draws the figure. Without `short-caption`, it behaves like a
 /// normal `figure`.
@@ -29,8 +29,8 @@
 #let satz-figure(body, caption: none, short-caption: none, ..args) = {
   if short-caption != none {
     figure(
-      [#metadata(caption) <satz-long> #body],
-      caption: short-caption,
+      body,
+      caption: [#metadata((satz-long-caption: caption))#short-caption],
       ..args,
     )
   } else {
@@ -273,37 +273,18 @@
   // Work-package summaries can continue across pages without clipping.
   show figure.where(kind: "work-package"): set block(breakable: true)
 
-  // Figures with satz-figure store the long caption in <satz-long>
-  // metadata, the LoF reads the short caption. Swap the long one back here.
+  // The short caption carries the long caption as invisible metadata, so
+  // floating does not break the association between the two.
   show figure.caption: set align(c.captions.alignment)
   show figure.caption: it => context {
     set text(size: c.captions.size, weight: c.captions.weight)
-    let caploc = here()
-    // Find the figure this caption belongs to — closest figure above
-    // the caption on the same page.
-    let owner = none
-    for f in query(figure) {
-      let fl = f.location()
-      if fl.page() == caploc.page() and fl.position().y <= caploc.position().y {
-        if owner == none or fl.position().y > owner.location().position().y {
-          owner = f
-        }
+    let caption-body = it.body
+    if caption-body.has("children") and caption-body.children.len() > 0 {
+      let first = caption-body.children.first()
+      if first.func() == metadata and type(first.value) == dictionary and "satz-long-caption" in first.value {
+        caption-body = first.value.at("satz-long-caption")
       }
     }
-    let long-cap = none
-    if owner != none {
-      let top-y = owner.location().position().y
-      for m in query(label("satz-long")) {
-        let ml = m.location()
-        // Only match metadata between this figure's top and its caption.
-        if ml.page() == caploc.page() and ml.position().y >= top-y and ml.position().y <= caploc.position().y {
-          long-cap = m.value
-        }
-      }
-    }
-    // Rebuild the visible caption so the label can occupy its own column.
-    // The native caption still supplies numbering and outline entries.
-    let caption-body = if long-cap != none { long-cap } else { it.body }
     let caption-label = if it.numbering != none {
       let separator = if it.separator == auto { [: ] } else { it.separator }
       text(weight: c.captions.label-weight)[
