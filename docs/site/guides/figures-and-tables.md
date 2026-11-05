@@ -21,31 +21,34 @@ The `caption` is content in square brackets. The label in angle brackets must be
 
 Satz formats captions with a regular label and a hanging layout by default:
 when the caption wraps, its later lines start under the caption text, not under
-“Figure 1:”. To bold the label or return to an inline label, configure the
-document:
+“Figure 1:”. To bold only the label, configure the document:
 
 ```typst
 #show: report.with(config: (
-  captions: (label-weight: "bold", hanging: false),
+  captions: (label-weight: "bold"),
 ))
 ```
 
+Set `captions.hanging: false` separately if you want the label inline.
+
 ## Keep text flowing around large figures
 
-Figures are in the text flow by default. If a large figure does not fit in the
-remaining space, Typst moves the whole figure to the next page and leaves that
-space unused. To let later content fill the gap, make figures float to the
-nearest page top or bottom with Typst's native placement option:
+Typst keeps figures in source order unless placement is set to `auto`. Satz
+reports set `figures.placement: auto` by default, so a large figure can move to
+a nearby page top or bottom while later text fills the remaining space. Other
+templates use source-order placement by default. Change the setting through the
+template config; for example, to keep report figures in source order:
 
 ```typst
-#set figure(placement: auto)
+#show: report.with(config: (figures: (placement: none)))
 ```
 
-You can also set `placement: auto` on an individual `figure`. Floats may move
-away from their source location, so keep each figure's markup near its first
-reference and inspect the compiled PDF for placement and reading order. `auto`
-chooses the nearer top or bottom position; it does not reproduce LaTeX's full
-float-placement algorithm. See the [Typst figure reference](https://typst.app/docs/reference/model/figure/).
+Set `figures.placement: auto` to enable floating in another template. This
+setting applies to native figures, including tables wrapped in figures. Floats
+may move away from their source location, so keep each figure's markup near its
+first reference and inspect the compiled PDF for placement and reading order.
+`auto` chooses the nearer top or bottom position; it does not reproduce LaTeX's
+full float-placement algorithm. See the [Typst figure reference](https://typst.app/docs/reference/model/figure/).
 
 ## Use a shorter list entry
 

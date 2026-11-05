@@ -38,6 +38,8 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **tables:** [`tables.stroke`](#tables-stroke), [`tables.inset`](#tables-inset), [`tables.font-size`](#tables-font-size), [`tables.caption-position`](#tables-caption-position), [`tables.caption-gap`](#tables-caption-gap)
 
+**figures:** [`figures.placement`](#figures-placement)
+
 **callouts:** [`callouts.inset`](#callouts-inset), [`callouts.radius`](#callouts-radius), [`callouts.stroke`](#callouts-stroke), [`callouts.title-below`](#callouts-title-below), [`callouts.paragraph-spacing`](#callouts-paragraph-spacing), [`callouts.list-spacing`](#callouts-list-spacing)
 
 **captions:** [`captions.size`](#captions-size), [`captions.weight`](#captions-weight), [`captions.alignment`](#captions-alignment), [`captions.label-weight`](#captions-label-weight), [`captions.hanging`](#captions-hanging)
@@ -52,7 +54,7 @@ Select a field to jump to its type, default, and effect. Template-specific overr
 
 **colors:** [`colors.bg-paper`](#colors-bg-paper), [`colors.bg-subtle`](#colors-bg-subtle), [`colors.brand-primary`](#colors-brand-primary), [`colors.brand-accent`](#colors-brand-accent), [`colors.text-main`](#colors-text-main), [`colors.text-muted`](#colors-text-muted)
 
-**template-specific:** [`page.header-ascent`](#page-header-ascent), [`decorative.list-indent`](#decorative-list-indent), [`decorative.list-body-indent`](#decorative-list-body-indent), [`decorative.list-block-spacing`](#decorative-list-block-spacing), [`headings.h1-number-size`](#headings-h1-number-size), [article settings](#article-specific-settings), [book settings](#book-specific-settings)
+**template-specific:** [`page.header-ascent`](#page-header-ascent), [`decorative.list-indent`](#decorative-list-indent), [`decorative.list-body-indent`](#decorative-list-body-indent), [`decorative.list-spacing`](#decorative-list-spacing), [`decorative.list-block-spacing`](#decorative-list-block-spacing), [`headings.h1-number-size`](#headings-h1-number-size), [article settings](#article-specific-settings), [book settings](#book-specific-settings)
 
 ## Shared defaults
 
@@ -101,6 +103,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="decorative-keywords-size"></span>`decorative.keywords-size` | length | `9pt` | Keyword text size where implemented. |
 | <span id="decorative-list-indent"></span>`decorative.list-indent` | length | `17.9669pt` in DFG | Indentation of list and enumeration markers in the DFG template. |
 | <span id="decorative-list-body-indent"></span>`decorative.list-body-indent` | length | `5.475 × 72 ÷ 72.27 pt` in DFG | Gap from each list or enumeration marker to its body text. |
+| <span id="decorative-list-spacing"></span>`decorative.list-spacing` | length | `baseline + paragraph-skip - cap` in DFG | Vertical distance between lines in DFG lists and enumerations. |
 | <span id="decorative-list-block-spacing"></span>`decorative.list-block-spacing` | length | `baseline + paragraph-skip - cap + 3 × 72 ÷ 72.27 pt` in DFG | Space above and below list and enumeration blocks; uses the DFG font metrics. |
 | <span id="page-footer-format"></span>`page-footer.format` | Typst numbering pattern/function | `"1"` | Page-number format where the template uses the shared footer. |
 | <span id="page-footer-size"></span>`page-footer.size` | length | `10pt` | Page-number size. |
@@ -111,6 +114,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | <span id="tables-font-size"></span>`tables.font-size` | length | `10pt` | Text size in shared styled tables. |
 | <span id="tables-caption-position"></span>`tables.caption-position` | `top` or `bottom` | `top` | Caption position for the scientific-table show rule. |
 | <span id="tables-caption-gap"></span>`tables.caption-gap` | length | `6pt` | Space between a table caption and its table. |
+| <span id="figures-placement"></span>`figures.placement` | `auto`, `none`, or a vertical alignment | `none` (`auto` in `report`) | Native placement policy for figures, including tables represented as figures. `none` keeps them in source order; `auto` lets Typst place them at a suitable page edge. |
 | <span id="callouts-inset"></span>`callouts.inset` | length | `9pt` | Inner padding for `callout`. |
 | <span id="callouts-radius"></span>`callouts.radius` | length | `3pt` | Corner radius for `callout`. |
 | <span id="callouts-stroke"></span>`callouts.stroke` | length | `0.8pt` | Border thickness for `callout`. |

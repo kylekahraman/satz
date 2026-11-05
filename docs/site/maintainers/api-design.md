@@ -7,7 +7,7 @@ Satz aims to make common document decisions coherent across templates while leav
 ## Conventions for new APIs
 
 1. **Use semantic template arguments for document identity.** A title, author, recipient, date, or abstract describes the document and belongs in the template function's named arguments.
-2. **Use shared `config` for cross-document appearance.** Page geometry, typography, headings, colors, captions, and lists should have one predictable home wherever templates share the document class. Keep their field types, defaults, and effects in the configuration reference; template docstrings should describe only template-specific overrides and link to that shared reference instead of repeating the full field list.
+2. **Use shared `config` for cross-document appearance.** Page geometry, typography, headings, colors, captions, and lists should have one predictable home wherever templates share the document class. Keep the shared field types, meanings, and baseline defaults in the exported `defaults` dictionary and configuration reference. Template docstrings should describe only effective template-specific overrides and keys the template ignores or only validates. Users can inspect `defaults` alongside templates through one namespace import.
 3. **Use component arguments for local choices.** A short caption or callout title belongs on that component, not in a global switch.
 4. **Keep native Typst escape hatches.** Do not wrap native figures, tables, headings, or layouts unless Satz adds a useful default or coordinates document behavior.
 5. **Document every public export.** Give each argument a type, default, and small example. Keep examples compiling against the version they name.

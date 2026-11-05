@@ -14,7 +14,7 @@
 /// These are the shared baseline values. Named templates may override them,
 /// add template-specific groups, or use only the settings that make sense for
 /// their layout. A documented key is not necessarily consumed by every
-/// template. See the configuration reference for the exact template coverage.
+/// template. Check a template's API section before assuming a key affects it.
 ///
 /// ```typst
 /// #show: custom.with(config: (
@@ -140,6 +140,12 @@
 /// - `caption-position` (`top` or `bottom`; `top`): caption location in the
 ///   scientific-table show rule.
 /// - `caption-gap` (length; `6pt`): space between a table caption and table.
+
+/// **Figures (`figures`)**
+/// - `placement` (`auto`, `none`, or vertical alignment; `none`): native
+///   placement policy for figures, including tables represented as figures.
+///   `none` keeps them in source order; `auto` lets Typst place them at a
+///   suitable page edge. Templates may override this baseline.
 ///
 /// **Callouts (`callouts`)**
 /// - `inset` (length; `9pt`): inner padding.
@@ -194,8 +200,8 @@
 ///
 /// Some templates add validated settings not present in this baseline,
 /// including `page.header-ascent`, `headings.h1-number-size`, and
-/// `decorative.list-indent`, `decorative.list-body-indent`, and
-/// `decorative.list-block-spacing`. Consult the relevant template's API and
+/// `decorative.list-indent`, `decorative.list-body-indent`, `decorative.list-spacing`,
+/// and `decorative.list-block-spacing`. Consult the relevant template's API and
 /// the configuration reference before using template-specific keys.
 ///
 /// With `math-font: auto`, Typst selects its default math font. The Typst CLI
@@ -283,6 +289,7 @@
     caption-position: top,
     caption-gap: 6pt,
   ),
+  figures: (placement: none),
   callouts: (
     inset: 9pt,
     radius: 3pt,
@@ -377,7 +384,7 @@
       } else if group == "headings" {
         (..defaults.headings.keys(), "h1-number-size")
       } else if group == "decorative" {
-        (..defaults.decorative.keys(), "list-indent", "list-body-indent", "list-block-spacing")
+        (..defaults.decorative.keys(), "list-indent", "list-body-indent", "list-block-spacing", "list-spacing")
       } else {
         defaults.at(group).keys()
       }

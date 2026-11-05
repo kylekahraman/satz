@@ -6,10 +6,12 @@
 /// you need from this entry point, for example:
 ///
 /// ```typst
-/// #import "@preview/satz:0.2.0": report
-/// #show: report.with(config: (typography: (font: "EB Garamond"),))
+/// #import "@preview/satz:0.2.0" as satz
+/// #show: satz.report.with(config: (typography: (font: "EB Garamond"),))
 /// = Introduction
 /// ```
+/// For the shared config fields and baseline values, hover `satz.defaults` in
+/// the editor. The same import exposes templates such as `satz.report`.
 ///
 /// English argument names are canonical. German names remain available as
 /// compatibility aliases on templates that historically used them. Covers are

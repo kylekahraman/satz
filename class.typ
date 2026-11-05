@@ -48,81 +48,12 @@
 /// ```
 ///
 /// - kind (str): document behavior: `article`, `book`, `journal`, `proposal`, `report`, or `thesis`
-/// - config (dictionary): nested partial overrides. Dictionaries deep-merge;
-///   omitted fields keep the values listed here. Known shared groups reject
-///   unknown field names; Typst checks values when the class applies them.
-///   Extra top-level groups are accepted for template extensions. Defaults
-///   and effects:
-///   - `page.paper` (paper name or custom size; `"a4"`), `margin` (length or
-///     edge-length dictionary; 2.5cm each; accepts `top`, `bottom`, `left`,
-///     `right`, `x`, `y`, `inside`, and `outside`),
-///     `binding` (`none`/`left`/`right`; none), `binding-correction` (length;
-///     0pt), `headers` (bool; false), `columns` (positive integer; 1), and
-///     `column-gutter` (length; 5mm) control page geometry and columns. Binding
-///     enables two-sided inside/outside margins and alternating page furniture.
-///   - `typography.font` (font name; `"Libertinus Serif"`), `math-font` and
-///     `mono-font` (font name or auto; auto), `size` (length; 11pt),
-///     `line-spacing` (positive baseline multiple or none; none), `leading`
-///     (length; 0.65em), `list-spacing` (non-negative baseline multiple; 0.5),
-///     `paragraph-spacing` (length; 1.2em),
-///     `first-line-indent` (bool; false), `hyphenate` (bool; false), and
-///     `justify` (bool; true) control body text. A set `line-spacing` overrides
-///     `leading`; true first-line-indent uses one em.
-///   - `headings.numbering` (pattern/function or none; `"1.1"`), `hyphenate`
-///     (bool; false), `h1-pagebreak` (bool; false), `spacing` (`"koma"` or
-///     `"native"`; koma), `h1-size`–`h4-size` (lengths; 14pt, 12pt, 11pt, 11pt),
-///     and per-level `*-above`/`*-below` (length or auto; auto) control heading
-///     numbering, type, page starts, and spacing.
-///   - `journal.header-below` (1.5em), `running-gutter` (1em),
-///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), and `keywords-size` (9pt): journal header and metadata styling.
-///   - `decorative.header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), and `keywords-size` (9pt): running/decorative text styling.
-///   Lists and enumerations use `typography.list-spacing` as an extra gap
-///   relative to the calculated body baseline distance; zero adds no extra gap.
-///   - `page-footer.format` (numbering pattern/function; `"1"`), `size`
-///     (10pt), `weight` (regular font weight): page-number appearance.
-///   - `line-numbers.enabled` (bool; false), `format` (pattern; `"1"`),
-///     `scope` (`"document"`/`"page"`; document), `size` (8pt), `color`
-///     (`#64748B`), `clearance` (length or auto; auto): draft line numbers.
-///   - `links.color` and `url-color` (colors; `#0563C1`): internal and external
-///     links.
-///   - `tables.stroke` (0.5pt), `inset` (length or x/y dictionary;
-///     `(x: 8pt, y: 4pt)`), `font-size` (10pt), `caption-position` (top or
-///     bottom; top), `caption-gap` (6pt): shared table style.
-///   - `callouts.inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
-///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em):
-///     callout geometry and content rhythm.
-///   - `captions.size` (10pt), `weight` (regular), `alignment` (left),
-///     `label-weight` (regular), `hanging` (true): caption appearance.
-///   - `toc`, `lof`, `lot` accept `depth` (none or non-negative integer; none),
-///     `title` (content or none; list-specific default title), `indent` (length
-///     or auto; auto), `entry-size` (10pt), `leading` (0.65em), `entry-above`
-///     (0.65em for toc, 0.85em for lof/lot), `title-below` (1.5em), and `below`
-///     (2em). `toc.main-entry-above` is 1.25em; `lof.compact` and `lot.compact`
-///     are bools defaulting false. Depth zero disables a generated list.
-///   - `bibliography.style` (CSL style name; `"apa"`): citation style.
-///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
-///     `text-main`, and `text-muted` (colors; white, white, black, black, black,
-///     black): page fills, accents, and text colors.
-///   The class directly applies page geometry, typography, headings, line
-///   numbers, links, table inset/font size, caption style, list spacing,
-///   bibliography style, and ToC/LoF/LoT settings. Automatic running headers
-///   use `page.headers` only for two-sided pages when no custom header is
-///   supplied. Automatic page numbers use `page-footer.size` and `weight`;
-///   `page-footer.format` is accepted but the class uses Typst's decimal page
-///   counter display. It validates but does not consume the journal-specific
-///   header/date fields; journal list spacing is consumed for `kind: "journal"`.
-///   It also does not consume
-///   `decorative.date-size`, `decorative.keywords-size`,
-///   `decorative.footer-size`, `tables.stroke`, `tables.caption-position`,
-///   `tables.caption-gap`, `callouts.*`, `colors.bg-subtle`, or
-///   `colors.brand-accent`. It also accepts the DFG extension fields
-///   `page.header-ascent` (length), `headings.h1-number-size` (length), and
-///   `decorative.list-indent`, `list-body-indent`, and `list-block-spacing`
-///   (lengths); they are validated but only DFG templates use them. Pass
-///   component settings directly to `callout`/`scientific-table` when styling
-///   those components.
+/// - config (dictionary): partial nested overrides deep-merged with shared defaults.
+///   The exported `defaults` dictionary is the single documented schema for shared
+///   keys, types, meanings, and baseline values. This class applies page, typography,
+///   headings, line numbers, links, captions, lists, bibliography, and contents/list
+///   settings. Template wrappers add their own defaults and may use only a subset.
+///   See the configuration reference for template-specific defaults and overrides.
 /// - header (none, content): your own header, if you want one
 /// - footer (none, content): your own footer, if you want one
 /// - body (content): your content
@@ -172,6 +103,7 @@
   }
   set page(..page-args)
   set columns(gutter: c.page.column-gutter)
+  set figure(placement: c.figures.placement)
 
   // Reports and theses show page numbers in the footer. Bound documents
   // alternate them toward the outer edge; one-sided documents center them.
@@ -539,94 +471,13 @@
 ///   otherwise identical to `"report"`. `"journal"` disables heading numbering
 ///   and colored internal links. `"article"`, `"book"`, and `"proposal"` add no
 ///   front matter. Defaults to `"report"`.
-/// - config (dictionary): shared settings deep-merged over `defaults`. Known
-///   groups are validated, so misspellings such as `typography.leadng` fail
-///   instead of being silently ignored. To change typography, set a nested
-///   `typography` dictionary in `config`; it accepts these keys:
-///   - `font` (str): body text font; defaults to `"Libertinus Serif"`.
-///   - `math-font` (str or auto): math font; defaults to `auto` (Typst's
-///     default).
-///   - `mono-font` (str or auto): monospace font; defaults to `auto`.
-///   - `size` (length): body text size; defaults to `11pt`.
-///   - `line-spacing` (positive number or none): baseline distance as a
-///     multiple of the body font size; defaults to `none`. When set, it takes
-///     precedence over `leading`.
-///   - `leading` (length): Typst's line gap; defaults to `0.65em`.
-///   - `paragraph-spacing` (length): gap between paragraphs; defaults to
-///     `1.2em`.
-///   - `first-line-indent` (bool): whether the first line of every paragraph
-///     is indented; defaults to `false`. `true` uses one em (the current body
-///     font size, e.g. 11pt with 11pt text), including the first paragraph in a
-///     document/container and paragraphs after blocks such as headings;
-///     `false` uses no indent. The indent is horizontal, separate from
-///     vertical line and paragraph spacing. A one-em indent does not change
-///     line spacing or paragraph spacing.
-///   - `hyphenate` (bool): enable automatic hyphenation; defaults to `false`.
-///   - `justify` (bool): justify paragraphs; defaults to `true`.
-///   Remaining shared fields (types and defaults): `page.paper` (paper name or
-///   custom size, `"a4"`), `page.margin` (length or edge-length dictionary,
-///   2.5cm; `x`/`y` and
-///   inside/outside are accepted), `page.binding` (none/left/right, none),
-///   `page.binding-correction` (length, 0pt), `page.headers` (bool, false),
-///   `page.columns` (positive integer, 1), `page.column-gutter` (length, 5mm);
-///   `typography.font` (name, Libertinus Serif), `math-font`/`mono-font`
-///   (name or auto, auto), `size` (11pt), `line-spacing` (positive multiple or
-///   none, none), `leading` (0.65em), `list-spacing` (non-negative baseline
-///   multiple; 0.5), `paragraph-spacing` (1.2em),
-///   `first-line-indent` (bool, false), `hyphenate` (bool, false), `justify`
-///   (bool, true); `headings.numbering` (pattern/function or none, `"1.1"`),
-///   `hyphenate`/`h1-pagebreak` (bool, false), `spacing` (koma/native, koma),
-///   h1-h4 sizes (14pt/12pt/11pt/11pt), and each level's above/below (length or
-///   auto, auto). A set line-spacing overrides leading; first-line-indent uses
-///   one em when true. Journal spacing fields are `header-below` (1.5em),
-///   `running-gutter` (1em), and `running-leading` (0.35em), all lengths.
-///   `journal` fields are `header-below` (1.5em), `running-gutter` (1em),
-///   `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///   (10pt), and `keywords-size` (9pt). Shared list spacing is
-///   `typography.list-spacing` (non-negative baseline multiple; 0.5).
-///   `decorative.header-size`/`date-size` (9pt/10pt), `footer-size` (10pt),
-///   `keywords-size` (9pt);
-///   `page-footer.format` (pattern/function, `"1"`), `size` (10pt), `weight`
-///   (regular); line-number fields `enabled` (false), `format` (`"1"`),
-///   `scope` (document/page, document), `size` (8pt), `color` (`#64748B`),
-///   `clearance` (length/auto, auto); `links.color`/`url-color` (`#0563C1`);
-///   `tables.stroke` (0.5pt), `inset` ((x: 8pt, y: 4pt)), `font-size` (10pt),
-///   `caption-position` (top/bottom, top), `caption-gap` (6pt); callout fields
-///   `inset` (9pt), `radius` (3pt), `stroke` (0.8pt), `title-below` (1em),
-///   `paragraph-spacing` (1em), `list-spacing` (1.2em); caption fields `size`
-///   (10pt), `weight` (regular), `alignment` (left), `label-weight` (regular),
-///   `hanging` (true).
-///   Each of `toc`, `lof`, `lot` accepts `depth` (none or non-negative int;
-///   none), `title` (content or none; Table of Contents/List of Figures/List of
-///   Tables), `indent` (length/auto; auto), `entry-size` (10pt), `leading`
-///   (0.65em), `entry-above` (0.65em for toc, 0.85em for lof/lot),
-///   `title-below` (1.5em), and `below` (2em); `toc.main-entry-above` is 1.25em,
-///   `lof.compact`/`lot.compact` are bools defaulting false. Bibliography style
-///   is `bibliography.style` (CSL name, `"apa"`). Colors are `bg-paper`,
-///   `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted`
-///   (colors; white, white, black, black, black, black). These fields control
-///   page setup, typography, heading rhythm, lists, links, tables, callouts,
-///   captions, contents/lists, citations, and colors. Known group fields are
-///   validated; unknown top-level groups may carry extensions.
-///   The class directly applies page geometry, typography, headings, line
-///   numbers, links, table inset/font size, caption style, list spacing,
-///   bibliography style, and ToC/LoF/LoT settings. Automatic running headers
-///   use `page.headers` only for two-sided pages when no custom header is
-///   supplied. Automatic page numbers use `page-footer.size` and `weight`;
-///   `page-footer.format` is accepted but the class uses Typst's decimal page
-///   counter display. `journal.header-below`, `running-gutter`,
-///   `running-leading`, `running-header-size`, `date-size`, and
-///   `keywords-size` are accepted but not consumed by `custom()`; it consumes
-///   `decorative.date-size`, `keywords-size`, `footer-size`,
-///   `tables.stroke`, `tables.caption-position`,
-///   `tables.caption-gap`, `callouts.*`, `colors.bg-subtle`, and
-///   `colors.brand-accent` are accepted/validated but have no effect through
-///   `custom()`. It also accepts the DFG extension fields `page.header-ascent`,
-///   `headings.h1-number-size`, and `decorative.list-indent`,
-///   `list-body-indent`, and `list-block-spacing` (all lengths), but the DFG
-///   template is the only consumer. `article.*` and `book.*` are extension
-///   groups and are not consumed by `custom()`. Nested config overrides are
-///   applied after the selected theme, so explicit colors and links win.
+/// - config (dictionary): partial nested appearance overrides, deep-merged with this
+///   template’s defaults. The exported `defaults` dictionary documents every shared
+///   key, its baseline value, accepted form, and meaning. Import the package as a
+///   namespace (`#import "@preview/satz:0.2.0" as satz`) and hover `satz.defaults`
+///   to inspect that shared config without copying it into every template docstring.
+///   The selected `kind` controls front matter and numbering; kind-specific defaults
+///   are in the [configuration reference](/satz/reference/configuration/).
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and
 ///   `config.links` values override the selected palette.

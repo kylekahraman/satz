@@ -391,17 +391,21 @@ before `config`, so the nested override wins.
 ))
 ```
 
-Available sections (see `defaults.typ` for every key): `page`, `typography`, `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`, `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
+Available sections (see the exported `defaults` dictionary for every shared key): `page`, `typography`, `headings`, `journal`, `decorative`, `page-footer`, `links`, `tables`, `figures`, `callouts`, `captions`, `toc`, `lof`, `lot`, `bibliography`, and `colors`.
+
+To inspect the shared config beside the templates in your editor, use one namespace import and hover `satz.defaults`:
+
+```typst
+#import "@preview/satz:0.2.0" as satz
+#show: satz.report.with(config: (captions: (label-weight: "bold")))
+```
+
+You can also hover `satz.report` for report-specific defaults. The shared config schema is documented once on `satz.defaults`; template docstrings describe only their effective overrides and template-specific behavior.
 
 Captions default to a regular label in a hanging layout: wrapped lines align
-with the caption text. To use an inline label or bold only the label, set
-`captions: (hanging: false, label-weight: "bold")`. The full options are in the
-[configuration reference](docs/configuration-reference.md).
-
-Captions default to a regular label in a hanging layout: wrapped lines align
-with the caption text. To use an inline label or bold only the label, set
-`captions: (hanging: false, label-weight: "bold")`. The full options are in the
-[configuration reference](docs/configuration-reference.md).
+with the caption text. To bold only the label, set
+`captions: (label-weight: "bold")`; set `hanging: false` separately to make the
+label inline. The full options are in the [configuration reference](docs/configuration-reference.md).
 
 ### Contents, figure lists, and table lists
 

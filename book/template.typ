@@ -59,70 +59,14 @@
 /// - binding-correction (length): extra room at the binding edge; defaults to 5mm
 /// - running-headers (str): `"bottom"` (default), `"top"`, or `"none"`.
 ///   `config.book.running-headers` takes precedence over this direct argument
-/// - config (dictionary): nested overrides, deep-merged after the book
-///   defaults, selected palette, and direct arguments. Explicit config values
-///   win. Known shared groups validate their keys; custom top-level extension
-///   groups are retained. The book accepts these shared fields:
-///   - `page.paper` (paper name/custom size; `"a4"`), `margin` (edge lengths;
-///     book default left 27mm, right 25mm, top 25mm, bottom 27mm), `binding`
-///     (`left` by default, or `right`/`none`), `binding-correction` (5mm),
-///     `headers` (`false`), `columns` (1), `column-gutter` (5mm).
-///   - `typography.font` (`"Libertinus Serif"`), `math-font`
-///     (`"New Computer Modern Math"`), `mono-font` (`auto`), `size` (11pt),
-///     `line-spacing` (`none`), `leading` (0.74em), `paragraph-spacing` (14pt),
-///     `first-line-indent` (`false`), `hyphenate` (`true`), `justify` (`true`).
-///     Font names, sizes, lengths, and boolean values are passed to Typst.
-///   - `typography.list-spacing` (non-negative number; `0.5`): additional gap
-///     between list items as a fraction of the calculated body baseline
-///     distance. It follows `typography.line-spacing` when set, or font
-///     metrics and `typography.leading` otherwise. Use `0` for no extra gap.
-///   - `headings.numbering` (`"1"`), `hyphenate` (`false`), `h1-pagebreak`
-///     (`false`), `spacing` (`"koma"` or `"native"`; `"koma"`), and levels
-///     1–4 `hN-size`, `hN-above`, `hN-below` (defaults 18pt/12pt/11pt/11pt,
-///     `auto` above, and book-specific 33pt/auto/auto/auto below), plus
-///     `h1-number-size` (25pt).
-///   - `journal`: `header-below` (1.5em), `running-gutter` (1em),
-///     `running-leading` (0.35em), `running-header-size` (9pt), `date-size`
-///     (10pt), and `keywords-size` (9pt); journal-only fields, unused by book.
-///   - `decorative`: `header-size` (9pt), `footer-size` (10pt), `date-size`
-///     (10pt), and `keywords-size` (9pt).
-///   - `page-footer`: `format` (`"1"`), `size` (10pt), `weight` (`"regular"`).
-///   - `line-numbers`: `enabled` (`false`), `format` (`"1"`),
-///     `scope` (`"document"` or `"page"`; `"document"`), `size` (8pt),
-///     `color` (`#64748B`), `clearance` (`auto` or length; `auto`).
-///   - `links.color`, `links.url-color` (colors; book defaults both to a mix of
-///     the accent and black).
-///   - `tables`: `stroke` (0.5pt), `inset` ((x: 8pt, y: 4pt)), `font-size`
-///     (10pt), `caption-position` (`top` or `bottom`; `top`), `caption-gap` (6pt).
-///   - `callouts`: `inset` (9pt), `radius` (3pt), `stroke` (0.8pt),
-///     `title-below` (1em), `paragraph-spacing` (1em), `list-spacing` (1.2em).
-///   - `captions`: `size` (10pt), `weight` (`"regular"`), `alignment` (`left`),
-///     `label-weight` (`"regular"`), `hanging` (`true`).
-///   - `toc`, `lof`, `lot`: `depth` (book toc defaults to 0; other depths
-///     `none`), `title` (default English title), `indent` (`auto`),
-///     `entry-size` (10pt), `leading` (0.65em), `entry-above` (0.65em for toc;
-///     0.85em for lof/lot), `title-below` (1.5em), `below` (2em). `toc` also
-///     has `main-entry-above` (1.25em); `lof` and `lot` have `compact` (`false`).
-///   - `bibliography.style` (CSL name; `"apa"`).
-///   - `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`,
-///     `text-main`, `text-muted` (colors; book defaults white paper, teal
-///     `#23616B` accent, `#24313B` ink, and muted `luma(110)`).
-///   Book-specific `book.*` fields are independently configurable:
-///   `ink` (`#24313B`), `running-headers` (`"bottom"`; also `"top"` or
-///   `"none"`), `footer-dy` (5pt), `cover-top` (28mm), `cover-eyebrow-size`
-///   (14.3pt), `cover-eyebrow-below` (14mm), `cover-title-size` (25pt),
-///   `cover-title-leading` (8pt), `cover-title-below` (13.5mm),
-///   `cover-subtitle-size` (14.3pt), `cover-subtitle-leading` (6.5pt),
-///   `cover-subtitle-below` (21.6mm), `cover-rule-width` (0.8pt),
-///   `cover-author-size` (12pt), `cover-author-below` (3pt), `cover-note-size`
-///   (10pt), `cover-note-below` (11.2mm), and `cover-date-dy` (6.5pt).
-///   `book.contents` fields are `title-before` (24.5pt), `title-after` (26pt),
-///   `title-size` (17pt), `entry-size` (10pt), `entry-spacing` (11.8pt).
-///   `book.worked-example` fields are `inset` (27pt), `above` (26pt),
-///   `below` (27pt), `label-gap` (0pt), `label-size` (9pt), `body-size` (9pt).
-///   `book.exercise.grid-gap` (11pt) and `group-gap` (20pt) control exercise
-///   layout. These values affect the book cover, running matter, contents,
-///   worked examples, and exercises respectively.
+/// - config (dictionary): partial nested appearance overrides, deep-merged with this
+///   template’s defaults. The exported `defaults` dictionary documents every shared
+///   key, its baseline value, accepted form, and meaning. Import the package as a
+///   namespace (`#import "@preview/satz:0.2.0" as satz`) and hover `satz.defaults`
+///   to inspect that shared config without copying it into every template docstring.
+///   Book-specific effective defaults and extension fields are in the
+///   [configuration reference](/satz/reference/configuration/). Direct style
+///   arguments are defaults that `config` can override.
 /// - body (content): preliminary pages and book structure
 #let book(
   body,

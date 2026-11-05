@@ -72,6 +72,7 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `tables.font-size` | length | `10pt` | Text size in shared styled tables. |
 | `tables.caption-position` | `top` or `bottom` | `top` | Caption position for the scientific-table show rule. |
 | `tables.caption-gap` | length | `6pt` | Space between a table caption and its table. |
+| `figures.placement` | `auto`, `none`, or a vertical alignment | `none` | Native placement policy for figures, including tables represented as figures. `none` keeps them in source order; `auto` lets Typst place them at a suitable page edge. Report defaults to `auto`; other templates use `none` unless noted. |
 | `callouts.inset` | length | `9pt` | Inner padding for `callout`. |
 | `callouts.radius` | length | `3pt` | Corner radius for `callout`. |
 | `callouts.stroke` | length | `0.8pt` | Border thickness for `callout`. |
@@ -97,13 +98,15 @@ Typst color values. `auto` delegates a choice or policy to the template;
 | `bibliography.style` | CSL style name | `"apa"` | Citation style where bibliography support is enabled. |
 | `colors.bg-paper`, `bg-subtle`, `brand-primary`, `brand-accent`, `text-main`, `text-muted` | Typst color | `white`, `white`, `black`, `black`, `black`, `black` | Neutral black-on-white default. Use `theme: "slate"` for the former blue-gray palette. |
 
-For inline labels, or to emphasize the label while keeping the caption text regular:
+To bold only the label while keeping the hanging layout and caption text regular:
 
 ```typst
 #show: report.with(config: (
-  captions: (hanging: false, label-weight: "bold"),
+  captions: (label-weight: "bold"),
 ))
 ```
+
+Set `captions.hanging: false` separately if you want the label inline with the caption text.
 
 ## Template-specific appearance defaults
 
@@ -113,6 +116,7 @@ arguments described in their source API comments and guides.
 
 | Template | Defaults or notable differences |
 | --- | --- |
+| `report` | Defaults to `theme: "neutral"` and `figures.placement: auto`; other appearance defaults come from the shared document class. Set `figures.placement: none` to keep figures in source order. `theme: none` skips a named palette and uses shared defaults. |
 | `custom` | Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes. |
 | all document templates | Default to `theme: "neutral"` or the equivalent black-on-white template defaults. Use `theme: "slate"` for the former shared blue-gray palette where themes are accepted. |
 | `article` | Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`. |
@@ -196,7 +200,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 | book (experimental) | required body and title unless `cover-image` is supplied; subtitle/author/eyebrow/note/date, accent/ink/theme, page, font, binding, binding-correction, and running-headers options, plus config. `config.book.running-headers` overrides the direct `running-headers` argument. Compose with book-contents(title, depth), book-mainmatter(numbering), book-appendix(body), book-backmatter(body), and book-index(body, ...). Educational components exercise, worked-example, analysis-note and answer-grid accept content and optional layout settings; `exercise` requires the book class. |
 | research-proposal / project-proposal | title/applicants/institution, optional date/summary/short-title, English/German language, config, required body. proposal-budget takes item records with description, nonnegative integer-cent unit-cost, and optional positive integer quantity (default 1). |
 | proposal-gantt | nonempty rows, periods (positive integer), unit (month/quarter), optional start-year, resource labels, widths, size/color, English/German language. Task/group rows have label and inclusive spans; milestones have label and integer at-period. Work-package accepts title/objective, lead/period, arrays of tasks/deliverables/milestones, risk, language and body. |
-| dfg-proposal | applicant/project content, English/German language, positive integer max-pages, string form-date, boolean check-pages, config and required doc content. dfg-supplement has no arguments; dfg-publications accepts one optional bibliography source and size of at least 9pt. DFG config additionally accepts page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing. See proposals.md for supported form scope. |
+| dfg-proposal | applicant/project content, English/German language, positive integer max-pages, string form-date, boolean check-pages, config and required doc content. dfg-supplement has no arguments; dfg-publications accepts one optional bibliography source and size of at least 9pt. DFG config additionally accepts page.header-ascent and decorative.list-indent/list-body-indent/list-spacing/list-block-spacing. See proposals.md for supported form scope. |
 | nwo-proposal | scheme/domain/stage/year profile, applicant/title, config and required body. Only source-checked 2026 combinations are supported; see nwo-proposals.md. nwo-text takes a field and plain string. nwo-key-output allows up to three string/content indicators, two URL strings, and boolean/none open-access. nwo-page-budget takes a unique nonempty key and positive page limit. |
 | complaint / klageschrift | English canonical fields: court, court-address, plaintiff, plaintiff-street, plaintiff-postal-code-city, defendant, defendant-street, defendant-postal-code-city, amount-in-dispute, exhibits, exhibits-pdf, exhibit-page-limit, date, plaintiff-designation, font, and required body. `exhibit-page-limit` must not exceed the PDF page count. Output is German; German names are aliases. |
 | guest-contract / gastspielvertrag | document mode (vertrag/angebot/rechnung), fee mode (fest/prozent), string artist/event fields, nonnegative integer costs and counts, percentage 0–100, booleans for technician/photographer/small-business, nonnegative transport rate, font and required body. `small-business` defaults to true and emits the § 19 VAT note. In `rechnung` mode only the title is rendered; `body` is ignored. Output is German; German names are aliases. |
@@ -210,7 +214,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 | theme-config / document-themes | palette selection and optional config. Available palettes are neutral, slate, soft-jade, soft-slate, warm-editorial, plum and soft-rose. |
 | merge / defaults | generic deep dictionary merge and root defaults. Unknown keys remain permitted for caller extensions and may be unused. |
 
-Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, line-numbers, links, tables, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
+Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, line-numbers, links, tables, figures, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-spacing/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
 
 The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
 
