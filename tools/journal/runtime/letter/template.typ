@@ -23,6 +23,7 @@
 ///   - plz_ort (str): zip and city
 ///   - land (str): country (for international mail)
 /// - datum (str): date — defaults to today (YYYY-MM-DD)
+/// - datum_label_anzeigen (bool): show the `Datum`/`Date` label above the date (default: true)
 /// - geschaeftszeile (array): ref line as (("Label", "Value"), ...)
 /// - betreff (str): subject line
 /// - postvermerk (str): postal note like "Einschreiben"
@@ -35,7 +36,7 @@
 /// - adressfenster (bool): use the window-envelope recipient field (default: true)
 /// - seitenzahlen (bool): show page numbers after page 1 (default: true)
 /// - digitaler_absender (bool): show a name/contact header without postal address (default: false)
-/// - datum_rechts (bool): put the date at the right when there are no reference fields (default: false)
+/// - datum_rechts (bool): put the date at the right when there are no reference fields (default: true)
 /// - blocksatz (bool): justify body paragraphs (default: true)
 /// - absender_anzeigen (bool): include the sender block (default: true)
 /// - empfaenger_anzeigen (bool): include the recipient block (default: true)
@@ -66,7 +67,8 @@
   adressfenster: true,
   seitenzahlen: true,
   digitaler_absender: false,
-  datum_rechts: false,
+  datum_rechts: true,
+  datum_label_anzeigen: true,
   blocksatz: true,
   absender_anzeigen: true,
   empfaenger_anzeigen: true,
@@ -195,9 +197,9 @@
   }
   if datum_anzeigen {
     if datum_rechts and geschaeftszeile.len() == 0 {
-      digitales_datum_block(datum, strings)
+      digitales_datum_block(datum, strings, show-label: datum_label_anzeigen)
     } else {
-      geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings)
+      geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings, show-date-label: datum_label_anzeigen)
     }
   }
   if datum_anzeigen {
