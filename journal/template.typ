@@ -47,7 +47,6 @@
 ///   verbatim
 /// - body (content): your notes
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above.
 ///   Journal entries do not create a contents page or figure/table lists. Pass callout settings directly to the callout component.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -233,7 +232,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
 ///   `plum`, or `soft-rose`; explicit config overrides win
 #let journal-entry(
@@ -316,7 +314,6 @@
 /// a year only when the journal spans multiple years.
 ///
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: Default to `theme: "neutral"`; `page.paper: "iso-b5"`; margins `(left: 2cm, right: 2cm, top: 2.5cm, bottom: 2.5cm)`; body `Libertinus Serif 11pt`, `0.65em` leading, no hyphenation, justified; h1 `16pt`, h2 `12pt`, h3/h4 `11pt`; date `10pt`, running header `9pt`, footer `10pt`; list gap `0.65em`; black-on-white palette. Journal block, metadata, list, and running-header settings use `journal.*` above.
 ///   The index uses page.paper, page.margin, typography.font, typography.size, colors.bg-paper, colors.text-main and colors.brand-primary. Other recognized fields are validated but do not affect its layout.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -502,7 +499,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`, `warm-editorial`,
 ///   `plum`, or `soft-rose`; explicit config overrides win
 #let journal-index(config: (:), theme: "neutral") = context {

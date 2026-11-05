@@ -30,7 +30,6 @@
 /// - abstract (content, none): full-width abstract
 /// - date (str, content, none): optional date beneath the authors
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: Defaults to `theme: "neutral"`; `page.columns: 2`; `typography.size: 10pt`, `hyphenate: true`; heading numbering `none`, sizes `12pt`, `10.5pt`, `10pt`, `10pt`; `toc.depth`, `lof.depth`, `lot.depth: 0`; white paper. Article layout fields: title `18pt`, author `11pt`, affiliation `8.5pt`, abstract `9pt`, title gap `1.2em`, body gap `2.2em`.
 ///   Article-specific layout settings are in the article group. Settings for disabled contents and lists do not create those lists.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -216,7 +215,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`; explicit `config.colors` wins
 /// - body (content): the article

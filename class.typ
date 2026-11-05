@@ -459,7 +459,6 @@
 ///   and colored internal links. `"article"`, `"book"`, and `"proposal"` add no
 ///   front matter. Defaults to `"report"`.
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: Defaults to the neutral palette and shared defaults table above. `kind` defaults to `"report"`; other kinds can change front matter, numbering, headers, and bibliography behavior. `theme` accepts the built-in palettes.
 ///   The selected kind controls front matter, heading numbering, links and bibliography behavior.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -645,7 +644,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - theme (str, none): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
 ///   `warm-editorial`, `plum`, or `soft-rose`. Explicit `config.colors` and
 ///   `config.links` values override the selected palette.

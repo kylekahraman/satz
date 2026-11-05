@@ -10,8 +10,6 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-START = '///   <!-- generated-config:start -->\n'
-END = '///   <!-- generated-config:end -->\n'
 TARGETS = {
     ('report/template.typ', 'report'): ('report', 'Report defaults to figures.placement: auto. Set it to none for source order. The report does not use journal.*, callouts.*, or all table and color fields; pass component settings directly to the component.'),
     ('article/template.typ', 'article'): ('article', 'Article-specific layout settings are in the article group. Settings for disabled contents and lists do not create those lists.'),
@@ -47,11 +45,10 @@ def main():
             raise ValueError(f'Missing template defaults in configuration reference: {row}')
         specific = found.group(1)
         content = ('/// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.\n'
-                   + START
                    + '///   Template defaults: ' + specific + '\n'
                    + '///   ' + note + '\n'
                    + '///   The following values are the shared baseline; template defaults above override them.\n///\n'
-                   + shared + END)
+                   + shared)
         text = text[:match.start()] + content + text[match.end():]
         files[path] = text
     stale = [p for p, content in files.items() if p.read_text() != content]

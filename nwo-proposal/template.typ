@@ -49,7 +49,6 @@
 /// - applicant (content, str): applicant block; defaults to empty
 /// - title (content, str): proposal title; defaults to empty
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: Only source-checked 2026 profiles; A4 with `25mm` margins; Arial, 9.5pt pre-proposal or 10pt Vici full form; no contents/lists; black text/links. Form profile controls remaining typography and page budget.
 ///   NWO supports page.header-ascent. Profile typography varies with the selected scheme and stage; explicit config overrides profile values.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -235,7 +234,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - body (content): the application sections
 #let nwo-proposal(
   scheme: "veni", domain: "science", stage: "pre", year: 2026,

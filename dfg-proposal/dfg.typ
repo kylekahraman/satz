@@ -88,7 +88,6 @@
 /// - check-pages (bool): fail compilation on an overlength draft when true
 ///   (default); set false for a working draft
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: DFG form 53.01 (09/26), A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 15mm)`; Arial `11pt`, form-specific leading, four-level numbering `"1.1.1.1"`; no contents/lists; black text/links; left captions.
 ///   The DFG preset also accepts page.header-ascent and decorative.list-indent, list-body-indent, list-spacing and list-block-spacing. Explicit config overrides the form preset.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -274,7 +273,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 #let dfg-proposal(
   applicant: [], project: [], language: "english", max-pages: 17,
   form-date: "09/26", check-pages: true, config: (:), doc,

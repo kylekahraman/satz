@@ -60,7 +60,6 @@
 /// - running-headers (str): `"bottom"` (default), `"top"`, or `"none"`.
 ///   `config.book.running-headers` takes precedence over this direct argument
 /// - config (dictionary): partial nested overrides; nested dictionaries merge recursively.
-///   <!-- generated-config:start -->
 ///   Template defaults: A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; neutral black accent/ink by default. `theme: "slate"` selects the former blue-gray palette.
 ///   Direct style arguments can be overridden by config. book.running-headers overrides the running-headers argument; book also accepts headings.h1-number-size.
 ///   The following values are the shared baseline; template defaults above override them.
@@ -246,7 +245,6 @@
 /// For details about which templates consume each key and for template-specific
 /// overrides, see the versioned configuration reference.
 ///
-///   <!-- generated-config:end -->
 /// - body (content): preliminary pages and book structure
 #let book(
   body,
