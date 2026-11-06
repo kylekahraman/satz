@@ -34,6 +34,7 @@ var errCancelled = errors.New("cancelled")
 type settings struct {
 	Path     string          `json:"path,omitempty"` // Legacy single-journal setting.
 	Journals []journalRecord `json:"journals,omitempty"`
+	Editor   string          `json:"editor,omitempty"`
 }
 
 type journalRecord struct {
@@ -149,6 +150,35 @@ func run(args []string) error {
 		}
 		fmt.Println("Journal check passed:", project)
 		return nil
+	case "editor":
+		if len(args) > 2 {
+			return errors.New("usage: journal editor [COMMAND|--clear]")
+		}
+		if len(args) == 1 {
+			registry, err := loadRegistry()
+			if err != nil {
+				return err
+			}
+			if registry.Editor == "" {
+				fmt.Println("No editor configured; using VISUAL, EDITOR, or VS Code.")
+			} else {
+				fmt.Println("Configured editor:", registry.Editor)
+			}
+			return nil
+		}
+		value := args[1]
+		if value == "--clear" {
+			value = ""
+		}
+		if err := setEditorPreference(value); err != nil {
+			return err
+		}
+		if value == "" {
+			fmt.Println("Editor preference cleared.")
+		} else {
+			fmt.Println("Configured editor:", value)
+		}
+		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
@@ -177,6 +207,7 @@ Commands:
   journal forget PATH           Remove a journal from the list, keeping its files
   journal rename PATH NAME      Change its name in the journal list
   journal check [PATH]          Check journal setup without changing files
+  journal editor [COMMAND]      Show or set editor; --clear uses environment
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -401,7 +432,44 @@ func rememberProject(path string) error {
 			filtered = append(filtered, item)
 		}
 	}
-	return saveRegistry(settings{Journals: filtered})
+	registry.Path = ""
+	registry.Journals = filtered
+	return saveRegistry(registry)
+}
+
+func setEditorPreference(value string) error {
+	if value != "" {
+		parts, err := splitCommand(value)
+		if err != nil {
+			return err
+		}
+		if len(parts) == 0 || strings.TrimSpace(parts[0]) == "" {
+			return errors.New("editor command cannot be empty")
+		}
+	}
+	lock, err := lockRegistry()
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	defer unlockFile(lock)
+	registry, err := loadRegistry()
+	if err != nil {
+		return err
+	}
+	registry.Editor = value
+	return saveRegistry(registry)
+}
+
+func preferredEditor(explicit string) (string, error) {
+	if explicit != "" {
+		return explicit, nil
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		return "", err
+	}
+	return registry.Editor, nil
 }
 
 func renameProject(path, name string) error {
@@ -497,7 +565,9 @@ func reconnectProject(oldPath, newPath string) error {
 	items := []journalRecord{item}
 	items = append(items, registry.Journals[:index]...)
 	items = append(items, registry.Journals[index+1:]...)
-	return saveRegistry(settings{Journals: items})
+	registry.Path = ""
+	registry.Journals = items
+	return saveRegistry(registry)
 }
 
 func forgetProject(path string) error {
@@ -527,7 +597,9 @@ func forgetProject(path string) error {
 	if !found {
 		return fmt.Errorf("journal is not registered: %s", path)
 	}
-	return saveRegistry(settings{Journals: items})
+	registry.Path = ""
+	registry.Journals = items
+	return saveRegistry(registry)
 }
 
 func loadRegistry() (settings, error) {
@@ -623,6 +695,10 @@ func newEntry(path, editor string) error {
 		if err := rememberProject(project); err != nil {
 			fmt.Fprintln(os.Stderr, "Entry saved, but could not update recent journal:", err)
 		}
+	}
+	editor, err = preferredEditor(editor)
+	if err != nil {
+		return fmt.Errorf("entry saved at %s, but editor preference could not be read: %w", entry, err)
 	}
 	opened, err := openEditor(project, entry, editor)
 	if err != nil {

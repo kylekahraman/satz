@@ -36,6 +36,8 @@ These examples run the local executable from `tools/journal` on macOS or Linux. 
 
 The last command selects a registered journal, asks for an entry title, type, and optional keywords, adds the new Typst file to its entry list, and opens the chosen editor. With several registered journals, use the arrow keys and Enter in an interactive terminal, or choose a number in plain or piped input. Enter selects the most recently used. With none, the command offers to create or connect one. Use `journal init PATH` or `journal use PATH` to add another journal directly. Entry types accept `meeting`/`m`, `session`/`s`, or `notes`/`n`. Set `NO_COLOR` to disable color. The helper never edits shell startup files. If no editor is available, the entry remains saved and the helper tells you where to find it. VS Code is detected automatically; set `VISUAL` or `EDITOR` to choose another editor.
 
+Use `journal editor "COMMAND"` to save an editor command, `journal editor` to see it, and `journal editor --clear` to return to environment-based selection. An explicit `journal new --editor "COMMAND"` takes precedence, followed by the saved preference, `VISUAL`, `EDITOR`, and automatic VS Code detection. Quote paths containing spaces inside the command, for example `journal editor '"/path with spaces/editor" --wait'`.
+
 Entries with the same title on the same day get distinct filenames (for example, `-2.typ`); an existing entry is never overwritten.
 
 The helper uses a small `.satz-journal.lock` file to coordinate simultaneous entry creation. The operating system releases the lock if the helper exits; the file itself may remain and is safe to leave in place. Do not delete it while journal commands are running. New starters exclude it from Git.

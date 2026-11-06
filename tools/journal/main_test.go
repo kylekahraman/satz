@@ -14,6 +14,30 @@ import (
 	"time"
 )
 
+func TestEditorPreferenceSurvivesRegistryChanges(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	if err := setEditorPreference(`"/path with spaces/editor" --wait`); err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(filepath.Join(root, "journal")); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || registry.Editor != `"/path with spaces/editor" --wait` {
+		t.Fatalf("editor preference lost: %+v, %v", registry, err)
+	}
+	if got, err := preferredEditor("explicit"); err != nil || got != "explicit" {
+		t.Fatalf("explicit editor = %q, %v", got, err)
+	}
+	if got, err := preferredEditor(""); err != nil || got != registry.Editor {
+		t.Fatalf("configured editor = %q, %v", got, err)
+	}
+	if err := setEditorPreference(`"unclosed`); err == nil {
+		t.Fatal("invalid editor accepted")
+	}
+}
+
 func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
