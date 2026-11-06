@@ -267,6 +267,32 @@ func TestStarterZipDoesNotOverwriteExistingFile(t *testing.T) {
 	}
 }
 
+func TestShortcutPreservesExistingFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "shortcut")
+	if err := os.WriteFile(path, []byte("existing"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeShortcut(path, "/tmp/journal", "darwin"); err == nil {
+		t.Fatal("existing shortcut should not be overwritten")
+	}
+	data, err := os.ReadFile(path)
+	if err != nil || string(data) != "existing" {
+		t.Fatalf("existing file changed: %q %v", data, err)
+	}
+}
+
+func TestShortcutEscapesExecutablePaths(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "journal.command")
+	if err := writeShortcut(path, "/tmp/Kyle's journal", "darwin"); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil || !strings.Contains(string(data), `'/tmp/Kyle'\''s journal'`) {
+		t.Fatalf("unsafe shortcut: %q %v", data, err)
+	}
+}
+
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
 	if got != `"A \"quote\" \\\\ Δ"` {

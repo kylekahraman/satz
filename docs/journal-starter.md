@@ -58,6 +58,8 @@ Run `journal open [PATH]` to open a journal folder, or `journal template meeting
 
 `journal entries [PATH]` lists `.typ` files in `entries/` by modification time, `journal search "TEXT" [PATH]` finds case-insensitive matches in filenames or file contents, and `journal recent [PATH]` opens the most recently modified entry. These commands examine files in the folder, including entries that may not be included in the main document. Hidden temporary files are excluded; modification times reflect the filesystem, not necessarily when an entry was written.
 
+To create an optional launcher, run `journal shortcut OUTPUT`, choosing a new filename ending in `.command` on macOS, `.desktop` on Linux, or `.cmd` on Windows. The launcher starts the journal chooser in a terminal and points to the current executable, so recreate it if the executable moves. Desktop environments may require marking a downloaded or newly created launcher as trusted before opening it. Existing files are never overwritten.
+
 Existing journals retain their bundled Satz source. Runtime updates are disabled until a safe backup and recovery workflow is available. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
 
 ## Maintainer builds

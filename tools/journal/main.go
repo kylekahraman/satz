@@ -301,6 +301,19 @@ func run(args []string) error {
 	case "version", "--version":
 		fmt.Println("Satz Journal", version)
 		return nil
+	case "shortcut":
+		if len(args) != 2 {
+			return errors.New("usage: journal shortcut OUTPUT")
+		}
+		executable, err := os.Executable()
+		if err != nil {
+			return err
+		}
+		if err := writeShortcut(args[1], executable, runtime.GOOS); err != nil {
+			return err
+		}
+		fmt.Println("Shortcut created:", args[1])
+		return nil
 	default:
 		return fmt.Errorf("unknown command %q; run `journal help`", args[0])
 	}
@@ -327,6 +340,7 @@ Commands:
   journal search QUERY [PATH]   Find entries containing text
   journal recent [PATH]         Open the last modified entry
   journal version               Show the executable version
+  journal shortcut OUTPUT       Create a desktop launcher at OUTPUT
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -1193,6 +1207,36 @@ func styled(text, code string, enabled bool) string {
 		return text
 	}
 	return "\x1b[" + code + "m" + text + "\x1b[0m"
+}
+
+func writeShortcut(output, executable, platform string) error {
+	var content string
+	switch platform {
+	case "darwin":
+		content = "#!/bin/sh\nexec '" + strings.ReplaceAll(executable, "'", "'\\''") + "'\n"
+	case "linux":
+		if strings.ContainsAny(executable, "\r\n") {
+			return errors.New("cannot create a desktop launcher for a path containing a newline")
+		}
+		quoted := strings.NewReplacer("\\", "\\\\", "\"", "\\\"", "`", "\\`", "$", "\\$", "%", "%%").Replace(executable)
+		content = "[Desktop Entry]\nType=Application\nName=Satz Journal\nComment=Start a journal entry\nTerminal=true\nExec=\"" + quoted + "\"\n"
+	case "windows":
+		content = "@echo off\r\nsetlocal DisableDelayedExpansion\r\n\"" + strings.ReplaceAll(executable, "%", "%%") + "\"\r\n"
+	default:
+		return fmt.Errorf("desktop shortcuts are not supported on %s", platform)
+	}
+	file, err := os.OpenFile(output, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o755)
+	if err != nil {
+		return fmt.Errorf("cannot create shortcut %s: %w", output, err)
+	}
+	if _, err := io.WriteString(file, content); err != nil {
+		file.Close()
+		return cleanupFailedEntry(output, err)
+	}
+	if err := file.Close(); err != nil {
+		return cleanupFailedEntry(output, err)
+	}
+	return nil
 }
 
 func ask(reader *bufio.Reader, prompt string) (string, error) {
