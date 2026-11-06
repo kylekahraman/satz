@@ -858,9 +858,7 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	if err != nil {
 		return "", err
 	}
-	filename := date.Format("2006-01-02") + "-" + safeComponent(title) + ".typ"
-	target := filepath.Join(project, "entries", filename)
-	relative := filepath.ToSlash(filepath.Join("entries", filename))
+	basename := date.Format("2006-01-02") + "-" + safeComponent(title)
 	sections := scaffold(kind) // Existing projects without templates retain their old behavior.
 	templatesDir := filepath.Join(project, "templates")
 	if _, err := os.Stat(templatesDir); err == nil {
@@ -890,12 +888,27 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 			return "", err
 		}
 	}
-	file, err := os.OpenFile(target, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
-	if err != nil {
-		if errors.Is(err, os.ErrExist) {
-			return "", fmt.Errorf("entry already exists; nothing was changed: %s", target)
+	var file *os.File
+	var target, relative string
+	for n := 1; n <= 10000; n++ {
+		filename := basename
+		if n > 1 {
+			filename += "-" + strconv.Itoa(n)
 		}
-		return "", err
+		filename += ".typ"
+		target = filepath.Join(project, "entries", filename)
+		relative = filepath.ToSlash(filepath.Join("entries", filename))
+		file, err = os.OpenFile(target, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+		if errors.Is(err, os.ErrExist) {
+			continue
+		}
+		if err != nil {
+			return "", err
+		}
+		break
+	}
+	if file == nil {
+		return "", errors.New("could not find an available entry filename; choose a different title")
 	}
 	if _, err := io.WriteString(file, content); err != nil {
 		file.Close()

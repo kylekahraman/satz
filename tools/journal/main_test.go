@@ -222,8 +222,9 @@ func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {
 	if err != nil || !strings.Contains(string(entryList), `#include "entries/2026-10-21-quoted-title-δ.typ"`) {
 		t.Fatalf("entry list missing generated include: %s (%v)", entryList, err)
 	}
-	if _, err := createEntry(project, title, "meeting", "", date); err == nil {
-		t.Fatal("duplicate entry should not overwrite")
+	duplicate, err := createEntry(project, title, "meeting", "", date)
+	if err != nil || duplicate == entry || !strings.HasSuffix(duplicate, "-2.typ") {
+		t.Fatalf("duplicate entry not given a distinct filename: %q %v", duplicate, err)
 	}
 	contentAfter, _ := os.ReadFile(entry)
 	if string(content) != string(contentAfter) {
