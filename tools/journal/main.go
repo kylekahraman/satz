@@ -30,6 +30,7 @@ var assets embed.FS
 const entriesMarker = "// --- end entries ---"
 
 var errCancelled = errors.New("cancelled")
+var version = "development"
 
 type settings struct {
 	Path     string          `json:"path,omitempty"` // Legacy single-journal setting.
@@ -297,6 +298,9 @@ func run(args []string) error {
 	case "help", "--help", "-h":
 		printHelp()
 		return nil
+	case "version", "--version":
+		fmt.Println("Satz Journal", version)
+		return nil
 	default:
 		return fmt.Errorf("unknown command %q; run `journal help`", args[0])
 	}
@@ -322,6 +326,7 @@ Commands:
   journal entries [PATH]        List entries by last modification
   journal search QUERY [PATH]   Find entries containing text
   journal recent [PATH]         Open the last modified entry
+  journal version               Show the executable version
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
