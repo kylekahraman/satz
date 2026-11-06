@@ -179,6 +179,40 @@ func TestWindowsCodeUsesExeWithoutShell(t *testing.T) {
 	}
 }
 
+func TestEditorOpensInJournalDirectory(t *testing.T) {
+	if os.PathSeparator == '\\' {
+		t.Skip("shell fixture is Unix-only")
+	}
+	root := t.TempDir()
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry, err := createEntry(project, "Editor", "notes", "", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := filepath.Join(root, "editor-cwd")
+	t.Setenv("SATZ_TEST_EDITOR_CWD", result)
+	editor := filepath.Join(root, "editor")
+	if err := os.WriteFile(editor, []byte("#!/bin/sh\npwd > \"$SATZ_TEST_EDITOR_CWD\"\n"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	opened, err := openEditor(project, entry, editor)
+	if err != nil || !opened {
+		t.Fatalf("editor failed: %v %v", opened, err)
+	}
+	data, err := os.ReadFile(result)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, _ := filepath.EvalSymlinks(strings.TrimSpace(string(data)))
+	want, _ := filepath.EvalSymlinks(project)
+	if got != want {
+		t.Fatalf("editor working directory = %q, want %q", got, want)
+	}
+}
+
 func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {
 	project := t.TempDir()
 	if _, err := initProject(filepath.Join(project, "My Journal")); err != nil {

@@ -1150,6 +1150,7 @@ func openEditor(project, entry, requested string) (bool, error) {
 		return ok, err
 	}
 	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = project
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
 	return true, cmd.Run()
 }
