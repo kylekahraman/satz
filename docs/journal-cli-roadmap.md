@@ -19,5 +19,12 @@ See [the starter guide](journal-starter.md) for commands and their limitations.
 - Exercise the terminal interface, cancellation and a generated launcher on macOS. The most recent local macOS arm64 run passed; rerun against the final build before release.
 - Build versioned archives with `tools/journal/build-release.sh VERSION OUTPUT_DIR` and verify every file with `shasum -a 256 -c SHA256SUMS` or `sha256sum -c SHA256SUMS`.
 - Local verification on macOS arm64: the Go suite and race checks passed, the chooser scrolled and cancelled in a 40-by-10 pseudo-terminal with 20 journals, and all six `0.2.0-dev4` archive checksums passed. The extracted macOS arm64 binary reported its embedded version. These archives are unsigned development artifacts.
-- **Outstanding:** execute the native test matrix on Linux and Windows as well as macOS and inspect the results. `.github/workflows/journal-cli.yml` is prepared for that purpose, but has not been run merely by creating it locally. Cross-compilation is not native verification.
-- **Outstanding for public release:** review installation/signing and release versioning, then publish through the repository's trusted release channel after the native checks pass. No public release has been made by this work.
+- Native Linux, Windows and macOS tests passed in [CI run 42295146477](https://github.com/kylekahraman/satz/actions/runs/42295146477) for source `1cab8b6850db1c6a87420f2a73d9486e0ca4b94c`. Windows additionally repeated the concurrent-entry checks five times. The `0.2.0-dev5` archives were built locally from that exact commit and their six checksums verified; they remain unsigned development artifacts.
+
+## Public distribution review
+
+The development ZIPs contain an executable, installation guide, source revision, and licenses. `journal version` reports the CLI build version; the journal's `_satz/VERSION.txt` separately records its bundled Satz snapshot. For an eventual release, select a CLI version and build from its clean, reviewed source commit; keep the development suffix for prereleases. Publish checksums alongside the artifacts, but do not treat checksums alone as proof of publisher identity.
+
+For macOS distribution outside the App Store, plan for Developer ID signing and Apple's notarization process as described in [Apple's notarization guide](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution). On Windows, evaluate a code-signing certificate and use the Windows SDK's [SignTool](https://learn.microsoft.com/windows/win32/seccrypto/signtool) to sign, timestamp and verify executables. Credentials and signing infrastructure have not been configured; the current archives may trigger operating-system warnings. Linux archives are also unsigned.
+
+Public publication, signing credentials and an official version are decisions for a release. No public release or automatic runtime update has been made by this work.
