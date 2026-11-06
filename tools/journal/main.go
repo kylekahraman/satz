@@ -844,7 +844,7 @@ func newEntry(path, editor string) error {
 	if path == "" && interactiveTerminal(os.Stdout) {
 		state, err := term.MakeRaw(int(os.Stdin.Fd()))
 		if err == nil {
-			fmt.Fprint(os.Stdout, "\r\n  SATZ / JOURNAL\r\n  A place for your work, thoughts, and decisions.\r\n\r\n  Enter  New entry    m  Manage journals    q  Quit\r\n")
+			fmt.Fprint(os.Stdout, "\r\n  SATZ / JOURNAL\r\n  A place for your work, thoughts, and decisions.\r\n\r\n  Enter  New entry    m  Manage journals    h  Help    q  Quit\r\n")
 			choice, readErr := readHomeChoice(reader)
 			restoreErr := term.Restore(int(os.Stdin.Fd()), state)
 			if readErr != nil {
@@ -855,6 +855,10 @@ func newEntry(path, editor string) error {
 			}
 			if choice == "quit" {
 				return errCancelled
+			}
+			if choice == "help" {
+				printHelp()
+				return nil
 			}
 			if choice == "manage" {
 				project, err := chooseJournalMode(reader, os.Stdout, true)
@@ -939,6 +943,8 @@ func readHomeChoice(reader *bufio.Reader) (string, error) {
 			return "new", nil
 		case 'm', 'M':
 			return "manage", nil
+		case 'h', 'H', '?':
+			return "help", nil
 		case 'q', 'Q', 3:
 			return "quit", nil
 		}
