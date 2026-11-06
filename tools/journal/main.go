@@ -435,7 +435,8 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Fprint(out, "\n  SATZ JOURNAL\n  Your journals\n\n")
+	color := terminalColor(out)
+	fmt.Fprintf(out, "\n  %s\n  Your journals\n\n", styled("SATZ JOURNAL", "1;36", color))
 	if len(registry.Journals) == 1 {
 		item := registry.Journals[0]
 		if !isJournal(item.Path) {
@@ -454,7 +455,13 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			if !isJournal(item.Path) {
 				suffix += "  (unavailable)"
 			}
-			fmt.Fprintf(out, "  %d  %s%s\n     %s\n", i+1, item.Name, suffix, item.Path)
+			name := item.Name
+			if i == 0 {
+				name = styled("› "+name, "1;36", color)
+			} else {
+				name = "  " + name
+			}
+			fmt.Fprintf(out, "  %d  %s%s\n       %s\n", i+1, name, suffix, item.Path)
 		}
 	}
 	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  q  Cancel")
@@ -517,6 +524,25 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			return item.Path, nil
 		}
 	}
+}
+
+func terminalColor(out io.Writer) bool {
+	if _, disabled := os.LookupEnv("NO_COLOR"); disabled || os.Getenv("TERM") == "dumb" {
+		return false
+	}
+	file, ok := out.(*os.File)
+	if !ok {
+		return false
+	}
+	info, err := file.Stat()
+	return err == nil && info.Mode()&os.ModeCharDevice != 0
+}
+
+func styled(text, code string, enabled bool) string {
+	if !enabled {
+		return text
+	}
+	return "\x1b[" + code + "m" + text + "\x1b[0m"
 }
 
 func ask(reader *bufio.Reader, prompt string) (string, error) {

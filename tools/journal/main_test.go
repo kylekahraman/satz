@@ -55,6 +55,19 @@ func TestChooseJournalMissingPathIsNotSelected(t *testing.T) {
 	}
 }
 
+func TestChooserFormattingWorksWithoutColor(t *testing.T) {
+	t.Setenv("NO_COLOR", "1")
+	if terminalColor(os.Stdout) {
+		t.Fatal("NO_COLOR must disable terminal colors")
+	}
+	if got := styled("Journal", "1;36", false); got != "Journal" {
+		t.Fatalf("plain output = %q", got)
+	}
+	if got := styled("Journal", "1;36", true); !strings.Contains(got, "\x1b[0m") {
+		t.Fatalf("highlight not reset: %q", got)
+	}
+}
+
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
 	if got != `"A \"quote\" \\\\ Δ"` {
