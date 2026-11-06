@@ -346,7 +346,7 @@ func TestWindowsCodeUsesExeWithoutShell(t *testing.T) {
 	got, ok, err := editorCommand(`C:\My Journal`, `C:\My Journal\entries\x.typ`, `"C:\Program Files\Microsoft VS Code\bin\code.cmd"`, "windows", func(string) (string, error) {
 		return `C:\Program Files\Microsoft VS Code\bin\code.cmd`, nil
 	}, func(path string) (os.FileInfo, error) {
-		if path != `C:/Program Files/Microsoft VS Code/Code.exe` {
+		if strings.ReplaceAll(path, `\`, "/") != `C:/Program Files/Microsoft VS Code/Code.exe` {
 			t.Fatalf("unexpected Code.exe path %q", path)
 		}
 		return fakeFileInfo{}, nil
@@ -355,7 +355,7 @@ func TestWindowsCodeUsesExeWithoutShell(t *testing.T) {
 		t.Fatalf("editorCommand() = (%v, %v, %v)", got, ok, err)
 	}
 	wantExe := `C:/Program Files/Microsoft VS Code/Code.exe`
-	if got[0] != wantExe {
+	if strings.ReplaceAll(got[0], `\`, "/") != wantExe {
 		t.Fatalf("executable = %q, want %q", got[0], wantExe)
 	}
 	if got[1] != "--reuse-window" || got[2] != `C:\My Journal` || got[3] != `C:\My Journal\entries\x.typ` {
@@ -537,6 +537,10 @@ func TestEntryListKeepsPermissions(t *testing.T) {
 	if err := os.Chmod(list, 0o600); err != nil {
 		t.Fatal(err)
 	}
+	before, err := os.Stat(list)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if _, err := createEntry(project, "Private", "notes", "", time.Now()); err != nil {
 		t.Fatal(err)
 	}
@@ -544,8 +548,8 @@ func TestEntryListKeepsPermissions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if info.Mode().Perm() != 0o600 {
-		t.Fatalf("entry list permissions changed: %o", info.Mode().Perm())
+	if info.Mode().Perm() != before.Mode().Perm() {
+		t.Fatalf("entry list permissions changed: %o -> %o", before.Mode().Perm(), info.Mode().Perm())
 	}
 }
 
