@@ -919,18 +919,22 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	}
 	if _, err := io.WriteString(file, content); err != nil {
 		file.Close()
-		os.Remove(target)
-		return "", err
+		return "", cleanupFailedEntry(target, err)
 	}
 	if err := file.Close(); err != nil {
-		os.Remove(target)
-		return "", err
+		return "", cleanupFailedEntry(target, err)
 	}
 	if err := appendInclude(registration, relative); err != nil {
-		os.Remove(target)
-		return "", err
+		return "", cleanupFailedEntry(target, err)
 	}
 	return target, nil
+}
+
+func cleanupFailedEntry(path string, cause error) error {
+	if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("entry creation failed: %w; could not remove the incomplete file %s: %v; check it before removing it manually", cause, path, err)
+	}
+	return cause
 }
 
 // Validate customized content in the same directory and project context as a

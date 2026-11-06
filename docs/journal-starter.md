@@ -27,10 +27,12 @@ GOENV=off GOTOOLCHAIN=local GOCACHE=/tmp/satz-journal-go-cache go build -o journ
 Then use the executable directly:
 
 ```text
-journal init "path/to/My Journal"
-journal use "path/to/My Journal"
-journal
+./journal init "path/to/My Journal"
+./journal use "path/to/My Journal"
+./journal
 ```
+
+These examples run the local executable from `tools/journal` on macOS or Linux. If you install it on your PATH, use `journal` from any folder. On Windows, build or use `journal.exe` and run it from its folder or add that folder to your PATH.
 
 The last command selects a registered journal, asks for an entry title, type, and optional keywords, adds the new Typst file to its entry list, and opens the chosen editor. With several registered journals, use the arrow keys and Enter in an interactive terminal, or choose a number in plain or piped input. Enter selects the most recently used. With none, the command offers to create or connect one. Use `journal init PATH` or `journal use PATH` to add another journal directly. Entry types accept `meeting`/`m`, `session`/`s`, or `notes`/`n`. Set `NO_COLOR` to disable color. The helper never edits shell startup files. If no editor is available, the entry remains saved and the helper tells you where to find it. VS Code is detected automatically; set `VISUAL` or `EDITOR` to choose another editor.
 

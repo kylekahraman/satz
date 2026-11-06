@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -380,6 +381,17 @@ func TestEntryListSymlinkIsNotReplaced(t *testing.T) {
 	}
 	if info, err := os.Lstat(list); err != nil || info.Mode()&os.ModeSymlink == 0 {
 		t.Fatalf("symlink changed: %v, %v", info, err)
+	}
+}
+
+func TestFailedEntryCleanupReportsAnyLeftover(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "keep"), []byte("data"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	err := cleanupFailedEntry(dir, errors.New("registration failed"))
+	if err == nil || !strings.Contains(err.Error(), "registration failed") || !strings.Contains(err.Error(), dir) {
+		t.Fatalf("leftover not reported: %v", err)
 	}
 }
 
