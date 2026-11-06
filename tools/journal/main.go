@@ -823,6 +823,13 @@ func registrationPath(project string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	info, err := os.Lstat(registration)
+	if err != nil {
+		return "", err
+	}
+	if info.Mode()&os.ModeSymlink != 0 {
+		return "", fmt.Errorf("entry list %s is a symbolic link; replace the link with a regular file before creating entries", registration)
+	}
 	if countLines(string(registrationBytes), entriesMarker) != 1 {
 		return "", fmt.Errorf("%s must contain exactly one %q line; restore it after the entry includes", registration, entriesMarker)
 	}
@@ -985,17 +992,24 @@ func scaffold(kind string) string {
 }
 
 func appendInclude(main, relative string) error {
+	info, err := os.Lstat(main)
+	if err != nil {
+		return err
+	}
+	if info.Mode()&os.ModeSymlink != 0 {
+		return fmt.Errorf("entry list %s is a symbolic link; no changes made", main)
+	}
 	data, err := os.ReadFile(main)
 	if err != nil {
 		return err
 	}
 	text := string(data)
 	line := "#include \"" + relative + "\""
-	if hasLine(text, line) {
-		return nil
-	}
 	if countLines(text, entriesMarker) != 1 {
 		return fmt.Errorf("%s must contain exactly one %q line", main, entriesMarker)
+	}
+	if hasLine(text, line) {
+		return nil
 	}
 	lines := strings.Split(text, "\n")
 	for i, existing := range lines {
@@ -1009,7 +1023,7 @@ func appendInclude(main, relative string) error {
 		}
 	}
 	text = strings.Join(lines, "\n")
-	return atomicWrite(main, []byte(text), 0o644)
+	return atomicWrite(main, []byte(text), info.Mode().Perm())
 }
 
 func atomicWrite(path string, data []byte, mode os.FileMode) error {

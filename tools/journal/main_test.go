@@ -307,6 +307,48 @@ func TestMissingEntryListReportsRecovery(t *testing.T) {
 	}
 }
 
+func TestEntryListKeepsPermissions(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	list := filepath.Join(project, "journal-entries.typ")
+	if err := os.Chmod(list, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Private", "notes", "", time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	info, err := os.Stat(list)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.Mode().Perm() != 0o600 {
+		t.Fatalf("entry list permissions changed: %o", info.Mode().Perm())
+	}
+}
+
+func TestEntryListSymlinkIsNotReplaced(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	list := filepath.Join(project, "journal-entries.typ")
+	backing := filepath.Join(project, "my-entry-list.typ")
+	if err := os.Rename(list, backing); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(backing, list); err != nil {
+		t.Skipf("symlink unavailable: %v", err)
+	}
+	if _, err := createEntry(project, "Linked", "notes", "", time.Now()); err == nil {
+		t.Fatal("symlinked entry list should be rejected rather than replaced")
+	}
+	if info, err := os.Lstat(list); err != nil || info.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("symlink changed: %v, %v", info, err)
+	}
+}
+
 func TestEditableEntryTemplates(t *testing.T) {
 	if _, err := exec.LookPath("typst"); err != nil {
 		t.Skip("custom template validation requires the Typst CLI")
