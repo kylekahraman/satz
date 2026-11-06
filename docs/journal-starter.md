@@ -54,6 +54,8 @@ New journals include editable `templates/meeting.typ`, `templates/session.typ`, 
 
 Run `journal open [PATH]` to open a journal folder, or `journal template meeting [PATH]` to open a template (also accepts `session` and `notes`). `journal template-default meeting [PATH]` creates `templates/meeting.default.typ` as a separate reference copy. It never replaces an existing copy or customized template; compare and copy the parts you want manually.
 
+`journal entries [PATH]` lists `.typ` files in `entries/` by modification time, `journal search "TEXT" [PATH]` finds case-insensitive matches in filenames or file contents, and `journal recent [PATH]` opens the most recently modified entry. These commands examine files in the folder, including entries that may not be included in the main document. Hidden temporary files are excluded; modification times reflect the filesystem, not necessarily when an entry was written.
+
 Existing journals retain their bundled Satz source. Runtime updates are disabled until a safe backup and recovery workflow is available. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
 
 ## Maintainer builds

@@ -64,6 +64,44 @@ func TestTemplateDefaultCopyNeverOverwrites(t *testing.T) {
 	}
 }
 
+func TestDiscoverEntriesSortsAndSearchesWithoutTemporaryFiles(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := createEntry(project, "Alpha", "notes", "", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := createEntry(project, "Beta", "notes", "", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(first, []byte("Distinctive finding"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "entries", ".satz-template-check-hidden.typ"), []byte("distinctive"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(first, time.Now().Add(-time.Hour), time.Now().Add(-time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(second, time.Now(), time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	entries, err := discoverEntries(project, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 3 || entries[0].Path != second {
+		t.Fatalf("unexpected entries: %+v", entries)
+	}
+	matches, err := discoverEntries(project, "DISTINCTIVE")
+	if err != nil || len(matches) != 1 || matches[0].Path != first {
+		t.Fatalf("unexpected matches: %+v, %v", matches, err)
+	}
+}
+
 func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))

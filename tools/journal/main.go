@@ -237,6 +237,55 @@ func run(args []string) error {
 			fmt.Println("Open this path in your editor:", target)
 		}
 		return nil
+	case "entries", "search", "recent":
+		query, path := "", ""
+		if args[0] == "search" {
+			if len(args) < 2 || len(args) > 3 || strings.TrimSpace(args[1]) == "" {
+				return errors.New("usage: journal search QUERY [PATH]")
+			}
+			query = args[1]
+			if len(args) == 3 {
+				path = args[2]
+			}
+		} else {
+			if len(args) > 2 {
+				return fmt.Errorf("usage: journal %s [PATH]", args[0])
+			}
+			if len(args) == 2 {
+				path = args[1]
+			}
+		}
+		project, err := loadProject(path)
+		if err != nil {
+			return err
+		}
+		entries, err := discoverEntries(project, query)
+		if err != nil {
+			return err
+		}
+		if len(entries) == 0 {
+			fmt.Println("No matching entries in", project)
+			return nil
+		}
+		if args[0] == "recent" {
+			editor, err := preferredEditor("")
+			if err != nil {
+				return err
+			}
+			opened, err := openEditor(project, entries[0].Path, editor)
+			if err != nil {
+				return err
+			}
+			if !opened {
+				fmt.Println("Open this entry in your editor:", entries[0].Path)
+			}
+			return nil
+		}
+		fmt.Printf("Entries in %s\n", project)
+		for _, entry := range entries {
+			fmt.Printf("  %s  %s\n", entry.Modified.Local().Format("2006-01-02 15:04"), filepath.Base(entry.Path))
+		}
+		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
@@ -269,6 +318,9 @@ Commands:
   journal open [PATH]           Open the journal folder in your editor
   journal template KIND [PATH]  Open an entry template in your editor
   journal template-default KIND [PATH]  Save a separate default template copy
+  journal entries [PATH]        List entries by last modification
+  journal search QUERY [PATH]   Find entries containing text
+  journal recent [PATH]         Open the last modified entry
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -442,6 +494,51 @@ func checkJournal(project string) []string {
 		issues = append(issues, err.Error())
 	}
 	return issues
+}
+
+type entryInfo struct {
+	Path     string
+	Modified time.Time
+}
+
+func discoverEntries(project, query string) ([]entryInfo, error) {
+	dir := filepath.Join(project, "entries")
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	entries := make([]entryInfo, 0, len(files))
+	for _, file := range files {
+		if file.IsDir() || strings.HasPrefix(file.Name(), ".") || !strings.HasSuffix(strings.ToLower(file.Name()), ".typ") {
+			continue
+		}
+		path := filepath.Join(dir, file.Name())
+		info, err := file.Info()
+		if err != nil {
+			return nil, err
+		}
+		if !info.Mode().IsRegular() {
+			continue
+		}
+		if query != "" {
+			data, err := os.ReadFile(path)
+			if err != nil {
+				return nil, fmt.Errorf("cannot search %s: %w", path, err)
+			}
+			needle := strings.ToLower(query)
+			if !strings.Contains(strings.ToLower(file.Name()), needle) && !strings.Contains(strings.ToLower(string(data)), needle) {
+				continue
+			}
+		}
+		entries = append(entries, entryInfo{Path: path, Modified: info.ModTime()})
+	}
+	sort.Slice(entries, func(i, j int) bool {
+		if entries[i].Modified.Equal(entries[j].Modified) {
+			return entries[i].Path < entries[j].Path
+		}
+		return entries[i].Modified.After(entries[j].Modified)
+	})
+	return entries, nil
 }
 
 func configDir() string {
