@@ -223,6 +223,15 @@ func TestKeyboardJournalSelection(t *testing.T) {
 	}
 }
 
+func TestHomeChoiceOffersEntryAndManagement(t *testing.T) {
+	for input, want := range map[string]string{"\r": "new", "n": "new", "m": "manage", "q": "quit", "\x03": "quit"} {
+		got, err := readHomeChoice(bufio.NewReader(strings.NewReader(input)))
+		if err != nil || got != want {
+			t.Errorf("home %q = %q, %v; want %q", input, got, err, want)
+		}
+	}
+}
+
 func TestPromptEOFDoesNotChooseDefaults(t *testing.T) {
 	_, err := ask(bufio.NewReader(strings.NewReader("")), "")
 	if !errors.Is(err, errCancelled) {

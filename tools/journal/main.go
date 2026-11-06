@@ -841,6 +841,31 @@ func loadProject(path string) (string, error) {
 
 func newEntry(path, editor string) error {
 	reader := bufio.NewReader(os.Stdin)
+	if path == "" && interactiveTerminal(os.Stdout) {
+		state, err := term.MakeRaw(int(os.Stdin.Fd()))
+		if err == nil {
+			fmt.Fprint(os.Stdout, "\r\n  SATZ / JOURNAL\r\n  A place for your work, thoughts, and decisions.\r\n\r\n  Enter  New entry    m  Manage journals    q  Quit\r\n")
+			choice, readErr := readHomeChoice(reader)
+			restoreErr := term.Restore(int(os.Stdin.Fd()), state)
+			if readErr != nil {
+				return readErr
+			}
+			if restoreErr != nil {
+				return restoreErr
+			}
+			if choice == "quit" {
+				return errCancelled
+			}
+			if choice == "manage" {
+				project, err := chooseJournalMode(reader, os.Stdout, true)
+				if err != nil {
+					return err
+				}
+				fmt.Println("Selected journal:", project)
+				return nil
+			}
+		}
+	}
 	var project string
 	var err error
 	if path != "" {
@@ -901,6 +926,23 @@ func newEntry(path, editor string) error {
 		fmt.Println("Your entry is saved. Open the journal folder in your editor and select this file.")
 	}
 	return nil
+}
+
+func readHomeChoice(reader *bufio.Reader) (string, error) {
+	for {
+		key, err := reader.ReadByte()
+		if err != nil {
+			return "", err
+		}
+		switch key {
+		case '\r', '\n', 'n', 'N':
+			return "new", nil
+		case 'm', 'M':
+			return "manage", nil
+		case 'q', 'Q', 3:
+			return "quit", nil
+		}
+	}
 }
 
 // chooseJournal uses numbered choices so it works in ordinary terminals and pipes.
