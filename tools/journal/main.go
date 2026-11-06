@@ -77,13 +77,22 @@ func run(args []string) error {
 		if err != nil {
 			return err
 		}
-		if !isJournal(path) {
-			return fmt.Errorf("not a journal project (expected main.typ and entries/): %s", path)
+		if _, err := registrationPath(path); err != nil {
+			return fmt.Errorf("cannot connect journal: %w", err)
 		}
 		if err := rememberProject(path); err != nil {
 			return err
 		}
 		fmt.Println("Journal selected:", path)
+		return nil
+	case "reconnect":
+		if len(args) != 3 {
+			return errors.New("usage: journal reconnect OLD_PATH NEW_PATH")
+		}
+		if err := reconnectProject(args[1], args[2]); err != nil {
+			return err
+		}
+		fmt.Println("Journal reconnected:", args[2])
 		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
@@ -108,6 +117,7 @@ Commands:
   journal                       Prompt for and open a new entry
   journal new [PATH]            Add an entry to a selected or named journal
   journal use PATH              Select a different journal folder
+  journal reconnect OLD NEW     Update a moved journal's registered path
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -292,7 +302,10 @@ func rememberProject(path string) error {
 			filtered = append(filtered, item)
 		}
 	}
-	registry = settings{Journals: filtered}
+	return saveRegistry(settings{Journals: filtered})
+}
+
+func saveRegistry(registry settings) error {
 	if err := os.MkdirAll(configDir(), 0o755); err != nil {
 		return err
 	}
@@ -301,6 +314,41 @@ func rememberProject(path string) error {
 		return err
 	}
 	return atomicWrite(filepath.Join(configDir(), "project.json"), data, 0o600)
+}
+
+func reconnectProject(oldPath, newPath string) error {
+	oldPath, err := filepath.Abs(oldPath)
+	if err != nil {
+		return err
+	}
+	newPath, err = filepath.Abs(newPath)
+	if err != nil {
+		return err
+	}
+	if _, err := registrationPath(newPath); err != nil {
+		return fmt.Errorf("cannot reconnect journal: %w", err)
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		return err
+	}
+	index := -1
+	for i, item := range registry.Journals {
+		if filepath.Clean(item.Path) == filepath.Clean(oldPath) {
+			index = i
+		}
+		if filepath.Clean(item.Path) == filepath.Clean(newPath) && filepath.Clean(oldPath) != filepath.Clean(newPath) {
+			return fmt.Errorf("journal is already registered: %s", newPath)
+		}
+	}
+	if index < 0 {
+		return fmt.Errorf("journal is not registered: %s", oldPath)
+	}
+	item := journalRecord{Name: filepath.Base(newPath), Path: newPath}
+	items := []journalRecord{item}
+	items = append(items, registry.Journals[:index]...)
+	items = append(items, registry.Journals[index+1:]...)
+	return saveRegistry(settings{Journals: items})
 }
 
 func loadRegistry() (settings, error) {
@@ -410,11 +458,8 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 	}
 	color := terminalColor(out)
 	fmt.Fprintf(out, "\n  %s\n  Your journals\n\n", styled("SATZ JOURNAL", "1;36", color))
-	if len(registry.Journals) == 1 {
+	if len(registry.Journals) == 1 && isJournal(registry.Journals[0].Path) {
 		item := registry.Journals[0]
-		if !isJournal(item.Path) {
-			return "", fmt.Errorf("journal is missing or incompatible: %s; reconnect it with `journal use PATH`", item.Path)
-		}
 		return item.Path, nil
 	}
 	if len(registry.Journals) == 0 {
@@ -437,7 +482,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			fmt.Fprintf(out, "  %d  %s%s\n       %s\n", i+1, name, suffix, item.Path)
 		}
 	}
-	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  q  Cancel")
+	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  q  Cancel")
 	for {
 		fmt.Fprint(out, "\n  Choose: ")
 		line, readErr := reader.ReadString('\n')
@@ -448,6 +493,41 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 		switch strings.ToLower(choice) {
 		case "q":
 			return "", errors.New("journal selection cancelled")
+		case "r":
+			if len(registry.Journals) == 0 {
+				fmt.Fprintln(out, "  No registered journal to reconnect.")
+				continue
+			}
+			index := 1
+			if len(registry.Journals) > 1 {
+				fmt.Fprint(out, "  Journal number: ")
+				answer, err := reader.ReadString('\n')
+				if err != nil && strings.TrimSpace(answer) == "" {
+					return "", errors.New("journal selection cancelled")
+				}
+				index, err = strconv.Atoi(strings.TrimSpace(answer))
+				if err != nil || index < 1 || index > len(registry.Journals) {
+					fmt.Fprintln(out, "  Choose a listed journal number.")
+					continue
+				}
+			}
+			fmt.Fprint(out, "  New journal folder: ")
+			answer, err := reader.ReadString('\n')
+			if strings.TrimSpace(answer) == "" {
+				if err != nil {
+					return "", errors.New("journal selection cancelled")
+				}
+				fmt.Fprintln(out, "  Enter a folder path.")
+				continue
+			}
+			path, err := filepath.Abs(strings.TrimSpace(answer))
+			if err != nil {
+				return "", err
+			}
+			if err := reconnectProject(registry.Journals[index-1].Path, path); err != nil {
+				return "", err
+			}
+			return path, nil
 		case "c", "a":
 			fmt.Fprint(out, "  Journal folder: ")
 			input, inputErr := reader.ReadString('\n')
@@ -468,8 +548,8 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 				if err != nil {
 					return "", err
 				}
-			} else if !isJournal(path) {
-				return "", fmt.Errorf("not a compatible journal (expected main.typ and entries/): %s", path)
+			} else if _, err := registrationPath(path); err != nil {
+				return "", fmt.Errorf("cannot connect journal: %w", err)
 			}
 			if err := rememberProject(path); err != nil {
 				return "", err
@@ -481,7 +561,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			}
 			index, err := strconv.Atoi(choice)
 			if err != nil || index < 1 || index > len(registry.Journals) {
-				fmt.Fprintln(out, "  Choose a listed number, c, a, or q.")
+				fmt.Fprintln(out, "  Choose a listed number, c, a, r, or q.")
 				if readErr != nil {
 					return "", errors.New("journal selection cancelled")
 				}
@@ -489,7 +569,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			}
 			item := registry.Journals[index-1]
 			if !isJournal(item.Path) {
-				return "", fmt.Errorf("journal is missing or incompatible: %s; reconnect it with `journal use PATH`", item.Path)
+				return "", fmt.Errorf("journal is unavailable: %s; choose r to reconnect it or run `journal reconnect OLD_PATH NEW_PATH`", item.Path)
 			}
 			if err := rememberProject(item.Path); err != nil {
 				return "", err

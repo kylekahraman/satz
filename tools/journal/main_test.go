@@ -49,9 +49,34 @@ func TestChooseJournalMissingPathIsNotSelected(t *testing.T) {
 		t.Fatal(err)
 	}
 	var output bytes.Buffer
-	_, err := chooseJournal(bufio.NewReader(strings.NewReader("")), &output)
-	if err == nil || !strings.Contains(err.Error(), "missing") {
+	_, err := chooseJournal(bufio.NewReader(strings.NewReader("1\n")), &output)
+	if err == nil || !strings.Contains(err.Error(), "unavailable") {
 		t.Fatalf("expected missing journal error: %v", err)
+	}
+}
+
+func TestChooserReconnectsSingleMovedJournal(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	old, err := initProject(filepath.Join(root, "old"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(old); err != nil {
+		t.Fatal(err)
+	}
+	moved := filepath.Join(root, "moved")
+	if err := os.Rename(old, moved); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	got, err := chooseJournal(bufio.NewReader(strings.NewReader("r\n"+moved+"\n")), &output)
+	if err != nil || got != moved {
+		t.Fatalf("reconnect = %q, %v", got, err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 1 || registry.Journals[0].Path != moved {
+		t.Fatalf("registry = %+v, %v", registry, err)
 	}
 }
 
@@ -362,6 +387,60 @@ func TestRegistryMigratesAndKeepsMultipleJournals(t *testing.T) {
 	}
 	if len(registry.Journals) != 2 || registry.Journals[0].Path != first {
 		t.Fatalf("selection duplicated or lost a journal: %+v", registry)
+	}
+}
+
+func TestReconnectMovedJournalPreservesOtherRegistrations(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	first, err := initProject(filepath.Join(root, "First"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := initProject(filepath.Join(root, "Second"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(first); err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(second); err != nil {
+		t.Fatal(err)
+	}
+	moved := filepath.Join(root, "Moved")
+	if err := os.Rename(first, moved); err != nil {
+		t.Fatal(err)
+	}
+	if err := reconnectProject(first, moved); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(registry.Journals) != 2 || registry.Journals[0].Path != moved || registry.Journals[1].Path != second {
+		t.Fatalf("unexpected registry: %+v", registry)
+	}
+	if err := reconnectProject(second, moved); err == nil {
+		t.Fatal("reconnecting to an already registered journal must fail")
+	}
+}
+
+func TestConnectRejectsIncompleteJournal(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	if err := os.Mkdir(filepath.Join(root, "entries"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "main.typ"), []byte("Hello"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := run([]string{"use", root}); err == nil || !strings.Contains(err.Error(), "setup.typ") {
+		t.Fatalf("incomplete journal accepted: %v", err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 0 {
+		t.Fatalf("registry changed: %+v %v", registry, err)
 	}
 }
 
