@@ -68,6 +68,23 @@ func TestChooserFormattingWorksWithoutColor(t *testing.T) {
 	}
 }
 
+func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	custom := filepath.Join(project, "_satz", "local-note.txt")
+	if err := os.WriteFile(custom, []byte("keep"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := run([]string{"update-satz", project}); err == nil {
+		t.Fatal("unsafe runtime update should not run")
+	}
+	if data, err := os.ReadFile(custom); err != nil || string(data) != "keep" {
+		t.Fatalf("runtime file changed: %q %v", data, err)
+	}
+}
+
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
 	if got != `"A \"quote\" \\\\ Δ"` {

@@ -86,14 +86,7 @@ func run(args []string) error {
 		fmt.Println("Journal selected:", path)
 		return nil
 	case "update-satz":
-		path := "."
-		if len(args) > 2 {
-			return errors.New("usage: journal update-satz [PATH]")
-		}
-		if len(args) == 2 {
-			path = args[1]
-		}
-		return updateRuntime(path)
+		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
 		if len(args) != 2 {
 			return errors.New("usage: journal starter-zip OUTPUT.zip")
@@ -115,7 +108,6 @@ Commands:
   journal                       Prompt for and open a new entry
   journal new [PATH]            Add an entry to a selected or named journal
   journal use PATH              Select a different journal folder
-  journal update-satz [PATH]    Refresh _satz/ from this executable's runtime
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -252,25 +244,6 @@ func copyEmbeddedDir(source, destination string) error {
 		}
 		return os.WriteFile(output, data, 0o644)
 	})
-}
-
-func updateRuntime(path string) error {
-	project, err := filepath.Abs(path)
-	if err != nil {
-		return err
-	}
-	if !isJournal(project) {
-		return fmt.Errorf("not a journal project: %s", project)
-	}
-	target := filepath.Join(project, "_satz")
-	if err := os.RemoveAll(target); err != nil {
-		return err
-	}
-	if err := copyEmbeddedDir("runtime", target); err != nil {
-		return err
-	}
-	fmt.Println("Updated Satz runtime in", target)
-	return nil
 }
 
 func isJournal(path string) bool {

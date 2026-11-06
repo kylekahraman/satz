@@ -35,7 +35,7 @@ Compile from the project folder with `typst compile --root . main.typ`, or previ
 
 The `@local` namespace is a Typst convention for packages available on your computer. It is not a package your colleagues can download from Universe. Use the `@preview` namespace after the release is published.
 
-The journal starter's `_satz` directory is a copied runtime. It makes a project portable, but stays at that snapshot until you update it. The development launcher provides an explicit `update-satz` command. Updating templates should be deliberate, especially for a long journal: retain a backup and review the resulting PDF.
+The journal starter's `_satz` directory is a copied runtime. It makes a project portable and remains at that snapshot. The development launcher's runtime update is disabled while a safe backup and recovery workflow is designed.
 
 ## Where is the source for a feature?
 

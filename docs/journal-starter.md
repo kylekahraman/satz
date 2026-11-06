@@ -16,7 +16,7 @@ The `_satz/` folder contains the Satz source bundled with the starter, so the pr
 
 The optional helper is a small standalone Go program. End users do not need Go installed to run a prebuilt helper. The helper has not been published or installed globally by this project; use a locally built executable you trust, or continue editing the starter without it. The basic journal workflow does not require downloading an executable.
 
-The helper can create a starter project, remember a preferred project, add meeting/session/note entries, and refresh a project's bundled Satz source. To build it yourself, install Go from [go.dev](https://go.dev/dl/) and, from the repository root, run:
+The helper can create starter projects, remember journals, and add meeting/session/note entries. To build it yourself, install Go from [go.dev](https://go.dev/dl/) and, from the repository root, run:
 
 ```sh
 cd tools/journal
@@ -36,7 +36,7 @@ The last command selects a registered journal, asks for an entry title, type, an
 
 New journals include editable `templates/meeting.typ`, `templates/session.typ`, and `templates/notes.typ` files. Edit their headings and text to change future entries; the helper supplies the title, date, and keywords separately. Templates contain Typst content inside an entry's content block, so invalid Typst or unbalanced brackets can prevent compilation. The helper checks for missing or empty templates but does not yet validate Typst syntax. Existing journals without a `templates/` folder continue to use the built-in scaffolds.
 
-`journal update-satz PATH` is an explicit refresh of `_satz/`; existing journals retain their current source until you run it. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
+Existing journals retain their bundled Satz source. Runtime updates are disabled until a safe backup and recovery workflow is available. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
 
 ## Maintainer builds
 
