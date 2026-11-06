@@ -19,7 +19,7 @@ See [the starter guide](journal-starter.md) for commands and their limitations.
 - Exercise the terminal interface, cancellation and a generated launcher on macOS. The most recent local macOS arm64 run passed; rerun against the final build before release.
 - Build versioned archives with `tools/journal/build-release.sh VERSION OUTPUT_DIR` and verify every file with `shasum -a 256 -c SHA256SUMS` or `sha256sum -c SHA256SUMS`.
 - Local verification on macOS arm64: the Go suite and race checks passed, the chooser scrolled and cancelled in a 40-by-10 pseudo-terminal with 20 journals, and all six `0.2.0-dev4` archive checksums passed. The extracted macOS arm64 binary reported its embedded version. These archives are unsigned development artifacts.
-- Native Linux, Windows and macOS tests passed in [CI run 42295146477](https://github.com/kylekahraman/satz/actions/runs/42295146477) for source `1cab8b6850db1c6a87420f2a73d9486e0ca4b94c`. Windows additionally repeated the concurrent-entry checks five times. The `0.2.0-dev5` archives were built locally from that exact commit and their six checksums verified; they remain unsigned development artifacts.
+- Native Linux, Windows and macOS tests passed in [CI run 42295544505](https://github.com/kylekahraman/satz/actions/runs/42295544505) for source `f3ca453e82d24dcad1b7332d7228033f8cc14800`. Windows additionally repeated the concurrent-entry checks five times. The `0.2.0-dev6` archives were built locally from that exact commit and their six checksums verified; they remain unsigned development artifacts.
 
 ## Public distribution review
 
