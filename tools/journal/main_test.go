@@ -535,6 +535,36 @@ func TestEditableEntryTemplates(t *testing.T) {
 	}
 }
 
+func TestAllCustomizedEntryTypesCompile(t *testing.T) {
+	typst, err := exec.LookPath("typst")
+	if err != nil {
+		t.Skip("Typst is not installed")
+	}
+	root := t.TempDir()
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, kind := range []string{"meeting", "session", "notes"} {
+		body := "== Custom " + kind + "\nMy own structure.\n"
+		if err := os.WriteFile(filepath.Join(project, "templates", kind+".typ"), []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		entry, err := createEntry(project, kind+" custom", kind, "custom", time.Now())
+		if err != nil {
+			t.Fatalf("%s: %v", kind, err)
+		}
+		data, err := os.ReadFile(entry)
+		if err != nil || !strings.Contains(string(data), body) {
+			t.Fatalf("%s template missing from entry: %v", kind, err)
+		}
+	}
+	cmd := exec.Command(typst, "compile", "--root", project, filepath.Join(project, "main.typ"), filepath.Join(root, "journal.pdf"))
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("customized journal failed to compile: %v\n%s", err, output)
+	}
+}
+
 func TestBrokenTemplateDoesNotCreateEntry(t *testing.T) {
 	if _, err := exec.LookPath("typst"); err != nil {
 		t.Skip("Typst is not installed")
