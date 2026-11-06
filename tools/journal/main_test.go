@@ -40,8 +40,8 @@ func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
 		t.Fatalf("missing choices: %s", &output)
 	}
 	registry, err := loadRegistry()
-	if err != nil || registry.Journals[0].Path != first {
-		t.Fatalf("selection not remembered: %+v %v", registry, err)
+	if err != nil || registry.Journals[0].Path != second {
+		t.Fatalf("chooser changed recent journal before entry creation: %+v %v", registry, err)
 	}
 }
 

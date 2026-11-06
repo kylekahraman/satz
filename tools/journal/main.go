@@ -574,6 +574,11 @@ func newEntry(path, editor string) error {
 		return err
 	}
 	fmt.Println("Created", entry)
+	if path == "" {
+		if err := rememberProject(project); err != nil {
+			fmt.Fprintln(os.Stderr, "Entry saved, but could not update recent journal:", err)
+		}
+	}
 	opened, err := openEditor(project, entry, editor)
 	if err != nil {
 		return fmt.Errorf("entry saved at %s, but editor could not be opened: %w", entry, err)
@@ -734,8 +739,10 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			if !isJournal(item.Path) {
 				return "", fmt.Errorf("journal is unavailable: %s; choose r to reconnect it or run `journal reconnect OLD_PATH NEW_PATH`", item.Path)
 			}
-			if err := rememberProject(item.Path); err != nil {
-				return "", err
+			if manage {
+				if err := rememberProject(item.Path); err != nil {
+					return "", err
+				}
 			}
 			return item.Path, nil
 		}
