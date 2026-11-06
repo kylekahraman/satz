@@ -36,6 +36,8 @@ The last command selects a registered journal, asks for an entry title, type, an
 
 If a registered journal moves, choose `r` in the journal chooser and enter its new folder, or run `journal reconnect OLD_PATH NEW_PATH`. The new location must be a compatible journal; reconnecting updates the existing registration without touching the journal files or other registered projects. Connecting an existing folder checks for the journal's setup and entry-registration files; arbitrary Typst projects are not imported automatically.
 
+Run `journal journals` to manage the list even if only one journal is registered. Choose `f` to remove a journal from the list, or use `journal forget PATH`; both leave its files untouched. You can connect it again later.
+
 New journals include editable `templates/meeting.typ`, `templates/session.typ`, and `templates/notes.typ` files. Edit their headings and text to change future entries; the helper supplies the title, date, and keywords separately, so there are no placeholders to maintain. Templates contain Typst content inside an entry's content block. Before using a customized template, the helper compiles a temporary entry in the journal's context and reports any error without creating or registering the final entry. This check requires the [Typst CLI](https://typst.app/open-source/#download) on your PATH; the original templates do not require it. Existing journals without a `templates/` folder continue to use the built-in scaffolds.
 
 Existing journals retain their bundled Satz source. Runtime updates are disabled until a safe backup and recovery workflow is available. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.

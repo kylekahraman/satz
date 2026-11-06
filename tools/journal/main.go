@@ -97,6 +97,25 @@ func run(args []string) error {
 		}
 		fmt.Println("Journal reconnected:", args[2])
 		return nil
+	case "journals":
+		if len(args) != 1 {
+			return errors.New("usage: journal journals")
+		}
+		path, err := chooseJournalMode(bufio.NewReader(os.Stdin), os.Stdout, true)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Selected journal:", path)
+		return nil
+	case "forget":
+		if len(args) != 2 {
+			return errors.New("usage: journal forget PATH")
+		}
+		if err := forgetProject(args[1]); err != nil {
+			return err
+		}
+		fmt.Println("Removed from journal list; files remain in", args[1])
+		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
@@ -120,7 +139,9 @@ Commands:
   journal                       Prompt for and open a new entry
   journal new [PATH]            Add an entry to a selected or named journal
   journal use PATH              Select a different journal folder
+  journal journals              Manage and select registered journals
   journal reconnect OLD NEW     Update a moved journal's registered path
+  journal forget PATH           Remove a journal from the list, keeping its files
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -356,6 +377,30 @@ func reconnectProject(oldPath, newPath string) error {
 	return saveRegistry(settings{Journals: items})
 }
 
+func forgetProject(path string) error {
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		return err
+	}
+	items := make([]journalRecord, 0, len(registry.Journals))
+	found := false
+	for _, item := range registry.Journals {
+		if filepath.Clean(item.Path) == filepath.Clean(path) {
+			found = true
+			continue
+		}
+		items = append(items, item)
+	}
+	if !found {
+		return fmt.Errorf("journal is not registered: %s", path)
+	}
+	return saveRegistry(settings{Journals: items})
+}
+
 func loadRegistry() (settings, error) {
 	data, err := os.ReadFile(filepath.Join(configDir(), "project.json"))
 	if errors.Is(err, os.ErrNotExist) {
@@ -457,13 +502,17 @@ func newEntry(path, editor string) error {
 
 // chooseJournal uses numbered choices so it works in ordinary terminals and pipes.
 func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
+	return chooseJournalMode(reader, out, false)
+}
+
+func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string, error) {
 	registry, err := loadRegistry()
 	if err != nil {
 		return "", err
 	}
 	color := terminalColor(out)
 	fmt.Fprintf(out, "\n  %s\n  Your journals\n\n", styled("SATZ JOURNAL", "1;36", color))
-	if len(registry.Journals) == 1 && isJournal(registry.Journals[0].Path) {
+	if !manage && len(registry.Journals) == 1 && isJournal(registry.Journals[0].Path) {
 		item := registry.Journals[0]
 		return item.Path, nil
 	}
@@ -487,7 +536,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			fmt.Fprintf(out, "  %d  %s%s\n       %s\n", i+1, name, suffix, item.Path)
 		}
 	}
-	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  q  Cancel")
+	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  f  Remove from list (keep files)\n  q  Cancel")
 	for {
 		line, readErr := journalChoice(reader, out, registry.Journals)
 		choice := strings.TrimSpace(line)
@@ -497,6 +546,30 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 		switch strings.ToLower(choice) {
 		case "q":
 			return "", errors.New("journal selection cancelled")
+		case "f":
+			if len(registry.Journals) == 0 {
+				fmt.Fprintln(out, "  No registered journal to remove.")
+				continue
+			}
+			index := 1
+			if len(registry.Journals) > 1 {
+				fmt.Fprint(out, "  Journal number: ")
+				answer, err := reader.ReadString('\n')
+				if err != nil && strings.TrimSpace(answer) == "" {
+					return "", errors.New("journal selection cancelled")
+				}
+				index, err = strconv.Atoi(strings.TrimSpace(answer))
+				if err != nil || index < 1 || index > len(registry.Journals) {
+					fmt.Fprintln(out, "  Choose a listed journal number.")
+					continue
+				}
+			}
+			item := registry.Journals[index-1]
+			if err := forgetProject(item.Path); err != nil {
+				return "", err
+			}
+			fmt.Fprintf(out, "  Removed %s from the list; its files remain at %s.\n", item.Name, item.Path)
+			return chooseJournalMode(reader, out, true)
 		case "r":
 			if len(registry.Journals) == 0 {
 				fmt.Fprintln(out, "  No registered journal to reconnect.")
@@ -565,7 +638,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 			}
 			index, err := strconv.Atoi(choice)
 			if err != nil || index < 1 || index > len(registry.Journals) {
-				fmt.Fprintln(out, "  Choose a listed number, c, a, r, or q.")
+				fmt.Fprintln(out, "  Choose a listed number, c, a, r, f, or q.")
 				if readErr != nil {
 					return "", errors.New("journal selection cancelled")
 				}
@@ -605,7 +678,7 @@ func journalChoice(reader *bufio.Reader, out io.Writer, items []journalRecord) (
 
 func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecord, color bool) (string, error) {
 	selected := 0
-	fmt.Fprint(out, "\r\n  ↑↓ choose  ·  Enter select  ·  c create  ·  a connect  ·  r reconnect  ·  q cancel\r\n")
+	fmt.Fprint(out, "\r\n  ↑↓ choose  ·  Enter select  ·  c create  ·  a connect  ·  r reconnect  ·  f remove  ·  q cancel\r\n")
 	for {
 		fmt.Fprintf(out, "\r\x1b[2K  %s", styled("› "+items[selected].Name, "1;36", color))
 		key, err := reader.ReadByte()
@@ -617,7 +690,7 @@ func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecor
 			return strconv.Itoa(selected + 1), nil
 		case 3, 'q', 'Q':
 			return "q", nil
-		case 'c', 'C', 'a', 'A', 'r', 'R':
+		case 'c', 'C', 'a', 'A', 'r', 'R', 'f', 'F':
 			return strings.ToLower(string(key)), nil
 		case '\x1b':
 			prefix, err := reader.ReadByte()

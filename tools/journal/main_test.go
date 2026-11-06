@@ -492,6 +492,53 @@ func TestReconnectMovedJournalPreservesOtherRegistrations(t *testing.T) {
 	}
 }
 
+func TestForgetJournalKeepsFilesAndOtherRegistrations(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	first, err := initProject(filepath.Join(root, "First"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := initProject(filepath.Join(root, "Second"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(first); err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(second); err != nil {
+		t.Fatal(err)
+	}
+	if err := forgetProject(first); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 1 || registry.Journals[0].Path != second {
+		t.Fatalf("unexpected registry: %+v %v", registry, err)
+	}
+	if _, err := os.Stat(filepath.Join(first, "main.typ")); err != nil {
+		t.Fatalf("journal content removed: %v", err)
+	}
+}
+
+func TestManageSingleJournalOffersCreate(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	first, err := initProject(filepath.Join(root, "First"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(first); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	second := filepath.Join(root, "Second")
+	got, err := chooseJournalMode(bufio.NewReader(strings.NewReader("c\n"+second+"\n")), &output, true)
+	if err != nil || got != second {
+		t.Fatalf("create from management = %q, %v", got, err)
+	}
+}
+
 func TestConnectRejectsIncompleteJournal(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
