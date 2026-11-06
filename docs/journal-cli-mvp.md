@@ -27,3 +27,7 @@ Each step is independently reviewed, verified and committed. Add focused regress
 3. **Journal registry** — replace the single saved path with a compatible multi-journal registry, connect/create flows and missing-path handling; test migrations and isolation with `go test ./...`.
 4. **Interactive interface** — implement and test the journal chooser, first-run flow, selection visibility and accessible color behavior. Exercise it in a real terminal, including cancellation and editor failures.
 5. **End-to-end prototype** — create and select two journals, customize a meeting template, create entries and compile both journals with Typst. Verify failure recovery and update the user documentation. Package a local executable; public release and platform distribution are separate work.
+
+## Prototype verification
+
+The local macOS arm64 prototype has been built as `tools/journal/dist/satz-journal-mvp` (the build output is ignored by Git). The Go suite compiles generated journals containing all three entry types, checks editable-template validation, registry migration and reconnection, entry-list recovery, and non-destructive journal removal. A separate end-to-end run exercised two journals, customization, duplicate titles, an invalid template, a failed editor, and PDF compilation. The arrow-key chooser, no-color mode, cancellation, and terminal restoration were exercised in a pseudo-terminal. Windows and Linux binaries have been cross-compiled, but not run natively. This is a prototype build; signed, versioned public releases remain separate work.
