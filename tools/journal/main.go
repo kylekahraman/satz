@@ -26,6 +26,12 @@ var assets embed.FS
 const entriesMarker = "// --- end entries ---"
 
 type settings struct {
+	Path     string          `json:"path,omitempty"` // Legacy single-journal setting.
+	Journals []journalRecord `json:"journals,omitempty"`
+}
+
+type journalRecord struct {
+	Name string `json:"name"`
 	Path string `json:"path"`
 }
 
@@ -297,14 +303,48 @@ func configDir() string {
 }
 
 func rememberProject(path string) error {
-	if err := os.MkdirAll(configDir(), 0o755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(settings{Path: path}, "", "  ")
+	path, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(configDir(), "project.json"), data, 0o600)
+	registry, err := loadRegistry()
+	if err != nil {
+		return err
+	}
+	record := journalRecord{Name: filepath.Base(path), Path: path}
+	filtered := []journalRecord{record}
+	for _, item := range registry.Journals {
+		if filepath.Clean(item.Path) != filepath.Clean(path) {
+			filtered = append(filtered, item)
+		}
+	}
+	registry = settings{Journals: filtered}
+	if err := os.MkdirAll(configDir(), 0o755); err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(registry, "", "  ")
+	if err != nil {
+		return err
+	}
+	return atomicWrite(filepath.Join(configDir(), "project.json"), data, 0o600)
+}
+
+func loadRegistry() (settings, error) {
+	data, err := os.ReadFile(filepath.Join(configDir(), "project.json"))
+	if errors.Is(err, os.ErrNotExist) {
+		return settings{}, nil
+	}
+	if err != nil {
+		return settings{}, err
+	}
+	var registry settings
+	if err := json.Unmarshal(data, &registry); err != nil {
+		return settings{}, fmt.Errorf("cannot read journal registry: %w", err)
+	}
+	if registry.Path != "" && len(registry.Journals) == 0 {
+		registry.Journals = []journalRecord{{Name: filepath.Base(registry.Path), Path: registry.Path}}
+	}
+	return registry, nil
 }
 
 func loadProject(path string) (string, error) {
@@ -323,15 +363,12 @@ func loadProject(path string) (string, error) {
 			}
 		}
 	}
-	data, err := os.ReadFile(filepath.Join(configDir(), "project.json"))
-	if err == nil {
-		var saved settings
-		if err := json.Unmarshal(data, &saved); err != nil {
-			return "", err
-		}
-		if isJournal(saved.Path) {
-			return saved.Path, nil
-		}
+	registry, err := loadRegistry()
+	if err != nil {
+		return "", err
+	}
+	if len(registry.Journals) > 0 && isJournal(registry.Journals[0].Path) {
+		return registry.Journals[0].Path, nil
 	}
 	return "", errors.New("no journal selected; run `journal init PATH`, `journal use PATH`, or run from a journal folder")
 }

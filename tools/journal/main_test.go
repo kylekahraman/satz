@@ -207,6 +207,45 @@ func TestLoadProjectPrefersCurrentJournalToRemembered(t *testing.T) {
 	}
 }
 
+func TestRegistryMigratesAndKeepsMultipleJournals(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	first, err := initProject(filepath.Join(root, "First"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := initProject(filepath.Join(root, "Second"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(configDir(), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(configDir(), "project.json"), []byte(`{"path":`+typstString(first)+`}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(second); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(registry.Journals) != 2 || registry.Journals[0].Path != second || registry.Journals[1].Path != first {
+		t.Fatalf("unexpected migrated registry: %+v", registry)
+	}
+	if err := rememberProject(first); err != nil {
+		t.Fatal(err)
+	}
+	registry, err = loadRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(registry.Journals) != 2 || registry.Journals[0].Path != first {
+		t.Fatalf("selection duplicated or lost a journal: %+v", registry)
+	}
+}
+
 type fakeFileInfo struct{}
 
 func (fakeFileInfo) Name() string       { return "Code.exe" }
