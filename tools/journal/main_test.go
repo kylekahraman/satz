@@ -1238,3 +1238,35 @@ func TestAllEntryTypesCompileInIndependentJournals(t *testing.T) {
 		}
 	}
 }
+
+func TestExecutableJournalWorkflow(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	t.Setenv("VISUAL", "satz-editor-not-installed")
+	t.Setenv("EDITOR", "satz-editor-not-installed")
+	executable := filepath.Join(root, "journal")
+	if os.PathSeparator == '\\' {
+		executable += ".exe"
+	}
+	build := exec.Command("go", "build", "-o", executable, ".")
+	if output, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("build executable: %v\n%s", err, output)
+	}
+	project := filepath.Join(root, "My Journal")
+	for _, args := range [][]string{{"init", project}, {"check", project}} {
+		cmd := exec.Command(executable, args...)
+		if output, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("%v: %v\n%s", args, err, output)
+		}
+	}
+	cmd := exec.Command(executable, "new", project)
+	cmd.Stdin = strings.NewReader("Native test\nnotes\ncheck\n")
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("create entry: %v\n%s", err, output)
+	}
+	cmd = exec.Command(executable, "search", "Native test", project)
+	output, err := cmd.CombinedOutput()
+	if err != nil || !strings.Contains(string(output), "native-test.typ") {
+		t.Fatalf("search entry: %v\n%s", err, output)
+	}
+}
