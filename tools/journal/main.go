@@ -186,12 +186,8 @@ func initProject(input string) (string, error) {
 	if err := os.WriteFile(filepath.Join(destination, filepath.FromSlash(entryPath)), first, 0o644); err != nil {
 		return "", err
 	}
-	mainPath := filepath.Join(destination, "main.typ")
-	mainBytes, err := os.ReadFile(mainPath)
-	if err != nil {
-		return "", err
-	}
-	if err := os.WriteFile(mainPath, []byte(strings.ReplaceAll(string(mainBytes), "{{FIRST_ENTRY_PATH}}", entryPath)), 0o644); err != nil {
+	entryList := "// The journal helper adds new entries above the end marker.\n#include \"" + entryPath + "\"\n" + entriesMarker + "\n"
+	if err := os.WriteFile(filepath.Join(destination, "journal-entries.typ"), []byte(entryList), 0o644); err != nil {
 		return "", err
 	}
 	if err := copyAsset("templates/extensions.json", filepath.Join(destination, ".vscode", "extensions.json")); err != nil {
@@ -208,7 +204,7 @@ func initProject(input string) (string, error) {
 2. Open this folder in VS Code, then open ` + "`main.typ`" + `.
 3. Open the command palette and choose **Typst: Preview**.
 
-Edit ` + "`config.typ`" + ` to personalize the cover and journal style. Change the title, subtitle, author, theme, cover layout, and paper size there. Available themes include ` + "`neutral`" + `, ` + "`soft-jade`" + `, ` + "`soft-slate`" + `, ` + "`warm-editorial`" + `, ` + "`plum`" + `, and ` + "`soft-rose`" + `. Add new entries under ` + "`entries/`" + ` and include them in ` + "`main.typ`" + ` between its entry markers.
+Edit ` + "`config.typ`" + ` to personalize the cover and journal style. Change the title, subtitle, author, theme, cover layout, and paper size there. Available themes include ` + "`neutral`" + `, ` + "`soft-jade`" + `, ` + "`soft-slate`" + `, ` + "`warm-editorial`" + `, ` + "`plum`" + `, and ` + "`soft-rose`" + `. Add new entries under ` + "`entries/`" + ` and include them in ` + "`journal-entries.typ`" + ` above its end marker. Keep the include of ` + "`journal-entries.typ`" + ` in ` + "`main.typ`" + ` so the entries appear in the journal.
 
 To keep the complete journal in the preview while editing another file, open ` + "`main.typ`" + ` and run **Typst: Pin Main**. The ` + "`_satz/`" + ` folder contains the Satz source used by this journal, so no Satz package installation is needed. Its revision is recorded in ` + "`_satz/VERSION.txt`" + `.
 `
@@ -467,8 +463,28 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	if _, err := os.Stat(filepath.Join(project, "entries")); err != nil {
 		return "", fmt.Errorf("not a journal project: entries/: %w", err)
 	}
-	if !strings.Contains(string(mainBytes), entriesMarker) {
-		return "", fmt.Errorf("%s is missing entries marker %q", main, entriesMarker)
+	registration := main
+	entryList := filepath.Join(project, "journal-entries.typ")
+	if _, err := os.Stat(entryList); err == nil {
+		linked := false
+		for _, line := range strings.Split(string(mainBytes), "\n") {
+			if strings.TrimSpace(line) == `#include "journal-entries.typ"` {
+				linked = true
+			}
+		}
+		if !linked {
+			return "", fmt.Errorf("%s does not include journal-entries.typ; restore the line #include \"journal-entries.typ\" where entries should appear", main)
+		}
+		registration = entryList
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return "", err
+	}
+	registrationBytes, err := os.ReadFile(registration)
+	if err != nil {
+		return "", err
+	}
+	if strings.Count(string(registrationBytes), entriesMarker) != 1 {
+		return "", fmt.Errorf("%s must contain exactly one %q line; restore it after the entry includes", registration, entriesMarker)
 	}
 	filename := date.Format("2006-01-02") + "-" + safeComponent(title) + ".typ"
 	target := filepath.Join(project, "entries", filename)
@@ -513,7 +529,7 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		os.Remove(target)
 		return "", err
 	}
-	if err := appendInclude(main, relative); err != nil {
+	if err := appendInclude(registration, relative); err != nil {
 		os.Remove(target)
 		return "", err
 	}

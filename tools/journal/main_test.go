@@ -101,8 +101,9 @@ func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(mainAfter), `#include "entries/2026-10-21-quoted-title-δ.typ"`) {
-		t.Fatalf("main.typ missing generated include:\n%s", mainAfter)
+	entryList, err := os.ReadFile(filepath.Join(project, "journal-entries.typ"))
+	if err != nil || !strings.Contains(string(entryList), `#include "entries/2026-10-21-quoted-title-δ.typ"`) {
+		t.Fatalf("entry list missing generated include: %s (%v)", entryList, err)
 	}
 	if _, err := createEntry(project, title, "meeting", "", date); err == nil {
 		t.Fatal("duplicate entry should not overwrite")
@@ -110,6 +111,38 @@ func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {
 	contentAfter, _ := os.ReadFile(entry)
 	if string(content) != string(contentAfter) {
 		t.Fatal("duplicate entry changed the original")
+	}
+}
+
+func TestMissingEntryListLinkLeavesJournalUntouched(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	mainPath := filepath.Join(project, "main.typ")
+	main, err := os.ReadFile(mainPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(mainPath, []byte(strings.Replace(string(main), `#include "journal-entries.typ"`, "", 1)), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	listPath := filepath.Join(project, "journal-entries.typ")
+	before, err := os.ReadFile(listPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = createEntry(project, "Disconnected", "notes", "", time.Now())
+	if err == nil || !strings.Contains(err.Error(), "journal-entries.typ") {
+		t.Fatalf("expected actionable missing link error, got %v", err)
+	}
+	after, _ := os.ReadFile(listPath)
+	if string(before) != string(after) {
+		t.Fatal("entry list changed")
+	}
+	entries, _ := os.ReadDir(filepath.Join(project, "entries"))
+	if len(entries) != 1 {
+		t.Fatalf("entry unexpectedly created: %v", entries)
 	}
 }
 

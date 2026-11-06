@@ -8,6 +8,5 @@
 #set page(numbering: "1")
 #counter(page).update(1)
 
-// --- entries ---
-#include "{{FIRST_ENTRY_PATH}}"
-// --- end entries ---
+// Keep this line to include your journal entries.
+#include "journal-entries.typ"
