@@ -222,6 +222,49 @@ func TestMissingEntryListLinkLeavesJournalUntouched(t *testing.T) {
 	}
 }
 
+func TestRegistrationRequiresRealMarkerAndSetup(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	list := filepath.Join(project, "journal-entries.typ")
+	data, err := os.ReadFile(list)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// A substring inside another comment is not a usable marker.
+	broken := strings.Replace(string(data), entriesMarker, "// example: "+entriesMarker, 1)
+	if err := os.WriteFile(list, []byte(broken), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Not registered", "notes", "", time.Now()); err == nil {
+		t.Fatal("commented marker accepted")
+	}
+	if err := os.WriteFile(list, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(project, "setup.typ")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "No setup", "notes", "", time.Now()); err == nil || !strings.Contains(err.Error(), "setup.typ") {
+		t.Fatalf("missing setup not diagnosed: %v", err)
+	}
+}
+
+func TestMissingEntryListReportsRecovery(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(project, "journal-entries.typ")); err != nil {
+		t.Fatal(err)
+	}
+	_, err = createEntry(project, "Not saved", "notes", "", time.Now())
+	if err == nil || !strings.Contains(err.Error(), "journal-entries.typ") {
+		t.Fatalf("missing entry list not diagnosed: %v", err)
+	}
+}
+
 func TestEditableEntryTemplates(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {

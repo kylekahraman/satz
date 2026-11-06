@@ -575,6 +575,53 @@ func safeComponent(value string) string {
 	return result
 }
 
+func registrationPath(project string) (string, error) {
+	main := filepath.Join(project, "main.typ")
+	mainBytes, err := os.ReadFile(main)
+	if err != nil {
+		return "", fmt.Errorf("not a journal project: %w", err)
+	}
+	if info, err := os.Stat(filepath.Join(project, "entries")); err != nil || !info.IsDir() {
+		return "", fmt.Errorf("not a journal project: entries/ must be a directory")
+	}
+	if info, err := os.Stat(filepath.Join(project, "setup.typ")); err != nil || info.IsDir() {
+		return "", fmt.Errorf("journal setup.typ is missing: %s", project)
+	}
+	registration := main
+	entryList := filepath.Join(project, "journal-entries.typ")
+	linked := hasLine(string(mainBytes), `#include "journal-entries.typ"`)
+	if _, err := os.Stat(entryList); err == nil {
+		if !linked {
+			return "", fmt.Errorf("%s does not include journal-entries.typ; restore the line #include \"journal-entries.typ\" where entries should appear", main)
+		}
+		registration = entryList
+	} else if errors.Is(err, os.ErrNotExist) && linked {
+		return "", fmt.Errorf("%s is missing; restore it from a backup or recreate it with your entry includes and %q", entryList, entriesMarker)
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return "", err
+	}
+	registrationBytes, err := os.ReadFile(registration)
+	if err != nil {
+		return "", err
+	}
+	if countLines(string(registrationBytes), entriesMarker) != 1 {
+		return "", fmt.Errorf("%s must contain exactly one %q line; restore it after the entry includes", registration, entriesMarker)
+	}
+	return registration, nil
+}
+
+func countLines(content, line string) int {
+	count := 0
+	for _, candidate := range strings.Split(content, "\n") {
+		if strings.TrimSpace(candidate) == line {
+			count++
+		}
+	}
+	return count
+}
+
+func hasLine(content, line string) bool { return countLines(content, line) > 0 }
+
 func createEntry(project, title, kind, keywords string, date time.Time) (string, error) {
 	title = strings.TrimSpace(title)
 	kind = strings.ToLower(strings.TrimSpace(kind))
@@ -588,36 +635,9 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	if err != nil {
 		return "", err
 	}
-	main := filepath.Join(project, "main.typ")
-	mainBytes, err := os.ReadFile(main)
-	if err != nil {
-		return "", fmt.Errorf("not a journal project: %w", err)
-	}
-	if _, err := os.Stat(filepath.Join(project, "entries")); err != nil {
-		return "", fmt.Errorf("not a journal project: entries/: %w", err)
-	}
-	registration := main
-	entryList := filepath.Join(project, "journal-entries.typ")
-	if _, err := os.Stat(entryList); err == nil {
-		linked := false
-		for _, line := range strings.Split(string(mainBytes), "\n") {
-			if strings.TrimSpace(line) == `#include "journal-entries.typ"` {
-				linked = true
-			}
-		}
-		if !linked {
-			return "", fmt.Errorf("%s does not include journal-entries.typ; restore the line #include \"journal-entries.typ\" where entries should appear", main)
-		}
-		registration = entryList
-	} else if !errors.Is(err, os.ErrNotExist) {
-		return "", err
-	}
-	registrationBytes, err := os.ReadFile(registration)
+	registration, err := registrationPath(project)
 	if err != nil {
 		return "", err
-	}
-	if strings.Count(string(registrationBytes), entriesMarker) != 1 {
-		return "", fmt.Errorf("%s must contain exactly one %q line; restore it after the entry includes", registration, entriesMarker)
 	}
 	filename := date.Format("2006-01-02") + "-" + safeComponent(title) + ".typ"
 	target := filepath.Join(project, "entries", filename)
@@ -691,13 +711,24 @@ func appendInclude(main, relative string) error {
 	}
 	text := string(data)
 	line := "#include \"" + relative + "\""
-	if strings.Contains(text, line) {
+	if hasLine(text, line) {
 		return nil
 	}
-	if !strings.Contains(text, entriesMarker) {
-		return fmt.Errorf("%s is missing entries marker %q", main, entriesMarker)
+	if countLines(text, entriesMarker) != 1 {
+		return fmt.Errorf("%s must contain exactly one %q line", main, entriesMarker)
 	}
-	text = strings.Replace(text, entriesMarker, line+"\n"+entriesMarker, 1)
+	lines := strings.Split(text, "\n")
+	for i, existing := range lines {
+		if strings.TrimSpace(existing) == entriesMarker {
+			ending := "\n"
+			if strings.HasSuffix(existing, "\r") {
+				ending = "\r\n"
+			}
+			lines[i] = line + ending + existing
+			break
+		}
+	}
+	text = strings.Join(lines, "\n")
 	return atomicWrite(main, []byte(text), 0o644)
 }
 
