@@ -52,6 +52,8 @@ Run `journal check PATH` for a read-only check of the journal's entry-list conne
 
 New journals include editable `templates/meeting.typ`, `templates/session.typ`, and `templates/notes.typ` files. Edit their headings and text to change future entries; the helper supplies the title, date, and keywords separately, so there are no placeholders to maintain. Templates contain Typst content inside an entry's content block. Before using a customized template, the helper compiles a temporary entry and reports any error without creating or registering the final entry. If a reference is unresolved in the entry alone, it retries with the whole journal so references to other entries can resolve. Each check is limited to 30 seconds. This check requires the [Typst CLI](https://typst.app/open-source/#download) on your PATH; the original templates do not require it. Existing journals without a `templates/` folder continue to use the built-in scaffolds.
 
+Run `journal open [PATH]` to open a journal folder, or `journal template meeting [PATH]` to open a template (also accepts `session` and `notes`). `journal template-default meeting [PATH]` creates `templates/meeting.default.typ` as a separate reference copy. It never replaces an existing copy or customized template; compare and copy the parts you want manually.
+
 Existing journals retain their bundled Satz source. Runtime updates are disabled until a safe backup and recovery workflow is available. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
 
 ## Maintainer builds

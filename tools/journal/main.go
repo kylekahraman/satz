@@ -179,6 +179,64 @@ func run(args []string) error {
 			fmt.Println("Configured editor:", value)
 		}
 		return nil
+	case "open", "template", "template-default":
+		kind, path := "", ""
+		if args[0] == "open" {
+			if len(args) > 2 {
+				return errors.New("usage: journal open [PATH]")
+			}
+			if len(args) == 2 {
+				path = args[1]
+			}
+		} else {
+			if len(args) < 2 || len(args) > 3 {
+				return fmt.Errorf("usage: journal %s KIND [PATH]", args[0])
+			}
+			kind = normalizeKind(args[1])
+			if !validKind(kind) {
+				return errors.New("template kind must be meeting, session, or notes")
+			}
+			if len(args) == 3 {
+				path = args[2]
+			}
+		}
+		project, err := loadProject(path)
+		if err != nil {
+			return err
+		}
+		if _, err := registrationPath(project); err != nil {
+			return err
+		}
+		if args[0] == "template-default" {
+			file, err := writeDefaultTemplate(project, kind)
+			if err != nil {
+				return err
+			}
+			fmt.Println("Default template copy created:", file)
+			return nil
+		}
+		target := ""
+		if args[0] == "template" {
+			target = filepath.Join(project, "templates", kind+".typ")
+			if info, err := os.Stat(target); err != nil || info.IsDir() {
+				return fmt.Errorf("template not found: %s", target)
+			}
+		}
+		editor, err := preferredEditor("")
+		if err != nil {
+			return err
+		}
+		opened, err := openEditor(project, target, editor)
+		if err != nil {
+			return fmt.Errorf("could not open editor: %w", err)
+		}
+		if !opened {
+			if target == "" {
+				target = project
+			}
+			fmt.Println("Open this path in your editor:", target)
+		}
+		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
@@ -208,6 +266,9 @@ Commands:
   journal rename PATH NAME      Change its name in the journal list
   journal check [PATH]          Check journal setup without changing files
   journal editor [COMMAND]      Show or set editor; --clear uses environment
+  journal open [PATH]           Open the journal folder in your editor
+  journal template KIND [PATH]  Open an entry template in your editor
+  journal template-default KIND [PATH]  Save a separate default template copy
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -1299,6 +1360,30 @@ func scaffold(kind string) string {
 	}
 }
 
+func writeDefaultTemplate(project, kind string) (string, error) {
+	if !validKind(kind) {
+		return "", errors.New("template kind must be meeting, session, or notes")
+	}
+	dir := filepath.Join(project, "templates")
+	info, err := os.Stat(dir)
+	if err != nil || !info.IsDir() {
+		return "", fmt.Errorf("template folder is missing: %s; create all three templates before using it", dir)
+	}
+	path := filepath.Join(dir, kind+".default.typ")
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o644)
+	if err != nil {
+		return "", fmt.Errorf("cannot create default template copy %s: %w", path, err)
+	}
+	if _, err := io.WriteString(file, scaffold(kind)); err != nil {
+		file.Close()
+		return "", cleanupFailedEntry(path, err)
+	}
+	if err := file.Close(); err != nil {
+		return "", cleanupFailedEntry(path, err)
+	}
+	return path, nil
+}
+
 func appendInclude(main, relative string) error {
 	info, err := os.Lstat(main)
 	if err != nil {
@@ -1433,9 +1518,16 @@ func editorCommand(project, entry, requested string, goos string, lookPath func(
 	}
 	args := append([]string{resolved}, parts[1:]...)
 	if strings.TrimSuffix(name, ".cmd") == "code" || name == "code.exe" {
-		args = append(args, "--reuse-window", project, entry)
+		args = append(args, "--reuse-window", project)
+		if entry != "" {
+			args = append(args, entry)
+		}
 	} else {
-		args = append(args, entry)
+		if entry == "" {
+			args = append(args, project)
+		} else {
+			args = append(args, entry)
+		}
 	}
 	return args, true, nil
 }

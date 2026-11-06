@@ -38,6 +38,32 @@ func TestEditorPreferenceSurvivesRegistryChanges(t *testing.T) {
 	}
 }
 
+func TestTemplateDefaultCopyNeverOverwrites(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	original := filepath.Join(project, "templates", "meeting.typ")
+	if err := os.WriteFile(original, []byte("custom notes"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	copyPath, err := writeDefaultTemplate(project, "meeting")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := writeDefaultTemplate(project, "meeting"); err == nil {
+		t.Fatal("overwriting default copy should fail")
+	}
+	data, err := os.ReadFile(original)
+	if err != nil || string(data) != "custom notes" {
+		t.Fatalf("customization changed: %q, %v", data, err)
+	}
+	data, err = os.ReadFile(copyPath)
+	if err != nil || string(data) != scaffold("meeting") {
+		t.Fatalf("incorrect default copy: %v", err)
+	}
+}
+
 func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
