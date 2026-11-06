@@ -32,7 +32,7 @@ journal use "path/to/My Journal"
 journal
 ```
 
-The last command selects a registered journal, asks for an entry title, type, and optional keywords, adds the new Typst file to its entry list, and opens the chosen editor. With several registered journals, choose a number; Enter selects the most recently used. With none, the command offers to create or connect one. Use `journal init PATH` or `journal use PATH` to add another journal directly. Entry types accept `meeting`/`m`, `session`/`s`, or `notes`/`n`. The helper never edits shell startup files. If no editor is available, the entry remains saved and the helper tells you where to find it. VS Code is detected automatically; set `VISUAL` or `EDITOR` to choose another editor.
+The last command selects a registered journal, asks for an entry title, type, and optional keywords, adds the new Typst file to its entry list, and opens the chosen editor. With several registered journals, use the arrow keys and Enter in an interactive terminal, or choose a number in plain or piped input. Enter selects the most recently used. With none, the command offers to create or connect one. Use `journal init PATH` or `journal use PATH` to add another journal directly. Entry types accept `meeting`/`m`, `session`/`s`, or `notes`/`n`. Set `NO_COLOR` to disable color. The helper never edits shell startup files. If no editor is available, the entry remains saved and the helper tells you where to find it. VS Code is detected automatically; set `VISUAL` or `EDITOR` to choose another editor.
 
 If a registered journal moves, choose `r` in the journal chooser and enter its new folder, or run `journal reconnect OLD_PATH NEW_PATH`. The new location must be a compatible journal; reconnecting updates the existing registration without touching the journal files or other registered projects. Connecting an existing folder checks for the journal's setup and entry-registration files; arbitrary Typst projects are not imported automatically.
 
@@ -42,6 +42,6 @@ Existing journals retain their bundled Satz source. Runtime updates are disabled
 
 ## Maintainer builds
 
-Go is needed only to build the helper. From `tools/journal`, `./build-release.sh` creates ZIPs for Windows, macOS, and Linux (amd64 and arm64), plus a `SHA256SUMS` file. It uses the standard Go toolchain and no third-party modules.
+Go is needed only to build the helper. From `tools/journal`, `./build-release.sh` creates ZIPs for Windows, macOS, and Linux (amd64 and arm64), plus a `SHA256SUMS` file. The build uses the Go terminal libraries specified in `go.mod`.
 
 These development builds are unsigned. Windows and Linux binaries cross-compiled on macOS have not been run natively; verify them on their target systems before distributing them. Do not treat an archive or executable as an official release unless Satz publishes it through a trusted release channel.

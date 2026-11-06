@@ -93,6 +93,22 @@ func TestChooserFormattingWorksWithoutColor(t *testing.T) {
 	}
 }
 
+func TestKeyboardJournalSelection(t *testing.T) {
+	items := []journalRecord{{Name: "First", Path: "/first"}, {Name: "Second", Path: "/second"}}
+	var output bytes.Buffer
+	got, err := interactiveChoice(bufio.NewReader(strings.NewReader("\x1b[B\r")), &output, items, false)
+	if err != nil || got != "2" {
+		t.Fatalf("arrow selection = %q, %v", got, err)
+	}
+	if !strings.Contains(output.String(), "Second") {
+		t.Fatalf("selection was not shown: %q", output.String())
+	}
+	got, err = interactiveChoice(bufio.NewReader(strings.NewReader("\x03")), &output, items, false)
+	if err != nil || got != "q" {
+		t.Fatalf("control-C = %q, %v", got, err)
+	}
+}
+
 func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {

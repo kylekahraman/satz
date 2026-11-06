@@ -20,6 +20,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"golang.org/x/term"
 )
 
 //go:embed runtime templates
@@ -487,8 +489,7 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 	}
 	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  q  Cancel")
 	for {
-		fmt.Fprint(out, "\n  Choose: ")
-		line, readErr := reader.ReadString('\n')
+		line, readErr := journalChoice(reader, out, registry.Journals)
 		choice := strings.TrimSpace(line)
 		if readErr != nil && choice == "" {
 			return "", errors.New("journal selection cancelled")
@@ -578,6 +579,68 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 				return "", err
 			}
 			return item.Path, nil
+		}
+	}
+}
+
+// journalChoice keeps line-based input for pipes and terminals that cannot use
+// raw mode; an interactive terminal gets a keyboard-controlled selection.
+func journalChoice(reader *bufio.Reader, out io.Writer, items []journalRecord) (string, error) {
+	file, ok := out.(*os.File)
+	if len(items) > 0 && ok && os.Getenv("TERM") != "dumb" && term.IsTerminal(int(os.Stdin.Fd())) && term.IsTerminal(int(file.Fd())) {
+		state, err := term.MakeRaw(int(os.Stdin.Fd()))
+		if err == nil {
+			choice, readErr := interactiveChoice(reader, out, items, terminalColor(out))
+			restoreErr := term.Restore(int(os.Stdin.Fd()), state)
+			fmt.Fprintln(out)
+			if readErr != nil {
+				return "", readErr
+			}
+			return choice, restoreErr
+		}
+	}
+	fmt.Fprint(out, "\n  Choose: ")
+	return reader.ReadString('\n')
+}
+
+func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecord, color bool) (string, error) {
+	selected := 0
+	fmt.Fprint(out, "\r\n  ↑↓ choose  ·  Enter select  ·  c create  ·  a connect  ·  r reconnect  ·  q cancel\r\n")
+	for {
+		fmt.Fprintf(out, "\r\x1b[2K  %s", styled("› "+items[selected].Name, "1;36", color))
+		key, err := reader.ReadByte()
+		if err != nil {
+			return "", err
+		}
+		switch key {
+		case '\r', '\n':
+			return strconv.Itoa(selected + 1), nil
+		case 3, 'q', 'Q':
+			return "q", nil
+		case 'c', 'C', 'a', 'A', 'r', 'R':
+			return strings.ToLower(string(key)), nil
+		case '\x1b':
+			prefix, err := reader.ReadByte()
+			if err != nil {
+				return "", err
+			}
+			if prefix != '[' && prefix != 'O' {
+				continue
+			}
+			direction, err := reader.ReadByte()
+			if err != nil {
+				return "", err
+			}
+			if direction == 'A' {
+				selected = (selected + len(items) - 1) % len(items)
+			}
+			if direction == 'B' {
+				selected = (selected + 1) % len(items)
+			}
+		default:
+			if key >= '1' && key <= '9' && int(key-'1') < len(items) {
+				selected = int(key - '1')
+			}
 		}
 	}
 }
