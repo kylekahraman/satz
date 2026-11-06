@@ -226,7 +226,7 @@ func initProject(input string) (string, error) {
 	if err := copyAsset("templates/extensions.json", filepath.Join(destination, ".vscode", "extensions.json")); err != nil {
 		return "", err
 	}
-	if err := os.WriteFile(filepath.Join(destination, ".gitignore"), []byte("*.pdf\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(destination, ".gitignore"), []byte("*.pdf\n.satz-journal.lock\n"), 0o644); err != nil {
 		return "", err
 	}
 	readme := `# Your Satz research journal
@@ -317,6 +317,12 @@ func rememberProject(path string) error {
 	if err != nil {
 		return err
 	}
+	lock, err := lockRegistry()
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	defer unlockFile(lock)
 	registry, err := loadRegistry()
 	if err != nil {
 		return err
@@ -329,6 +335,21 @@ func rememberProject(path string) error {
 		}
 	}
 	return saveRegistry(settings{Journals: filtered})
+}
+
+func lockRegistry() (*os.File, error) {
+	if err := os.MkdirAll(configDir(), 0o755); err != nil {
+		return nil, err
+	}
+	file, err := os.OpenFile(filepath.Join(configDir(), ".registry.lock"), os.O_CREATE|os.O_RDWR, 0o600)
+	if err != nil {
+		return nil, fmt.Errorf("cannot lock journal list: %w", err)
+	}
+	if err := lockFile(file); err != nil {
+		file.Close()
+		return nil, fmt.Errorf("cannot lock journal list: %w", err)
+	}
+	return file, nil
 }
 
 func saveRegistry(registry settings) error {
@@ -354,6 +375,12 @@ func reconnectProject(oldPath, newPath string) error {
 	if _, err := registrationPath(newPath); err != nil {
 		return fmt.Errorf("cannot reconnect journal: %w", err)
 	}
+	lock, err := lockRegistry()
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	defer unlockFile(lock)
 	registry, err := loadRegistry()
 	if err != nil {
 		return err
@@ -382,6 +409,12 @@ func forgetProject(path string) error {
 	if err != nil {
 		return err
 	}
+	lock, err := lockRegistry()
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	defer unlockFile(lock)
 	registry, err := loadRegistry()
 	if err != nil {
 		return err
@@ -862,6 +895,20 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		return "", err
 	}
 	registration, err := registrationPath(project)
+	if err != nil {
+		return "", err
+	}
+	lock, err := os.OpenFile(filepath.Join(project, ".satz-journal.lock"), os.O_CREATE|os.O_RDWR, 0o600)
+	if err != nil {
+		return "", fmt.Errorf("cannot lock journal: %w", err)
+	}
+	defer lock.Close()
+	if err := lockFile(lock); err != nil {
+		return "", fmt.Errorf("cannot lock journal: %w", err)
+	}
+	defer unlockFile(lock)
+	// Another process may have changed the project while this one waited.
+	registration, err = registrationPath(project)
 	if err != nil {
 		return "", err
 	}

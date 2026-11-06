@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -408,6 +410,9 @@ func TestEntryRegistrationFailureRemovesNewFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if err := os.WriteFile(filepath.Join(project, ".satz-journal.lock"), nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
 	if err := os.Chmod(project, 0o555); err != nil {
 		t.Fatal(err)
 	}
@@ -423,6 +428,79 @@ func TestEntryRegistrationFailureRemovesNewFile(t *testing.T) {
 	entries, err := os.ReadDir(filepath.Join(project, "entries"))
 	if err != nil || len(entries) != 1 {
 		t.Fatalf("failed entry was not removed: %v, %v", entries, err)
+	}
+}
+
+func TestConcurrentEntriesAllAppearInJournal(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	const count = 40
+	var wg sync.WaitGroup
+	errorsFound := make(chan error, count)
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, err := createEntry(project, "Concurrent", "notes", "", time.Now())
+			if err != nil {
+				errorsFound <- err
+			}
+		}()
+	}
+	wg.Wait()
+	close(errorsFound)
+	for err := range errorsFound {
+		t.Errorf("entry creation failed: %v", err)
+	}
+	data, err := os.ReadFile(filepath.Join(project, "journal-entries.typ"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.Count(string(data), "#include \"entries/"); got != count+1 {
+		t.Fatalf("entry list has %d includes; want %d", got, count+1)
+	}
+}
+
+func TestConcurrentProcessesKeepAllEntries(t *testing.T) {
+	if project := os.Getenv("SATZ_TEST_CONCURRENT_PROJECT"); project != "" {
+		if _, err := createEntry(project, "Process", "notes", "", time.Now()); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const count = 8
+	commands := make([]*exec.Cmd, 0, count)
+	for i := 0; i < count; i++ {
+		cmd := exec.Command(executable, "-test.run=^TestConcurrentProcessesKeepAllEntries$")
+		cmd.Env = append(os.Environ(), "SATZ_TEST_CONCURRENT_PROJECT="+project)
+		cmd.Stderr = os.Stderr
+		if err := cmd.Start(); err != nil {
+			t.Fatal(err)
+		}
+		commands = append(commands, cmd)
+	}
+	for _, cmd := range commands {
+		if err := cmd.Wait(); err != nil {
+			t.Errorf("child process: %v", err)
+		}
+	}
+	data, err := os.ReadFile(filepath.Join(project, "journal-entries.typ"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.Count(string(data), "#include \"entries/"); got != count+1 {
+		t.Fatalf("entry list has %d includes; want %d", got, count+1)
 	}
 }
 
@@ -643,6 +721,35 @@ func TestRegistryMigratesAndKeepsMultipleJournals(t *testing.T) {
 	}
 	if len(registry.Journals) != 2 || registry.Journals[0].Path != first {
 		t.Fatalf("selection duplicated or lost a journal: %+v", registry)
+	}
+}
+
+func TestConcurrentJournalRegistrationsAreNotLost(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	const count = 25
+	var wg sync.WaitGroup
+	errorsFound := make(chan error, count)
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			if err := rememberProject(filepath.Join(root, fmt.Sprintf("journal-%d", i))); err != nil {
+				errorsFound <- err
+			}
+		}(i)
+	}
+	wg.Wait()
+	close(errorsFound)
+	for err := range errorsFound {
+		t.Errorf("registration failed: %v", err)
+	}
+	registry, err := loadRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(registry.Journals) != count {
+		t.Fatalf("registry has %d journals, want %d", len(registry.Journals), count)
 	}
 }
 
