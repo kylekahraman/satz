@@ -731,6 +731,9 @@ func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecor
 				return "", err
 			}
 			if prefix != '[' && prefix != 'O' {
+				if err := reader.UnreadByte(); err != nil {
+					return "", err
+				}
 				continue
 			}
 			direction, err := reader.ReadByte()

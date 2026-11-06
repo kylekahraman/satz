@@ -110,6 +110,10 @@ func TestKeyboardJournalSelection(t *testing.T) {
 	if err != nil || got != "q" {
 		t.Fatalf("control-C = %q, %v", got, err)
 	}
+	got, err = interactiveChoice(bufio.NewReader(strings.NewReader("\x1bq")), &output, items, false)
+	if err != nil || got != "q" {
+		t.Fatalf("escape followed by q = %q, %v", got, err)
+	}
 }
 
 func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
