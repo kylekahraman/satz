@@ -102,6 +102,25 @@ func TestDiscoverEntriesSortsAndSearchesWithoutTemporaryFiles(t *testing.T) {
 	}
 }
 
+func TestJournalDetailsCountFilesAndUseModificationTime(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	stamp := time.Date(2025, 4, 3, 12, 0, 0, 0, time.Local)
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(filepath.Join(project, "entries", entries[0].Name()), stamp, stamp); err != nil {
+		t.Fatal(err)
+	}
+	got := journalDetails(project)
+	if !strings.Contains(got, "1 entry") || !strings.Contains(got, "2025-04-03") {
+		t.Fatalf("details = %q", got)
+	}
+}
+
 func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))

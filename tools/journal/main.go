@@ -38,8 +38,9 @@ type settings struct {
 }
 
 type journalRecord struct {
-	Name string `json:"name"`
-	Path string `json:"path"`
+	Name    string `json:"name"`
+	Path    string `json:"path"`
+	Details string `json:"-"`
 }
 
 func main() {
@@ -105,10 +106,10 @@ func run(args []string) error {
 		fmt.Println("Journal reconnected:", args[2])
 		return nil
 	case "journals":
-		if len(args) != 1 {
-			return errors.New("usage: journal journals")
+		if len(args) > 2 || (len(args) == 2 && args[1] != "--details") {
+			return errors.New("usage: journal journals [--details]")
 		}
-		path, err := chooseJournalMode(bufio.NewReader(os.Stdin), os.Stdout, true)
+		path, err := chooseJournalDetails(bufio.NewReader(os.Stdin), os.Stdout, true, len(args) == 2)
 		if err != nil {
 			return err
 		}
@@ -309,7 +310,7 @@ Commands:
   journal                       Prompt for and open a new entry
   journal new [PATH]            Add an entry to a selected or named journal
   journal use PATH              Select a different journal folder
-  journal journals              Manage and select registered journals
+  journal journals [--details]  Manage journals; optionally show entry counts
   journal reconnect OLD NEW     Update a moved journal's registered path
   journal forget PATH           Remove a journal from the list, keeping its files
   journal rename PATH NAME      Change its name in the journal list
@@ -539,6 +540,21 @@ func discoverEntries(project, query string) ([]entryInfo, error) {
 		return entries[i].Modified.After(entries[j].Modified)
 	})
 	return entries, nil
+}
+
+func journalDetails(project string) string {
+	entries, err := discoverEntries(project, "")
+	if err != nil {
+		return "details unavailable"
+	}
+	if len(entries) == 0 {
+		return "0 entries"
+	}
+	label := "entries"
+	if len(entries) == 1 {
+		label = "entry"
+	}
+	return fmt.Sprintf("%d %s · last modified %s", len(entries), label, entries[0].Modified.Local().Format("2006-01-02"))
 }
 
 func configDir() string {
@@ -874,9 +890,18 @@ func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
 }
 
 func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string, error) {
+	return chooseJournalDetails(reader, out, manage, false)
+}
+
+func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details bool) (string, error) {
 	registry, err := loadRegistry()
 	if err != nil {
 		return "", err
+	}
+	if details {
+		for i := range registry.Journals {
+			registry.Journals[i].Details = journalDetails(registry.Journals[i].Path)
+		}
 	}
 	color := terminalColor(out)
 	fmt.Fprintf(out, "\n  %s\n  Your journals\n\n", styled("SATZ JOURNAL", "1;36", color))
@@ -894,6 +919,9 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			}
 			if !isJournal(item.Path) {
 				suffix += "  (unavailable)"
+			}
+			if item.Details != "" {
+				suffix += "  · " + item.Details
 			}
 			name := item.Name
 			if i == 0 {
@@ -939,7 +967,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 				return "", err
 			}
 			fmt.Fprintf(out, "  Removed %s from the list; its files remain at %s.\n", item.Name, item.Path)
-			return chooseJournalMode(reader, out, true)
+			return chooseJournalDetails(reader, out, true, details)
 		case "r":
 			if len(registry.Journals) == 0 {
 				fmt.Fprintln(out, "  No registered journal to reconnect.")
@@ -1092,6 +1120,9 @@ func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecor
 			}
 			if !isJournal(item.Path) {
 				label += "  (unavailable)"
+			}
+			if item.Details != "" {
+				label += "  · " + item.Details
 			}
 			label = fitLine(label, width)
 			if i == selected {

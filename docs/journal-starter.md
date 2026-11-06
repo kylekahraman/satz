@@ -46,6 +46,8 @@ If a registered journal moves, choose `r` in the journal chooser and enter its n
 
 Run `journal journals` to manage the list even if only one journal is registered. Choose `f` to remove a journal from the list, or use `journal forget PATH`; both leave its files untouched. You can connect it again later.
 
+`journal journals --details` also scans each journal's `entries/` folder and shows its entry count and most recently modified date. The ordinary chooser does not perform this scan. Counts include non-hidden `.typ` files whether or not they are included in the main document; dates are filesystem modification dates.
+
 Use `journal rename PATH "DISPLAY NAME"` to change a journal's name in the chooser. This does not rename or move the journal folder, and the display name is retained when the journal is selected or reconnected.
 
 Run `journal check PATH` for a read-only check of the journal's entry-list connection and template files. Omitting the path checks the journal containing the current directory, or the most recently selected journal. This checks the file structure; it does not compile the journal or validate Typst syntax.
