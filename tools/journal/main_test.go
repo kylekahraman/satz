@@ -395,6 +395,37 @@ func TestFailedEntryCleanupReportsAnyLeftover(t *testing.T) {
 	}
 }
 
+func TestEntryRegistrationFailureRemovesNewFile(t *testing.T) {
+	if os.PathSeparator == '\\' || os.Geteuid() == 0 {
+		t.Skip("Unix directory permissions required")
+	}
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	listPath := filepath.Join(project, "journal-entries.typ")
+	before, err := os.ReadFile(listPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(project, 0o555); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(project, 0o755) })
+	_, err = createEntry(project, "Write failure", "notes", "", time.Now())
+	if err == nil {
+		t.Fatal("registration should fail when its directory cannot be written")
+	}
+	after, err := os.ReadFile(listPath)
+	if err != nil || string(after) != string(before) {
+		t.Fatalf("entry list changed: %v", err)
+	}
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil || len(entries) != 1 {
+		t.Fatalf("failed entry was not removed: %v, %v", entries, err)
+	}
+}
+
 func TestEditableEntryTemplates(t *testing.T) {
 	if _, err := exec.LookPath("typst"); err != nil {
 		t.Skip("custom template validation requires the Typst CLI")
