@@ -492,8 +492,30 @@ func isJournal(path string) bool {
 
 func checkJournal(project string) []string {
 	var issues []string
-	if _, err := registrationPath(project); err != nil {
+	list, err := registrationPath(project)
+	if err != nil {
 		issues = append(issues, err.Error())
+	} else if data, err := os.ReadFile(list); err != nil {
+		issues = append(issues, fmt.Sprintf("cannot read entry list %s: %v", list, err))
+	} else {
+		for _, line := range strings.Split(string(data), "\n") {
+			line = strings.TrimSpace(line)
+			if !strings.HasPrefix(line, `#include "entries/`) {
+				continue
+			}
+			path, err := strconv.Unquote(strings.TrimPrefix(line, "#include "))
+			if err != nil {
+				continue
+			}
+			clean := filepath.Clean(filepath.FromSlash(path))
+			if !strings.HasPrefix(clean, "entries"+string(filepath.Separator)) {
+				issues = append(issues, "invalid entry path: "+path)
+				continue
+			}
+			if info, err := os.Stat(filepath.Join(project, clean)); err != nil || !info.Mode().IsRegular() {
+				issues = append(issues, "missing or invalid included entry: "+path)
+			}
+		}
 	}
 	templates := filepath.Join(project, "templates")
 	if info, err := os.Stat(templates); err == nil {

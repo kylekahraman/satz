@@ -1134,6 +1134,25 @@ func TestCheckJournalReportsMissingTemplatesWithoutChangingFiles(t *testing.T) {
 	}
 }
 
+func TestCheckJournalReportsMissingIncludedEntry(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	name := entries[0].Name()
+	if err := os.Remove(filepath.Join(project, "entries", name)); err != nil {
+		t.Fatal(err)
+	}
+	issues := checkJournal(project)
+	if !strings.Contains(strings.Join(issues, "\n"), name) {
+		t.Fatalf("missing included entry not reported: %v", issues)
+	}
+}
+
 type fakeFileInfo struct{}
 
 func (fakeFileInfo) Name() string       { return "Code.exe" }
