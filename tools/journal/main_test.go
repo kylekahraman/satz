@@ -116,6 +116,19 @@ func TestKeyboardJournalSelection(t *testing.T) {
 	}
 }
 
+func TestPromptEOFDoesNotChooseDefaults(t *testing.T) {
+	_, err := ask(bufio.NewReader(strings.NewReader("")), "")
+	if !errors.Is(err, errCancelled) {
+		t.Fatalf("EOF should cancel: %v", err)
+	}
+}
+
+func TestFitLineShortensLongNames(t *testing.T) {
+	if got := fitLine("abcdefgh", 5); got != "abcd…" {
+		t.Fatalf("fitLine = %q", got)
+	}
+}
+
 func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {

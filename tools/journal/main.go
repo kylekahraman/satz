@@ -29,6 +29,8 @@ var assets embed.FS
 
 const entriesMarker = "// --- end entries ---"
 
+var errCancelled = errors.New("cancelled")
+
 type settings struct {
 	Path     string          `json:"path,omitempty"` // Legacy single-journal setting.
 	Journals []journalRecord `json:"journals,omitempty"`
@@ -41,6 +43,10 @@ type journalRecord struct {
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
+		if errors.Is(err, errCancelled) {
+			fmt.Println("  Cancelled.")
+			return
+		}
 		fmt.Fprintln(os.Stderr, "journal:", err)
 		os.Exit(1)
 	}
@@ -551,7 +557,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 	}
 	if len(registry.Journals) == 0 {
 		fmt.Fprint(out, "  No journals connected yet.\n\n")
-	} else {
+	} else if !interactiveTerminal(out) {
 		for i, item := range registry.Journals {
 			suffix := ""
 			if i == 0 {
@@ -569,16 +575,18 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			fmt.Fprintf(out, "  %d  %s%s\n       %s\n", i+1, name, suffix, item.Path)
 		}
 	}
-	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  f  Remove from list (keep files)\n  q  Cancel")
+	if !interactiveTerminal(out) || len(registry.Journals) == 0 {
+		fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  f  Remove from list (keep files)\n  q  Cancel")
+	}
 	for {
 		line, readErr := journalChoice(reader, out, registry.Journals)
 		choice := strings.TrimSpace(line)
 		if readErr != nil && choice == "" {
-			return "", errors.New("journal selection cancelled")
+			return "", errCancelled
 		}
 		switch strings.ToLower(choice) {
 		case "q":
-			return "", errors.New("journal selection cancelled")
+			return "", errCancelled
 		case "f":
 			if len(registry.Journals) == 0 {
 				fmt.Fprintln(out, "  No registered journal to remove.")
@@ -589,7 +597,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 				fmt.Fprint(out, "  Journal number: ")
 				answer, err := reader.ReadString('\n')
 				if err != nil && strings.TrimSpace(answer) == "" {
-					return "", errors.New("journal selection cancelled")
+					return "", errCancelled
 				}
 				index, err = strconv.Atoi(strings.TrimSpace(answer))
 				if err != nil || index < 1 || index > len(registry.Journals) {
@@ -613,7 +621,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 				fmt.Fprint(out, "  Journal number: ")
 				answer, err := reader.ReadString('\n')
 				if err != nil && strings.TrimSpace(answer) == "" {
-					return "", errors.New("journal selection cancelled")
+					return "", errCancelled
 				}
 				index, err = strconv.Atoi(strings.TrimSpace(answer))
 				if err != nil || index < 1 || index > len(registry.Journals) {
@@ -625,7 +633,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			answer, err := reader.ReadString('\n')
 			if strings.TrimSpace(answer) == "" {
 				if err != nil {
-					return "", errors.New("journal selection cancelled")
+					return "", errCancelled
 				}
 				fmt.Fprintln(out, "  Enter a folder path.")
 				continue
@@ -644,7 +652,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			input = strings.TrimSpace(input)
 			if input == "" {
 				if inputErr != nil {
-					return "", errors.New("journal selection cancelled")
+					return "", errCancelled
 				}
 				fmt.Fprintln(out, "  Enter a folder path.")
 				continue
@@ -673,7 +681,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			if err != nil || index < 1 || index > len(registry.Journals) {
 				fmt.Fprintln(out, "  Choose a listed number, c, a, r, f, or q.")
 				if readErr != nil {
-					return "", errors.New("journal selection cancelled")
+					return "", errCancelled
 				}
 				continue
 			}
@@ -692,8 +700,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 // journalChoice keeps line-based input for pipes and terminals that cannot use
 // raw mode; an interactive terminal gets a keyboard-controlled selection.
 func journalChoice(reader *bufio.Reader, out io.Writer, items []journalRecord) (string, error) {
-	file, ok := out.(*os.File)
-	if len(items) > 0 && ok && os.Getenv("TERM") != "dumb" && term.IsTerminal(int(os.Stdin.Fd())) && term.IsTerminal(int(file.Fd())) {
+	if len(items) > 0 && interactiveTerminal(out) {
 		state, err := term.MakeRaw(int(os.Stdin.Fd()))
 		if err == nil {
 			choice, readErr := interactiveChoice(reader, out, items, terminalColor(out))
@@ -704,16 +711,64 @@ func journalChoice(reader *bufio.Reader, out io.Writer, items []journalRecord) (
 			}
 			return choice, restoreErr
 		}
+		for i, item := range items {
+			fmt.Fprintf(out, "  %d  %s\n     %s\n", i+1, item.Name, item.Path)
+		}
+		fmt.Fprintln(out, "  c Create   a Connect   r Reconnect   f Remove   q Cancel")
 	}
 	fmt.Fprint(out, "\n  Choose: ")
 	return reader.ReadString('\n')
 }
 
+func interactiveTerminal(out io.Writer) bool {
+	file, ok := out.(*os.File)
+	return ok && os.Getenv("TERM") != "dumb" && term.IsTerminal(int(os.Stdin.Fd())) && term.IsTerminal(int(file.Fd()))
+}
+
+func fitLine(s string, width int) string {
+	runes := []rune(s)
+	if len(runes) <= width {
+		return s
+	}
+	if width < 2 {
+		return ""
+	}
+	return string(runes[:width-1]) + "…"
+}
+
 func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecord, color bool) (string, error) {
 	selected := 0
-	fmt.Fprint(out, "\r\n  ↑↓ choose  ·  Enter select  ·  c create  ·  a connect  ·  r reconnect  ·  f remove  ·  q cancel\r\n")
+	width := 72
+	if file, ok := out.(*os.File); ok {
+		if w, _, err := term.GetSize(int(file.Fd())); err == nil && w > 8 {
+			width = w - 1
+		}
+	}
+	first := true
 	for {
-		fmt.Fprintf(out, "\r\x1b[2K  %s", styled("› "+items[selected].Name, "1;36", color))
+		if !first {
+			fmt.Fprintf(out, "\x1b[%dA", len(items)*2+3)
+		}
+		first = false
+		for i, item := range items {
+			prefix := "    "
+			if i == selected {
+				prefix = "  › "
+			}
+			label := prefix + item.Name
+			if i == 0 {
+				label += "  (recent)"
+			}
+			if !isJournal(item.Path) {
+				label += "  (unavailable)"
+			}
+			label = fitLine(label, width)
+			if i == selected {
+				label = styled(label, "1;36", color)
+			}
+			fmt.Fprintf(out, "\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n", label, fitLine("      "+item.Path, width))
+		}
+		fmt.Fprintf(out, "\r\x1b[2K\r\n\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n", fitLine("  ↑↓ Navigate   Enter Select   q Quit", width), fitLine("  c Create   a Connect   r Reconnect   f Remove", width))
 		key, err := reader.ReadByte()
 		if err != nil {
 			return "", err
@@ -776,6 +831,9 @@ func styled(text, code string, enabled bool) string {
 func ask(reader *bufio.Reader, prompt string) (string, error) {
 	fmt.Print(prompt)
 	value, err := reader.ReadString('\n')
+	if errors.Is(err, io.EOF) && value == "" {
+		return "", errCancelled
+	}
 	if err != nil && !errors.Is(err, io.EOF) {
 		return "", err
 	}
