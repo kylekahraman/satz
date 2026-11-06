@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -374,12 +375,18 @@ func loadProject(path string) (string, error) {
 }
 
 func newEntry(path, editor string) error {
-	project, err := loadProject(path)
+	reader := bufio.NewReader(os.Stdin)
+	var project string
+	var err error
+	if path != "" {
+		project, err = loadProject(path)
+	} else {
+		project, err = chooseJournal(reader, os.Stdout)
+	}
 	if err != nil {
 		return err
 	}
 	fmt.Println("Selected journal:", project)
-	reader := bufio.NewReader(os.Stdin)
 	title, err := ask(reader, "Entry title: ")
 	if err != nil {
 		return err
@@ -420,6 +427,96 @@ func newEntry(path, editor string) error {
 		fmt.Println("Your entry is saved. Open the journal folder in your editor and select this file.")
 	}
 	return nil
+}
+
+// chooseJournal uses numbered choices so it works in ordinary terminals and pipes.
+func chooseJournal(reader *bufio.Reader, out io.Writer) (string, error) {
+	registry, err := loadRegistry()
+	if err != nil {
+		return "", err
+	}
+	fmt.Fprint(out, "\n  SATZ JOURNAL\n  Your journals\n\n")
+	if len(registry.Journals) == 1 {
+		item := registry.Journals[0]
+		if !isJournal(item.Path) {
+			return "", fmt.Errorf("journal is missing or incompatible: %s; reconnect it with `journal use PATH`", item.Path)
+		}
+		return item.Path, nil
+	}
+	if len(registry.Journals) == 0 {
+		fmt.Fprint(out, "  No journals connected yet.\n\n")
+	} else {
+		for i, item := range registry.Journals {
+			suffix := ""
+			if i == 0 {
+				suffix = "  (recent)"
+			}
+			if !isJournal(item.Path) {
+				suffix += "  (unavailable)"
+			}
+			fmt.Fprintf(out, "  %d  %s%s\n     %s\n", i+1, item.Name, suffix, item.Path)
+		}
+	}
+	fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  q  Cancel")
+	for {
+		fmt.Fprint(out, "\n  Choose: ")
+		line, readErr := reader.ReadString('\n')
+		choice := strings.TrimSpace(line)
+		if readErr != nil && choice == "" {
+			return "", errors.New("journal selection cancelled")
+		}
+		switch strings.ToLower(choice) {
+		case "q":
+			return "", errors.New("journal selection cancelled")
+		case "c", "a":
+			fmt.Fprint(out, "  Journal folder: ")
+			input, inputErr := reader.ReadString('\n')
+			input = strings.TrimSpace(input)
+			if input == "" {
+				if inputErr != nil {
+					return "", errors.New("journal selection cancelled")
+				}
+				fmt.Fprintln(out, "  Enter a folder path.")
+				continue
+			}
+			path, err := filepath.Abs(input)
+			if err != nil {
+				return "", err
+			}
+			if strings.EqualFold(choice, "c") {
+				path, err = initProject(path)
+				if err != nil {
+					return "", err
+				}
+			} else if !isJournal(path) {
+				return "", fmt.Errorf("not a compatible journal (expected main.typ and entries/): %s", path)
+			}
+			if err := rememberProject(path); err != nil {
+				return "", err
+			}
+			return path, nil
+		default:
+			if choice == "" && len(registry.Journals) > 0 {
+				choice = "1"
+			}
+			index, err := strconv.Atoi(choice)
+			if err != nil || index < 1 || index > len(registry.Journals) {
+				fmt.Fprintln(out, "  Choose a listed number, c, a, or q.")
+				if readErr != nil {
+					return "", errors.New("journal selection cancelled")
+				}
+				continue
+			}
+			item := registry.Journals[index-1]
+			if !isJournal(item.Path) {
+				return "", fmt.Errorf("journal is missing or incompatible: %s; reconnect it with `journal use PATH`", item.Path)
+			}
+			if err := rememberProject(item.Path); err != nil {
+				return "", err
+			}
+			return item.Path, nil
+		}
+	}
 }
 
 func ask(reader *bufio.Reader, prompt string) (string, error) {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -8,6 +10,50 @@ import (
 	"testing"
 	"time"
 )
+
+func TestChooseJournalOffersRegisteredProjects(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	first, err := initProject(filepath.Join(root, "First"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := initProject(filepath.Join(root, "Second"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(first); err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(second); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	selected, err := chooseJournal(bufio.NewReader(strings.NewReader("2\n")), &output)
+	if err != nil || selected != first {
+		t.Fatalf("selected %q: %v", selected, err)
+	}
+	if !strings.Contains(output.String(), "First") || !strings.Contains(output.String(), "Second") {
+		t.Fatalf("missing choices: %s", &output)
+	}
+	registry, err := loadRegistry()
+	if err != nil || registry.Journals[0].Path != first {
+		t.Fatalf("selection not remembered: %+v %v", registry, err)
+	}
+}
+
+func TestChooseJournalMissingPathIsNotSelected(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	if err := rememberProject(filepath.Join(root, "missing")); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	_, err := chooseJournal(bufio.NewReader(strings.NewReader("")), &output)
+	if err == nil || !strings.Contains(err.Error(), "missing") {
+		t.Fatalf("expected missing journal error: %v", err)
+	}
+}
 
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
