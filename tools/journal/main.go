@@ -122,6 +122,15 @@ func run(args []string) error {
 		}
 		fmt.Println("Removed from journal list; files remain in", args[1])
 		return nil
+	case "rename":
+		if len(args) != 3 {
+			return errors.New("usage: journal rename PATH NAME")
+		}
+		if err := renameProject(args[1], args[2]); err != nil {
+			return err
+		}
+		fmt.Println("Journal display name updated:", args[2])
+		return nil
 	case "check":
 		if len(args) > 2 {
 			return errors.New("usage: journal check [PATH]")
@@ -166,6 +175,7 @@ Commands:
   journal journals              Manage and select registered journals
   journal reconnect OLD NEW     Update a moved journal's registered path
   journal forget PATH           Remove a journal from the list, keeping its files
+  journal rename PATH NAME      Change its name in the journal list
   journal check [PATH]          Check journal setup without changing files
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
@@ -379,6 +389,12 @@ func rememberProject(path string) error {
 		return err
 	}
 	record := journalRecord{Name: filepath.Base(path), Path: path}
+	for _, item := range registry.Journals {
+		if filepath.Clean(item.Path) == filepath.Clean(path) {
+			record.Name = item.Name
+			break
+		}
+	}
 	filtered := []journalRecord{record}
 	for _, item := range registry.Journals {
 		if filepath.Clean(item.Path) != filepath.Clean(path) {
@@ -386,6 +402,35 @@ func rememberProject(path string) error {
 		}
 	}
 	return saveRegistry(settings{Journals: filtered})
+}
+
+func renameProject(path, name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" || strings.ContainsAny(name, "\r\n\x1b") {
+		return errors.New("journal name must be nonempty and fit on one line")
+	}
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	lock, err := lockRegistry()
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	defer unlockFile(lock)
+	registry, err := loadRegistry()
+	if err != nil {
+		return err
+	}
+	for i, item := range registry.Journals {
+		if filepath.Clean(item.Path) == filepath.Clean(path) {
+			registry.Journals[i].Name = name
+			registry.Path = ""
+			return saveRegistry(registry)
+		}
+	}
+	return fmt.Errorf("journal is not registered: %s", path)
 }
 
 func lockRegistry() (*os.File, error) {
@@ -448,7 +493,7 @@ func reconnectProject(oldPath, newPath string) error {
 	if index < 0 {
 		return fmt.Errorf("journal is not registered: %s", oldPath)
 	}
-	item := journalRecord{Name: filepath.Base(newPath), Path: newPath}
+	item := journalRecord{Name: registry.Journals[index].Name, Path: newPath}
 	items := []journalRecord{item}
 	items = append(items, registry.Journals[:index]...)
 	items = append(items, registry.Journals[index+1:]...)

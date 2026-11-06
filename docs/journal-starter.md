@@ -44,6 +44,8 @@ If a registered journal moves, choose `r` in the journal chooser and enter its n
 
 Run `journal journals` to manage the list even if only one journal is registered. Choose `f` to remove a journal from the list, or use `journal forget PATH`; both leave its files untouched. You can connect it again later.
 
+Use `journal rename PATH "DISPLAY NAME"` to change a journal's name in the chooser. This does not rename or move the journal folder, and the display name is retained when the journal is selected or reconnected.
+
 Run `journal check PATH` for a read-only check of the journal's entry-list connection and template files. Omitting the path checks the journal containing the current directory, or the most recently selected journal. This checks the file structure; it does not compile the journal or validate Typst syntax.
 
 New journals include editable `templates/meeting.typ`, `templates/session.typ`, and `templates/notes.typ` files. Edit their headings and text to change future entries; the helper supplies the title, date, and keywords separately, so there are no placeholders to maintain. Templates contain Typst content inside an entry's content block. Before using a customized template, the helper compiles a temporary entry and reports any error without creating or registering the final entry. If a reference is unresolved in the entry alone, it retries with the whole journal so references to other entries can resolve. Each check is limited to 30 seconds. This check requires the [Typst CLI](https://typst.app/open-source/#download) on your PATH; the original templates do not require it. Existing journals without a `templates/` folder continue to use the built-in scaffolds.

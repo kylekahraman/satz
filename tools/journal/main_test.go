@@ -879,6 +879,35 @@ func TestForgetJournalKeepsFilesAndOtherRegistrations(t *testing.T) {
 	}
 }
 
+func TestRenameJournalChangesOnlyDisplayName(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(project); err != nil {
+		t.Fatal(err)
+	}
+	if err := renameProject(project, "Thesis notes"); err != nil {
+		t.Fatal(err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 1 || registry.Journals[0].Name != "Thesis notes" || registry.Journals[0].Path != project {
+		t.Fatalf("unexpected registry: %+v %v", registry, err)
+	}
+	if err := rememberProject(project); err != nil {
+		t.Fatal(err)
+	}
+	registry, err = loadRegistry()
+	if err != nil || registry.Journals[0].Name != "Thesis notes" {
+		t.Fatalf("name not preserved: %+v %v", registry, err)
+	}
+	if _, err := os.Stat(filepath.Join(project, "main.typ")); err != nil {
+		t.Fatalf("journal moved: %v", err)
+	}
+}
+
 func TestManageSingleJournalOffersCreate(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
