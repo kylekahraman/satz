@@ -1467,9 +1467,8 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	if err != nil {
 		return "", err
 	}
-	registration, err := registrationPath(project)
-	if err != nil {
-		return "", err
+	if !isJournal(project) {
+		return "", fmt.Errorf("not a journal project (expected main.typ and entries/): %s", project)
 	}
 	lock, err := os.OpenFile(filepath.Join(project, ".satz-journal.lock"), os.O_CREATE|os.O_RDWR, 0o600)
 	if err != nil {
@@ -1480,8 +1479,9 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		return "", fmt.Errorf("cannot lock journal: %w", err)
 	}
 	defer unlockFile(lock)
-	// Another process may have changed the project while this one waited.
-	registration, err = registrationPath(project)
+	// Read the entry list only after acquiring the lock. On Windows an open
+	// reader can otherwise prevent the concurrent atomic replacement.
+	registration, err := registrationPath(project)
 	if err != nil {
 		return "", err
 	}
