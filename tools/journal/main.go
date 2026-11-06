@@ -1041,8 +1041,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 			}
 			index := 1
 			if len(registry.Journals) > 1 {
-				fmt.Fprint(out, "  Journal number: ")
+				fmt.Fprint(out, "  Journal number (q to cancel): ")
 				answer, err := reader.ReadString('\n')
+				if cancelledInput(answer) {
+					return "", errCancelled
+				}
 				if err != nil && strings.TrimSpace(answer) == "" {
 					return "", errCancelled
 				}
@@ -1065,8 +1068,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 			}
 			index := 1
 			if len(registry.Journals) > 1 {
-				fmt.Fprint(out, "  Journal number: ")
+				fmt.Fprint(out, "  Journal number (q to cancel): ")
 				answer, err := reader.ReadString('\n')
+				if cancelledInput(answer) {
+					return "", errCancelled
+				}
 				if err != nil && strings.TrimSpace(answer) == "" {
 					return "", errCancelled
 				}
@@ -1076,8 +1082,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 					continue
 				}
 			}
-			fmt.Fprint(out, "  New journal folder: ")
+			fmt.Fprint(out, "  New journal folder (q to cancel): ")
 			answer, err := reader.ReadString('\n')
+			if cancelledInput(answer) {
+				return "", errCancelled
+			}
 			if strings.TrimSpace(answer) == "" {
 				if err != nil {
 					return "", errCancelled
@@ -1094,8 +1103,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 			}
 			return path, nil
 		case "c", "a":
-			fmt.Fprint(out, "  Journal folder: ")
+			fmt.Fprint(out, "  Journal folder (q to cancel): ")
 			input, inputErr := reader.ReadString('\n')
+			if cancelledInput(input) {
+				return "", errCancelled
+			}
 			input = strings.TrimSpace(input)
 			if input == "" {
 				if inputErr != nil {
@@ -1350,6 +1362,11 @@ func ask(reader *bufio.Reader, prompt string) (string, error) {
 		return "", errCancelled
 	}
 	return value, nil
+}
+
+func cancelledInput(value string) bool {
+	value = strings.TrimSpace(value)
+	return value == "/cancel" || strings.EqualFold(value, "q")
 }
 
 func validKind(kind string) bool { return kind == "meeting" || kind == "session" || kind == "notes" }

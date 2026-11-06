@@ -40,7 +40,7 @@ Use `journal editor "COMMAND"` to save an editor command, `journal editor` to se
 
 Entries with the same title on the same day get distinct filenames (for example, `-2.typ`); an existing entry is never overwritten.
 
-Type `/cancel` at an entry prompt to stop without creating an entry. In the journal chooser, press `q` to cancel.
+Type `/cancel` at an entry prompt to stop without creating an entry. In the journal chooser, press `q` to cancel. At a chooser's folder or number prompt, enter `q` or `/cancel`; use `./q` if a folder is literally named `q`.
 
 The helper uses a small `.satz-journal.lock` file to coordinate simultaneous entry creation. The operating system releases the lock if the helper exits; the file itself may remain and is safe to leave in place. Do not delete it while journal commands are running. New starters exclude it from Git.
 

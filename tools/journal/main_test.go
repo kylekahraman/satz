@@ -1094,6 +1094,27 @@ func TestManageSingleJournalOffersCreate(t *testing.T) {
 	}
 }
 
+func TestCancelNestedJournalPromptDoesNotCreateFolder(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(project); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	_, err = chooseJournalMode(bufio.NewReader(strings.NewReader("c\n/cancel\n")), &output, true)
+	if !errors.Is(err, errCancelled) {
+		t.Fatalf("expected cancellation, got %v", err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 1 || registry.Journals[0].Path != project {
+		t.Fatalf("registry changed: %+v %v", registry, err)
+	}
+}
+
 func TestConnectRejectsIncompleteJournal(t *testing.T) {
 	root := t.TempDir()
 	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
