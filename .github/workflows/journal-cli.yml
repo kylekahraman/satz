@@ -1,0 +1,39 @@
+name: Journal CLI checks
+
+on:
+  push:
+    paths:
+      - 'tools/journal/**'
+      - '.github/workflows/journal-cli.yml'
+  pull_request:
+    paths:
+      - 'tools/journal/**'
+      - '.github/workflows/journal-cli.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: tools/journal
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: tools/journal/go.mod
+          cache-dependency-path: tools/journal/go.sum
+      - uses: typst-community/setup-typst@v5
+        with:
+          typst-version: 0.15.0
+      - name: Run journal tests on the host platform
+        run: go test -count=1 -v ./...
+      - name: Check Go code
+        run: go vet ./...
