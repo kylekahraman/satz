@@ -256,6 +256,17 @@ func TestFitLineShortensLongNames(t *testing.T) {
 	}
 }
 
+func TestJournalViewportKeepsSelectionVisible(t *testing.T) {
+	for _, tt := range []struct{ selected, count, height, start, end int }{
+		{0, 20, 10, 0, 2}, {6, 20, 10, 5, 7}, {19, 20, 10, 18, 20}, {0, 2, 24, 0, 2},
+	} {
+		start, end := journalViewport(tt.selected, tt.count, tt.height)
+		if start != tt.start || end != tt.end {
+			t.Errorf("viewport(%d,%d,%d) = %d,%d; want %d,%d", tt.selected, tt.count, tt.height, start, end, tt.start, tt.end)
+		}
+	}
+}
+
 func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {

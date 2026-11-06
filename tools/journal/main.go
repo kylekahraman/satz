@@ -1163,21 +1163,43 @@ func fitLine(s string, width int) string {
 	return string(runes[:width-1]) + "…"
 }
 
+func journalViewport(selected, count, height int) (int, int) {
+	visible := (height - 6) / 2
+	if visible < 1 {
+		visible = 1
+	}
+	if visible > count {
+		visible = count
+	}
+	start := 0
+	if selected >= visible {
+		start = selected - visible + 1
+	}
+	return start, start + visible
+}
+
 func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecord, color bool) (string, error) {
 	selected := 0
-	width := 72
+	width, height := 72, 24
 	if file, ok := out.(*os.File); ok {
-		if w, _, err := term.GetSize(int(file.Fd())); err == nil && w > 8 {
+		if w, h, err := term.GetSize(int(file.Fd())); err == nil && w > 8 {
 			width = w - 1
+			if h > 0 {
+				height = h
+			}
 		}
 	}
 	first := true
+	previousLines := 0
 	for {
 		if !first {
-			fmt.Fprintf(out, "\x1b[%dA", len(items)*2+3)
+			fmt.Fprintf(out, "\x1b[%dA", previousLines)
 		}
 		first = false
-		for i, item := range items {
+		start, end := journalViewport(selected, len(items), height)
+		previousLines = (end-start)*2 + 3
+		for i := start; i < end; i++ {
+			item := items[i]
 			prefix := "    "
 			if i == selected {
 				prefix = "  › "
@@ -1198,7 +1220,11 @@ func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecor
 			}
 			fmt.Fprintf(out, "\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n", label, fitLine("      "+item.Path, width))
 		}
-		fmt.Fprintf(out, "\r\x1b[2K\r\n\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n", fitLine("  ↑↓ Navigate   Enter Select   q Quit", width), fitLine("  c Create   a Connect   r Reconnect   f Remove", width))
+		position := ""
+		if len(items) > end-start {
+			position = fmt.Sprintf("  Journal %d of %d", selected+1, len(items))
+		}
+		fmt.Fprintf(out, "\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n\r\x1b[2K%s\r\n", fitLine(position, width), fitLine("  ↑↓ Navigate   Enter Select   q Quit", width), fitLine("  c Create   a Connect   r Reconnect   f Remove", width))
 		key, err := reader.ReadByte()
 		if err != nil {
 			return "", err
