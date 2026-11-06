@@ -529,7 +529,7 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 			}
 			name := item.Name
 			if i == 0 {
-				name = styled("› "+name, "1;36", color)
+				name = "› " + name
 			} else {
 				name = "  " + name
 			}
