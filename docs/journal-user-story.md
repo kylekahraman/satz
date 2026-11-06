@@ -43,11 +43,11 @@ suitable for normal backup, version control and sharing.
 
 ## Implementation boundary
 
-The initial standalone helper supports creating journals, remembering an active
-journal, explicit project paths and entry scaffolding. It can run from anywhere
-using that remembered project. A named multi-journal chooser and graphical
-shortcut/onboarding are the product target above; they must not be described as
-implemented until those interactions are built and tested.
+The journal CLI prototype creates and connects journals, keeps a local registry,
+offers a keyboard-accessible multi-journal chooser, and creates entries from
+editable per-journal scaffolds. It can run from anywhere and includes commands
+to reconnect a moved journal or remove a registration without deleting files.
+Graphical shortcuts remain a possible later addition.
 
 The first sharing artifact is a plain starter ZIP. Public executable downloads
 need clear versioned releases from the project's repository; unsigned development
@@ -60,12 +60,11 @@ A CLI should scaffold a working example; a beginner should not have to create
 separate config, setup, cover and main files. Larger projects may split their
 content and settings later using ordinary Typst imports.
 
-The proposed general entry point is `satz new journal`, `satz new report`,
-`satz new letter`, and `satz new proposal`. A `journal` shortcut can provide the
-focused daily workflow: launch/choose a journal, start a new entry, or create
-another journal. These names are design proposals, not implemented CLI commands.
+The current executable focuses on journals. A general entry point such as
+`satz new report` or `satz new letter` remains a later design option, not an
+implemented or committed interface.
 
-The current shareable starter is the modular baseline. Simplifying it to the
-one-file path comes before adding a comprehensive multi-template CLI. The goal
-is to remove setup work and teach only a few writing conventions initially:
-headings, lists, emphasis and images. Advanced formatting stays in Satz.
+The journal starter is a modular project because entries are separate files. The
+CLI creates those files and the entry list; a writer can start without setting
+up the structure themselves. The one-file-first direction remains relevant to
+general Satz onboarding, without being a prerequisite for this journal MVP.

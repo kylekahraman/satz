@@ -730,3 +730,26 @@ func TestGeneratedStarterAndEscapedEntryCompile(t *testing.T) {
 		t.Fatal("changing the Satz heading default did not change the generated journal")
 	}
 }
+
+func TestAllEntryTypesCompileInIndependentJournals(t *testing.T) {
+	typst, err := exec.LookPath("typst")
+	if err != nil {
+		t.Skip("Typst is not installed")
+	}
+	root := t.TempDir()
+	for _, name := range []string{"one", "two"} {
+		project, err := initProject(filepath.Join(root, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, kind := range []string{"meeting", "session", "notes"} {
+			if _, err := createEntry(project, kind+" example", kind, "sample", time.Now()); err != nil {
+				t.Fatal(err)
+			}
+		}
+		cmd := exec.Command(typst, "compile", "--root", project, filepath.Join(project, "main.typ"), filepath.Join(root, name+".pdf"))
+		if output, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("compile %s: %v\n%s", name, err, output)
+		}
+	}
+}

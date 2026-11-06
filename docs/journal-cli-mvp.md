@@ -10,13 +10,13 @@ Make a polished, dependable journal workflow available as a standalone executabl
 - On first use offer to create a journal or connect a compatible existing one. Never overwrite a nonempty destination; explain incompatibilities and missing paths.
 - Register multiple independent journals. Select the only journal automatically; otherwise offer a chooser, showing the name and path and highlighting the most recently used. Show the selected journal before creating an entry.
 - Create a dated entry from a title, meeting/session/notes type, and optional keywords. Never overwrite an existing entry. Register it with the journal, then open the preferred editor or show the saved path if opening fails.
-- Place editable entry templates in each journal. Use the local copies for future entries and document their placeholders. Validate them before changing journal files and preserve customization on updates.
+- Place editable entry templates in each journal. Use the local copies for future entries; the CLI supplies metadata, so no placeholders are required. Validate customized templates before creating the final entry and preserve customization on updates.
 - Keep entry registration recoverable if users edit the main document. Validate prerequisites before writing, report actionable errors, and avoid leaving misleading partial results.
 - Generate a working journal against a recorded Satz 0.2.0 version, without silent upgrades. Document setup and compilation; users must not need Go to run a released binary.
 
 ## Decisions and limits
 
-The entry-list mechanism and recovery path, editable template format, and choice of bundled versus pinned Satz require explicit implementation decisions. Connecting existing journals initially covers supported compatible projects, not arbitrary Typst files. Automatic runtime upgrades, entry counts, last-edited information, other Satz document types, and a GUI are outside the MVP.
+New journals bundle a recorded Satz 0.2.0 snapshot and use a separate entry-list file included by `main.typ`; documented recovery restores the link or marker. Entry templates contain only editable Typst body content. To validate a customized template, the CLI needs the Typst executable; bundled defaults work without it. Connecting existing journals covers supported compatible projects, not arbitrary Typst files. Automatic runtime upgrades, entry counts, last-edited information, other Satz document types, and a GUI are outside the MVP.
 
 ## Implementation sequence
 
