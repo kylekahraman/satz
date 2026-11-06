@@ -18,5 +18,6 @@ See [the starter guide](journal-starter.md) for commands and their limitations.
 - Run `go test -race -count=1 ./...` on a supported local toolchain.
 - Exercise the terminal interface, cancellation and a generated launcher on macOS. The most recent local macOS arm64 run passed; rerun against the final build before release.
 - Build versioned archives with `tools/journal/build-release.sh VERSION OUTPUT_DIR` and verify every file with `shasum -a 256 -c SHA256SUMS` or `sha256sum -c SHA256SUMS`.
+- Local verification on macOS arm64: the Go suite and race checks passed, the chooser scrolled and cancelled in a 40-by-10 pseudo-terminal with 20 journals, and all six `0.2.0-dev4` archive checksums passed. The extracted macOS arm64 binary reported its embedded version. These archives are unsigned development artifacts.
 - **Outstanding:** execute the native test matrix on Linux and Windows as well as macOS and inspect the results. `.github/workflows/journal-cli.yml` is prepared for that purpose, but has not been run merely by creating it locally. Cross-compilation is not native verification.
 - **Outstanding for public release:** review installation/signing and release versioning, then publish through the repository's trusted release channel after the native checks pass. No public release has been made by this work.
