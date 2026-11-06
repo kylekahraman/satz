@@ -239,6 +239,17 @@ func TestPromptEOFDoesNotChooseDefaults(t *testing.T) {
 	}
 }
 
+func TestPromptCancelIsExplicit(t *testing.T) {
+	_, err := ask(bufio.NewReader(strings.NewReader("/cancel\n")), "")
+	if !errors.Is(err, errCancelled) {
+		t.Fatalf("cancel should stop the prompt: %v", err)
+	}
+	value, err := ask(bufio.NewReader(strings.NewReader("q\n")), "")
+	if err != nil || value != "q" {
+		t.Fatalf("ordinary q should remain usable as a title: %q %v", value, err)
+	}
+}
+
 func TestFitLineShortensLongNames(t *testing.T) {
 	if got := fitLine("abcdefgh", 5); got != "abcd…" {
 		t.Fatalf("fitLine = %q", got)

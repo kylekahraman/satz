@@ -40,6 +40,8 @@ Use `journal editor "COMMAND"` to save an editor command, `journal editor` to se
 
 Entries with the same title on the same day get distinct filenames (for example, `-2.typ`); an existing entry is never overwritten.
 
+Type `/cancel` at an entry prompt to stop without creating an entry. In the journal chooser, press `q` to cancel.
+
 The helper uses a small `.satz-journal.lock` file to coordinate simultaneous entry creation. The operating system releases the lock if the helper exits; the file itself may remain and is safe to leave in place. Do not delete it while journal commands are running. New starters exclude it from Git.
 
 If a registered journal moves, choose `r` in the journal chooser and enter its new folder, or run `journal reconnect OLD_PATH NEW_PATH`. The new location must be a compatible journal; reconnecting updates the existing registration without touching the journal files or other registered projects. Connecting an existing folder checks for the journal's setup and entry-registration files; arbitrary Typst projects are not imported automatically.

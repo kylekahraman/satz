@@ -881,6 +881,7 @@ func newEntry(path, editor string) error {
 		return err
 	}
 	fmt.Println("Selected journal:", project)
+	fmt.Println("Type /cancel at an entry prompt to stop.")
 	title, err := ask(reader, "Entry title: ")
 	if err != nil {
 		return err
@@ -1296,7 +1297,11 @@ func ask(reader *bufio.Reader, prompt string) (string, error) {
 	if err != nil && !errors.Is(err, io.EOF) {
 		return "", err
 	}
-	return strings.TrimRight(value, "\r\n"), nil
+	value = strings.TrimRight(value, "\r\n")
+	if strings.TrimSpace(value) == "/cancel" {
+		return "", errCancelled
+	}
+	return value, nil
 }
 
 func validKind(kind string) bool { return kind == "meeting" || kind == "session" || kind == "notes" }
