@@ -324,6 +324,26 @@ func TestShortcutEscapesExecutablePaths(t *testing.T) {
 	}
 }
 
+func TestShortcutPlatformEscaping(t *testing.T) {
+	root := t.TempDir()
+	linux := filepath.Join(root, "journal.desktop")
+	if err := writeShortcut(linux, `/tmp/50% & notes/journal`, "linux"); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(linux)
+	if err != nil || !strings.Contains(string(data), `Exec="/tmp/50%% & notes/journal"`) || !strings.Contains(string(data), "Terminal=true") {
+		t.Fatalf("invalid Linux launcher: %q %v", data, err)
+	}
+	windows := filepath.Join(root, "journal.cmd")
+	if err := writeShortcut(windows, `C:\50% & notes\journal.exe`, "windows"); err != nil {
+		t.Fatal(err)
+	}
+	data, err = os.ReadFile(windows)
+	if err != nil || !strings.Contains(string(data), `"C:\50%% & notes\journal.exe"`) || !strings.Contains(string(data), "DisableDelayedExpansion") {
+		t.Fatalf("invalid Windows launcher: %q %v", data, err)
+	}
+}
+
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
 	if got != `"A \"quote\" \\\\ Δ"` {
