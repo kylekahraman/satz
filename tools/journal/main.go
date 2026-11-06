@@ -1246,10 +1246,19 @@ func writeStarterZip(output string) error {
 	if err != nil {
 		return err
 	}
-	zipFile, err := os.Create(output)
+	zipFile, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if err != nil {
+		if errors.Is(err, os.ErrExist) {
+			return fmt.Errorf("starter ZIP destination already exists: %s", output)
+		}
 		return err
 	}
+	complete := false
+	defer func() {
+		if !complete {
+			_ = os.Remove(output)
+		}
+	}()
 	writer := zip.NewWriter(zipFile)
 	files := make([]string, 0)
 	err = filepath.WalkDir(project, func(path string, entry fs.DirEntry, err error) error {
@@ -1300,6 +1309,7 @@ func writeStarterZip(output string) error {
 	if fileErr != nil {
 		return fileErr
 	}
+	complete = true
 	fmt.Println("Starter ZIP written to", output)
 	return nil
 }

@@ -129,6 +129,20 @@ func TestRuntimeUpdateDoesNotReplaceJournalFiles(t *testing.T) {
 	}
 }
 
+func TestStarterZipDoesNotOverwriteExistingFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "starter.zip")
+	if err := os.WriteFile(path, []byte("important existing data"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeStarterZip(path); err == nil {
+		t.Fatal("existing output should be preserved")
+	}
+	data, err := os.ReadFile(path)
+	if err != nil || string(data) != "important existing data" {
+		t.Fatalf("existing output was changed: %q %v", data, err)
+	}
+}
+
 func TestTypstEscapingAndKinds(t *testing.T) {
 	got := typstString(`A "quote" \\ Δ`)
 	if got != `"A \"quote\" \\\\ Δ"` {
