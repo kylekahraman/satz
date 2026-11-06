@@ -22,6 +22,7 @@
     grid-gap: 11pt,
     group-gap: 20pt,
   ),
+  running-headers: "bottom",
   footer-dy: 5pt,
   footer: black,
   grid: rgb("#D2D2D2"),
@@ -30,10 +31,23 @@
 
 /// A worked example with a restrained label and indented content.
 ///
+/// Requires the book class. The right inset is fixed at 20pt and the label is
+/// always "Worked example".
+///
 /// - body (content): worked steps or a short worked calculation
-/// - above (length, none): optional local space before the block
-/// - below (length, none): optional local space after the block
-/// - inset (length, none): optional local left inset
+/// - above (length, none): space before the block; `none` uses
+///   `config.book.worked-example.above` (26pt)
+/// - below (length, none): space after the block; `none` uses
+///   `config.book.worked-example.below` (27pt)
+/// - inset (length, none): left inset; `none` uses
+///   `config.book.worked-example.inset` (27pt). The right inset is fixed at
+///   20pt.
+///
+/// Book config can also set `book.worked-example.label-gap` (0pt),
+/// `label-size` (9pt), and `body-size` (9pt). These control the gap under the
+/// fixed label and the label/body text sizes. All five values are lengths;
+/// explicit function arguments override the corresponding above/below/inset
+/// config values.
 #let worked-example(body, above: none, below: none, inset: none) = context {
   let style = book-style.get()
   let layout = style.worked-example
@@ -50,6 +64,17 @@
 }
 
 /// A short connection from the current topic to the reader's analysis.
+///
+/// ```example
+/// #analysis-note[
+///   Compare this interval with the bootstrap interval below.
+/// ]
+/// ```
+///
+/// The block is unbreakable with fixed 8pt space above and below.
+///
+/// - body (content): the connection or prompt
+/// - title (content): heading text; defaults to `[In your analysis]`
 #let analysis-note(body, title: [In your analysis]) = context {
   let style = book-style.get()
   block(breakable: false, above: 8pt, below: 8pt)[
@@ -61,8 +86,18 @@
 
 /// A square writing grid whose cell size and height can be adjusted.
 ///
-/// The grid fills the available text width. Its lines remain vector shapes.
+/// The grid always fills the available text width. Its lines remain vector
+/// shapes. Despite its name, `width` controls the line thickness; there is no
+/// separate grid-width argument.
+///
+/// - height (length): grid height; defaults to 25mm
+/// - cell (length): square cell edge length; must be positive; defaults to 5mm
+/// - color (color, none): line color; `none` uses the book's fixed grid color
+///   (`#D2D2D2`)
+/// - width (length, none): line thickness; `none` uses the book's fixed
+///   0.2pt grid width. Neither default is configurable through `book` config.
 #let answer-grid(height: 25mm, cell: 5mm, color: none, width: none) = context {
+  assert(cell > 0pt, message: "answer-grid cell must be positive")
   let style = book-style.get()
   let line-color = if color == none { style.grid } else { color }
   let line-width = if width == none { style.grid-width } else { width }
@@ -87,12 +122,27 @@
 
 /// A numbered exercise followed by a writing grid.
 ///
-/// Exercise numbers restart at each numbered level-one heading. Attach a Typst
-/// label immediately after the call when a solution needs to link back to it.
+/// Requires the book class; use it inside `book-mainmatter[...]`. Exercise
+/// numbers restart at each numbered level-one heading. Attach a Typst label
+/// immediately after the call when a solution needs to link back to it.
+///
+/// ```example
+/// #exercise(kind: "Optional challenge")[
+///   Derive the standard error from the bootstrap distribution.
+/// ] <ex:bootstrap-se>
+/// ```
 ///
 /// - body (content): the exercise prompt
-/// - kind (str): label such as "Core" or "Optional challenge"
-/// - grid (length): answer-space height; defaults to 20 mm for core exercises
+/// - kind (str): text in parentheses after the number; defaults to `"Core"`.
+///   Matching is exact and case-sensitive.
+/// - grid (length, none): answer-space height. `none` uses 20mm for the exact
+///   kind `"Core"` and 25mm for every other kind.
+///
+/// Book config controls group spacing with `book.exercise.grid-gap` (11pt),
+/// the gap between a prompt and its answer grid, and
+/// `book.exercise.group-gap` (20pt), the gap after each exercise. Both values
+/// are lengths. `grid` overrides only the grid height; these config values
+/// continue to control the surrounding spacing.
 #let exercise(body, kind: "Core", grid: none) = {
   let height = if grid != none { grid } else if kind == "Core" { 20mm } else { 25mm }
   [

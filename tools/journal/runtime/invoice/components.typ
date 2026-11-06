@@ -12,24 +12,24 @@
 #let posten_table(posten) = {
   if posten.len() > 0 {
     let gesamt_summe = posten.map(p => p.at(1) * p.at(2)).sum()
-    
+
     table(
       columns: (1fr, auto, auto, auto),
       inset: 7pt,
       align: (left, center, right, right),
       stroke: none,
-      
+
       table.hline(stroke: 0.5pt),
       [*Beschreibung*], [*Anzahl*], [*Einzelpreis*], [*Gesamt*],
       table.hline(stroke: 0.25pt),
-      
+
       ..posten.map(p => (
         [#p.at(0)],
         [#p.at(1)],
         [#p.at(2) €],
         [#(p.at(1) * p.at(2)) €]
       )).flatten(),
-      
+
       table.hline(stroke: 0.5pt),
       [], [], [*Gesamtbetrag:*], [*#gesamt_summe €*],
       table.hline(stroke: 0.5pt)
@@ -55,7 +55,7 @@
   let bic = absender.at("bic", default: "")
   block(width: 100%, breakable: false)[
     #v(2 * zeilenabstand)
-    
+
     #if qr and absender.iban != "" [
       // QR Code and bank details side by side
       #grid(
@@ -92,11 +92,14 @@
   ]
 }
 
-/// The "no VAT" note for small businesses (§ 19 UStG).
+/// Render the German small-business VAT notice on an invoice.
 ///
-/// German law wants this on the invoice if you're exempt.
+/// The italic notice states that no VAT is charged under § 19(1) UStG. The
+/// invoice template includes this block when its small-business option is
+/// enabled; this helper does not decide eligibility or validate tax status.
 ///
-/// - zeilenabstand (length): line spacing
+/// - zeilenabstand (length): vertical gap before the notice
+/// -> content: spacing followed by the fixed italic notice
 #let kleinunternehmer_notice(zeilenabstand) = {
   v(1 * zeilenabstand)
   text(size: 9pt, style: "italic")[

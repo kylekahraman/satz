@@ -217,12 +217,16 @@ func TestGeneratedStarterAndEscapedEntryCompile(t *testing.T) {
 	if !strings.Contains(string(entrySVG), "#674666") {
 		t.Fatal("plum heading color is missing from generated entry")
 	}
-	defaultsPath := filepath.Join(project, "_satz", "defaults.typ")
+	version, err := os.ReadFile(filepath.Join(project, "_satz", "VERSION.txt"))
+	if err != nil || !strings.Contains(string(version), "Satz 0.2.0") {
+		t.Fatalf("starter must record Satz 0.2.0: %q, %v", version, err)
+	}
+	defaultsPath := filepath.Join(project, "_satz", "journal", "defaults.typ")
 	defaults, err := os.ReadFile(defaultsPath)
 	if err != nil {
 		t.Fatal(err)
 	}
-	changedDefaults := strings.Replace(string(defaults), "size: 11pt", "size: 17pt", 1)
+	changedDefaults := strings.Replace(string(defaults), "    size: 11pt,", "    size: 17pt,", 1)
 	if changedDefaults == string(defaults) {
 		t.Fatal("test could not locate bundled heading default")
 	}

@@ -1,8 +1,11 @@
-/// Fold and punch marks for page 1.
+/// Add the DIN fold and punch position marks to the first page background.
 ///
-/// Three small ticks on the left edge — at 105, 148.5, and 210 mm.
-/// Only page 1 gets them.
-/// -> content (use as `background` in `set page`)
+/// The three gray ticks sit 105mm, 148.5mm, and 210mm below the page top. The
+/// helper checks the page counter and emits nothing after page 1, so it can be
+/// installed as a page background for the whole letter.
+///
+/// - arguments: none
+/// -> content: fold and punch marks for `set page(background: ...)`
 #let falz_und_locher_marken() = context {
   if counter(page).get().first() == 1 [
     #place(top + left, dx: 0mm, dy: 0mm)[
@@ -13,12 +16,14 @@
   ]
 }
 
-/// Page numbers at the bottom — "Page X of Y".
+/// Render the centered page footer with current and final page numbers.
 ///
-/// Starts on page 2. Page 1 stays clean (it's the letterhead).
+/// The footer uses the translated `Page` and `of` strings and appears only
+/// after the first page, leaving the letterhead page clean. The total comes
+/// from Typst's final page counter, so it reflects the compiled letter length.
 ///
-/// - strings (dictionary): translated "Page" / "of"
-/// -> content (use as `footer` in `set page`)
+/// - strings (dictionary): translations with `page` and `of` text values
+/// -> content: centered `Page X of Y` footer for `set page(footer: ...)`
 #let seiten_footer(strings) = context {
   let p = counter(page).get().first()
   let last = counter(page).final().first()

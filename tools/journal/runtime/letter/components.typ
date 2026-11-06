@@ -11,7 +11,7 @@
   let telefon = absender.at("telefon", default: "")
   let email = absender.at("email", default: "")
   let zusatz = absender.at("zusatz", default: none)
-  
+
   block(width: 100%, height: 2.8cm, clip: true)[
     #if logo != none {
       // Logo left, sender info right
@@ -54,8 +54,17 @@
   ]
 }
 
-/// Sender header for a letter sent as a PDF rather than in a window envelope.
-/// Only populated contact fields are shown.
+/// Render a compact sender header for a digital letter.
+///
+/// Unlike the postal sender block, this version does not reserve a window
+/// envelope address area. It aligns the sender information to the right and
+/// omits empty name, email, or website fields. Email and website values become
+/// clickable links.
+///
+/// - absender (dictionary): sender record with optional `name`, `email`, and
+///   `website` strings
+/// - hoehe (length): reserved block height; defaults to `19mm`
+/// -> content: right-aligned sender details
 #let digitaler_absender_block(absender, hoehe: 19mm) = {
   let name = absender.at("name", default: "")
   let email = absender.at("email", default: "")
@@ -125,7 +134,15 @@
   ]
 }
 
-/// Recipient without the return-address line or window-envelope frame.
+/// Render a digital recipient address without postal-envelope decoration.
+///
+/// The block uses the full available width and prints each populated address
+/// field on its own line. It does not add the sender return line, postal mark,
+/// or fixed-size envelope window used by `empfaenger_block`.
+///
+/// - empfaenger (dictionary): recipient fields `name`, `zusatz`, `strasse`,
+///   `plz_ort`, and `land`; absent or empty fields are omitted
+/// -> content: recipient address block
 #let digitaler_empfaenger_block(empfaenger) = {
   let name = empfaenger.at("name", default: "")
   let zusatz = empfaenger.at("zusatz", default: none)
@@ -144,34 +161,47 @@
   ]
 }
 
-/// The ref line above the subject.
+/// The reference line above the subject.
 ///
-/// Each column is a (label, value) pair. We tack the
-/// date on as the last column, right-aligned.
+/// Each column is a (label, value) pair. When supplied, the date is appended
+/// as the final, right-aligned column.
 ///
 /// - geschaeftszeile (array): your columns as (("Label", "Value"), ...)
-/// - datum (str): date — lands in the last column
+/// - datum (str, none): date for the final column; `none` omits that column
 /// - zeilenabstand (length): line spacing
 /// - strings (dictionary): translated "Datum"
 #let geschaeftszeile_block(geschaeftszeile, datum, zeilenabstand, strings, show-date-label: true) = {
   block(width: 100%)[
-    #let alle_posten = geschaeftszeile + ((strings.datum, datum),)
+    #let alle_posten = if datum == none {
+      geschaeftszeile
+    } else {
+      geschaeftszeile + ((strings.datum, datum),)
+    }
     #let spalten_anzahl = alle_posten.len()
-    
+
     #let bloecke = alle_posten.enumerate().map(((i, pair)) => {
       let text_ausrichtung = if i == spalten_anzahl - 1 { right } else { left }
       block(align(text_ausrichtung)[
-        #if i != spalten_anzahl - 1 or show-date-label [#text(size: 7.5pt)[#pair.at(0)] \
+        #if datum == none or i != spalten_anzahl - 1 or show-date-label [#text(size: 7.5pt)[#pair.at(0)] \
         ]
         #text(size: 9pt)[#pair.at(1)]
       ])
     })
-    
+
     #stack(dir: ltr, spacing: 1fr, ..bloecke)
   ]
 }
 
-/// Date at the right edge, without business reference fields.
+/// Render the date at the right edge of a digital letter.
+///
+/// The optional translated date label can be hidden while retaining the date
+/// value. This block intentionally does not render the business reference-line
+/// fields handled by `geschaeftszeile_block`.
+///
+/// - datum (str): formatted date text
+/// - strings (dictionary): translated `datum` label
+/// - show-label (bool): whether to show the date label; defaults to `true`
+/// -> content: right-aligned label and date
 #let digitales_datum_block(datum, strings, show-label: true) = align(right)[
   #if show-label [#text(size: 7.5pt)[#strings.datum] \
   ]

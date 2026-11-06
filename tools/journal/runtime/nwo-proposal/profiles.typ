@@ -6,14 +6,21 @@
 )
 
 /// Return the source and constraints for a supported NWO form.
-/// Schemes: veni, vidi, vici. Domains: science, ssh, aes, zonmw.
+///
 /// Published 2026 pre-proposals and Vici full proposals are represented.
-/// Unavailable form combinations fail explicitly instead of inventing rules.
+/// Unavailable combinations fail explicitly instead of inventing rules.
+///
+/// - scheme (str): `"veni"` (default), `"vidi"`, or `"vici"`
+/// - domain (str): `"science"` (default), `"ssh"`, `"aes"`, or `"zonmw"`
+/// - stage (str): `"pre"` (default) or `"full"`
+/// - year (int): source-checked year; must be 2026
+/// -> dictionary: `scheme`, `domain`, `domain-name`, `stage`, `year`, `source`,
+///   `size`, and `limits`. `limits` maps each word-limited field to `(min:, max:)`.
 #let nwo-profile(scheme: "veni", domain: "science", stage: "pre", year: 2026) = {
   assert(scheme in ("veni", "vidi", "vici"), message: "NWO scheme must be veni, vidi or vici.")
   assert(domain in domains, message: "NWO domain must be science, ssh, aes or zonmw.")
   assert(stage in ("pre", "full"), message: "NWO stage must be pre or full.")
-  assert(year == 2026, message: "Only source-checked NWO 2026 profiles are available.")
+  assert(type(year) == int and year == 2026, message: "Only integer year 2026 has source-checked NWO profiles.")
   assert(stage != "full" or scheme == "vici", message: "The Veni/Vidi 2026 full-proposal forms are not yet represented; do not substitute the old LaTeX form.")
   assert(not (stage == "pre" and scheme == "vici" and domain == "zonmw"),
     message: "The Vici 2026 ZonMw pre-proposal source was unavailable; this profile is not yet verified.")
