@@ -291,6 +291,9 @@ func TestMissingEntryListReportsRecovery(t *testing.T) {
 }
 
 func TestEditableEntryTemplates(t *testing.T) {
+	if _, err := exec.LookPath("typst"); err != nil {
+		t.Skip("custom template validation requires the Typst CLI")
+	}
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {
 		t.Fatal(err)
@@ -315,6 +318,53 @@ func TestEditableEntryTemplates(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(project, "entries", time.Now().Format("2006-01-02")+"-missing.typ")); !os.IsNotExist(err) {
 		t.Fatalf("failed creation left an entry: %v", err)
+	}
+}
+
+func TestBrokenTemplateDoesNotCreateEntry(t *testing.T) {
+	if _, err := exec.LookPath("typst"); err != nil {
+		t.Skip("Typst is not installed")
+	}
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "templates", "meeting.typ"), []byte("== Broken\n#let x = (\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	list := filepath.Join(project, "journal-entries.typ")
+	before, err := os.ReadFile(list)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = createEntry(project, "Broken", "meeting", "", time.Now())
+	if err == nil || !strings.Contains(err.Error(), "template") {
+		t.Fatalf("invalid template accepted: %v", err)
+	}
+	after, _ := os.ReadFile(list)
+	if string(before) != string(after) {
+		t.Fatal("entry list changed")
+	}
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil || len(entries) != 1 {
+		t.Fatalf("unexpected files after failure: %v, %v", entries, err)
+	}
+}
+
+func TestCustomizedTemplateNeedsCompilerButDefaultsDoNot(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", t.TempDir())
+	if _, err := createEntry(project, "Default", "notes", "", time.Now()); err != nil {
+		t.Fatalf("default template needs no compiler: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "templates", "notes.typ"), []byte("== Custom\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Custom", "notes", "", time.Now()); err == nil || !strings.Contains(err.Error(), "Typst") {
+		t.Fatalf("missing compiler not diagnosed: %v", err)
 	}
 }
 

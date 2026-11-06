@@ -4,6 +4,7 @@ package main
 import (
 	"archive/zip"
 	"bufio"
+	"context"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -214,6 +215,8 @@ func initProject(input string) (string, error) {
 3. Open the command palette and choose **Typst: Preview**.
 
 Edit ` + "`config.typ`" + ` to personalize the cover and journal style. Change the title, subtitle, author, theme, cover layout, and paper size there. Available themes include ` + "`neutral`" + `, ` + "`soft-jade`" + `, ` + "`soft-slate`" + `, ` + "`warm-editorial`" + `, ` + "`plum`" + `, and ` + "`soft-rose`" + `. Add new entries under ` + "`entries/`" + ` and include them in ` + "`journal-entries.typ`" + ` above its end marker. Keep the include of ` + "`journal-entries.typ`" + ` in ` + "`main.typ`" + ` so the entries appear in the journal.
+
+Edit the files in ` + "`templates/`" + ` to change future entry content. The helper supplies each entry's title, date, and keywords. For customized templates, install the Typst CLI (https://typst.app/open-source/#download) so the helper can check the entry before saving it. The original templates work without the CLI.
 
 To keep the complete journal in the preview while editing another file, open ` + "`main.typ`" + ` and run **Typst: Pin Main**. The ` + "`_satz/`" + ` folder contains the Satz source used by this journal, so no Satz package installation is needed. Its revision is recorded in ` + "`_satz/VERSION.txt`" + `.
 `
@@ -746,6 +749,11 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		"  date: " + typstString(date.Format("Monday, 02/01/2006")) + ",\n" +
 		"  keywords: " + typstString(keywords) + ",\n" +
 		")[\n" + sections + "]\n"
+	if sections != scaffold(kind) {
+		if err := validateTemplate(project, kind, content); err != nil {
+			return "", err
+		}
+	}
 	file, err := os.OpenFile(target, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if err != nil {
 		if errors.Is(err, os.ErrExist) {
@@ -767,6 +775,49 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		return "", err
 	}
 	return target, nil
+}
+
+// Validate customized content in the same directory and project context as a
+// real entry, without changing the entry list or creating the final file.
+func validateTemplate(project, kind, content string) error {
+	typst, err := exec.LookPath("typst")
+	if err != nil {
+		return fmt.Errorf("the %s template was customized; install the Typst CLI to validate it before creating an entry (https://typst.app/open-source/#download)", kind)
+	}
+	source, err := os.CreateTemp(filepath.Join(project, "entries"), ".satz-template-check-*.typ")
+	if err != nil {
+		return fmt.Errorf("cannot validate %s template: %w", kind, err)
+	}
+	sourcePath := source.Name()
+	defer os.Remove(sourcePath)
+	if _, err := io.WriteString(source, content); err != nil {
+		source.Close()
+		return fmt.Errorf("cannot validate %s template: %w", kind, err)
+	}
+	if err := source.Close(); err != nil {
+		return fmt.Errorf("cannot validate %s template: %w", kind, err)
+	}
+	output, err := os.CreateTemp("", "satz-template-check-*.pdf")
+	if err != nil {
+		return fmt.Errorf("cannot validate %s template: %w", kind, err)
+	}
+	outputPath := output.Name()
+	if err := output.Close(); err != nil {
+		os.Remove(outputPath)
+		return err
+	}
+	defer os.Remove(outputPath)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, typst, "compile", "--root", project, sourcePath, outputPath)
+	result, err := cmd.CombinedOutput()
+	if ctx.Err() != nil {
+		return fmt.Errorf("validation of %s template timed out; no entry was created", kind)
+	}
+	if err != nil {
+		return fmt.Errorf("cannot compile %s template; fix the template or journal setup and try again:\n%s", kind, strings.TrimSpace(string(result)))
+	}
+	return nil
 }
 
 func scaffold(kind string) string {
