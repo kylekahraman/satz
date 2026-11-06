@@ -66,6 +66,6 @@ Existing journals retain their bundled Satz source. Runtime updates are disabled
 
 ## Maintainer builds
 
-Go is needed only to build the helper. From `tools/journal`, `./build-release.sh VERSION [OUTPUT_DIR]` creates versioned ZIPs for Windows, macOS, and Linux (amd64 and arm64), plus a `SHA256SUMS` file. Each archive includes the guide and dependency licenses. The output directory must be empty. The build uses the Go terminal libraries specified in `go.mod`; `journal version` displays the embedded version.
+Go is needed only to build the helper. From `tools/journal`, `./build-release.sh VERSION [OUTPUT_DIR]` creates versioned ZIPs for Windows, macOS, and Linux (amd64 and arm64), plus a `SHA256SUMS` file. Each archive includes the guide, source commit, and dependency licenses. The output directory must be empty and the working tree clean. The build uses the Go terminal libraries specified in `go.mod`; `journal version` displays the embedded version.
 
 These development builds are unsigned. Windows and Linux binaries cross-compiled on macOS have not been run natively; verify them on their target systems before distributing them. Do not treat an archive or executable as an official release unless Satz publishes it through a trusted release channel.

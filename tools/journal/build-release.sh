@@ -15,6 +15,11 @@ if [ -n "$(ls -A "$output_dir")" ]; then
 	exit 1
 fi
 cache_dir=${TMPDIR:-/tmp}/satz-journal-go-cache
+source_revision=$(git -C "$script_dir" rev-parse HEAD)
+if [ -n "$(git -C "$script_dir" status --porcelain --untracked-files=normal)" ]; then
+	printf 'The working tree must be clean before packaging.\n' >&2
+	exit 1
+fi
 term_dir=$(cd "$script_dir" && GOENV=off GOTOOLCHAIN=local go list -f '{{.Module.Dir}}' golang.org/x/term)
 sys_dir=$(cd "$script_dir" && GOENV=off GOTOOLCHAIN=local go list -f '{{.Module.Dir}}' golang.org/x/sys/unix)
 
@@ -34,6 +39,7 @@ build_one() {
 	cp "$term_dir/LICENSE" "$stage/LICENSE-golang-term"
 	cp "$sys_dir/LICENSE" "$stage/LICENSE-golang-sys"
 	cp "$script_dir/../../docs/journal-starter.md" "$stage/journal-starter.md"
+	printf 'Version: %s\nSource commit: %s\n' "$version" "$source_revision" > "$stage/SOURCE.txt"
 	cat > "$stage/README.txt" <<'EOF'
 Satz Journal
 
@@ -47,7 +53,7 @@ This is a development build; verify it on its target platform before sharing.
 EOF
 	(
 		cd "$stage"
-		zip -q "$output_dir/$name.zip" "$file" README.txt journal-starter.md LICENSE LICENSE-golang-term LICENSE-golang-sys
+		zip -q "$output_dir/$name.zip" "$file" README.txt journal-starter.md SOURCE.txt LICENSE LICENSE-golang-term LICENSE-golang-sys
 	)
 	rm -rf "$stage"
 	trap - EXIT HUP INT TERM
