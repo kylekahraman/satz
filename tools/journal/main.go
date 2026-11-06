@@ -967,17 +967,40 @@ func validateTemplate(project, kind, content string) error {
 		return err
 	}
 	defer os.Remove(outputPath)
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	cmd := exec.CommandContext(ctx, typst, "compile", "--root", project, sourcePath, outputPath)
-	result, err := cmd.CombinedOutput()
-	if ctx.Err() != nil {
-		return fmt.Errorf("validation of %s template timed out; no entry was created", kind)
+	result, err := compileTemplateCheck(typst, project, sourcePath, outputPath)
+	if err != nil && strings.Contains(string(result), "does not exist in the document") {
+		// A reference can resolve only in the full journal. Retry in that
+		// context without editing the user's main file or entry list.
+		wrapper, createErr := os.CreateTemp(project, ".satz-journal-check-*.typ")
+		if createErr != nil {
+			return fmt.Errorf("cannot validate %s template in journal context: %w", kind, createErr)
+		}
+		wrapperPath := wrapper.Name()
+		defer os.Remove(wrapperPath)
+		content := "#include \"main.typ\"\n#include \"entries/" + filepath.Base(sourcePath) + "\"\n"
+		if _, createErr = io.WriteString(wrapper, content); createErr != nil {
+			wrapper.Close()
+			return createErr
+		}
+		if createErr = wrapper.Close(); createErr != nil {
+			return createErr
+		}
+		result, err = compileTemplateCheck(typst, project, wrapperPath, outputPath)
 	}
 	if err != nil {
-		return fmt.Errorf("cannot compile %s template; fix the template or journal setup and try again:\n%s", kind, strings.TrimSpace(string(result)))
+		return fmt.Errorf("cannot compile %s template or journal; fix the reported issue and try again: %w\n%s", kind, err, strings.TrimSpace(string(result)))
 	}
 	return nil
+}
+
+func compileTemplateCheck(typst, project, source, output string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	result, err := exec.CommandContext(ctx, typst, "compile", "--root", project, source, output).CombinedOutput()
+	if ctx.Err() != nil {
+		return result, errors.New("validation timed out after 30 seconds; no entry was created")
+	}
+	return result, err
 }
 
 func scaffold(kind string) string {

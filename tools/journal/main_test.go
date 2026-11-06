@@ -487,6 +487,76 @@ func TestBrokenTemplateDoesNotCreateEntry(t *testing.T) {
 	}
 }
 
+func TestCustomizedTemplateCanReferenceAnotherEntry(t *testing.T) {
+	typst, err := exec.LookPath("typst")
+	if err != nil {
+		t.Skip("Typst is not installed")
+	}
+	root := t.TempDir()
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	first := filepath.Join(project, "entries", entries[0].Name())
+	file, err := os.OpenFile(first, os.O_APPEND|os.O_WRONLY, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := file.WriteString("\n#figure(rect(width: 2cm, height: 1cm), caption: [Previous finding]) <previous-finding>\n"); err != nil {
+		t.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "templates", "meeting.typ"), []byte("== Background\nSee @previous-finding.\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Follow-up", "meeting", "", time.Now()); err != nil {
+		t.Fatalf("valid cross-entry reference rejected: %v", err)
+	}
+	cmd := exec.Command(typst, "compile", "--root", project, filepath.Join(project, "main.typ"), filepath.Join(root, "journal.pdf"))
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("journal failed to compile: %v\n%s", err, output)
+	}
+}
+
+func TestCustomizedTemplateMissingReferenceDoesNotCreateEntry(t *testing.T) {
+	if _, err := exec.LookPath("typst"); err != nil {
+		t.Skip("Typst is not installed")
+	}
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	listPath := filepath.Join(project, "journal-entries.typ")
+	before, err := os.ReadFile(listPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "templates", "session.typ"), []byte("See @missing-reference.\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Missing", "session", "", time.Now()); err == nil || !strings.Contains(err.Error(), "missing-reference") {
+		t.Fatalf("missing reference accepted: %v", err)
+	}
+	after, err := os.ReadFile(listPath)
+	if err != nil || string(after) != string(before) {
+		t.Fatalf("entry list changed: %v", err)
+	}
+	files, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil || len(files) != 1 {
+		t.Fatalf("temporary entry not cleaned up: %v, %v", files, err)
+	}
+	wrappers, err := filepath.Glob(filepath.Join(project, ".satz-journal-check-*.typ"))
+	if err != nil || len(wrappers) != 0 {
+		t.Fatalf("temporary journal not cleaned up: %v, %v", wrappers, err)
+	}
+}
+
 func TestCustomizedTemplateNeedsCompilerButDefaultsDoNot(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {
