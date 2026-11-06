@@ -160,8 +160,13 @@ func initProject(input string) (string, error) {
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return "", err
 	}
-	for _, dir := range []string{"entries", ".vscode"} {
+	for _, dir := range []string{"entries", "templates", ".vscode"} {
 		if err := os.MkdirAll(filepath.Join(destination, dir), 0o755); err != nil {
+			return "", err
+		}
+	}
+	for _, kind := range []string{"meeting", "session", "notes"} {
+		if err := os.WriteFile(filepath.Join(destination, "templates", kind+".typ"), []byte(scaffold(kind)), 0o644); err != nil {
 			return "", err
 		}
 	}
@@ -468,7 +473,24 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	filename := date.Format("2006-01-02") + "-" + safeComponent(title) + ".typ"
 	target := filepath.Join(project, "entries", filename)
 	relative := filepath.ToSlash(filepath.Join("entries", filename))
-	sections := scaffold(kind)
+	sections := scaffold(kind) // Existing projects without templates retain their old behavior.
+	templatesDir := filepath.Join(project, "templates")
+	if _, err := os.Stat(templatesDir); err == nil {
+		path := filepath.Join(templatesDir, kind+".typ")
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return "", fmt.Errorf("cannot read entry template %s: %w", path, err)
+		}
+		if strings.TrimSpace(string(data)) == "" {
+			return "", fmt.Errorf("entry template is empty: %s", path)
+		}
+		sections = string(data)
+		if !strings.HasSuffix(sections, "\n") {
+			sections += "\n"
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return "", err
+	}
 	content := "#import \"../setup.typ\": journal-entry\n\n" +
 		"#journal-entry(\n" +
 		"  title: " + typstString(title) + ",\n" +

@@ -113,6 +113,34 @@ func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {
 	}
 }
 
+func TestEditableEntryTemplates(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	template := filepath.Join(project, "templates", "meeting.typ")
+	if err := os.WriteFile(template, []byte("  == My meeting notes\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	entry, err := createEntry(project, "Custom", "meeting", "", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := os.ReadFile(entry)
+	if err != nil || !strings.Contains(string(content), "== My meeting notes") {
+		t.Fatalf("custom template not used: %s (%v)", content, err)
+	}
+	if err := os.Remove(template); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := createEntry(project, "Missing", "meeting", "", time.Now()); err == nil {
+		t.Fatal("missing template should fail")
+	}
+	if _, err := os.Stat(filepath.Join(project, "entries", time.Now().Format("2006-01-02")+"-missing.typ")); !os.IsNotExist(err) {
+		t.Fatalf("failed creation left an entry: %v", err)
+	}
+}
+
 func TestLoadProjectPrefersCurrentJournalToRemembered(t *testing.T) {
 	root := t.TempDir()
 	remembered := filepath.Join(root, "remembered")

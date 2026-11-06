@@ -32,6 +32,8 @@ journal
 
 The last command asks for an entry title, type, and optional keywords, adds the new Typst file to `main.typ`, and opens the chosen editor. Entry types accept `meeting`/`m`, `session`/`s`, or `notes`/`n`. When run inside a journal folder, the helper uses that project before its saved default; `journal use PATH` explicitly changes the default. It never edits shell startup files. If no editor is available, the entry remains saved and the helper tells you where to find it. VS Code is detected automatically; set `VISUAL` or `EDITOR` to choose another editor.
 
+New journals include editable `templates/meeting.typ`, `templates/session.typ`, and `templates/notes.typ` files. Edit their headings and text to change future entries; the helper supplies the title, date, and keywords separately. Templates contain Typst content inside an entry's content block, so invalid Typst or unbalanced brackets can prevent compilation. The helper checks for missing or empty templates but does not yet validate Typst syntax. Existing journals without a `templates/` folder continue to use the built-in scaffolds.
+
 `journal update-satz PATH` is an explicit refresh of `_satz/`; existing journals retain their current source until you run it. `journal starter-zip OUTPUT.zip` is a maintainer command for building the editable starter archive from the embedded files.
 
 ## Maintainer builds
