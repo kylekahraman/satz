@@ -915,6 +915,28 @@ func TestConnectRejectsIncompleteJournal(t *testing.T) {
 	}
 }
 
+func TestCheckJournalReportsMissingTemplatesWithoutChangingFiles(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(project, "templates", "meeting.typ")); err != nil {
+		t.Fatal(err)
+	}
+	before, err := os.ReadFile(filepath.Join(project, "journal-entries.typ"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	issues := checkJournal(project)
+	if len(issues) == 0 || !strings.Contains(strings.Join(issues, " "), "meeting.typ") {
+		t.Fatalf("missing template not reported: %v", issues)
+	}
+	after, err := os.ReadFile(filepath.Join(project, "journal-entries.typ"))
+	if err != nil || string(before) != string(after) {
+		t.Fatal("check changed entry list")
+	}
+}
+
 type fakeFileInfo struct{}
 
 func (fakeFileInfo) Name() string       { return "Code.exe" }

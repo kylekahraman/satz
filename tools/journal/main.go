@@ -122,6 +122,24 @@ func run(args []string) error {
 		}
 		fmt.Println("Removed from journal list; files remain in", args[1])
 		return nil
+	case "check":
+		if len(args) > 2 {
+			return errors.New("usage: journal check [PATH]")
+		}
+		path := ""
+		if len(args) == 2 {
+			path = args[1]
+		}
+		project, err := loadProject(path)
+		if err != nil {
+			return err
+		}
+		issues := checkJournal(project)
+		if len(issues) > 0 {
+			return fmt.Errorf("journal check for %s:\n  - %s", project, strings.Join(issues, "\n  - "))
+		}
+		fmt.Println("Journal check passed:", project)
+		return nil
 	case "update-satz":
 		return errors.New("runtime updates are unavailable until a safe backup and recovery workflow is implemented; no files were changed")
 	case "starter-zip":
@@ -148,6 +166,7 @@ Commands:
   journal journals              Manage and select registered journals
   journal reconnect OLD NEW     Update a moved journal's registered path
   journal forget PATH           Remove a journal from the list, keeping its files
+  journal check [PATH]          Check journal setup without changing files
   journal starter-zip OUTPUT   Build a shareable starter ZIP (maintainers)
 
 Use --editor "PATH [ARGS...]" with ` + "`journal new`" + ` to select an editor. The helper
@@ -295,6 +314,32 @@ func isJournal(path string) bool {
 	}
 	info, err = os.Stat(filepath.Join(path, "entries"))
 	return err == nil && info.IsDir()
+}
+
+func checkJournal(project string) []string {
+	var issues []string
+	if _, err := registrationPath(project); err != nil {
+		issues = append(issues, err.Error())
+	}
+	templates := filepath.Join(project, "templates")
+	if info, err := os.Stat(templates); err == nil {
+		if !info.IsDir() {
+			issues = append(issues, "templates is not a directory")
+		} else {
+			for _, kind := range []string{"meeting", "session", "notes"} {
+				path := filepath.Join(templates, kind+".typ")
+				data, err := os.ReadFile(path)
+				if err != nil {
+					issues = append(issues, fmt.Sprintf("cannot read %s: %v", path, err))
+				} else if strings.TrimSpace(string(data)) == "" {
+					issues = append(issues, "empty template: "+path)
+				}
+			}
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		issues = append(issues, err.Error())
+	}
+	return issues
 }
 
 func configDir() string {
