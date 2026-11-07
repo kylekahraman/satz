@@ -555,7 +555,9 @@
     let entry-date = if parsed == none { none } else { (parsed.year, parsed.month, parsed.day) }
     let same-date = entry-date != none and entry-date == previous-date
 
-    if month-name != current-month or year != current-year {
+    let month-changed = month-name != current-month or year != current-year
+    if month-changed {
+      if previous-date != none { v(0.5em) }
       current-month = month-name
       current-year = year
       let heading-text = if multi-year {
@@ -567,6 +569,9 @@
       v(0.3em)
     }
 
+    if previous-date != none and not month-changed {
+      v(if same-date { 0.2em } else { 0.5em })
+    }
     link(entry.location())[
       #grid(
         columns: (4.5em, 1fr, auto),
@@ -577,7 +582,6 @@
         [#text(weight: "bold", fill: c.colors.brand-primary)[#page-num]]
       )
     ]
-    v(if same-date { 0.2em } else { 0.5em })
     previous-date = entry-date
   }
 }
