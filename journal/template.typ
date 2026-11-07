@@ -569,7 +569,7 @@
 
     link(entry.location())[
       #grid(
-        columns: (auto, 1fr, auto),
+        columns: (4.5em, 1fr, auto),
         gutter: 1em,
         align: (left, left, right),
         [#if same-date { hide[#clean-date] } else { text(fill: c.colors.text-main, weight: "bold")[#clean-date] }],
