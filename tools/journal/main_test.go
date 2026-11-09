@@ -190,6 +190,51 @@ func TestChooserReconnectsSingleMovedJournal(t *testing.T) {
 	}
 }
 
+func TestManageJournalPromptExpandsHomePath(t *testing.T) {
+	root := t.TempDir()
+	home := filepath.Join(root, "home")
+	if err := os.MkdirAll(home, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("HOME", home)
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	var output bytes.Buffer
+	want := filepath.Join(home, "Created")
+	got, err := chooseJournalMode(bufio.NewReader(strings.NewReader("c\n~/Created\n")), &output, true)
+	if err != nil || got != want {
+		t.Fatalf("create from home path = %q, %v; want %q", got, err, want)
+	}
+	if _, err := os.Stat(filepath.Join(want, "main.typ")); err != nil {
+		t.Fatalf("journal was not created at expanded path: %v", err)
+	}
+}
+
+func TestChooserReconnectPromptExpandsHomePath(t *testing.T) {
+	root := t.TempDir()
+	home := filepath.Join(root, "home")
+	if err := os.MkdirAll(home, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("HOME", home)
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	old, err := initProject(filepath.Join(root, "old"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(old); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Rename(old, filepath.Join(home, "Moved")); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	want := filepath.Join(home, "Moved")
+	got, err := chooseJournal(bufio.NewReader(strings.NewReader("r\n~/Moved\n")), &output)
+	if err != nil || got != want {
+		t.Fatalf("reconnect from home path = %q, %v; want %q", got, err, want)
+	}
+}
+
 func TestChooserFormattingWorksWithoutColor(t *testing.T) {
 	t.Setenv("NO_COLOR", "1")
 	if terminalColor(os.Stdout) {
@@ -224,11 +269,43 @@ func TestKeyboardJournalSelection(t *testing.T) {
 }
 
 func TestHomeChoiceOffersEntryAndManagement(t *testing.T) {
-	for input, want := range map[string]string{"\r": "new", "n": "new", "m": "manage", "h": "help", "q": "quit", "\x03": "quit"} {
+	for input, want := range map[string]string{"\r": "new", "n": "new", "m": "manage", "c": "create", "a": "connect", "o": "open", "e": "editor", "h": "help", "q": "quit", "\x03": "quit"} {
 		got, err := readHomeChoice(bufio.NewReader(strings.NewReader(input)))
 		if err != nil || got != want {
 			t.Errorf("home %q = %q, %v; want %q", input, got, err, want)
 		}
+	}
+}
+
+func TestManagementActionTargetsHighlightedJournal(t *testing.T) {
+	items := []journalRecord{{Name: "First", Path: "/first"}, {Name: "Second", Path: "/second"}}
+	for _, key := range []string{"f", "r"} {
+		var output bytes.Buffer
+		got, err := interactiveChoice(bufio.NewReader(strings.NewReader("\x1b[B"+key)), &output, items, false)
+		if err != nil || got != key+":2" {
+			t.Fatalf("action %s = %q, %v", key, got, err)
+		}
+	}
+}
+
+func TestRemovalRequiresConfirmation(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(root, "config"))
+	project, err := initProject(filepath.Join(root, "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rememberProject(project); err != nil {
+		t.Fatal(err)
+	}
+	var output bytes.Buffer
+	_, err = chooseJournalMode(bufio.NewReader(strings.NewReader("f\nn\nq\n")), &output, true)
+	if !errors.Is(err, errCancelled) {
+		t.Fatalf("expected cancellation, got %v", err)
+	}
+	registry, err := loadRegistry()
+	if err != nil || len(registry.Journals) != 1 {
+		t.Fatalf("journal removed despite decline: %+v, %v", registry, err)
 	}
 }
 

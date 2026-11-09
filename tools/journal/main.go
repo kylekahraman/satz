@@ -237,6 +237,7 @@ func run(args []string) error {
 				target = project
 			}
 			fmt.Println("Open this path in your editor:", target)
+			fmt.Println("Set an editor with journal editor 'COMMAND', or choose Editor on the home screen.")
 		}
 		return nil
 	case "entries", "search", "recent":
@@ -373,8 +374,22 @@ func parseNewArgs(args []string) (path, editor string, err error) {
 	return path, editor, nil
 }
 
+// normalizeInputPath expands a leading home-directory marker before making a
+// path absolute. Shells normally do this for command-line arguments, but paths
+// entered at interactive prompts do not pass through a shell.
+func normalizeInputPath(path string) (string, error) {
+	if path == "~" || strings.HasPrefix(path, "~/") || (runtime.GOOS == "windows" && strings.HasPrefix(path, `~\`)) {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		path = filepath.Join(home, strings.TrimLeft(path[1:], `/\`))
+	}
+	return filepath.Abs(path)
+}
+
 func initProject(input string) (string, error) {
-	destination, err := filepath.Abs(input)
+	destination, err := normalizeInputPath(input)
 	if err != nil {
 		return "", err
 	}
@@ -864,9 +879,26 @@ func loadProject(path string) (string, error) {
 func newEntry(path, editor string) error {
 	reader := bufio.NewReader(os.Stdin)
 	if path == "" && interactiveTerminal(os.Stdout) {
-		state, err := term.MakeRaw(int(os.Stdin.Fd()))
-		if err == nil {
-			fmt.Fprint(os.Stdout, "\r\n  SATZ / JOURNAL\r\n  A place for your work, thoughts, and decisions.\r\n\r\n  Enter  New entry    m  Manage journals    h  Help    q  Quit\r\n")
+		for {
+			registry, err := loadRegistry()
+			if err != nil {
+				return err
+			}
+			fmt.Print("\n  SATZ / JOURNAL\n  A place for your work, thoughts, and decisions.\n\n")
+			available := len(registry.Journals) > 0 && isJournal(registry.Journals[0].Path)
+			if available {
+				fmt.Printf("  Current journal: %s\n  %s\n\n", registry.Journals[0].Name, registry.Journals[0].Path)
+				fmt.Print("  Enter New entry   o Open journal   m Manage journals\n  e Editor   h Help   q Quit\n")
+			} else {
+				if len(registry.Journals) > 0 {
+					fmt.Printf("  Recent journal unavailable: %s\n\n", registry.Journals[0].Path)
+				}
+				fmt.Print("  c Create journal   a Connect journal   m Manage journals\n  e Editor   h Help   q Quit\n")
+			}
+			state, err := term.MakeRaw(int(os.Stdin.Fd()))
+			if err != nil {
+				return err
+			}
 			choice, readErr := readHomeChoice(reader)
 			restoreErr := term.Restore(int(os.Stdin.Fd()), state)
 			if readErr != nil {
@@ -875,23 +907,71 @@ func newEntry(path, editor string) error {
 			if restoreErr != nil {
 				return restoreErr
 			}
-			if choice == "quit" {
+			switch choice {
+			case "quit":
 				return errCancelled
-			}
-			if choice == "help" {
+			case "help":
 				printHelp()
-				return nil
-			}
-			if choice == "manage" {
-				project, err := chooseJournalMode(reader, os.Stdout, true)
+			case "editor":
+				current, err := preferredEditor("")
 				if err != nil {
-					return err
+					fmt.Println("  ", err)
+					continue
 				}
-				fmt.Println("Selected journal:", project)
-				return nil
+				if current == "" {
+					fmt.Println("  Editor: automatic (VISUAL, EDITOR, or VS Code)")
+				} else {
+					fmt.Println("  Editor:", current)
+				}
+				fmt.Print("  Editor command (e.g. code, nvim; Enter keeps current, /cancel cancels): ")
+				command, err := reader.ReadString('\n')
+				command = strings.TrimSpace(command)
+				if err != nil && command == "" {
+					return errCancelled
+				}
+				if command == "" || command == "/cancel" {
+					continue
+				}
+				if err := setEditorPreference(command); err != nil {
+					fmt.Println("  ", err)
+				} else {
+					fmt.Println("  Editor saved:", command)
+				}
+			case "open":
+				if !available {
+					fmt.Println("  Select or create a journal first.")
+					continue
+				}
+				if err := run([]string{"open", registry.Journals[0].Path}); err != nil {
+					fmt.Println("  ", err)
+				}
+			case "create", "connect", "manage":
+				initial := ""
+				if choice == "create" {
+					initial = "c"
+				}
+				if choice == "connect" {
+					initial = "a"
+				}
+				project, err := chooseJournalWithChoice(reader, os.Stdout, true, false, initial)
+				if err != nil {
+					if !errors.Is(err, errCancelled) {
+						fmt.Println("  ", err)
+					}
+					continue
+				}
+				fmt.Println("  Current journal:", project)
+			case "new":
+				if !available {
+					fmt.Println("  Create or connect a journal first.")
+					continue
+				}
+				path = registry.Journals[0].Path
+				goto entry
 			}
 		}
 	}
+entry:
 	var project string
 	var err error
 	if path != "" {
@@ -936,10 +1016,8 @@ func newEntry(path, editor string) error {
 		return err
 	}
 	fmt.Println("Created", entry)
-	if path == "" {
-		if err := rememberProject(project); err != nil {
-			fmt.Fprintln(os.Stderr, "Entry saved, but could not update recent journal:", err)
-		}
+	if err := rememberProject(project); err != nil {
+		fmt.Fprintln(os.Stderr, "Entry saved, but could not update recent journal:", err)
 	}
 	editor, err = preferredEditor(editor)
 	if err != nil {
@@ -950,7 +1028,7 @@ func newEntry(path, editor string) error {
 		return fmt.Errorf("entry saved at %s, but editor could not be opened: %w", entry, err)
 	}
 	if !opened {
-		fmt.Println("Your entry is saved. Open the journal folder in your editor and select this file.")
+		fmt.Println("Your entry is saved. Set an editor with journal editor 'COMMAND', then open the file shown above.")
 	}
 	return nil
 }
@@ -966,6 +1044,14 @@ func readHomeChoice(reader *bufio.Reader) (string, error) {
 			return "new", nil
 		case 'm', 'M':
 			return "manage", nil
+		case 'c', 'C':
+			return "create", nil
+		case 'a', 'A':
+			return "connect", nil
+		case 'o', 'O':
+			return "open", nil
+		case 'e', 'E':
+			return "editor", nil
 		case 'h', 'H', '?':
 			return "help", nil
 		case 'q', 'Q', 3:
@@ -984,6 +1070,10 @@ func chooseJournalMode(reader *bufio.Reader, out io.Writer, manage bool) (string
 }
 
 func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details bool) (string, error) {
+	return chooseJournalWithChoice(reader, out, manage, details, "")
+}
+
+func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, details bool, initial string) (string, error) {
 	registry, err := loadRegistry()
 	if err != nil {
 		return "", err
@@ -1026,8 +1116,21 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 		fmt.Fprintln(out, "\n  c  Create a journal\n  a  Connect an existing journal\n  r  Reconnect a moved journal\n  f  Remove from list (keep files)\n  q  Cancel")
 	}
 	for {
-		line, readErr := journalChoice(reader, out, registry.Journals)
+		line, readErr := initial, error(nil)
+		if initial == "" {
+			line, readErr = journalChoice(reader, out, registry.Journals)
+		}
+		initial = ""
 		choice := strings.TrimSpace(line)
+		selectedIndex := 0
+		if len(choice) > 2 && choice[1] == ':' {
+			selectedIndex, _ = strconv.Atoi(choice[2:])
+			choice = choice[:1]
+			if selectedIndex < 1 || selectedIndex > len(registry.Journals) {
+				fmt.Fprintln(out, "  Choose a listed journal.")
+				continue
+			}
+		}
 		if readErr != nil && choice == "" {
 			return "", errCancelled
 		}
@@ -1039,8 +1142,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 				fmt.Fprintln(out, "  No registered journal to remove.")
 				continue
 			}
-			index := 1
-			if len(registry.Journals) > 1 {
+			index := selectedIndex
+			if index == 0 {
+				index = 1
+			}
+			if selectedIndex == 0 && len(registry.Journals) > 1 {
 				fmt.Fprint(out, "  Journal number (q to cancel): ")
 				answer, err := reader.ReadString('\n')
 				if cancelledInput(answer) {
@@ -1056,6 +1162,12 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 				}
 			}
 			item := registry.Journals[index-1]
+			fmt.Fprintf(out, "  Remove %s (%s) from the list? Files will remain. [y/N]: ", item.Name, item.Path)
+			answer, _ := reader.ReadString('\n')
+			if !strings.EqualFold(strings.TrimSpace(answer), "y") {
+				fmt.Fprintln(out, "  Removal cancelled.")
+				continue
+			}
 			if err := forgetProject(item.Path); err != nil {
 				return "", err
 			}
@@ -1066,8 +1178,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 				fmt.Fprintln(out, "  No registered journal to reconnect.")
 				continue
 			}
-			index := 1
-			if len(registry.Journals) > 1 {
+			index := selectedIndex
+			if index == 0 {
+				index = 1
+			}
+			if selectedIndex == 0 && len(registry.Journals) > 1 {
 				fmt.Fprint(out, "  Journal number (q to cancel): ")
 				answer, err := reader.ReadString('\n')
 				if cancelledInput(answer) {
@@ -1094,7 +1209,7 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 				fmt.Fprintln(out, "  Enter a folder path.")
 				continue
 			}
-			path, err := filepath.Abs(strings.TrimSpace(answer))
+			path, err := normalizeInputPath(strings.TrimSpace(answer))
 			if err != nil {
 				return "", err
 			}
@@ -1103,7 +1218,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 			}
 			return path, nil
 		case "c", "a":
-			fmt.Fprint(out, "  Journal folder (q to cancel): ")
+			if strings.EqualFold(choice, "c") {
+				fmt.Fprint(out, "  New journal folder (e.g. ~/Documents/My-Journal; q to cancel): ")
+			} else {
+				fmt.Fprint(out, "  Existing journal folder (q to cancel): ")
+			}
 			input, inputErr := reader.ReadString('\n')
 			if cancelledInput(input) {
 				return "", errCancelled
@@ -1116,7 +1235,7 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 				fmt.Fprintln(out, "  Enter a folder path.")
 				continue
 			}
-			path, err := filepath.Abs(input)
+			path, err := normalizeInputPath(input)
 			if err != nil {
 				return "", err
 			}
@@ -1130,6 +1249,11 @@ func chooseJournalDetails(reader *bufio.Reader, out io.Writer, manage, details b
 			}
 			if err := rememberProject(path); err != nil {
 				return "", err
+			}
+			if strings.EqualFold(choice, "c") {
+				fmt.Fprintf(out, "  Journal created with starter files: %s\n  Edit config.typ for your name and title; open main.typ to preview.\n", path)
+			} else {
+				fmt.Fprintf(out, "  Journal connected: %s\n", path)
 			}
 			return path, nil
 		default:
@@ -1268,7 +1392,9 @@ func interactiveChoice(reader *bufio.Reader, out io.Writer, items []journalRecor
 			return strconv.Itoa(selected + 1), nil
 		case 3, 'q', 'Q':
 			return "q", nil
-		case 'c', 'C', 'a', 'A', 'r', 'R', 'f', 'F':
+		case 'r', 'R', 'f', 'F':
+			return fmt.Sprintf("%s:%d", strings.ToLower(string(key)), selected+1), nil
+		case 'c', 'C', 'a', 'A':
 			return strings.ToLower(string(key)), nil
 		case '\x1b':
 			prefix, err := reader.ReadByte()
