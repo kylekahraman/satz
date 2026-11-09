@@ -1,5 +1,5 @@
 #import "cover.typ": cover-page
-#import "setup.typ": journal-entry, journal-index
+#import "journal-style.typ": journal-entry, journal-index
 
 #cover-page()
 #pagebreak()

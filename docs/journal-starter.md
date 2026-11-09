@@ -48,7 +48,7 @@ Type `/cancel` at an entry prompt to stop without creating an entry. In the jour
 
 The helper uses a small `.satz-journal.lock` file to coordinate simultaneous entry creation. The operating system releases the lock if the helper exits; the file itself may remain and is safe to leave in place. Do not delete it while journal commands are running. New starters exclude it from Git.
 
-If a registered journal moves, choose `r` in the journal chooser and enter its new folder, or run `journal reconnect OLD_PATH NEW_PATH`. The new location must be a compatible journal; reconnecting updates the existing registration without touching the journal files or other registered projects. Connecting an existing folder checks for the journal's setup and entry-registration files; arbitrary Typst projects are not imported automatically.
+If a registered journal moves, choose `r` in the journal chooser and enter its new folder, or run `journal reconnect OLD_PATH NEW_PATH`. The new location must be a compatible journal; reconnecting updates the existing registration without touching the journal files or other registered projects. Connecting an existing folder checks for `journal-style.typ` and the entry-registration files; arbitrary Typst projects are not imported automatically.
 
 Run `journal journals` to manage the list even if only one journal is registered. Choose `f` to remove a journal from the list, or use `journal forget PATH`; both leave its files untouched. You can connect it again later.
 

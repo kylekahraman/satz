@@ -638,7 +638,7 @@ func TestMissingEntryListLinkLeavesJournalUntouched(t *testing.T) {
 	}
 }
 
-func TestRegistrationRequiresRealMarkerAndSetup(t *testing.T) {
+func TestRegistrationRequiresRealMarkerAndStyle(t *testing.T) {
 	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
 	if err != nil {
 		t.Fatal(err)
@@ -659,11 +659,11 @@ func TestRegistrationRequiresRealMarkerAndSetup(t *testing.T) {
 	if err := os.WriteFile(list, data, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Remove(filepath.Join(project, "setup.typ")); err != nil {
+	if err := os.Remove(filepath.Join(project, "journal-style.typ")); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := createEntry(project, "No setup", "notes", "", time.Now()); err == nil || !strings.Contains(err.Error(), "setup.typ") {
-		t.Fatalf("missing setup not diagnosed: %v", err)
+	if _, err := createEntry(project, "No style", "notes", "", time.Now()); err == nil || !strings.Contains(err.Error(), "journal-style.typ") {
+		t.Fatalf("missing style not diagnosed: %v", err)
 	}
 }
 
@@ -1266,12 +1266,40 @@ func TestConnectRejectsIncompleteJournal(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(root, "main.typ"), []byte("Hello"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := run([]string{"use", root}); err == nil || !strings.Contains(err.Error(), "setup.typ") {
+	if err := run([]string{"use", root}); err == nil || !strings.Contains(err.Error(), "journal-style.typ") {
 		t.Fatalf("incomplete journal accepted: %v", err)
 	}
 	registry, err := loadRegistry()
 	if err != nil || len(registry.Journals) != 0 {
 		t.Fatalf("registry changed: %+v %v", registry, err)
+	}
+}
+
+func TestExistingJournalStyleNeedsNoSetupFile(t *testing.T) {
+	root := t.TempDir()
+	project := filepath.Join(root, "journal")
+	if err := os.MkdirAll(filepath.Join(project, "entries"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "journal-style.typ"), []byte("#let journal-entry(body, ..args) = body\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(project, "main.typ"), []byte("// --- entries ---\n// --- end entries ---\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	entry, err := createEntry(project, "My entry", "notes", "", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	contents, err := os.ReadFile(entry)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(contents), `#import "../journal-style.typ": journal-entry`) {
+		t.Fatalf("wrong entry import: %s", contents)
+	}
+	if _, err := os.Stat(filepath.Join(project, "setup.typ")); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("unexpected setup file: %v", err)
 	}
 }
 
@@ -1358,12 +1386,12 @@ func TestGeneratedStarterAndEscapedEntryCompile(t *testing.T) {
 	if !strings.Contains(configText, "\n#let journal-overrides = (:)") {
 		t.Fatal("starter config should leave Satz typography defaults live")
 	}
-	setup, err := os.ReadFile(filepath.Join(project, "setup.typ"))
+	setup, err := os.ReadFile(filepath.Join(project, "journal-style.typ"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(setup), "merge((page: (paper: journal-style.paper,)), journal-overrides)") {
-		t.Fatal("starter setup should pass only paper and explicit overrides to Satz")
+		t.Fatal("starter journal style should pass only paper and explicit overrides to Satz")
 	}
 	compileSVG := func(prefix string) {
 		t.Helper()

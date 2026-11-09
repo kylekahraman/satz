@@ -51,7 +51,7 @@
   page-footer: (
     format: "1",
     size: 10pt,
-    weight: "bold",
+    weight: "regular",
   ),
   colors: (
     bg-paper: rgb("#FFFFFF"),

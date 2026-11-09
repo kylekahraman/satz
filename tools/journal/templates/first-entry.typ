@@ -1,4 +1,4 @@
-#import "../setup.typ": journal-entry
+#import "../journal-style.typ": journal-entry
 
 #journal-entry(
   title: "Getting started",

@@ -537,6 +537,7 @@
 
   let current-month = ""
   let current-year = ""
+  let previous-date = none
 
   for entry in entries {
     let data = entry.value
@@ -551,8 +552,12 @@
       let word-parts = without-comma-prefix.split(" ")
       if word-parts.len() == 2 { word-parts.last() } else { without-comma-prefix }
     }
+    let entry-date = if parsed == none { none } else { (parsed.year, parsed.month, parsed.day) }
+    let same-date = entry-date != none and entry-date == previous-date
 
-    if month-name != current-month or year != current-year {
+    let month-changed = month-name != current-month or year != current-year
+    if month-changed {
+      if previous-date != none { v(0.5em) }
       current-month = month-name
       current-year = year
       let heading-text = if multi-year {
@@ -564,16 +569,19 @@
       v(0.3em)
     }
 
+    if previous-date != none and not month-changed {
+      v(if same-date { 0.2em } else { 0.5em })
+    }
     link(entry.location())[
       #grid(
-        columns: (auto, 1fr, auto),
+        columns: (4.5em, 1fr, auto),
         gutter: 1em,
         align: (left, left, right),
-        [#text(fill: c.colors.text-main, weight: "bold")[#clean-date]],
+        [#if same-date { hide[#clean-date] } else { text(fill: c.colors.text-main, weight: "bold")[#clean-date] }],
         [#text(fill: c.colors.text-main, weight: "regular")[#data.title #box(width: 1fr, repeat([.]))]],
         [#text(weight: "bold", fill: c.colors.brand-primary)[#page-num]]
       )
     ]
-    v(0.5em)
+    previous-date = entry-date
   }
 }

@@ -420,7 +420,7 @@ func initProject(input string) (string, error) {
 
 	today := time.Now()
 	entryPath := filepath.ToSlash(filepath.Join("entries", today.Format("2006-01-02")+"-getting-started.typ"))
-	for _, name := range []string{"config.typ", "setup.typ", "cover.typ", "main.typ"} {
+	for _, name := range []string{"config.typ", "journal-style.typ", "cover.typ", "main.typ"} {
 		if err := copyAsset("templates/"+name, filepath.Join(destination, name)); err != nil {
 			return "", err
 		}
@@ -1346,7 +1346,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 					return "", err
 				}
 			} else if _, err := registrationPath(path); err != nil {
-				return "", fmt.Errorf("cannot connect journal: %w\n  Existing journals need main.typ, entries/, setup.typ, and an entry-list marker. See the journal starter guide for compatible projects", err)
+				return "", fmt.Errorf("cannot connect journal: %w\n  Existing journals need main.typ, entries/, journal-style.typ, and an entry-list marker. See the journal starter guide for compatible projects", err)
 			}
 			if err := rememberProject(path); err != nil {
 				return "", err
@@ -1653,8 +1653,8 @@ func registrationPath(project string) (string, error) {
 	if info, err := os.Stat(filepath.Join(project, "entries")); err != nil || !info.IsDir() {
 		return "", fmt.Errorf("not a journal project: entries/ must be a directory")
 	}
-	if info, err := os.Stat(filepath.Join(project, "setup.typ")); err != nil || info.IsDir() {
-		return "", fmt.Errorf("journal setup.typ is missing: %s", project)
+	if info, err := os.Stat(filepath.Join(project, "journal-style.typ")); err != nil || info.IsDir() {
+		return "", fmt.Errorf("journal journal-style.typ is missing: %s", project)
 	}
 	registration := main
 	entryList := filepath.Join(project, "journal-entries.typ")
@@ -1748,7 +1748,7 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return "", err
 	}
-	content := "#import \"../setup.typ\": journal-entry\n\n" +
+	content := "#import \"../journal-style.typ\": journal-entry\n\n" +
 		"#journal-entry(\n" +
 		"  title: " + typstString(title) + ",\n" +
 		"  date: " + typstString(date.Format("Monday, 02/01/2006")) + ",\n" +
