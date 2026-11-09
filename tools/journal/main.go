@@ -702,6 +702,71 @@ func preferredEditor(explicit string) (string, error) {
 	return registry.Editor, nil
 }
 
+// automaticEditor describes the command that would be used without a saved preference.
+func automaticEditor() string {
+	if value := os.Getenv("VISUAL"); value != "" {
+		return value
+	}
+	if value := os.Getenv("EDITOR"); value != "" {
+		return value
+	}
+	return "code"
+}
+
+// chooseEditor asks before the first interactive launch, so an inherited shell
+// preference never silently opens an unexpected editor.
+func chooseEditor(reader *bufio.Reader, out io.Writer, explicit string) (string, error) {
+	current, err := preferredEditor(explicit)
+	if err != nil || current != "" {
+		return current, err
+	}
+	automatic := automaticEditor()
+	fmt.Fprintf(out, "\n  Choose an editor for your journal:\n  1  VS Code (code)\n  2  Shell default (%s)\n  3  Enter another command\n  s  Skip opening for now\n", automatic)
+	for {
+		fmt.Fprint(out, "  Editor [1/2/3/s]: ")
+		line, err := reader.ReadString('\n')
+		if err != nil && strings.TrimSpace(line) == "" {
+			return "", errCancelled
+		}
+		var command string
+		switch strings.TrimSpace(line) {
+		case "1":
+			command = "code"
+		case "2":
+			command = automatic
+		case "3":
+			fmt.Fprint(out, "  Editor command (or /cancel): ")
+			command, err = reader.ReadString('\n')
+			command = strings.TrimSpace(command)
+			if err != nil && command == "" {
+				return "", errCancelled
+			}
+			if command == "/cancel" {
+				return "", errCancelled
+			}
+		case "s", "S", "/cancel":
+			return "", errCancelled
+		default:
+			fmt.Fprintln(out, "  Choose 1, 2, 3, or s.")
+			continue
+		}
+		parts, err := splitCommand(command)
+		if err != nil || len(parts) == 0 {
+			fmt.Fprintln(out, "  Enter a valid editor command.")
+			continue
+		}
+		if _, err := exec.LookPath(parts[0]); err != nil {
+			fmt.Fprintf(out, "  Cannot find %q. Choose another editor or skip.\n", parts[0])
+			continue
+		}
+		if err := setEditorPreference(command); err != nil {
+			return "", err
+		}
+		fmt.Fprintf(out, "  Editor saved: %s (change it with e on the home screen).\n", command)
+		return command, nil
+	}
+}
+
 func renameProject(path, name string) error {
 	name = strings.TrimSpace(name)
 	if name == "" || strings.ContainsAny(name, "\r\n\x1b") {
@@ -888,6 +953,11 @@ func newEntry(path, editor string) error {
 			available := len(registry.Journals) > 0 && isJournal(registry.Journals[0].Path)
 			if available {
 				fmt.Printf("  Current journal: %s\n  %s\n\n", registry.Journals[0].Name, registry.Journals[0].Path)
+				if registry.Editor != "" {
+					fmt.Printf("  Editor: %s\n\n", registry.Editor)
+				} else {
+					fmt.Print("  Editor: choose when opening (e to configure)\n\n")
+				}
 				fmt.Print("  Enter New entry   o Open journal   m Manage journals\n  e Editor   h Help   q Quit\n")
 			} else {
 				if len(registry.Journals) > 0 {
@@ -919,11 +989,11 @@ func newEntry(path, editor string) error {
 					continue
 				}
 				if current == "" {
-					fmt.Println("  Editor: automatic (VISUAL, EDITOR, or VS Code)")
+					fmt.Printf("  Editor: automatic (%s)\n", automaticEditor())
 				} else {
 					fmt.Println("  Editor:", current)
 				}
-				fmt.Print("  Editor command (e.g. code, nvim; Enter keeps current, /cancel cancels): ")
+				fmt.Print("  Editor command (e.g. code, nvim; /clear resets, Enter keeps current): ")
 				command, err := reader.ReadString('\n')
 				command = strings.TrimSpace(command)
 				if err != nil && command == "" {
@@ -931,6 +1001,19 @@ func newEntry(path, editor string) error {
 				}
 				if command == "" || command == "/cancel" {
 					continue
+				}
+				if command == "/clear" {
+					command = ""
+				} else {
+					parts, parseErr := splitCommand(command)
+					if parseErr != nil || len(parts) == 0 {
+						fmt.Println("  Enter a valid editor command.")
+						continue
+					}
+					if _, err := exec.LookPath(parts[0]); err != nil {
+						fmt.Printf("  Cannot find %q; editor unchanged.\n", parts[0])
+						continue
+					}
 				}
 				if err := setEditorPreference(command); err != nil {
 					fmt.Println("  ", err)
@@ -940,6 +1023,12 @@ func newEntry(path, editor string) error {
 			case "open":
 				if !available {
 					fmt.Println("  Select or create a journal first.")
+					continue
+				}
+				if _, err := chooseEditor(reader, os.Stdout, editor); err != nil {
+					if !errors.Is(err, errCancelled) {
+						fmt.Println("  ", err)
+					}
 					continue
 				}
 				if err := run([]string{"open", registry.Journals[0].Path}); err != nil {
@@ -984,13 +1073,17 @@ entry:
 	}
 	fmt.Println("Selected journal:", project)
 	fmt.Println("Type /cancel at an entry prompt to stop.")
-	title, err := ask(reader, "Entry title: ")
-	if err != nil {
-		return err
-	}
-	title = strings.TrimSpace(title)
-	if title == "" {
-		return errors.New("title cannot be empty")
+	var title string
+	for {
+		title, err = ask(reader, "Entry title: ")
+		if err != nil {
+			return err
+		}
+		title = strings.TrimSpace(title)
+		if title != "" {
+			break
+		}
+		fmt.Println("Enter a title, or /cancel to stop.")
 	}
 	var kind string
 	for {
@@ -1019,7 +1112,15 @@ entry:
 	if err := rememberProject(project); err != nil {
 		fmt.Fprintln(os.Stderr, "Entry saved, but could not update recent journal:", err)
 	}
-	editor, err = preferredEditor(editor)
+	if interactiveTerminal(os.Stdout) {
+		editor, err = chooseEditor(reader, os.Stdout, editor)
+		if errors.Is(err, errCancelled) {
+			fmt.Println("  Entry saved; opening skipped.")
+			return nil
+		}
+	} else {
+		editor, err = preferredEditor(editor)
+	}
 	if err != nil {
 		return fmt.Errorf("entry saved at %s, but editor preference could not be read: %w", entry, err)
 	}
@@ -1219,7 +1320,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 			return path, nil
 		case "c", "a":
 			if strings.EqualFold(choice, "c") {
-				fmt.Fprint(out, "  New journal folder (e.g. ~/Documents/My-Journal; q to cancel): ")
+				fmt.Fprint(out, "  Full path for the NEW journal folder (e.g. ~/Documents/My-Journal; q to cancel): ")
 			} else {
 				fmt.Fprint(out, "  Existing journal folder (q to cancel): ")
 			}
@@ -1245,13 +1346,13 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 					return "", err
 				}
 			} else if _, err := registrationPath(path); err != nil {
-				return "", fmt.Errorf("cannot connect journal: %w", err)
+				return "", fmt.Errorf("cannot connect journal: %w\n  Existing journals need main.typ, entries/, setup.typ, and an entry-list marker. See the journal starter guide for compatible projects", err)
 			}
 			if err := rememberProject(path); err != nil {
 				return "", err
 			}
 			if strings.EqualFold(choice, "c") {
-				fmt.Fprintf(out, "  Journal created with starter files: %s\n  Edit config.typ for your name and title; open main.typ to preview.\n", path)
+				fmt.Fprintf(out, "  Journal created with starter files: %s\n  Choose Open journal, edit config.typ for your name and title, then preview main.typ.\n", path)
 			} else {
 				fmt.Fprintf(out, "  Journal connected: %s\n", path)
 			}

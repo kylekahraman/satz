@@ -277,6 +277,51 @@ func TestHomeChoiceOffersEntryAndManagement(t *testing.T) {
 	}
 }
 
+func TestFirstEditorChoiceIsExplicitAndSaved(t *testing.T) {
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(t.TempDir(), "config"))
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := `"` + executable + `"`
+	t.Setenv("VISUAL", command)
+	var output bytes.Buffer
+	got, err := chooseEditor(bufio.NewReader(strings.NewReader("2\n")), &output, "")
+	if err != nil || got != command {
+		t.Fatalf("choice = %q, %v", got, err)
+	}
+	if !strings.Contains(output.String(), "Choose an editor") {
+		t.Fatalf("choice was not shown: %q", output.String())
+	}
+	if saved, err := preferredEditor(""); err != nil || saved != got {
+		t.Fatalf("saved = %q, %v", saved, err)
+	}
+}
+
+func TestFirstEditorChoiceCanBeSkipped(t *testing.T) {
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(t.TempDir(), "config"))
+	var output bytes.Buffer
+	_, err := chooseEditor(bufio.NewReader(strings.NewReader("s\n")), &output, "")
+	if !errors.Is(err, errCancelled) {
+		t.Fatalf("skip = %v", err)
+	}
+	if saved, err := preferredEditor(""); err != nil || saved != "" {
+		t.Fatalf("unexpected saved editor %q: %v", saved, err)
+	}
+}
+
+func TestMissingEditorCanBeSkipped(t *testing.T) {
+	t.Setenv("JOURNAL_CONFIG_DIR", filepath.Join(t.TempDir(), "config"))
+	var output bytes.Buffer
+	_, err := chooseEditor(bufio.NewReader(strings.NewReader("3\nsatz-editor-that-does-not-exist\ns\n")), &output, "")
+	if !errors.Is(err, errCancelled) || !strings.Contains(output.String(), "Cannot find") {
+		t.Fatalf("missing editor recovery: %v, %q", err, output.String())
+	}
+	if saved, err := preferredEditor(""); err != nil || saved != "" {
+		t.Fatalf("unexpected saved editor %q: %v", saved, err)
+	}
+}
+
 func TestManagementActionTargetsHighlightedJournal(t *testing.T) {
 	items := []journalRecord{{Name: "First", Path: "/first"}, {Name: "Second", Path: "/second"}}
 	for _, key := range []string{"f", "r"} {
