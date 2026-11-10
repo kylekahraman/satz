@@ -361,6 +361,15 @@ func TestPromptEOFDoesNotChooseDefaults(t *testing.T) {
 	}
 }
 
+func TestEditablePromptMovesCursorAndPreservesUnicode(t *testing.T) {
+	var output bytes.Buffer
+	input := bufio.NewReader(strings.NewReader("Mthod\x1b[D\x1b[D\x1b[D\x1b[Dé\r"))
+	got, err := readEditedLine(input, &output)
+	if err != nil || got != "Méthod" {
+		t.Fatalf("edited line = %q, %v", got, err)
+	}
+}
+
 func TestPromptCancelIsExplicit(t *testing.T) {
 	_, err := ask(bufio.NewReader(strings.NewReader("/cancel\n")), "")
 	if !errors.Is(err, errCancelled) {
@@ -551,6 +560,48 @@ func TestEditorOpensInJournalDirectory(t *testing.T) {
 	if got != want {
 		t.Fatalf("editor working directory = %q, want %q", got, want)
 	}
+}
+
+func TestEntryDatesUseTwoDigitYear(t *testing.T) {
+	project, err := initProject(filepath.Join(t.TempDir(), "journal"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	date := time.Date(2026, time.November, 10, 12, 0, 0, 0, time.Local)
+	path, err := createEntry(project, "Date format", "notes", "", date)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), `date: "Tuesday, 10/11/26"`) {
+		t.Fatalf("unexpected entry date: %s", data)
+	}
+	if filepath.Base(path) != "2026-11-10-date-format.typ" {
+		t.Fatalf("unexpected filename: %s", path)
+	}
+
+	entries, err := os.ReadDir(filepath.Join(project, "entries"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if strings.HasSuffix(entry.Name(), "-getting-started.typ") {
+			starter, err := os.ReadFile(filepath.Join(project, "entries", entry.Name()))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, day := range []time.Time{time.Now(), time.Now().AddDate(0, 0, -1)} {
+				if strings.Contains(string(starter), `date: "`+day.Format("Monday, 02/01/06")+`"`) {
+					return
+				}
+			}
+			t.Fatalf("unexpected starter date: %s", starter)
+		}
+	}
+	t.Fatal("starter entry missing")
 }
 
 func TestCreateEntryIsSafeAndUpdatesIncludes(t *testing.T) {

@@ -429,7 +429,7 @@ func initProject(input string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	first = []byte(strings.ReplaceAll(string(first), "{{DATE_DISPLAY}}", today.Format("Monday, 02/01/2006")))
+	first = []byte(strings.ReplaceAll(string(first), "{{DATE_DISPLAY}}", today.Format("Monday, 02/01/06")))
 	if err := os.WriteFile(filepath.Join(destination, filepath.FromSlash(entryPath)), first, 0o644); err != nil {
 		return "", err
 	}
@@ -724,7 +724,7 @@ func chooseEditor(reader *bufio.Reader, out io.Writer, explicit string) (string,
 	fmt.Fprintf(out, "\n  Choose an editor for your journal:\n  1  VS Code (code)\n  2  Shell default (%s)\n  3  Enter another command\n  s  Skip opening for now\n", automatic)
 	for {
 		fmt.Fprint(out, "  Editor [1/2/3/s]: ")
-		line, err := reader.ReadString('\n')
+		line, err := readPromptLine(reader)
 		if err != nil && strings.TrimSpace(line) == "" {
 			return "", errCancelled
 		}
@@ -736,7 +736,7 @@ func chooseEditor(reader *bufio.Reader, out io.Writer, explicit string) (string,
 			command = automatic
 		case "3":
 			fmt.Fprint(out, "  Editor command (or /cancel): ")
-			command, err = reader.ReadString('\n')
+			command, err = readPromptLine(reader)
 			command = strings.TrimSpace(command)
 			if err != nil && command == "" {
 				return "", errCancelled
@@ -994,7 +994,7 @@ func newEntry(path, editor string) error {
 					fmt.Println("  Editor:", current)
 				}
 				fmt.Print("  Editor command (e.g. code, nvim; /clear resets, Enter keeps current): ")
-				command, err := reader.ReadString('\n')
+				command, err := readPromptLine(reader)
 				command = strings.TrimSpace(command)
 				if err != nil && command == "" {
 					return errCancelled
@@ -1249,7 +1249,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 			}
 			if selectedIndex == 0 && len(registry.Journals) > 1 {
 				fmt.Fprint(out, "  Journal number (q to cancel): ")
-				answer, err := reader.ReadString('\n')
+				answer, err := readPromptLine(reader)
 				if cancelledInput(answer) {
 					return "", errCancelled
 				}
@@ -1264,7 +1264,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 			}
 			item := registry.Journals[index-1]
 			fmt.Fprintf(out, "  Remove %s (%s) from the list? Files will remain. [y/N]: ", item.Name, item.Path)
-			answer, _ := reader.ReadString('\n')
+			answer, _ := readPromptLine(reader)
 			if !strings.EqualFold(strings.TrimSpace(answer), "y") {
 				fmt.Fprintln(out, "  Removal cancelled.")
 				continue
@@ -1285,7 +1285,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 			}
 			if selectedIndex == 0 && len(registry.Journals) > 1 {
 				fmt.Fprint(out, "  Journal number (q to cancel): ")
-				answer, err := reader.ReadString('\n')
+				answer, err := readPromptLine(reader)
 				if cancelledInput(answer) {
 					return "", errCancelled
 				}
@@ -1299,7 +1299,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 				}
 			}
 			fmt.Fprint(out, "  New journal folder (q to cancel): ")
-			answer, err := reader.ReadString('\n')
+			answer, err := readPromptLine(reader)
 			if cancelledInput(answer) {
 				return "", errCancelled
 			}
@@ -1324,7 +1324,7 @@ func chooseJournalWithChoice(reader *bufio.Reader, out io.Writer, manage, detail
 			} else {
 				fmt.Fprint(out, "  Existing journal folder (q to cancel): ")
 			}
-			input, inputErr := reader.ReadString('\n')
+			input, inputErr := readPromptLine(reader)
 			if cancelledInput(input) {
 				return "", errCancelled
 			}
@@ -1403,7 +1403,7 @@ func journalChoice(reader *bufio.Reader, out io.Writer, items []journalRecord) (
 		fmt.Fprintln(out, "  c Create   a Connect   r Reconnect   f Remove   q Cancel")
 	}
 	fmt.Fprint(out, "\n  Choose: ")
-	return reader.ReadString('\n')
+	return readPromptLine(reader)
 }
 
 func interactiveTerminal(out io.Writer) bool {
@@ -1575,9 +1575,42 @@ func writeShortcut(output, executable, platform string) error {
 	return nil
 }
 
+// promptStream reads one byte at a time so the line editor cannot consume
+// input intended for a subsequent prompt.
+type promptStream struct {
+	reader *bufio.Reader
+	writer io.Writer
+}
+
+func (s promptStream) Read(p []byte) (int, error)  { return s.reader.Read(p[:1]) }
+func (s promptStream) Write(p []byte) (int, error) { return s.writer.Write(p) }
+
+func readEditedLine(reader *bufio.Reader, out io.Writer) (string, error) {
+	return term.NewTerminal(promptStream{reader, out}, "").ReadLine()
+}
+
+func readPromptLine(reader *bufio.Reader) (string, error) {
+	if !interactiveTerminal(os.Stdout) {
+		return reader.ReadString('\n')
+	}
+	state, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		return "", err
+	}
+	line, readErr := readEditedLine(reader, os.Stdout)
+	restoreErr := term.Restore(int(os.Stdin.Fd()), state)
+	if readErr != nil {
+		return "", readErr
+	}
+	if restoreErr != nil {
+		return "", restoreErr
+	}
+	return line + "\n", nil
+}
+
 func ask(reader *bufio.Reader, prompt string) (string, error) {
 	fmt.Print(prompt)
-	value, err := reader.ReadString('\n')
+	value, err := readPromptLine(reader)
 	if errors.Is(err, io.EOF) && value == "" {
 		return "", errCancelled
 	}
@@ -1751,7 +1784,7 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 	content := "#import \"../journal-style.typ\": journal-entry\n\n" +
 		"#journal-entry(\n" +
 		"  title: " + typstString(title) + ",\n" +
-		"  date: " + typstString(date.Format("Monday, 02/01/2006")) + ",\n" +
+		"  date: " + typstString(date.Format("Monday, 02/01/06")) + ",\n" +
 		"  keywords: " + typstString(keywords) + ",\n" +
 		")[\n" + sections + "]\n"
 	if sections != scaffold(kind) {
