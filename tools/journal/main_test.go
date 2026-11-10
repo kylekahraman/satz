@@ -576,6 +576,9 @@ func TestEntryDatesUseTwoDigitYear(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if !strings.Contains(string(data), "#show: journal-entry.with(\n") || strings.Contains(string(data), "#journal-entry(") {
+		t.Fatalf("entry must use a journal-entry show rule: %s", data)
+	}
 	if !strings.Contains(string(data), `date: "Tuesday, 10/11/26"`) {
 		t.Fatalf("unexpected entry date: %s", data)
 	}
@@ -592,6 +595,9 @@ func TestEntryDatesUseTwoDigitYear(t *testing.T) {
 			starter, err := os.ReadFile(filepath.Join(project, "entries", entry.Name()))
 			if err != nil {
 				t.Fatal(err)
+			}
+			if !strings.Contains(string(starter), "#show: journal-entry.with(\n") || strings.Contains(string(starter), "#journal-entry(") {
+				t.Fatalf("starter must use a journal-entry show rule: %s", starter)
 			}
 			for _, day := range []time.Time{time.Now(), time.Now().AddDate(0, 0, -1)} {
 				if strings.Contains(string(starter), `date: "`+day.Format("Monday, 02/01/06")+`"`) {

@@ -1,17 +1,17 @@
 #import "../journal-style.typ": journal-entry
 
-#journal-entry(
+#show: journal-entry.with(
   title: "Getting started",
   date: "{{DATE_DISPLAY}}",
   keywords: "planning, research",
-)[
-  == Project goal
-  Describe the question or project this journal supports.
+)
 
-  == Notes
-  Replace this starter text with your first note. Add headings, lists,
-  figures, citations, and checklists as your project develops.
+== Project goal
+Describe the question or project this journal supports.
 
-  == Next steps
-  - [ ] Write down the next concrete action
-]
+== Notes
+Replace this starter text with your first note. Add headings, lists,
+figures, citations, and checklists as your project develops.
+
+== Next steps
+- [ ] Write down the next concrete action

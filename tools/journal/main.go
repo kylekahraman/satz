@@ -1782,11 +1782,11 @@ func createEntry(project, title, kind, keywords string, date time.Time) (string,
 		return "", err
 	}
 	content := "#import \"../journal-style.typ\": journal-entry\n\n" +
-		"#journal-entry(\n" +
+		"#show: journal-entry.with(\n" +
 		"  title: " + typstString(title) + ",\n" +
 		"  date: " + typstString(date.Format("Monday, 02/01/06")) + ",\n" +
 		"  keywords: " + typstString(keywords) + ",\n" +
-		")[\n" + sections + "]\n"
+		")\n\n" + sections
 	if sections != scaffold(kind) {
 		if err := validateTemplate(project, kind, content); err != nil {
 			return "", err
@@ -1903,15 +1903,15 @@ func compileTemplateCheck(typst, project, source, output string) ([]byte, error)
 func scaffold(kind string) string {
 	switch kind {
 	case "meeting":
-		return "  == Agenda\n  - Add agenda items here.\n\n" +
-			"  == What we talked about\n\n  == Outcomes\n\n  == Rationale\n\n" +
-			"  == Action Items\n  - [ ] Add an action item\n\n  == Questions\n"
+		return "== Agenda\n- Add agenda items here.\n\n" +
+			"== What we talked about\n\n== Outcomes\n\n== Rationale\n\n" +
+			"== Action Items\n- [ ] Add an action item\n\n== Questions\n"
 	case "session":
-		return "  == Goal\n  Describe the goal for this session.\n\n" +
-			"  == Log\n\n  == Outcomes\n\n  == Rationale\n\n" +
-			"  == Next Steps\n  - [ ] Add the next step\n\n  == Questions\n"
+		return "== Goal\nDescribe the goal for this session.\n\n" +
+			"== Log\n\n== Outcomes\n\n== Rationale\n\n" +
+			"== Next Steps\n- [ ] Add the next step\n\n== Questions\n"
 	default:
-		return "  == Notes\n  Add your notes here.\n"
+		return "== Notes\nAdd your notes here.\n"
 	}
 }
 
