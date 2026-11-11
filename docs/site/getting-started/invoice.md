@@ -10,7 +10,7 @@ This tutorial starts with a blank file and builds a German invoice with Satz 0.2
 Paste this complete example into a new Typst project:
 
 ```typst
-#import "@local/satz:0.2.0": invoice
+#import "@local/satz:0.2.1": invoice
 #invoice(
   sender: (
     name: "Example Studio",

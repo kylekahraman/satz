@@ -10,7 +10,7 @@ description: "Use the Satz Klageschrift structure, fill in its party and court f
 Create `klage.typ` and start with fictional placeholder details:
 
 ```typst
-#import "@local/satz:0.2.0": complaint
+#import "@local/satz:0.2.1": complaint
 #show: complaint.with(
   court: "Amtsgericht Musterstadt",
   court-address: "Gerichtsstraße 1, 12345 Musterstadt",

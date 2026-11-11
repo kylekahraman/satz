@@ -10,7 +10,7 @@ This is the first tutorial to try when you need a letter. You will fill in the s
 Create a blank Typst file named `main.typ`. Make sure your Typst setup can find the local Satz 0.2.0 package as described in [Set up the local 0.2.0 package](/satz/getting-started/setup/). Copy the complete example below. The names and addresses are fictional; replace them with your own.
 
 ```typst
-#import "@local/satz:0.2.0": letter
+#import "@local/satz:0.2.1": letter
 #show: letter.with(
   sender: (
     name: "Alex Example",

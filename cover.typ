@@ -1,6 +1,9 @@
 #import "defaults.typ": merge, validate-config
 
 // Shared cover page — a composable layout plus ready-to-use title-page styles.
+//
+// Design decisions, rejected alternatives, and open questions:
+// docs/cover-api-decisions.md. Read that before changing the API.
 
 /// Built-in cover palettes as a dictionary keyed by palette name:
 /// `neutral`, `slate`, `soft-jade`, `soft-slate`, `warm-editorial`, `plum`, and
@@ -80,12 +83,22 @@
   colors: cover-themes.neutral,
 )
 
-/// Build an optional cover page, either from custom content or title fields.
+/// Build an optional cover page, either from title fields or from custom content.
 ///
 /// This is a component, not a document template: place it before `report`, or
 /// anywhere else a cover is wanted. It has no implicit connection to another
 /// template's `config` or `theme`; pass those values explicitly when the cover
 /// should share the document appearance.
+///
+/// Your arguments choose the mode. Pass `title:` to generate a title page from
+/// fields, or pass `body:` to supply the whole cover yourself. `body:` wins when
+/// both are given. Passing neither fails the call.
+///
+/// `layout` selects the generated title template:
+///
+/// - `"research"` aligns the title block left and adds a vertical accent rule.
+///   This is the default.
+/// - `"minimal"` centers a spare title block.
 ///
 /// Appearance precedence is cover defaults, then the selected cover `theme`,
 /// then `config`. `config` may contain normal shared Satz settings, but the
@@ -94,33 +107,43 @@
 /// `text-main`, and `text-muted`. Other valid shared settings are accepted and
 /// ignored. Known config groups are validated for misspelled keys.
 ///
-/// The default `classic` layout preserves the slot-based cover. Set `layout` to
-/// `"research"` or `"minimal"` and provide `title` to use a ready-made title page.
-/// The generated title sizes are intentionally part of each preset.
-///
 /// ```typst
 /// #let theme = "soft-jade"
 /// #let shared = (typography: (font: "EB Garamond"),)
-/// #cover-page(layout: "research", title: [Field notes], theme: theme, config: shared)
+/// #cover-page(title: [Field notes], layout: "research", theme: theme, config: shared)
 /// #show: report.with(theme: theme, config: shared)
 /// = Introduction
 /// ```
 ///
+/// - title (content, str): required for a generated cover
+/// - subtitle (content, str, none): optional line beneath the title
+/// - author (content, str, none): optional author line
+/// - date (content, str, none): date in the title block; the minimal layout also
+///   places it at the bottom unless `footer` replaces it
+/// - keywords (content, str, none): optional keywords in the title block
+/// - supervisors (array of str, none): optional names at bottom left
+/// - logos (content, none): optional content at the top left
+/// - body (content, none): your own cover content; replaces generated fields
+/// - footer (content, none): optional bottom-center content
+/// - footer-left (content, none): optional bottom-left content; replaces
+///   `supervisors`
+/// - layout (str): `"research"` (default) or `"minimal"`
+/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+///   `warm-editorial`, `plum`, or `soft-rose`
 /// - config (dictionary): partial nested overrides merged after cover defaults and
 ///   selected theme colors. Hover the exported `defaults` dictionary (`satz.defaults`
 ///   with a namespace import) for the shared config schema and baseline values.
-///   Cover layouts use `page.paper`, `page.margin`, `typography.font`,
-///   `typography.size`, and `colors.bg-paper`, `brand-primary`, `brand-accent`,
-///   `text-main`, and `text-muted`; other shared keys are accepted and ignored.
-///   See the [configuration reference](/satz/reference/configuration/) for
-///   effective cover values and the fields each layout consumes.
+///   Covers use `page.paper`, `page.margin`, `typography.font`,
+///   `typography.size`, and the five cover color keys; other shared keys are
+///   accepted and ignored. See the [configuration reference](/satz/reference/configuration/)
+///   for effective cover values and the fields each layout consumes.
 #let cover-page(
   config: (:),
   logos: none,
   body: none,
   footer: none,
   footer-left: none,
-  layout: "classic",
+  layout: "research",
   theme: "neutral",
   title: none,
   subtitle: none,
@@ -131,11 +154,11 @@
 ) = {
   assert(type(config) == dictionary, message: "Cover config must be a dictionary.")
   let _ = validate-config(config)
-  assert(type(layout) == str, message: "Cover layout must be a string: classic, research or minimal.")
   assert(type(theme) == str, message: "Cover theme must be a string naming a built-in cover palette.")
-  if not ("classic", "research", "minimal").contains(layout) {
-    panic("Unknown cover layout '" + layout + "'. Use classic, research, or minimal.")
-  }
+  assert(
+    ("research", "minimal").contains(layout),
+    message: "Cover layout must be \"research\" or \"minimal\", not " + repr(layout) + ".",
+  )
 
   let theme-colors = cover-themes.at(theme, default: none)
   if theme-colors == none {
@@ -147,10 +170,7 @@
   let c = merge(cover-defaults, (: ..config, colors: colors))
 
   if body == none and title == none {
-    panic("Pass either body: [...] or title: \"...\" to cover-page().")
-  }
-  if body == none and layout == "classic" {
-    panic("The generated title-page layouts are research and minimal. For classic, pass body: [...] or choose layout: \"research\" / \"minimal\".")
+    panic("Cover: pass title: for a generated cover, or body: [...] for your own design.")
   }
 
   let cover-body = if body != none {
@@ -233,78 +253,3 @@
     }
   ]
 }
-
-/// Create a research notebook cover with title and optional metadata.
-///
-/// Render a research title page with a title, optional metadata, and logos. A following
-/// document does not inherit this cover's theme or config; pass matching values
-/// to both calls if they should share an appearance.
-///
-/// ```typst
-/// #research-cover(
-///   title: [Field notes],
-///   author: [Alex Example],
-///   date: "2026",
-///   theme: "soft-jade",
-/// )
-/// ```
-///
-/// - title (content, str): required title; use `box(...)` to keep a word
-///   together
-/// - subtitle (content, str, none): optional line beneath the title
-/// - author (content, str, none): optional author line
-/// - date (content, str, none): optional date in the title block
-/// - keywords (content, str, none): optional keywords in the title block
-/// - supervisors (array of str, none): optional bottom-left names
-/// - logos (content, none): optional content at the top left
-/// - body (content, none): optional custom cover body; replaces generated fields
-/// - footer (content, none): optional bottom-center content
-/// - footer-left (content, none): optional bottom-left content; replaces
-///   `supervisors`
-/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
-///   `warm-editorial`, `plum`, or `soft-rose`
-/// - config (dictionary): partial nested overrides merged after cover defaults and
-///   selected theme colors. Hover the exported `defaults` dictionary (`satz.defaults`
-///   with a namespace import) for the shared config schema and baseline values.
-///   Cover layouts use `page.paper`, `page.margin`, `typography.font`,
-///   `typography.size`, and the documented cover color fields; other shared keys are
-///   accepted and ignored. See the [configuration reference](/satz/reference/configuration/)
-///   for effective cover values and the fields each layout consumes.
-#let research-cover = cover-page.with(layout: "research")
-
-/// Create a spare, centered title page for reports, notes, and short documents.
-///
-/// Render a minimal centered title page. The required title is centered;
-/// optional subtitle and author appear below it. The date is placed at the
-/// bottom unless a custom `footer` replaces it. A following document does not
-/// inherit this cover's theme or config; pass matching values to both calls if
-/// they should share an appearance.
-///
-/// ```typst
-/// #minimal-cover(
-///   title: [Project notes],
-///   subtitle: [A short working document],
-///   date: "2026",
-/// )
-/// ```
-///
-/// - title (content, str): required cover title
-/// - subtitle, author (content, str, none): optional lines beneath the title
-/// - date (content, str, none): optional bottom date unless `footer` is supplied
-/// - logos (content, none): optional content at top left
-/// - body (content, none): optional custom body; replaces generated fields
-/// - footer (content, none): optional bottom-center content; replaces the date
-/// - footer-left (content, none): optional bottom-left content
-/// - supervisors (array of str, none): optional names at bottom left; replaced
-///   by `footer-left` when that is supplied
-/// - keywords (content, str, none): accepted but not displayed by this layout
-/// - theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
-///   `warm-editorial`, `plum`, or `soft-rose`
-/// - config (dictionary): partial nested overrides merged after cover defaults and
-///   selected theme colors. Hover the exported `defaults` dictionary (`satz.defaults`
-///   with a namespace import) for the shared config schema and baseline values.
-///   Cover layouts use `page.paper`, `page.margin`, `typography.font`,
-///   `typography.size`, and the documented cover color fields; other shared keys are
-///   accepted and ignored. See the [configuration reference](/satz/reference/configuration/)
-///   for effective cover values and the fields each layout consumes.
-#let minimal-cover = cover-page.with(layout: "minimal")

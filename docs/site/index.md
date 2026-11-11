@@ -27,7 +27,7 @@ Satz gives your reports, research journals, letters, and proposals a consistent 
 Create a file called `main.typ` and paste this in:
 
 ```typst
-#import "@local/satz:0.2.0": letter
+#import "@local/satz:0.2.1": letter
 #show: letter.with(
   sender: (name: "Alex Example", street: "One Street", postal-code-city: "12345 Example City"),
   recipient: (name: "Research Office", street: "Sample Road", postal-code-city: "54321 Sample City"),
@@ -52,6 +52,6 @@ The import loads the letter template; the show rule places the sender, recipient
 
 ## Which version am I using?
 
-Every tutorial on this site targets **Satz 0.2.0**. The package is being usability-tested from a local checkout, so the examples import `@local/satz:0.2.0`. After 0.2.0 is published, change `@local` to `@preview`; the version stays `0.2.0`.
+Every tutorial on this site targets **Satz 0.2.0**. The package is being usability-tested from a local checkout, so the examples import `@local/satz:0.2.1`. After 0.2.0 is published, change `@local` to `@preview`; the version stays `0.2.0`.
 
 Have a question or a confusing example? [Open an issue on GitHub](https://github.com/kylekahraman/satz/issues). Describe what you wanted to do and include a small example without private information.

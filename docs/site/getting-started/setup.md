@@ -2,7 +2,7 @@
 title: "Set up and write"
 ---
 
-Every tutorial in this release check targets Satz 0.2.0. Since the package has not been published yet, compile against a local checkout with the Typst CLI. After 0.2.0 is published, the same imports can use `@preview` and the Typst web app.
+Every tutorial targets Satz 0.2.1, which is not published yet. Compile against a local checkout with the Typst CLI. After 0.2.1 is published, the same imports can use `@preview` and the Typst web app.
 
 ## Make the local package available
 
@@ -16,7 +16,7 @@ Every tutorial in this release check targets Satz 0.2.0. Since the package has n
 
    Replace `/absolute/path/to/satz` with the path to the repository checkout. On Windows, create a directory symlink to the checkout with the equivalent command for your shell.
 
-3. Create `main.typ` in the project folder. Tutorials import the package as `@local/satz:0.2.0`.
+3. Create `main.typ` in the project folder. Tutorials import the package as `@local/satz:0.2.1`.
 4. Compile from the project folder and pass the package directory:
 
    ```sh

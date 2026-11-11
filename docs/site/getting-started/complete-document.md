@@ -31,7 +31,7 @@ Choose a full document template when you want Satz to set page layout and docume
 Put this in `main.typ`. This is a complete report that compiles as-is:
 
 ```typst
-#import "@local/satz:0.2.0": report
+#import "@local/satz:0.2.1": report
 #show: report.with()
 
 = Purpose

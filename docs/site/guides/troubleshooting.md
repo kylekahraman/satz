@@ -6,13 +6,13 @@ When a document fails, begin with the first error reported by Typst. Later error
 
 ## The package cannot be downloaded
 
-For a 0.2.0 tutorial, check that the local package import is spelled exactly as shown: `@local/satz:0.2.0`. Pass the package directory with `typst compile --package-path packages main.typ`. After 0.2.0 is published, use `@preview/satz:0.2.0` and compile without the local package path.
+For a 0.2.1 tutorial, check that the local package import is spelled exactly as shown: `@local/satz:0.2.1`. Pass the package directory with `typst compile --package-path packages main.typ`. Published 0.2.0 has the older cover API, so do not mix the two versions.
 
-The current tutorials use a local checkout because 0.2.0 is being usability-tested before publication. See [Set up the local 0.2.0 package](/satz/getting-started/setup/) for the package path.
+The current tutorials use a local checkout because 0.2.1 is under development. See [Set up the local 0.2.1 package](/satz/getting-started/setup/) for the package path.
 
 ## Typst says an argument is unknown
 
-First compare the imported package version with the page's version label. A feature marked **development** may only exist in the 0.2.0 candidate source. Published imports are fixed to the version in the import line, so installing a newer editor does not add missing package functions.
+First compare the imported package version with the page's version label. A feature marked **development** may only exist in the 0.2.1 development source. Published imports are fixed to the version in the import line, so installing a newer editor does not add missing package functions.
 
 Then check spelling and punctuation in the argument name. Use the [API reference](/satz/reference/api/) to confirm the exact name, whether it is required, and its default. For example, `letter` uses English names such as `sender` and `recipient` even for German output.
 

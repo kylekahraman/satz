@@ -10,7 +10,7 @@ Use `article()` when you need a compact research-paper structure with author inf
 Create `article.typ` and paste this complete starter:
 
 ```typst
-#import "@local/satz:0.2.0": article
+#import "@local/satz:0.2.1": article
 #show: article.with(
   title: "A Small Example Study",
   authors: (name: "Alex Example", affiliations: (1,)),

@@ -17,7 +17,7 @@
 /// numbered chapters inside `book-mainmatter[...]`.
 ///
 /// ```example
-/// #import "@local/satz:0.2.0": book, book-contents, book-mainmatter
+/// #import "@local/satz:0.2.1": book, book-contents, book-mainmatter
 /// #show: book.with(
 ///   title: [The Maths Behind Your Analysis],
 ///   author: [Your Name],

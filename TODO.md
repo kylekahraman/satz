@@ -32,11 +32,12 @@
 - [x] **Link/outline polish** — ToC/LoF/Lot text `c.colors.text-main` (no fancy red in outlines), body links keep `c.links.color`
 - [x] **List spacing** — `decorative.list-spacing` (`list` + `enum` unified, Word-like "Abstand nach Absatz")
 
-## 🚧 v0.2.0 — Release candidate
+## 🚧 v0.2.1 — In development (0.2.0 published)
 
-Release scope and acceptance checks are tracked in the
-[0.2.0 release plan](docs/release-0.2.0-plan.md). The manifest identifies the
-unpublished 0.2.0 candidate; this roadmap does not authorize publishing.
+Work toward 0.2.1 continues from the published 0.2.0. The 0.2.0 scope and
+acceptance checks remain in the
+[0.2.0 release plan](docs/release-0.2.0-plan.md). The manifest identifies 0.2.1;
+this roadmap does not authorize publishing.
 
 ### Next priorities
 
@@ -55,7 +56,7 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Appearance precedence** — resolve defaults, template defaults, theme, direct options, and nested config consistently; shared theme application and postal-option validation are checked in `examples/latex-parity/check_appearance_precedence.py`.
 - [x] **Versioned configuration reference** — shared defaults, template appearance, exported API arguments, record/array contracts, enums, extension behavior, and version availability are documented in `docs/configuration-reference.md`; candidate and published-version starters compile in isolated package checks.
 - [x] **Public input validation** — Satz-owned enums and high-impact records are checked across shared config, article, postal, journal, proposal, DFG/NWO, legal complaint, and guest contract APIs. Focused regression checks require field-specific diagnostics and preserve template/caller extension groups.
-- [ ] **Release package verification** — the manifest now identifies 0.2.0; `tools/**` and local workbook conversions are excluded, and eight starters compile from an isolated staged package. All focused API/PDF regressions pass locally. Bounded visual checks of the article and journal examples passed; the 69-page report review and accepted float differences are recorded in `docs/report-parity-audit.md`. The isolated published-0.1.1 compatibility check passed again on 5 November 2026. Typst 0.15.0 is declared and tested as the minimum; direct dependencies are pinned, the MIT license is present, and tracked examples use placeholders. Repeat the staged package check against the exact release commit before submission.
+- [ ] **Release package verification** — 0.2.0 was published; the manifest now identifies 0.2.1; `tools/**` and local workbook conversions are excluded, and eight starters compile from an isolated staged package. All focused API/PDF regressions pass locally. Bounded visual checks of the article and journal examples passed; the 69-page report review and accepted float differences are recorded in `docs/report-parity-audit.md`. The isolated published-0.1.1 compatibility check passed again on 5 November 2026. Typst 0.15.0 is declared and tested as the minimum; direct dependencies are pinned, the MIT license is present, and tracked examples use placeholders. Repeat the staged package check against the exact release commit before submission.
 
 - [ ] **Basic document entry point** — provide a simple, unnumbered, no-TOC starting point for ordinary documents such as notes, lists, and link collections
 - [ ] **Book entry point and educational components** — develop an easy KOMA-inspired `book(...)` path with adjustable cover, binding, heading rhythm, appendices, exercises, and answer grids. The first local API and RSA workbook conversion are under review; see `docs/book-api.md` and the ignored local `workbook-conversion/` directory.
@@ -63,7 +64,8 @@ See [the quality and usability assessment](docs/document-quality.md) for current
 - [x] **Native heading rhythm** — remove nested heading blocks and the forced h1 gap, increase default space below headings, expose paragraph spacing/indentation, and verify native flow plus page-edge cases in `examples/latex-parity/check_typography.py`
 - [x] **Inline config quick start** — README explains optional `config.typ`, inline overrides, and a complete one-file letter using the existing public API
 - [ ] **Journal onboarding** — make a new research journal straightforward to set up, with a copyable starter example and clear instructions for entries, the index, and customization
-- [x] **Cover page presets** — preserve the composable cover API and add ready-made classic, research, and minimal layouts with neutral, jade, slate, warm, plum, and rose themes
+- [x] **Cover page** — one `cover-page` entry point with `layout: "research"` (default) and `"minimal"`, plus `body:` for custom content and seven cover themes. `classic` is no longer an enum value. Decisions, rejected alternatives, and open questions are in [the cover API note](docs/cover-api-decisions.md).
+- [ ] **Cover API follow-ups** — decide the fate of the `logos`/`footer`/`footer-left` slots, and whether Satz should offer a global setup-style config instead of per-call `#let shared`. Recorded in [the cover API note](docs/cover-api-decisions.md).
 - [ ] **Table authoring and styling** — make attractive tables easy to create with sensible defaults and reusable helpers; include examples for common table layouts
 - [x] **Dependency review** — [initial package assessment](docs/package-research.md) and [additional candidates](docs/additional-packages.md); integration remains incremental
 - [ ] **LaTeX reference collection** — paired KOMA-Script/satz ordinary document, report/thesis extract, and letter; compare typography and authoring effort using [the parity plan](docs/latex-parity.md)

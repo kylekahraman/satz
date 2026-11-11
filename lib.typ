@@ -6,7 +6,7 @@
 /// you need from this entry point, for example:
 ///
 /// ```typst
-/// #import "@preview/satz:0.2.0" as satz
+/// #import "@preview/satz:0.2.1" as satz
 /// #show: satz.report.with(config: (typography: (font: "EB Garamond"),))
 /// = Introduction
 /// ```
@@ -385,7 +385,7 @@
 #import "article/template.typ": article
 #import "book/template.typ": book, book-contents, book-mainmatter, book-appendix, book-backmatter, book-index
 #import "book/components.typ": exercise, worked-example, analysis-note, answer-grid
-#import "cover.typ": cover-page, cover-themes, research-cover, minimal-cover
+#import "cover.typ": cover-page, cover-themes
 #import "themes.typ": document-themes, theme-config
 #import "class.typ": custom, satz-figure
 #import "citation.typ": citepre

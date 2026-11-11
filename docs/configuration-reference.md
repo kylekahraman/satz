@@ -1,4 +1,4 @@
-# Satz configuration reference — 0.2.0 candidate
+# Satz configuration reference — 0.2.1
 
 This is the 0.2.0 reference for the shared styling interface, exposed for custom documents as `custom(theme:, config:)`.
 It documents the executable baseline in `defaults.typ`; it does not claim that
@@ -124,7 +124,7 @@ arguments described in their source API comments and guides.
 | `letter` | DIN A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 25mm)`, Inter `11pt`, `0.65em` leading, justified, no hyphenation, black text/accent, white paper. Canonical direct options include `font`, `paper`, `margins`, `font-size`, `line-spacing`, and `justify`. Nested config only accepts the documented page, typography, color, and link keys. |
 | `invoice` / `rechnung` | Same DIN page geometry and Inter `11pt`, `0.65em` leading; output remains German. Canonical direct names are `sender`, `recipient`, `date`, `items`, `qr`, `qr-amount`, and `qr-purpose`; German names are aliases. Nested config accepts the same limited appearance keys as letters. |
 | `book` (experimental) | A4; margins `(left: 27mm, right: 25mm, top: 25mm, bottom: 27mm)`; left binding with `5mm` correction; Libertinus Serif `11pt`; New Computer Modern Math; `0.74em` leading; `14pt` paragraph gap; no page headers; neutral black accent/ink by default. `theme: "slate"` selects the former blue-gray palette. |
-| `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, black-on-white neutral cover palette; `theme` defaults to `"neutral"`, and layout defaults to `"classic"`. Generated title content requires `layout: "research"` or `"minimal"`; classic requires `body` and remains the composable slot-based layout. Covers consume only the documented page, font, and color keys; other valid shared keys are accepted and ignored. They do not inherit a following document's `theme` or `config`. The research layout leaves `4.5cm` above its title block. |
+| `cover-page` | A4, `2.5cm` margins, Libertinus Serif `11pt`, black-on-white neutral cover palette. `theme` defaults to `"neutral"` and `layout` to `"research"`. Pass `title` for a generated cover, or `body` for your own design. `layout: "research"` aligns the title block left behind a `4.5cm` vertical accent rule; `layout: "minimal"` centers a spare title block. Covers consume only the documented page, font, and color keys; other valid shared keys are accepted and ignored. They do not inherit a following document's `theme` or `config`. |
 | `research-proposal` / `project-proposal` | No contents/lists; margins `(x: 25mm, y: 25mm)`; white paper, black text and links; paragraph gap `0.7em`; heading numbering `"1.1"`. |
 | `dfg-proposal` | DFG form 53.01 (09/26), A4, margins `(left: 25mm, right: 20mm, top: 25mm, bottom: 15mm)`; Arial `11pt`, form-specific leading, four-level numbering `"1.1.1.1"`; no contents/lists; black text/links; left captions. |
 | `nwo-proposal` | Only source-checked 2026 profiles; A4 with `25mm` margins; Arial, 9.5pt pre-proposal or 10pt Vici full form; no contents/lists; black text/links. Form profile controls remaining typography and page budget. |
@@ -141,7 +141,7 @@ such as `report`, `article`, `journal-entry`, or `book`; call `custom`
 directly when you want to supply your own structure:
 
 ```typst
-#import "@local/satz:0.2.0": custom
+#import "@local/satz:0.2.1": custom
 #show: custom.with(config: (
   typography: (font: "EB Garamond", size: 12pt),
   line-numbers: (enabled: true, scope: "document"),
@@ -151,9 +151,9 @@ directly when you want to supply your own structure:
 Body text.
 ```
 
-`@local/satz:0.2.0` refers to the isolated candidate package tree used by the
-release check. For ordinary use, import the published package version. The
-0.2.0 candidate has not been published.
+`@local/satz:0.2.1` refers to the current development tree. For ordinary use,
+import the published package version, 0.2.0. Published 0.2.0 has the older
+cover API.
 
 The versioned reference covers exported entry points and their Satz-specific input contracts. The isolated candidate and published-package checks compile examples against the versions they declare. The candidate requires Typst 0.15.0, so local checks must run in that environment.
 
@@ -196,7 +196,7 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 | rechnung / invoice | English canonical fields are `sender`, `recipient`, `date`, `invoice-number`, `service-date`, `subject`, and `items`; `qr`, `qr-amount`, and `qr-purpose` control payment encoding. Sender/recipient follow the letter record contract. Items are records or three-value tuples: description (string/content), positive numeric quantity, nonnegative numeric unit price. Output is German; German input names are aliases. |
 | journal-entry | title/date/keywords strings, required body, config/theme. Date is blank or a valid YYYY-MM-DD, DD/MM/YY, or DD/MM/YYYY date, optionally prefixed with weekday. |
 | journal-index | config/theme; queries journal entries and groups blank dates under Undated. remember and question are content blocks. |
-| cover-page | config, logos/body/footer/footer-left, layout, theme and generated title fields. Layout is classic/research/minimal; theme is neutral/slate/soft-jade/soft-slate/warm-editorial/plum/soft-rose. Classic requires custom body; generated layouts require title. Pass `theme` and `config` explicitly to share them with another template. |
+| cover-page | config, logos/body/footer/footer-left, layout, theme and generated title fields. Layout is `"center"` (default) or `"left"`; theme is neutral/slate/soft-jade/soft-slate/warm-editorial/plum/soft-rose. Pass `title:` for a generated cover or `body:` for your own design. Pass `theme` and `config` explicitly to share them with another template. |
 | book (experimental) | required body and title unless `cover-image` is supplied; subtitle/author/eyebrow/note/date, accent/ink/theme, page, font, binding, binding-correction, and running-headers options, plus config. `config.book.running-headers` overrides the direct `running-headers` argument. Compose with book-contents(title, depth), book-mainmatter(numbering), book-appendix(body), book-backmatter(body), and book-index(body, ...). Educational components exercise, worked-example, analysis-note and answer-grid accept content and optional layout settings; `exercise` requires the book class. |
 | research-proposal / project-proposal | title/applicants/institution, optional date/summary/short-title, English/German language, config, required body. proposal-budget takes item records with description, nonnegative integer-cent unit-cost, and optional positive integer quantity (default 1). |
 | proposal-gantt | nonempty rows, periods (positive integer), unit (month/quarter), optional start-year, resource labels, widths, size/color, English/German language. Task/group rows have label and inclusive spans; milestones have label and integer at-period. Work-package accepts title/objective, lead/period, arrays of tasks/deliverables/milestones, risk, language and body. |
@@ -216,10 +216,10 @@ The following public entry points are re-exported by lib.typ. Content means ordi
 
 Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, line-numbers, links, tables, figures, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-spacing/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
 
-The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
+The staged check compiles the quick-start and representative template examples against 0.2.1 source. The published-package check separately compiles stable examples against 0.2.0. The contracts above were compared with exported signatures and implementation checks.
 
-## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+## Exact signatures
+These signatures are taken from the current source; they show every optional argument and default. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
 ### `letter` ([`lib.typ`](../lib.typ))
 
@@ -634,7 +634,7 @@ hanging-indent entry.
   body: none,
   footer: none,
   footer-left: none,
-  layout: "classic",
+  layout: "research",
   theme: "neutral",
   title: none,
   subtitle: none,

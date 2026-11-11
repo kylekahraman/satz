@@ -17,7 +17,7 @@ The book API is experimental in 0.2.0. Compile a short sample and inspect its pa
 Create `thesis.typ` and start with this compact structure:
 
 ```typst
-#import "@local/satz:0.2.0": custom
+#import "@local/satz:0.2.1": custom
 #show: custom.with(
   kind: "thesis",
   config: (
@@ -62,7 +62,7 @@ Move each chapter into its own file when the source becomes difficult to navigat
 Create `book.typ`. This smaller example gives you a title page, contents, numbered main matter, and an appendix:
 
 ```typst
-#import "@local/satz:0.2.0": book, book-contents, book-mainmatter, book-appendix, book-backmatter, book-index
+#import "@local/satz:0.2.1": book, book-contents, book-mainmatter, book-appendix, book-backmatter, book-index
 
 #show: book.with(
   title: [A Short Guide to Field Notes],

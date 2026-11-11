@@ -28,7 +28,7 @@ lib.typ ── exports the package's public functions
                     Typst compiler → PDF
 ```
 
-`lib.typ` is the supported import surface. It re-exports names from focused source files and template folders, so a user can write `#import "@preview/satz:0.2.0": report` without importing an internal path. Internal imports use relative paths. A public name is not available to users until `lib.typ` exports it.
+`lib.typ` is the supported import surface. It re-exports names from focused source files and template folders, so a user can write `#import "@preview/satz:0.2.1": report` without importing an internal path. Internal imports use relative paths. A public name is not available to users until `lib.typ` exports it.
 
 ## Source map
 

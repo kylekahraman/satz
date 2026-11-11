@@ -19,7 +19,7 @@ example.
 ## Shortest path
 
 ```typst
-#import "@local/satz:0.2.0": book, book-contents, book-mainmatter
+#import "@local/satz:0.2.1": book, book-contents, book-mainmatter
 
 #show: book.with(
   title: [Mathematics for Data Analysis],

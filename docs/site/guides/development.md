@@ -2,12 +2,12 @@
 title: "Development versions and updates"
 ---
 
-The tutorials on this site target Satz 0.2.0 so you can test the release candidate. They import `@local/satz:0.2.0` and compile against a local checkout. Follow [Set up the local 0.2.0 package](/satz/getting-started/setup/) before copying an example.
+The tutorials target Satz 0.2.1, the current development version. They import `@local/satz:0.2.1` and compile against a local checkout. Follow [Set up the local 0.2.1 package](/satz/getting-started/setup/) before copying an example.
 
-## After the 0.2.0 release
+## After the 0.2.1 release
 
 ```typst
-#import "@preview/satz:0.2.0": report
+#import "@preview/satz:0.2.1": report
 #show: report.with()
 ```
 

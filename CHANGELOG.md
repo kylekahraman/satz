@@ -1,10 +1,15 @@
 # Changelog
 
-## Unreleased — work toward 0.2.0
+## Unreleased — work toward 0.2.1
 
-The manifest identifies this tree as 0.2.0, but the package has not been
-published. This is a release candidate, not a claim of complete
-LaTeX/KOMA-Script parity.
+- Collapse the cover API to one name. `cover-page` accepts `layout: "research"`
+  (default, left-aligned with an accent rule) or `"minimal"` (centered), and
+  `body:` replaces the former classic slot cover. `research-cover` and
+  `minimal-cover` are removed.
+
+## 0.2.0 — published
+
+Not a claim of complete LaTeX/KOMA-Script parity.
 
 ### Report typography and reusable components
 
@@ -142,7 +147,7 @@ LaTeX/KOMA-Script parity.
   an isolated download of the published 0.1.1 package; this avoids a local
   package alias masking the actual published source. This compatibility check
   passes locally.
-- Install the staged source tree in isolation as `@local/satz:0.2.0` and
+- Install the staged source tree in isolation as `@local/satz:0.2.1` and
   compile its representative starters without changing the repository version.
 - Declare Typst 0.15.0 as the candidate minimum compiler version; all release
   checks currently run with that version.

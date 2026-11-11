@@ -19,7 +19,7 @@ The [template index](/satz/reference/templates/) describes the current scope of 
 Create `proposal.typ` and use `research-proposal` when you need a flexible structure rather than a funder-specific form:
 
 ```typst
-#import "@local/satz:0.2.0": research-proposal
+#import "@local/satz:0.2.1": research-proposal
 #show: research-proposal.with(
   title: [Example Project],
   applicants: [Alex Example, Sample University],
@@ -48,7 +48,7 @@ This layout does not enforce a particular funder's headings or page limits. Add 
 The DFG template targets form 53.01, revision 09/26. Replace this short draft with the exact sections required by your call; `check-pages: false` below is useful while drafting but should not be used as a final page-limit check:
 
 ```typst
-#import "@local/satz:0.2.0": dfg-proposal
+#import "@local/satz:0.2.1": dfg-proposal
 #show: dfg-proposal.with(
   applicant: [Alex Example, Sample University],
   project: [Example Project],
@@ -76,7 +76,7 @@ When the proposal includes sections 4 and 5, place `dfg-supplement()` at the bou
 The NWO layout requires an explicitly supported scheme, domain, stage, and year. This example uses a source-checked 2026 Veni Science pre-proposal profile:
 
 ```typst
-#import "@local/satz:0.2.0": nwo-proposal
+#import "@local/satz:0.2.1": nwo-proposal
 #show: nwo-proposal.with(
   scheme: "veni",
   domain: "science",

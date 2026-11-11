@@ -1,4 +1,4 @@
-#import "@preview/satz:0.2.0": dfg-proposal
+#import "@local/satz:0.2.1": dfg-proposal
 
 #show: dfg-proposal.with(
   applicant: [

@@ -10,7 +10,7 @@ Use `guest-contract()` to create a German document for a performance. It can pro
 Create `performance.typ` and paste this starter:
 
 ```typst
-#import "@local/satz:0.2.0": guest-contract
+#import "@local/satz:0.2.1": guest-contract
 #show: guest-contract.with(
   document-type: "vertrag",
   artist: "Example Band",

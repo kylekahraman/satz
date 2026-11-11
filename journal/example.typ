@@ -1,4 +1,4 @@
-#import "@local/satz:0.2.0": journal-entry, journal-index
+#import "@local/satz:0.2.1": journal-entry, journal-index
 
 // ===== Research Diary Index =====
 // Placed first so the index appears before the journal entries.

@@ -23,7 +23,7 @@ my-journal/
 Write the entry in `entries/2026-10-21-equipment-check.typ`:
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry, remember, question
+#import "@local/satz:0.2.1": journal-entry, remember, question
 
 #show: journal-entry.with(
   title: "Pilot recording: first equipment check",
@@ -74,7 +74,7 @@ setting.
 Now make `main.typ` the file you preview and compile:
 
 ```typst
-#import "@local/satz:0.2.0": journal-index
+#import "@local/satz:0.2.1": journal-index
 
 #journal-index()
 #include "entries/2026-10-21-equipment-check.typ"
@@ -103,7 +103,7 @@ Use one date convention throughout a journal so entries are easy to scan. The da
 Create another file under `entries/`, import `journal-entry` there, and include it from `main.typ`:
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry
+#import "@local/satz:0.2.1": journal-entry
 
 #show: journal-entry.with(
   title: "Pilot recording: timing follow-up",
@@ -150,7 +150,7 @@ You can start without a style file: `journal-entry` and `journal-index` use Satz
 Create `journal-style.typ` with the settings you want to override and bind the Satz functions once:
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry as base-entry, journal-index as base-index
+#import "@local/satz:0.2.1": journal-entry as base-entry, journal-index as base-index
 
 #let journal-config = (
   page: (paper: "iso-b5"),

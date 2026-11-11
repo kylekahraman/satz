@@ -4,7 +4,7 @@ title: "API reference"
 
 This page documents every public name exported by `lib.typ`. Use the jump list below to open a function's signature, input contract, and implementation source. Parameters passed through to native Typst functions keep Typst's own accepted values.
 
-**Version status:** this reference describes the 0.2.0 candidate, which is not the same as the published 0.1.1 package. See [development setup](/satz/guides/development/) before copying a candidate-only example.
+**Version status:** this reference describes the 0.2.1 development source. The latest published package is 0.2.0. See [development setup](/satz/guides/development/) before copying a development-only example.
 
 | API | Inputs accepted | Returns |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ This page documents every public name exported by `lib.typ`. Use the jump list b
 | [invoice](#invoice) / [rechnung](#rechnung) | English canonical fields: `sender`, `recipient`, `date`, `invoice-number`, `service-date`, `subject`, `items`, `qr`, `qr-amount`, and `qr-purpose`. Sender/recipient follow the letter record contract. Items are records or three-value tuples: description (string/content), positive numeric quantity, nonnegative numeric unit price. Output labels are German; German input names are aliases. | Returns a complete invoice layout around the supplied body content. |
 | [journal-entry](#journal-entry) | title/date/keywords strings, required body, config/theme. Uses ISO B5 by default. Date is blank or a valid YYYY-MM-DD, DD/MM/YY, or DD/MM/YYYY date, optionally prefixed with weekday. | Returns a formatted entry and registers its metadata for the index. |
 | [journal-index](#journal-index) | config/theme; finds entries in the document, sorts dated entries chronologically, groups them by month, and places undated entries last. `remember` and `question` each wrap supplied content. | Returns the generated index content. |
-| [cover-page](#cover-page) | config, logos/body/footer/footer-left, layout, theme and generated title fields. Layout is classic/research/minimal; theme is neutral/slate/soft-jade/soft-slate/warm-editorial/plum/soft-rose. Classic requires custom body; generated layouts require title. Covers do not inherit another template's config or theme. | Rendered document content; use as a content block as shown in its example. |
+| [cover-page](#cover-page) | config, logos/body/footer/footer-left, layout, theme and generated title fields. Layout is `"research"` (default) or `"minimal"`; theme is neutral/slate/soft-jade/soft-slate/warm-editorial/plum/soft-rose. Pass `title:` for a generated cover or `body:` for your own design. Covers do not inherit another template's config or theme. | Rendered document content; use as a content block as shown in its example. |
 | [book (experimental)](#book) | required body and `title` unless `cover-image` is supplied; optional subtitle/author/eyebrow/note/date; accent/ink; theme/paper/font; margins; font-size/leading/paragraph-spacing; binding/binding-correction; running-headers; config. Compose with book-contents(title, depth), book-mainmatter(numbering), book-appendix(body), book-backmatter(body), and book-index(body, ...). | Returns book content with cover, page setup, and book styling. Book components return content blocks. |
 | [research-proposal](#research-proposal) / [project-proposal](#project-proposal) | title/applicants/institution, optional date/summary/short-title, English/German language, config, required body. proposal-budget takes item records with description, nonnegative integer-cent unit-cost, and optional positive integer quantity (default 1). | Returns proposal content; the alias has the same contract. |
 | [proposal-gantt](#proposal-gantt) | nonempty rows, periods (positive integer), unit (month/quarter), optional start-year, resource labels, widths, size/color, English/German language. Task/group rows have label and inclusive spans; milestones have label and integer at-period. Work-package accepts title/objective, lead/period, arrays of tasks/deliverables/milestones, risk, language and body. | Rendered document content; use as a show rule or content block as shown in its example. |
@@ -36,14 +36,14 @@ This page documents every public name exported by `lib.typ`. Use the jump list b
 
 Known shared configuration groups (page, typography, headings, journal, decorative, page-footer, line-numbers, links, tables, figures, callouts, captions, toc/lof/lot, bibliography, and colors) validate their direct keys and require dictionary values. Page margins also accept inside/outside/x/y. DFG adds page.header-ascent and decorative.list-indent/list-body-indent/list-spacing/list-block-spacing; book adds headings.h1-number-size. Unknown top-level groups remain open for template-specific settings and caller extensions. This catches common misspellings such as typography.leadng without rejecting custom extension groups. Postal templates additionally validate their closed appearance groups. Satz-specific enums and record shapes are checked at public entry points, while forwarded native Typst options use Typst validation.
 
-The staged candidate check compiles the quick-start and representative template examples against 0.2.0 source. The published-package check separately compiles stable examples against 0.1.1. The contracts above were compared with exported signatures and implementation checks.
+The staged check compiles the quick-start and representative template examples against 0.2.1 source. The published-package check separately compiles stable examples against 0.2.0. The contracts above were compared with exported signatures and implementation checks.
 
 ## Browse functions
 
 [`letter`](#letter) · [`invoice`](#invoice) / [`rechnung`](#rechnung) · [`complaint`](#complaint) / [`klageschrift`](#klageschrift) · [`guest-contract`](#guest-contract) / [`gastspielvertrag`](#gastspielvertrag) · [`dfg-proposal`](#dfg-proposal) · [`dfg-supplement`](#dfg-supplement) · [`dfg-publications`](#dfg-publications) · [`research-proposal`](#research-proposal) · [`proposal-budget`](#proposal-budget) · [`proposal-gantt`](#proposal-gantt) · [`work-package`](#work-package) · [`proposal-citations`](#proposal-citations) · [`proposal-publications`](#proposal-publications) · [`journal-entry`](#journal-entry) · [`journal-index`](#journal-index) · [`remember`](#remember) · [`question`](#question) · [`report`](#report) · [`article`](#article) · [`book`](#book) · [`book-contents`](#book-contents) · [`book-mainmatter`](#book-mainmatter) · [`book-appendix`](#book-appendix) · [`book-backmatter`](#book-backmatter) · [`book-index`](#book-index) · [`exercise`](#exercise) · [`worked-example`](#worked-example) · [`analysis-note`](#analysis-note) · [`answer-grid`](#answer-grid) · [`cover-page`](#cover-page) · [`custom`](#custom) · [`satz-figure`](#satz-figure) · [`citepre`](#citepre) · [`placeholder`](#placeholder) · [`scientific-table`](#scientific-table) · [`scientific-tables`](#scientific-tables) · [`callout`](#callout) · [`chapter-numbering`](#chapter-numbering) · [`unnumbered-heading`](#unnumbered-heading) · [`nwo-proposal`](#nwo-proposal) · [`nwo-profile`](#nwo-profile) · [`nwo-text`](#nwo-text) · [`nwo-key-output`](#nwo-key-output) · [`nwo-page-budget`](#nwo-page-budget) · [`theme-config`](#theme-config)
 
-## Exact candidate signatures
-These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`, and `research-cover` / `minimal-cover` fix the corresponding `cover-page.layout`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
+## Exact signatures
+These signatures are taken from the current source; they show every optional argument and default. The input contracts above explain Satz-specific types and value constraints. Native Typst values (such as colors, lengths, content, numbering, and function arguments forwarded with `..args`) follow Typst's own validation. Aliases share the signature of their target: `invoice` / `rechnung`, `complaint` / `klageschrift`, and `guest-contract` / `gastspielvertrag`. `project-proposal` is `research-proposal`. `defaults`, `cover-themes`, and `document-themes` are exported dictionaries; `merge(base, overrides)` recursively merges dictionaries and otherwise replaces values.
 
 <a id="letter"></a>
 ### `letter` ([`lib.typ`](https://github.com/kylekahraman/satz/blob/main/lib.typ))
@@ -1047,7 +1047,7 @@ through `config`. Put preliminary pages before `book-contents()`, then place
 numbered chapters inside `book-mainmatter[...]`.
 
 ```example
-#import "@local/satz:0.2.0": book, book-contents, book-mainmatter
+#import "@local/satz:0.2.1": book, book-contents, book-mainmatter
 #show: book.with(
   title: [The Maths Behind Your Analysis],
   author: [Your Name],
@@ -1401,7 +1401,7 @@ separate grid-width argument.
   body: none,
   footer: none,
   footer-left: none,
-  layout: "classic",
+  layout: "research",
   theme: "neutral",
   title: none,
   subtitle: none,
@@ -1418,12 +1418,22 @@ separate grid-width argument.
 
 
 
-Build an optional cover page, either from custom content or title fields.
+Build an optional cover page, either from title fields or from custom content.
 
 This is a component, not a document template: place it before `report`, or
 anywhere else a cover is wanted. It has no implicit connection to another
 template's `config` or `theme`; pass those values explicitly when the cover
 should share the document appearance.
+
+Your arguments choose the mode. Pass `title:` to generate a title page from
+fields, or pass `body:` to supply the whole cover yourself. `body:` wins when
+both are given. Passing neither fails the call.
+
+`layout` selects the generated title template:
+
+- `"research"` aligns the title block left and adds a vertical accent rule.
+  This is the default.
+- `"minimal"` centers a spare title block.
 
 Appearance precedence is cover defaults, then the selected cover `theme`,
 then `config`. `config` may contain normal shared Satz settings, but the
@@ -1432,25 +1442,36 @@ cover consumes only `page.paper`, `page.margin`, `typography.font`,
 `text-main`, and `text-muted`. Other valid shared settings are accepted and
 ignored. Known config groups are validated for misspelled keys.
 
-The default `classic` layout preserves the slot-based cover. Set `layout` to
-`"research"` or `"minimal"` and provide `title` to use a ready-made title page.
-The generated title sizes are intentionally part of each preset.
-
 ```typst
 #let theme = "soft-jade"
 #let shared = (typography: (font: "EB Garamond"),)
-#cover-page(layout: "research", title: [Field notes], theme: theme, config: shared)
+#cover-page(title: [Field notes], layout: "research", theme: theme, config: shared)
 #show: report.with(theme: theme, config: shared)
 = Introduction
 ```
 
+- title (content, str): required for a generated cover
+- subtitle (content, str, none): optional line beneath the title
+- author (content, str, none): optional author line
+- date (content, str, none): date in the title block; a centered cover also
+  places it at the bottom unless `footer` replaces it
+- keywords (content, str, none): optional keywords in the title block
+- supervisors (array of str, none): optional names at bottom left
+- logos (content, none): optional content at the top left
+- body (content, none): your own cover content; replaces generated fields
+- footer (content, none): optional bottom-center content
+- footer-left (content, none): optional bottom-left content; replaces
+  `supervisors`
+- layout (str): `"research"` (default) or `"minimal"`
+- theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
+  `warm-editorial`, `plum`, or `soft-rose`
 - config (dictionary): partial nested overrides merged after cover defaults and
   selected theme colors. The exported `defaults` dictionary documents the shared
   schema and baseline values. Covers use `page.paper`, `page.margin`,
-  `typography.font`, `typography.size`, and `colors.bg-paper`, `brand-primary`,
-  `brand-accent`, `text-main`, and `text-muted`; other shared keys are accepted
-  and ignored. See the [configuration reference](/satz/reference/configuration/)
-  for effective cover values and layout-specific behavior.
+  `typography.font`, `typography.size`, and the five cover color keys; other
+  shared keys are accepted and ignored. See the
+  [configuration reference](/satz/reference/configuration/)
+  for effective cover values.
 
 <span id="custom"></span>
 ### `custom` ([`class.typ`](https://github.com/kylekahraman/satz/blob/main/class.typ))
@@ -1931,103 +1952,6 @@ text height. Must be called inside `nwo-proposal`.
 - key (str): unique, non-empty section key used for the internal labels
 - max-pages (int, float): allowed extent; defaults to 14
 - body (content): the bounded section, including headings
-
-### `research-cover` ([`cover.typ`](https://github.com/kylekahraman/satz/blob/main/cover.typ))
-
-```text
-#let research-cover = cover-page.with(layout: "research")
-```
-
-#### Complete function documentation
-
-<!-- Source docstring included -->
-
-
-
-Create a research notebook cover with title and optional metadata.
-
-Render a research title page with a title, optional metadata, and logos. A following
-document does not inherit this cover's theme or config; pass matching values
-to both calls if they should share an appearance.
-
-```typst
-#research-cover(
-  title: [Field notes],
-  author: [Alex Example],
-  date: "2026",
-  theme: "soft-jade",
-)
-```
-
-- title (content, str): required title; use `box(...)` to keep a word
-  together
-- subtitle (content, str, none): optional line beneath the title
-- author (content, str, none): optional author line
-- date (content, str, none): optional date in the title block
-- keywords (content, str, none): optional keywords in the title block
-- supervisors (array of str, none): optional bottom-left names
-- logos (content, none): optional content at the top left
-- body (content, none): optional custom cover body; replaces generated fields
-- footer (content, none): optional bottom-center content
-- footer-left (content, none): optional bottom-left content; replaces
-  `supervisors`
-- theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
-  `warm-editorial`, `plum`, or `soft-rose`
-- config (dictionary): partial nested overrides merged after cover defaults and
-  selected theme colors. The exported `defaults` dictionary documents the shared
-  schema and baseline values. Covers use `page.paper`, `page.margin`,
-  `typography.font`, `typography.size`, and `colors.bg-paper`, `brand-primary`,
-  `brand-accent`, `text-main`, and `text-muted`; other shared keys are accepted
-  and ignored. See the [configuration reference](/satz/reference/configuration/)
-  for effective cover values and layout-specific behavior.
-
-### `minimal-cover` ([`cover.typ`](https://github.com/kylekahraman/satz/blob/main/cover.typ))
-
-```text
-#let minimal-cover = cover-page.with(layout: "minimal")
-```
-
-#### Complete function documentation
-
-<!-- Source docstring included -->
-
-
-
-Create a spare, centered title page for reports, notes, and short documents.
-
-Render a minimal centered title page. The required title is centered;
-optional subtitle and author appear below it. The date is placed at the
-bottom unless a custom `footer` replaces it. A following document does not
-inherit this cover's theme or config; pass matching values to both calls if
-they should share an appearance.
-
-```typst
-#minimal-cover(
-  title: [Project notes],
-  subtitle: [A short working document],
-  date: "2026",
-)
-```
-
-- title (content, str): required cover title
-- subtitle, author (content, str, none): optional lines beneath the title
-- date (content, str, none): optional bottom date unless `footer` is supplied
-- logos (content, none): optional content at top left
-- body (content, none): optional custom body; replaces generated fields
-- footer (content, none): optional bottom-center content; replaces the date
-- footer-left (content, none): optional bottom-left content
-- supervisors (array of str, none): optional names at bottom left; replaced
-  by `footer-left` when that is supplied
-- keywords (content, str, none): accepted but not displayed by this layout
-- theme (str): `neutral` (default), `slate`, `soft-jade`, `soft-slate`,
-  `warm-editorial`, `plum`, or `soft-rose`
-- config (dictionary): partial nested overrides merged after cover defaults and
-  selected theme colors. The exported `defaults` dictionary documents the shared
-  schema and baseline values. Covers use `page.paper`, `page.margin`,
-  `typography.font`, `typography.size`, and `colors.bg-paper`, `brand-primary`,
-  `brand-accent`, `text-main`, and `text-muted`; other shared keys are accepted
-  and ignored. See the [configuration reference](/satz/reference/configuration/)
-  for effective cover values and layout-specific behavior.
 
 <span id="theme-config"></span>
 ### `theme-config` ([`themes.typ`](https://github.com/kylekahraman/satz/blob/main/themes.typ))

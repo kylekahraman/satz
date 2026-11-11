@@ -8,7 +8,7 @@ current application. These APIs are included in the unpublished 0.2.0 candidate.
 ## Start writing
 
 ```typst
-#import "@local/satz:0.2.0": nwo-proposal
+#import "@local/satz:0.2.1": nwo-proposal
 #show: nwo-proposal.with(
   scheme: "veni", domain: "science", stage: "pre", year: 2026,
 )
@@ -103,7 +103,7 @@ outside normal flow are outside the verified layout.
 ## Word counts and key outputs
 
 ```typst
-#import "@local/satz:0.2.0": nwo-text, nwo-key-output
+#import "@local/satz:0.2.1": nwo-text, nwo-key-output
 #nwo-text("research-idea", "Your complete plain-text response...")
 
 #nwo-key-output(

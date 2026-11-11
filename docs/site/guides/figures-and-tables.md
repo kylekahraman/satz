@@ -57,7 +57,7 @@ Table cells default to left-aligned, unjustified text for readable columns. Set 
 For long captions, `satz-figure` lets the page show the full caption while a short version appears in the List of Figures:
 
 ```typst
-#import "@local/satz:0.2.0": report, satz-figure
+#import "@local/satz:0.2.1": report, satz-figure
 #show: report.with()
 
 = Results
@@ -78,7 +78,7 @@ Use this helper when the detailed caption would make the list hard to scan. Stan
 Here is a complete report section with a native table:
 
 ```typst
-#import "@local/satz:0.2.0": report
+#import "@local/satz:0.2.1": report
 #show: report.with()
 
 = Results

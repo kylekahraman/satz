@@ -9,7 +9,7 @@ black and white. `slate` preserves the former dark blue-gray base palette.
 Choose another palette in `config.typ` to opt into color.
 
 ```typst
-#import "@local/satz:0.2.0": journal-entry, journal-index
+#import "@local/satz:0.2.1": journal-entry, journal-index
 #journal-index(theme: "soft-jade")
 #pagebreak()
 #journal-entry(title: "First notes", date: "Wednesday, 21/10/26", theme: "soft-jade")[
@@ -26,7 +26,7 @@ For **any** Satz template or component with a `config:` parameter, use the
 public helper rather than copying palette values:
 
 ```typst
-#import "@local/satz:0.2.0": theme-config
+#import "@local/satz:0.2.1": theme-config
 #let config = theme-config("plum", config: (
   typography: (size: 12pt),
 ))

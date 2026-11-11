@@ -34,7 +34,7 @@ experimental.
 | Invoice | [`invoice`](/satz/reference/api/#invoice) / [`rechnung`](/satz/reference/api/#rechnung) | German invoice layout and item table. |
 | Legal complaint | [`complaint`](/satz/reference/api/#complaint) / [`klageschrift`](/satz/reference/api/#klageschrift) | German civil complaint document structure. Start with [Prepare a legal complaint document](/satz/getting-started/legal-complaint/). |
 | Guest performance contract | [`guest-contract`](/satz/reference/api/#guest-contract) / [`gastspielvertrag`](/satz/reference/api/#gastspielvertrag) | Contract, offer, or title-only invoice mode for a performance. Follow [Create a guest performance contract](/satz/getting-started/guest-contract/). |
-| Cover page | [`cover-page`](/satz/reference/api/#cover-page) | A composable cover page with body and footer slots. Start with [Add a cover page](/satz/getting-started/cover-page/). |
+| Cover page | [`cover-page`](/satz/reference/api/#cover-page) | Generated title page (`layout: "research"` or `"minimal"`) or a composable body/footer cover. Start with [Add a cover page](/satz/getting-started/cover-page/). |
 
 English names are the documented interface. The German template names `rechnung`, `klageschrift`, and `gastspielvertrag`,
 and their German fields,
@@ -45,7 +45,7 @@ output language; guest-contract and complaint output remains German. Read the
 
 ## Development and experimental templates
 
-These interfaces are in the 0.2.0 candidate source and are not available from the published `@preview/satz:0.1.1` package. Follow [Development versions](/satz/guides/development/) to compile them.
+These interfaces are in the 0.2.1 source and are not available from the published `@preview/satz:0.2.0` package. Follow [Development versions](/satz/guides/development/) to compile them.
 
 | Document or component | Entry points | Status and notes |
 | --- | --- | --- |
@@ -57,7 +57,6 @@ These interfaces are in the 0.2.0 candidate source and are not available from th
 | NWO Talent Programme | [`nwo-proposal`](/satz/reference/api/#nwo-proposal), [`nwo-profile`](/satz/reference/api/#nwo-profile) | Only source-checked 2026 combinations are represented; consult profile coverage before use. |
 | Citations and publications | [`proposal-citations`](/satz/reference/api/#proposal-citations), [`proposal-publications`](/satz/reference/api/#proposal-publications) | Proposal-specific bibliography helpers. |
 | Layout helpers | [`callout`](/satz/reference/api/#callout), [`satz-figure`](/satz/reference/api/#satz-figure), [`scientific-table`](/satz/reference/api/#scientific-table), [`placeholder`](/satz/reference/api/#placeholder) | Components used within documents rather than as full document templates. |
-| Cover presets | `research-cover`, `minimal-cover` | Presets of `cover-page`; development. |
 
 Candidate support for a funding scheme is not a guarantee that the document meets every call requirement. Check the current funder instructions and the limitations in [Proposal templates and coverage](/satz/guides/proposals/).
 

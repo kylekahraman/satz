@@ -9,7 +9,7 @@ This walkthrough starts with one file and ends with a compiled report. It assume
 Create `main.typ` in a new folder, then paste this complete example:
 
 ```typst
-#import "@local/satz:0.2.0": report
+#import "@local/satz:0.2.1": report
 #show: report.with()
 
 = Introduction

@@ -3,7 +3,7 @@
 // Its first-line-indent setting also indents the first paragraph after headings.
 // Compile with the local 0.2.0 candidate: typst compile --root . report/example.typ
 
-#import "@local/satz:0.2.0": report
+#import "@local/satz:0.2.1": report
 
 #show: report.with(
   config: (

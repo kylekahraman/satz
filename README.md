@@ -12,7 +12,7 @@ Create `main.typ`, import Satz, and start writing. You do not need to copy a
 template file or create a separate configuration file:
 
 ```typst
-#import "@preview/satz:0.2.0": report
+#import "@preview/satz:0.2.1": report
 #show: report.with()
 
 = Introduction
@@ -67,7 +67,7 @@ This is a complete `main.typ`; no copied template file or separate `config.typ`
 is required:
 
 ```typst
-#import "@preview/satz:0.2.0": letter
+#import "@preview/satz:0.2.1": letter
 #show: letter.with(
   sender: (name: "Example Author", street: "Example Street 1", postal-code-city: "12345 Example City"),
   recipient: (name: "Example Recipient", street: "Sample Road 2", postal-code-city: "54321 Sample City"),
@@ -96,7 +96,7 @@ Satz includes an article entry point. Start writing
 immediately after the show rule; a separate template or config file is optional:
 
 ```typst
-#import "@preview/satz:0.2.0": article
+#import "@preview/satz:0.2.1": article
 #show: article.with(
   title: [My paper],
   authors: (name: "Example Author", affiliations: (1,)),
@@ -136,7 +136,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 ### Reports and journals
 
 ```typst
-#import "@preview/satz:0.2.0": report
+#import "@preview/satz:0.2.1": report
 #show: report.with(config: (
   typography: (font: "Libertinus Serif"),
   lof: (depth: none, compact: true), // Enable a compact List of Figures
@@ -147,7 +147,7 @@ sufficient for this layout; Meander remains an option for custom text flow.
 ```
 
 ```typst
-#import "@preview/satz:0.2.0": journal-entry
+#import "@preview/satz:0.2.1": journal-entry
 #show: journal-entry.with(
   title: "Experiment 42",
   date: "2025-03-15",
@@ -172,11 +172,11 @@ sufficient for this layout; Meander remains an option for custom text flow.
 | **NWO proposal (experimental)** | `nwo-proposal(...)`, `nwo-profile(...)` | 15 represented Veni/Vidi/Vici 2026 scheme/domain/stage profiles; not full NWO form coverage |
 | **legal-complaint** | `complaint(...)` / `klageschrift(...)` | German civil complaint (ZPO) — Rubrum, Streitwert, Anlagen. Output remains German. |
 | **guest contract** | `guest-contract(...)` / `gastspielvertrag(...)` | German guest performance contract (§1–8, transport, buy-out, 3 document modes). Output remains German. |
-| **cover** | `research-cover(...)`, `minimal-cover(...)`, `cover-page(...)` | Optional ready-made title pages or composable logo/body/footer slots. No implicit inheritance from the document. |
+| **cover** | `cover-page(...)` | Optional generated title page (`layout: "research"` or `"minimal"`) or a composable logo/body/footer cover. No implicit inheritance from the document. |
 
-The manifest identifies 0.2.0 as the release candidate. It requires Typst 0.15.0
-or newer. Examples target 0.2.0; before that version reaches Typst Universe,
-substitute `@local/satz:0.2.0` for local testing. Each template states its support
+0.2.0 is published. The manifest identifies 0.2.1 as the development version.
+It requires Typst 0.15.0 or newer. Examples target 0.2.1; until that version
+reaches Typst Universe, substitute `@local/satz:0.2.1` for local testing. Each template states its support
 level explicitly: DFG
 support is limited to form 53.01 (09/26), NWO support covers only the
 represented profiles, and book support remains experimental. None of these
@@ -233,7 +233,7 @@ while keeping the selected palette's other colors:
 These appearance options are new in 0.2.0. The book also resolves `accent`,
 `math-font`, and the nested config through this precedence order, so a raw
 argument cannot bypass an explicit nested override. See the
-[0.2.0 configuration reference](docs/configuration-reference.md) for the shared
+[configuration reference](docs/configuration-reference.md) for the shared
 defaults and their value contracts.
 
 ### Letters — language and PDF applications
@@ -247,7 +247,7 @@ The postal layout remains the default. For an application sent as a PDF, hide
 the envelope-specific components:
 
 ```typst
-#import "@preview/satz:0.2.0": letter
+#import "@preview/satz:0.2.1": letter
 
 #show: letter.with(
   sender: (name: "Your Name", email: "you@example.org", website: "example.org"),
@@ -298,28 +298,31 @@ Set `qr: true` (default) to embed a scannable GiroCode:
 
 Invoice output remains German. The 0.1.1 German argument names remain aliases.
 
-### Cover pages — ready-made layouts or full control
+### Cover pages — generated layouts or full control
 
-For a research notebook, pass the usual title details directly. No separate
-`config.typ` is needed:
+Pass title details to get a generated cover. The default `layout: "research"`
+aligns the title block left and adds a vertical accent rule. Use
+`layout: "minimal"` for a centered, spare title page.
 
 ```typst
-#import "@preview/satz:0.2.0": research-cover
+#import "@preview/satz:0.2.1": cover-page
 
-#research-cover(
+#cover-page(
   title: [MEG Connectivity Analysis in #box[Non-Conscious] Working Memory],
   subtitle: "Research Notebook",
   author: "Your Name",
   date: "October 2026",
+  keywords: "MEG, working memory",
   supervisors: ("Supervisor One", "Supervisor Two"),
+  layout: "research",
   theme: "soft-jade",
   config: (page: (paper: "iso-b5")),
 )
 ```
 
-Use `minimal-cover` for a centered title page, or
-`cover-page(layout: "classic", body: [...])` to compose the logo/body/footer
-slots yourself. Built-in themes are `neutral`, `slate`, `soft-jade`, `soft-slate`,
+Pass `body: [...]` instead to draw the whole cover yourself. The `logos`,
+`footer`, and `footer-left` slots remain available in both modes. Built-in themes
+are `neutral`, `slate`, `soft-jade`, `soft-slate`,
 `warm-editorial`, `plum`, and `soft-rose`. `neutral` is the default and uses
 black text and accents on white; the research layout leaves 4.5 cm between the
 top logo area and its title block. Override individual colors with
@@ -358,7 +361,7 @@ lib.typ              ← public API
 defaults.typ         ← unified defaults + merge()
 class.typ            ← shared document layer + public `custom()` + satz-figure
 citation.typ         ← citepre() — author-year cite without parens
-cover.typ            ← cover-page() — logos/body/footer slots
+cover.typ            ← cover-page() — generated title pages or custom slots
 letter/              ← letter implementation — DIN 5008, i18n (de/en)
 invoice/             ← rechnung() — German invoice, EPC QR code
 journal/             ← journal-entry / journal-index + remember/question
@@ -391,7 +394,7 @@ Available sections (see the exported `defaults` dictionary for every shared key)
 To inspect the shared config beside the templates in your editor, use one namespace import and hover `satz.defaults`:
 
 ```typst
-#import "@preview/satz:0.2.0" as satz
+#import "@preview/satz:0.2.1" as satz
 #show: satz.report.with(config: (captions: (label-weight: "bold")))
 ```
 
@@ -451,7 +454,7 @@ The cover themes are also available as document palettes: `neutral`, `slate`,
 `slate` theme preserves the former blue-gray shared palette.
 
 ```typst
-#import "@preview/satz:0.2.0": report
+#import "@preview/satz:0.2.1": report
 #show: report.with(theme: "soft-jade")
 ```
 
@@ -550,7 +553,7 @@ Two-sided reports and theses use
 [`hydra:0.6.3`](https://typst.app/universe/package/hydra/) for heading selection:
 
 ```typst
-#import "@preview/satz:0.2.0": report
+#import "@preview/satz:0.2.1": report
 #show: report.with(config: (page: (binding: left, headers: true)))
 ```
 
@@ -573,7 +576,7 @@ Satz exports the pinned
 Keep one list of term definitions and install its show rule before the report:
 
 ```typst
-#import "@preview/satz:0.2.0": report, glossarium
+#import "@preview/satz:0.2.1": report, glossarium
 #show: glossarium.make-glossary
 #show: report
 
@@ -601,7 +604,7 @@ using Glossarium: it uses a special figure kind internally.
 For long captions use `satz-figure` — long text under the figure, short title in the List of Figures (or `short-caption: []` for compact):
 
 ```typst
-#import "@preview/satz:0.2.0": satz-figure
+#import "@preview/satz:0.2.1": satz-figure
 #satz-figure(image("plot.png"), caption: [Very long ...], short-caption: [Short title])
 ```
 
@@ -628,7 +631,7 @@ in Satz. It draws a labeled empty box using native
 Typst, with no additional dependency:
 
 ```typst
-#import "@preview/satz:0.2.0": placeholder
+#import "@preview/satz:0.2.1": placeholder
 
 #figure(
   placeholder(width: 80%, height: 4cm, label: [Planned result plot]),
@@ -657,7 +660,7 @@ header rule. Headings and boundary rules repeat across page breaks. Native
 cells, alignment and group separators remain available:
 
 ```typst
-#import "@preview/satz:0.2.0": scientific-table, callout
+#import "@preview/satz:0.2.1": scientific-table, callout
 
 #scientific-table(
   columns: (1fr, auto),
@@ -689,8 +692,8 @@ See the [complete table example](examples/scientific-table.typ),
 `headings.h1-above` through `h4-below` accept explicit block gaps;
 `auto` selects the measured KOMA default. The audit lists remaining differences:
 Satz does **not** yet claim complete LaTeX/KOMA parity.
-[Unreleased changes](CHANGELOG.md) are prepared for the 0.2.0 candidate;
-the package has not been published yet.
+[Unreleased changes](CHANGELOG.md) are prepared for 0.2.1.
+The previous version, 0.2.0, is published.
 
 ### Report numbering, captions and fonts (unreleased)
 
