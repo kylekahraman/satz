@@ -552,7 +552,14 @@
       let word-parts = without-comma-prefix.split(" ")
       if word-parts.len() == 2 { word-parts.last() } else { without-comma-prefix }
     }
-    let entry-date = if parsed == none { none } else { (parsed.year, parsed.month, parsed.day) }
+    // Compare the parsed calendar date, not the original input string. This
+    // groups equivalent formats (for example, a weekday-prefixed date and an
+    // unprefixed date) under one date in the index.
+    let entry-date = if parsed == none { none } else {
+      (str(parsed.year) + "-" +
+        (if parsed.month < 10 { "0" } else { "" }) + str(parsed.month) + "-" +
+        (if parsed.day < 10 { "0" } else { "" }) + str(parsed.day))
+    }
     let same-date = entry-date != none and entry-date == previous-date
 
     let month-changed = month-name != current-month or year != current-year
